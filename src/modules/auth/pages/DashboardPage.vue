@@ -16,6 +16,10 @@
             <div class="mt-6 flex w-full flex-none gap-x-4 border-t border-white/5 px-6 pt-6">
               <dd class="text-sm/6 font-medium text-white break-all">{{ user.email }}</dd>
             </div>
+            <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
+              <dt class="text-sm/6 font-semibold text-gray-100">Token</dt>
+              <dd class="mt-2 text-xs font-mono text-gray-300 break-all bg-gray-700/50 rounded p-3 max-h-24 overflow-y-auto">{{ token }}</dd>
+            </div>
           </dl>
           <div class="mt-6 border-t border-white/5 px-6 py-6 flex gap-4">
             <button
@@ -65,7 +69,8 @@ import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 
 const router = useRouter()
-const { user, isLoading, logout } = useAuth()
+const { user, isLoading, logout, getToken } = useAuth()
+const token = getToken()
 
 const handleLogout = async () => {
   try {
