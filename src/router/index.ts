@@ -5,6 +5,11 @@ import { authRoutes } from '@/modules/auth/router'
 import NotFoundPage from '@/modules/common/pages/NotFoundPage.vue'
 
 const routes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    redirect: '/dashboard'
+  },
+  
   ...authRoutes,
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage }
