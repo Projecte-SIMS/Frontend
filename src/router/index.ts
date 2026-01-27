@@ -13,14 +13,19 @@ const router = createRouter({
 })
 
 // Navigation guard global
-router.beforeEach((to, from, next) => {
-  const { isAuthenticated } = useAuth()
+router.beforeEach(async (to, from, next) => {
+  const { isAuthenticated, fetchUser, getToken } = useAuth()
   const requiresAuth = to.meta.requiresAuth
 
-  if (requiresAuth && !isAuthenticated()) {
+  // If there's a token but no user data, try to fetch user
+  if (getToken() && !isAuthenticated.value) {
+    await fetchUser()
+  }
+
+  if (requiresAuth && !isAuthenticated.value) {
     // Protected route and not authenticated -> go to login
     next('/login')
-  } else if (to.path === '/login' && isAuthenticated()) {
+  } else if (to.path === '/login' && isAuthenticated.value) {
     // Already authenticated attempting to go to login -> go to dashboard
     next('/dashboard')
   } else {

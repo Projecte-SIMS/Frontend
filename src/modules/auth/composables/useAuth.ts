@@ -1,6 +1,6 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import apiClient from '@/services/api'
-import type { LoginRequest, LoginResponse } from '../interfaces/auth.interface'
+import type { LoginRequest, LoginResponse, User, UserResponse } from '../interfaces/auth.interface'
 
 const TOKEN_COOKIE_NAME = 'token'
 
@@ -26,16 +26,32 @@ function deleteCookie(name: string): void {
   document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`
 }
 
-export function useAuth() {
-  const isLoading = ref(false)
-  const error = ref<string | null>(null)
+// Global state shared across all useAuth() calls
+const isLoading = ref(false)
+const error = ref<string | null>(null)
+const user = ref<User | null>(null)
 
-  const isAuthenticated = (): boolean => {
-    return !!getCookie(TOKEN_COOKIE_NAME)
-  }
+const isAuthenticated = computed(() => !!user.value)
+
+export function useAuth() {
 
   const getToken = (): string | null => {
     return getCookie(TOKEN_COOKIE_NAME)
+  }
+
+  const fetchUser = async (): Promise<boolean> => {
+    try {
+      const response = await apiClient.get<UserResponse>('/user')
+      user.value = response.data.user
+      return true
+    } catch (err: any) {
+      if (err.response?.status === 401) {
+        // Token is invalid or expired
+        deleteCookie(TOKEN_COOKIE_NAME)
+        user.value = null
+      }
+      return false
+    }
   }
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -50,7 +66,9 @@ export function useAuth() {
       
       if (token) {
         setCookie(TOKEN_COOKIE_NAME, token)
-        return true
+        // Fetch user data after successful login
+        const userFetched = await fetchUser()
+        return userFetched
       } else {
         error.value = 'No token received from server'
         return false
@@ -63,15 +81,28 @@ export function useAuth() {
     }
   }
 
-  const logout = (): void => {
-    deleteCookie(TOKEN_COOKIE_NAME)
+  const logout = async (): Promise<void> => {
+    try {
+      // Call backend to revoke token
+      await apiClient.post('/logout')
+      // Clear local state
+      deleteCookie(TOKEN_COOKIE_NAME)
+      user.value = null
+    } catch (err: any) {
+      // Show error but still clear local state
+      const errorMsg = err.response?.data?.message || 'Error during logout'
+      alert(`Logout error: ${errorMsg}`)
+      throw err
+    }
   }
 
   return {
     isLoading,
     error,
+    user,
     isAuthenticated,
     getToken,
+    fetchUser,
     login,
     logout
   }
