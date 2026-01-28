@@ -107,9 +107,9 @@ export function useAuth() {
         username,
         email,
         password,
-        role_id: 1 // User role ID is always 2, this might be not ideal but I dont care
+        role_id: 2 // Client role ID is always 2, this might be not ideal but I dont care
       }
-      await apiClient.post<RegisterResponse>('/users', registerData)
+      if (await apiClient.post<RegisterResponse>('/users', registerData)) router.push('/login')
     } catch (err: any) {
       const msg = err.response?.data?.message || 'Error registering'
       showToast(msg)
