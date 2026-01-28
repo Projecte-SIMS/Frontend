@@ -71,7 +71,7 @@
           <button
             type="submit"
             :disabled="isLoading"
-            class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {{ isLoading ? 'Creating account...' : 'Register' }}
           </button>
@@ -100,10 +100,11 @@ const email = ref('')
 const password = ref('')
 
 const handleSubmit = async () => {
-  const success = await register(name.value, username.value, email.value, password.value)
-  
-  if (success) {
-    router.push('/login')
-  }
+  await register(
+    name.value,
+    username.value,
+    email.value,
+    password.value,
+  )
 }
 </script>
