@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import apiClient from '@/services/api'
-import type { LoginRequest, LoginResponse, User, UserResponse } from '../interfaces/auth.interface'
+import type { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User, UserResponse } from '../interfaces/auth.interface'
 
 const TOKEN_COOKIE_NAME = 'token'
 
@@ -96,6 +96,28 @@ export function useAuth() {
     }
   }
 
+  const register = async (name: string, username: string, email: string, password: string): Promise<boolean> => {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      const registerData: RegisterRequest = {
+        name,
+        username,
+        email,
+        password,
+        role_id: 2 // User role ID is always 2, this might be not ideal but I dont care
+      }
+      const response = await apiClient.post<RegisterResponse>('/users', registerData)
+      if (response.data) return true
+    } catch (err: any) {
+      error.value = err.response?.data?.message || 'Error registering'
+      return false
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     isLoading,
     error,
@@ -104,6 +126,7 @@ export function useAuth() {
     getToken,
     fetchUser,
     login,
+    register,
     logout
   }
 }
