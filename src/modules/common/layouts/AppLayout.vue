@@ -54,7 +54,7 @@
               >
                 <MenuItems class="absolute right-0 z-40 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 outline -outline-offset-1 outline-white/10">
                   <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                    <a :href="item.href" :class="[active ? 'bg-white/5 outline-hidden' : '', 'block px-4 py-2 text-sm text-gray-300']">
+                    <a :href="item.href" :class="[active ? 'bg-white/5 outline-none' : '', 'block px-4 py-2 text-sm text-gray-300']">
                       {{ item.name }}
                     </a>
                   </MenuItem>
