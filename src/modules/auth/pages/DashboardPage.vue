@@ -60,6 +60,18 @@
           <p class="mt-4 text-gray-300">Loading user...</p>
         </div>
       </div>
+
+      <!-- Tickets section -->
+      <div class="mt-8">
+        <h2 class="mb-4 text-2xl font-bold text-white">Tickets</h2>
+        <div class="rounded-lg bg-gray-800/50 p-6">
+          <div class="flex gap-4">
+            <button @click="router.push('/tickets/create')" class="px-3 py-2 bg-indigo-500 text-white rounded">Crear ticket</button>
+            <button @click="router.push('/tickets/mine')" class="px-3 py-2 bg-gray-600 text-white rounded">Gestionar mis tickets</button>
+            <button v-if="user && user.roles && user.roles.some(r => r.name.toLowerCase() === 'admin')" @click="router.push('/tickets')" class="px-3 py-2 bg-purple-600 text-white rounded">Gestionar tickets (Admin)</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useAuth } from '@/modules/auth/composables/useAuth'
 import { authRoutes } from '@/modules/auth/router'
+import { ticketsRoutes } from '@/modules/tickets'
 import NotFoundPage from '@/modules/common/pages/NotFoundPage.vue'
 
 const routes: RouteRecordRaw[] = [
@@ -11,6 +12,7 @@ const routes: RouteRecordRaw[] = [
   },
   
   ...authRoutes,
+  ...ticketsRoutes,
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage }
 ]
