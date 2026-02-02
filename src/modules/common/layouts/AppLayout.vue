@@ -138,8 +138,8 @@ const navigation = [
 ]
 
 const userNavigation = [
-  { name: 'Your profile', href: '#' },
-  { name: 'Settings', href: '#' },
-  { name: 'Sign out', href: '#' },
+  { name: 'Your profile', href: '/perfil' },
+  { name: 'Settings', href: '/settings' },
+  { name: 'Sign out', href: '/logout' },
 ]
 </script>
