@@ -1,6 +1,8 @@
 import { ref, computed } from 'vue'
 import apiClient from '@/services/api'
-import type { LoginRequest, LoginResponse, User, UserResponse } from '../interfaces/auth.interface'
+import type { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User, UserResponse } from '../interfaces/auth.interface'
+import router from '@/router'
+import showToast from '@/modules/common/composables/useToast'
 
 const TOKEN_COOKIE_NAME = 'token'
 
@@ -74,7 +76,8 @@ export function useAuth() {
         return false
       }
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error logging in'
+      const msg = err.response?.data?.message || 'Error logging in'
+      error.value = msg
       return false
     } finally {
       isLoading.value = false
@@ -89,10 +92,29 @@ export function useAuth() {
       deleteCookie(TOKEN_COOKIE_NAME)
       user.value = null
     } catch (err: any) {
-      // Show error but still clear local state
       const errorMsg = err.response?.data?.message || 'Error during logout'
-      alert(`Logout error: ${errorMsg}`)
+      showToast(errorMsg)
       throw err
+    }
+  }
+
+  const register = async (name: string, username: string, email: string, password: string) => {
+    isLoading.value = true
+    error.value = null
+    try {
+      const registerData: RegisterRequest = {
+        name,
+        username,
+        email,
+        password,
+        role_id: 2 // Client role ID is always 2, this might be not ideal but I dont care
+      }
+      if (await apiClient.post<RegisterResponse>('/users', registerData)) router.push('/login')
+    } catch (err: any) {
+      const msg = err.response?.data?.message || 'Error registering'
+      showToast(msg)
+    } finally {
+      isLoading.value = false
     }
   }
 
@@ -104,6 +126,7 @@ export function useAuth() {
     getToken,
     fetchUser,
     login,
+    register,
     logout
   }
 }
