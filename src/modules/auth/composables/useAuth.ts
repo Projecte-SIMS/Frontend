@@ -42,6 +42,8 @@ export function useAuth() {
   }
 
   const fetchUser = async (): Promise<boolean> => {
+    isLoading.value = true
+    error.value = null
     try {
       const response = await apiClient.get<UserResponse>('/user')
       user.value = response.data.user
@@ -53,6 +55,8 @@ export function useAuth() {
         user.value = null
       }
       return false
+    } finally {
+      isLoading.value = false
     }
   }
 
