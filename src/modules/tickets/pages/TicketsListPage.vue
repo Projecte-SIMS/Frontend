@@ -1,24 +1,24 @@
 <template>
   <div class="p-6 max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl font-bold">Mis tickets</h1>
-      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Volver al dashboard</router-link>
+      <h1 class="text-2xl font-bold">My tickets</h1>
+      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Back to dashboard</router-link>
     </div>
 
-    <div v-if="loading" class="text-gray-400">Cargando...</div>
+    <div v-if="loading" class="text-gray-400">Loading...</div>
 
     <div v-else>
       <div v-if="tickets.length === 0" class="text-gray-300">No tienes tickets todavía.</div>
       <ul>
         <li v-for="t in tickets" :key="t.id" class="border rounded p-4 my-2 bg-white/5 flex justify-between items-center">
           <div>
-            <div class="font-semibold text-white">{{ t.title || 'Sin asunto' }}</div>
-            <div class="text-sm text-gray-400">ID: {{ t.id }} • {{ t.status || 'abierto' }}</div>
+            <div class="font-semibold text-white">{{ t.title || 'No subject' }}</div>
+            <div class="text-sm text-gray-400">ID: {{ t.id }} • {{ t.status || 'open' }}</div>
           </div>
           <div class="flex gap-2 items-center">
             <span class="inline-flex items-center rounded-full bg-gray-700 px-3 py-1 text-xs font-medium text-gray-200">{{ t._message_count ?? t.messages?.length ?? t.message_count ?? 0 }}</span>
-            <router-link :to="`/tickets/${t.id}/view`" class="px-3 py-1 bg-indigo-500 text-white rounded">Ver</router-link>
-            <router-link :to="`/tickets/${t.id}`" v-if="isAdmin" class="px-3 py-1 bg-gray-600 text-white rounded">Gestionar (Admin)</router-link>
+            <router-link :to="`/tickets/${t.id}/view`" class="px-3 py-1 bg-indigo-500 text-white rounded">View</router-link>
+            <router-link :to="`/tickets/${t.id}`" v-if="isAdmin" class="px-3 py-1 bg-gray-600 text-white rounded">Manage (Admin)</router-link>
           </div>
         </li>
       </ul>
@@ -53,7 +53,7 @@ const fetchTickets = async () => {
       _message_count: t.messages ? (Array.isArray(t.messages) ? t.messages.length : t.messages.length || 0) : (t.message_count ?? 0)
     }))
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'Error cargando tickets'
+    error.value = err.response?.data?.message || 'Error loading tickets'
   } finally {
     loading.value = false
   }

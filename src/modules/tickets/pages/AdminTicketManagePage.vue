@@ -1,11 +1,11 @@
 <template>
   <div class="p-6 max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl font-bold">Administrar ticket</h1>
-      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Volver al dashboard</router-link>
+      <h1 class="text-2xl font-bold">Manage ticket</h1>
+      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Back to dashboard</router-link>
     </div>
 
-    <div v-if="loading" class="text-gray-400">Cargando...</div>
+    <div v-if="loading" class="text-gray-400">Loading...</div>
 
     <div v-else>
       <div class="mb-4">
@@ -14,7 +14,7 @@
       </div>
 
       <div class="mb-6">
-        <h3 class="font-medium">Mensajes</h3>
+        <h3 class="font-medium">Messages</h3>
         <ul>
           <li v-for="msg in messages" :key="msg.id" class="border rounded p-3 my-2 bg-white/5">
             <div class="flex justify-between">
@@ -23,7 +23,7 @@
                 <div class="mt-2">{{ msg.body }}</div>
               </div>
               <div>
-                <button @click="deleteMessage(msg.id)" class="text-red-400">Eliminar</button>
+                <button @click="deleteMessage(msg.id)" class="text-red-400">Delete</button>
               </div>
             </div>
           </li>
@@ -31,10 +31,10 @@
       </div>
 
       <div class="mb-6">
-        <h3 class="font-medium">Agregar respuesta</h3>
+        <h3 class="font-medium">Add reply</h3>
         <textarea v-model="newMessage" rows="4" class="w-full rounded p-2 bg-white/5"></textarea>
         <div class="mt-2">
-          <button @click="postMessage" :disabled="posting" class="px-3 py-1 bg-indigo-500 text-white rounded">{{ posting ? 'Enviando...' : 'Enviar' }}</button>
+          <button @click="postMessage" :disabled="posting" class="px-3 py-1 bg-indigo-500 text-white rounded">{{ posting ? 'Sending...' : 'Send' }}</button>
         </div>
       </div>
     </div>
@@ -100,7 +100,7 @@ const fetchTicket = async () => {
       return m
     })
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'Error cargando ticket'
+    error.value = err.response?.data?.message || 'Error loading ticket'
   } finally {
     loading.value = false
   }
@@ -142,7 +142,7 @@ const deleteMessage = async (messageId: number) => {
     await apiClient.delete(`/tickets/${ticketId}/messages/${messageId}`)
     messages.value = messages.value.filter(m => m.id !== messageId)
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'Error eliminando mensaje'
+    error.value = err.response?.data?.message || 'Error deleting message'
   }
 }
 

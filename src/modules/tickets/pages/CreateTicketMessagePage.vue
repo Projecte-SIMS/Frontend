@@ -1,24 +1,24 @@
 <template>
   <div class="p-6 max-w-2xl mx-auto">
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl font-bold">Crear primer mensaje de ticket</h1>
-      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Volver al dashboard</router-link>
+      <h1 class="text-2xl font-bold">Create ticket</h1>
+      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Back to dashboard</router-link>
     </div>
 
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div>
-        <label class="block text-sm font-medium">Asunto</label>
+        <label class="block text-sm font-medium">Subject</label>
         <input v-model="title" required class="w-full rounded p-2 bg-white/5" />
       </div>
 
       <div>
-        <label class="block text-sm font-medium">Mensaje</label>
+        <label class="block text-sm font-medium">Message</label>
         <textarea v-model="message" rows="6" required class="w-full rounded p-2 bg-white/5"></textarea>
       </div>
 
       <div>
         <button :disabled="loading" class="px-4 py-2 bg-indigo-500 text-white rounded">
-          {{ loading ? 'Enviando...' : 'Crear ticket' }}
+          {{ loading ? 'Sending...' : 'Create ticket' }}
         </button>
       </div>
 
@@ -62,7 +62,7 @@ const handleSubmit = async () => {
   } catch (err: any) {
     console.error('create ticket error:', err)
     const apiData = err.response?.data
-    error.value = apiData?.message || JSON.stringify(apiData) || err.message || 'Error creando ticket'
+    error.value = apiData?.message || JSON.stringify(apiData) || err.message || 'Error creating ticket'
   } finally {
     loading.value = false
   }
