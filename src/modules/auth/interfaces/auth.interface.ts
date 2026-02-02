@@ -7,6 +7,16 @@ export interface LoginResponse {
   token: string
 }
 
+export interface RegisterRequest {
+  name: string
+  username: string
+  email: string
+  password: string
+  role_id: number
+}
+
+export interface RegisterResponse extends User {}
+
 export interface Permission {
   id: number
   name: string

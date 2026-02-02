@@ -1,4 +1,5 @@
 import axios from 'axios'
+import showToast from '@/modules/common/composables/useToast'
 
 // VALE PEÑA COMENTARI EN ESPAÑOL QUE ESPERO QEU ALGU LO LLEGIXQUE
 // Este archiu configura axios per a utiltizar la api en base a les coockies
@@ -30,25 +31,13 @@ apiClient.interceptors.request.use(
     return config
   },
   (error) => {
-    return Promise.reject(error)
-  }
-)
-
-// Interceptor to handle authentication errors
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // Invalid or expired token, clear cookie
-      document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/'
-      
-      // Redirect to login if not already there
-      if (window.location.pathname !== '/login') {
-        window.location.href = '/login'
-      }
+    const msg = error?.message || 'Request error'
+    try {
+      showToast(msg)
+    } catch (e) {
+      console.error(e)
     }
     return Promise.reject(error)
   }
 )
-
 export default apiClient
