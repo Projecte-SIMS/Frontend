@@ -2,7 +2,6 @@
   <div class="p-6 max-w-2xl mx-auto">
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-2xl font-bold">Create ticket</h1>
-      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Back to dashboard</router-link>
     </div>
 
     <form @submit.prevent="handleSubmit" class="space-y-4">

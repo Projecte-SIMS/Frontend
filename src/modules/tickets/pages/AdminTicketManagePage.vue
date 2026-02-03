@@ -2,7 +2,6 @@
   <div class="p-6 max-w-4xl mx-auto">
     <div class="flex items-center justify-between mb-4">
       <h1 class="text-2xl font-bold">Manage ticket</h1>
-      <router-link to="/dashboard" class="text-sm font-medium text-indigo-400 hover:text-indigo-200">Back to dashboard</router-link>
     </div>
 
     <div v-if="loading" class="text-gray-400">Loading...</div>
