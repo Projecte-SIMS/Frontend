@@ -3,12 +3,27 @@ import type { RouteRecordRaw } from 'vue-router'
 import { useAuth } from '@/modules/auth/composables/useAuth'
 import { authRoutes } from '@/modules/auth/router'
 import { ticketsRoutes } from '@/modules/tickets'
+import AppLayout from '@/modules/common/layouts/AppLayout.vue'
+import AdminLayout from '@/modules/admin/layouts/AdminLayout.vue'
 import NotFoundPage from '@/modules/common/pages/NotFoundPage.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/dashboard'
+    component: AppLayout,
+    children: [
+      { path: '', component: () => import('@/modules/common/pages/MapPage.vue') },
+      { path: 'reservas', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+    ]
+  },
+  {
+    path: '/admin',
+    component: AdminLayout,
+    children: [
+      { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+    ]
   },
   
   ...authRoutes,
