@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useAuth } from '@/modules/auth/composables/useAuth'
 import { authRoutes } from '@/modules/auth/router'
-import { ticketsRoutes } from '@/modules/tickets'
 import AppLayout from '@/modules/common/layouts/AppLayout.vue'
 import AdminLayout from '@/modules/admin/layouts/AdminLayout.vue'
 import NotFoundPage from '@/modules/common/pages/NotFoundPage.vue'
@@ -16,6 +15,25 @@ const routes: RouteRecordRaw[] = [
       { path: 'reservas', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      // Tickets routes inside AppLayout
+      {
+        path: 'tickets/create',
+        name: 'CreateTicketMessage',
+        component: () => import('@/modules/tickets/pages/CreateTicketMessagePage.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'tickets/mine',
+        name: 'TicketsList',
+        component: () => import('@/modules/tickets/pages/TicketsListPage.vue'),
+        meta: { requiresAuth: true }
+      },
+      {
+        path: 'tickets/:id/view',
+        name: 'UserTicketManage',
+        component: () => import('@/modules/tickets/pages/UserTicketManagePage.vue'),
+        meta: { requiresAuth: true }
+      },
     ]
   },
   {
@@ -23,11 +41,16 @@ const routes: RouteRecordRaw[] = [
     component: AdminLayout,
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      {
+        path: 'tickets/:id',
+        name: 'AdminTicketManage',
+        component: () => import('@/modules/tickets/pages/AdminTicketManagePage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
     ]
   },
   
   ...authRoutes,
-  ...ticketsRoutes,
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage }
 ]
