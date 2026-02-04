@@ -6,7 +6,8 @@
     </div>
     
     <!-- Mapa -->
-    <div ref="mapContainer" class="w-full h-[600px] rounded-lg shadow-lg z-0"></div>
+    <!-- Reserve left space for admin sidebar (lg) and reduce height on small screens -->
+    <div ref="mapContainer" class="w-full h-[500px] lg:ml-0 lg:pl-0 rounded-lg shadow-lg z-0" style="height: 60vh;"></div>
     
     <!-- Lista de vehículos -->
     <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -35,6 +36,7 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import apiClient from '@/services/api'
 
 interface Vehicle {
   id: number
@@ -46,54 +48,7 @@ interface Vehicle {
   status: 'active' | 'inactive'
 }
 
-// Vehículos hardcodeados (Barcelona área)
-const vehicles = ref<Vehicle[]>([
-  {
-    id: 1,
-    plate: '1234-ABC',
-    brand: 'Toyota',
-    model: 'Corolla',
-    latitude: 41.3851,
-    longitude: 2.1734,
-    status: 'active'
-  },
-  {
-    id: 2,
-    plate: '5678-DEF',
-    brand: 'Ford',
-    model: 'Focus',
-    latitude: 41.3902,
-    longitude: 2.1540,
-    status: 'active'
-  },
-  {
-    id: 3,
-    plate: '9012-GHI',
-    brand: 'Volkswagen',
-    model: 'Golf',
-    latitude: 41.3780,
-    longitude: 2.1900,
-    status: 'inactive'
-  },
-  {
-    id: 4,
-    plate: '3456-JKL',
-    brand: 'Seat',
-    model: 'León',
-    latitude: 41.4000,
-    longitude: 2.1600,
-    status: 'active'
-  },
-  {
-    id: 5,
-    plate: '7890-MNO',
-    brand: 'Renault',
-    model: 'Megane',
-    latitude: 41.3700,
-    longitude: 2.1450,
-    status: 'active'
-  }
-])
+const vehicles = ref<Vehicle[]>([])
 
 const mapContainer = ref<HTMLElement | null>(null)
 let map: L.Map | null = null
@@ -126,42 +81,63 @@ const createVehicleIcon = (status: string) => {
   })
 }
 
+const fetchVehicles = async () => {
+  try {
+    const res = await apiClient.get('/vehicles-map-admin')
+    // ensure vehicles have postgres_active and mongo_active
+    vehicles.value = res.data.map((v: any) => ({ ...v }))
+    addVehicleMarkers()
+  } catch (err) {
+    console.error('Failed fetching vehicles for admin map', err)
+  }
+}
+
 const initMap = () => {
   if (!mapContainer.value) return
 
-  // Crear mapa centrado en Barcelona
   map = L.map(mapContainer.value).setView([41.3851, 2.1734], 13)
 
-  // Añadir capa de OpenStreetMap
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map)
 
-  // Añadir marcadores de vehículos
-  vehicles.value.forEach(vehicle => {
-    const marker = L.marker([vehicle.latitude, vehicle.longitude], {
-      icon: createVehicleIcon(vehicle.status)
-    })
+  fetchVehicles()
+}
+
+const addVehicleMarkers = () => {
+  if (!map) return
+
+  markers.forEach(m => m.remove())
+  markers.clear()
+
+  vehicles.value.forEach(v => {
+    if (v.latitude == null || v.longitude == null) return
+
+    const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.status) })
       .addTo(map!)
       .bindPopup(`
         <div class="p-2">
-          <p class="font-bold">${vehicle.plate}</p>
-          <p class="text-sm">${vehicle.brand} ${vehicle.model}</p>
-          <p class="text-xs text-gray-500">Estado: ${vehicle.status === 'active' ? 'Activo' : 'Inactivo'}</p>
+          <p class="font-bold">${v.plate}</p>
+          <p class="text-sm">${v.brand} ${v.model}</p>
+          <p class="text-xs text-gray-500">Postgres Disponibilidad: ${v.postgres_active ? 'Ocupado' : 'Disponible'}</p>
+          <p class="text-xs text-gray-500">Arrancado (Mongo): ${v.mongo_active ? 'Sí' : 'No'}</p>
         </div>
       `)
-    
-    markers.set(vehicle.id, marker)
+
+    markers.set(v.id, marker)
   })
+
+  if (vehicles.value.length > 0) {
+    const bounds = L.latLngBounds(vehicles.value.map(v => [v.latitude, v.longitude]))
+    map!.fitBounds(bounds, { padding: [50, 50] })
+  }
 }
 
 const centerOnVehicle = (vehicle: Vehicle) => {
   if (map) {
     map.setView([vehicle.latitude, vehicle.longitude], 15)
     const marker = markers.get(vehicle.id)
-    if (marker) {
-      marker.openPopup()
-    }
+    if (marker) marker.openPopup()
   }
 }
 
@@ -181,5 +157,25 @@ onUnmounted(() => {
 .vehicle-marker {
   background: transparent !important;
   border: none !important;
+}
+/* Ensure Leaflet map and all its panes stay below the app sidebar */
+.leaflet-container,
+.leaflet-control-container,
+.leaflet-map-pane,
+.leaflet-pane,
+.leaflet-overlay-pane,
+.leaflet-tile-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-popup-pane,
+.leaflet-control {
+  z-index: 0 !important;
+}
+/* Allow sidebar and menus to receive pointer events above the map */
+.admin-sidebar,
+.app-sidebar,
+.fixed-sidebar {
+  z-index: 9999 !important;
+  position: relative;
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <!-- Contenedor principal del mapa -->
   <div class="relative min-h-[100dvh] bg-gray-800">
-    <div ref="mapContainer" class="absolute inset-0"></div>
+    <div ref="mapContainer" class="absolute inset-0" style="height: calc(100vh - 4rem);"></div>
   </div>
 </template>
 
@@ -18,6 +18,7 @@ interface Vehicle {
   model: string
   latitude: number
   longitude: number
+  postgres_active?: boolean
   status: 'active' | 'inactive'
 }
 
@@ -55,7 +56,20 @@ const createVehicleIcon = (status: string) => {
 const fetchVehicles = async () => {
   try {
     const response = await apiClient.get('/vehicles-map')
-    vehicles.value = response.data
+    // Backend now returns postgres_active and mongo_active; determine status for UI
+    vehicles.value = response.data.map((v: any) => ({
+      id: v.id,
+      plate: v.plate,
+      brand: v.brand,
+      model: v.model,
+      latitude: v.latitude,
+      longitude: v.longitude,
+      postgres_active: v.postgres_active,
+      // For user map: consider postgres_active as available (true => show as 'inactive' or 'active'?),
+      // user wants to see vehicles that are not reserved (postgres_active true). Map status: if mongo_active === true then 'active' else 'inactive'
+      status: (v.mongo_active === true) ? 'active' : 'inactive',
+    }))
+
     addVehicleMarkers()
   } catch (error) {
     console.error('Error fetching vehicles:', error)
@@ -77,7 +91,8 @@ const addVehicleMarkers = () => {
         <div class="p-2">
           <p class="font-bold">${vehicle.plate}</p>
           <p class="text-sm">${vehicle.brand} ${vehicle.model}</p>
-          <p class="text-xs text-gray-500">Estado: ${vehicle.status === 'active' ? 'Activo' : 'Inactivo'}</p>
+          <p class="text-xs text-gray-500">Disponible (Postgres): ${vehicle.postgres_active ? 'No' : 'Sí'}</p>
+          <p class="text-xs text-gray-500">Arrancado (Mongo): ${vehicle.status === 'active' ? 'Sí' : 'No'}</p>
         </div>
       `)
     
@@ -119,5 +134,25 @@ onUnmounted(() => {
 .vehicle-marker {
   background: transparent !important;
   border: none !important;
+}
+/* Ensure Leaflet map and all its panes stay below the app sidebar */
+.leaflet-container,
+.leaflet-control-container,
+.leaflet-map-pane,
+.leaflet-pane,
+.leaflet-overlay-pane,
+.leaflet-tile-pane,
+.leaflet-shadow-pane,
+.leaflet-marker-pane,
+.leaflet-popup-pane,
+.leaflet-control {
+  z-index: 0 !important;
+}
+/* Allow sidebar and menus to receive pointer events above the map */
+.admin-sidebar,
+.app-sidebar,
+.fixed-sidebar {
+  z-index: 9999 !important;
+  position: relative;
 }
 </style>
