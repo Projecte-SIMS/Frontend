@@ -1,9 +1,123 @@
 <template>
   <!-- Contenedor principal del mapa -->
   <div class="relative min-h-[100dvh] bg-gray-800">
-    <!-- Simulación de mapa -->
-    <div class="absolute inset-0 bg-gray-700 flex items-center justify-center text-white">
-      MAPA AQUÍ
-    </div>
+    <div ref="mapContainer" class="absolute inset-0"></div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
+import apiClient from '@/services/api'
+
+interface Vehicle {
+  id: number
+  plate: string
+  brand: string
+  model: string
+  latitude: number
+  longitude: number
+  status: 'active' | 'inactive'
+}
+
+const mapContainer = ref<HTMLElement | null>(null)
+const vehicles = ref<Vehicle[]>([])
+let map: L.Map | null = null
+const markers: Map<number, L.Marker> = new Map()
+
+const createVehicleIcon = (status: string) => {
+  const color = status === 'active' ? '#22c55e' : '#9ca3af'
+  return L.divIcon({
+    html: `
+      <div style="
+        background-color: ${color};
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      ">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="18" height="18">
+          <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+        </svg>
+      </div>
+    `,
+    className: 'vehicle-marker',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16]
+  })
+}
+
+const fetchVehicles = async () => {
+  try {
+    const response = await apiClient.get('/vehicles-map')
+    vehicles.value = response.data
+    addVehicleMarkers()
+  } catch (error) {
+    console.error('Error fetching vehicles:', error)
+  }
+}
+
+const addVehicleMarkers = () => {
+  if (!map) return
+
+  markers.forEach(marker => marker.remove())
+  markers.clear()
+
+  vehicles.value.forEach(vehicle => {
+    const marker = L.marker([vehicle.latitude, vehicle.longitude], {
+      icon: createVehicleIcon(vehicle.status)
+    })
+      .addTo(map!)
+      .bindPopup(`
+        <div class="p-2">
+          <p class="font-bold">${vehicle.plate}</p>
+          <p class="text-sm">${vehicle.brand} ${vehicle.model}</p>
+          <p class="text-xs text-gray-500">Estado: ${vehicle.status === 'active' ? 'Activo' : 'Inactivo'}</p>
+        </div>
+      `)
+    
+    markers.set(vehicle.id, marker)
+  })
+
+  // Ajustar vista para mostrar todos los vehículos
+  if (vehicles.value.length > 0) {
+    const bounds = L.latLngBounds(vehicles.value.map(v => [v.latitude, v.longitude]))
+    map.fitBounds(bounds, { padding: [50, 50] })
+  }
+}
+
+const initMap = () => {
+  if (!mapContainer.value) return
+
+  map = L.map(mapContainer.value).setView([41.3851, 2.1734], 13)
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map)
+
+  fetchVehicles()
+}
+
+onMounted(() => {
+  initMap()
+})
+
+onUnmounted(() => {
+  if (map) {
+    map.remove()
+    map = null
+  }
+})
+</script>
+
+<style>
+.vehicle-marker {
+  background: transparent !important;
+  border: none !important;
+}
+</style>

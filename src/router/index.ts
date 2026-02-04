@@ -42,6 +42,12 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       {
+        path: 'map',
+        name: 'AdminVehicleMap',
+        component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
         path: 'tickets/:id',
         name: 'AdminTicketManage',
         component: () => import('@/modules/tickets/pages/AdminTicketManagePage.vue'),

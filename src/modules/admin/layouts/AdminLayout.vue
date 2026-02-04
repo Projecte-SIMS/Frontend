@@ -99,7 +99,7 @@
 
     <main class="py-10 lg:pl-72">
       <div class="px-4 sm:px-6 lg:px-8">
-        <!-- Your content -->
+        <router-view />
       </div>
     </main>
   </div>
@@ -116,11 +116,13 @@ import {
   CalendarDaysIcon,
   TruckIcon,
   TicketIcon,
+  MapIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
+  { name: 'Mapa Vehículos', href: '/admin/map', icon: MapIcon, current: false },
   { name: 'Users', href: '/admin/users', icon: UsersIcon, current: false },
   { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon, current: false },
   { name: 'Bookings', href: '/admin/bookings', icon: CalendarDaysIcon, current: false },
