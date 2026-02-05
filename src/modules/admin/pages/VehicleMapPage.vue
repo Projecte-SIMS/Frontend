@@ -55,8 +55,12 @@ let map: L.Map | null = null
 const markers: Map<number, L.Marker> = new Map()
 
 // Icono personalizado para vehículos
-const createVehicleIcon = (status: string) => {
-  const color = status === 'active' ? '#22c55e' : '#9ca3af'
+const createVehicleIcon = (postgresActive?: boolean, mongoActive?: boolean) => {
+  // Relleno: verde si disponible (postgresActive false), naranja si ocupado (postgresActive true)
+  const color = postgresActive ? '#f59e0b' : '#22c55e'
+  // Borde: rojo si arrancado (mongoActive true), blanco si apagado
+  const borderColor = mongoActive ? '#ef4444' : '#ffffff'
+
   return L.divIcon({
     html: `
       <div style="
@@ -64,7 +68,7 @@ const createVehicleIcon = (status: string) => {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        border: 3px solid white;
+        border: 3px solid ${borderColor};
         box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         display: flex;
         align-items: center;
@@ -113,7 +117,7 @@ const addVehicleMarkers = () => {
   vehicles.value.forEach(v => {
     if (v.latitude == null || v.longitude == null) return
 
-    const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.status) })
+    const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
       .addTo(map!)
       .bindPopup(`
         <div class="p-2">

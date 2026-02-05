@@ -132,7 +132,7 @@ const user = {
 }
 
 const navigation = [
-  { name: 'Mapa', to: '/' },
+  { name: 'Mapa', to: '/vehicles-map' },
   { name: 'Reservas', to: '/reservas' },
   { name: 'Tickets', to: '/tickets/mine' },
   { name: 'Favoritos', to: '/favoritos' },

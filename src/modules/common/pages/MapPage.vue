@@ -7,9 +7,12 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useRoute } from 'vue-router'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 import apiClient from '@/services/api'
+
+const route = useRoute()
 
 interface Vehicle {
   id: number
@@ -27,8 +30,12 @@ const vehicles = ref<Vehicle[]>([])
 let map: L.Map | null = null
 const markers: Map<number, L.Marker> = new Map()
 
-const createVehicleIcon = (status: string) => {
-  const color = status === 'active' ? '#22c55e' : '#9ca3af'
+const createVehicleIcon = (postgresActive?: boolean, mongoActive?: boolean) => {
+  // Relleno: verde si disponible (postgresActive false), naranja si ocupado (postgresActive true)
+  const color = postgresActive ? '#f59e0b' : '#22c55e'
+  // Borde: rojo si arrancado (mongoActive true), blanco si apagado
+  const borderColor = mongoActive ? '#ef4444' : '#ffffff'
+
   return L.divIcon({
     html: `
       <div style="
@@ -36,7 +43,7 @@ const createVehicleIcon = (status: string) => {
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        border: 3px solid white;
+        border: 3px solid ${borderColor};
         box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         display: flex;
         align-items: center;
@@ -56,7 +63,7 @@ const createVehicleIcon = (status: string) => {
 const fetchVehicles = async () => {
   try {
     const response = await apiClient.get('/vehicles-map')
-    // Backend now returns postgres_active and mongo_active; determine status for UI
+    // Backend returns postgres_active and mongo_active; determine status for UI
     vehicles.value = response.data.map((v: any) => ({
       id: v.id,
       plate: v.plate,
@@ -65,8 +72,6 @@ const fetchVehicles = async () => {
       latitude: v.latitude,
       longitude: v.longitude,
       postgres_active: v.postgres_active,
-      // For user map: consider postgres_active as available (true => show as 'inactive' or 'active'?),
-      // user wants to see vehicles that are not reserved (postgres_active true). Map status: if mongo_active === true then 'active' else 'inactive'
       status: (v.mongo_active === true) ? 'active' : 'inactive',
     }))
 
@@ -84,7 +89,7 @@ const addVehicleMarkers = () => {
 
   vehicles.value.forEach(vehicle => {
     const marker = L.marker([vehicle.latitude, vehicle.longitude], {
-      icon: createVehicleIcon(vehicle.status)
+      icon: createVehicleIcon(vehicle.postgres_active, vehicle.mongo_active)
     })
       .addTo(map!)
       .bindPopup(`
@@ -114,12 +119,35 @@ const initMap = () => {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map)
-
-  fetchVehicles()
 }
 
 onMounted(() => {
   initMap()
+  // If query ?view=all then fetch vehicles, otherwise use geolocation
+  const view = route.query.view?.toString()
+  if (route.path === '/vehicles-map' || view === 'all') {
+    fetchVehicles().catch(err => console.error(err))
+  } else {
+    // Use browser geolocation to center map
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude
+          const lng = pos.coords.longitude
+          if (map) {
+            map.setView([lat, lng], 15)
+            const youMarker = L.marker([lat, lng]).addTo(map)
+            youMarker.bindPopup('<b>Estás aquí</b>').openPopup()
+            L.circle([lat, lng], { radius: 50 }).addTo(map)
+          }
+        },
+        (err) => {
+          console.warn('Geolocation failed or denied', err)
+        },
+        { enableHighAccuracy: true }
+      )
+    }
+  }
 })
 
 onUnmounted(() => {
