@@ -1,18 +1,18 @@
 <template>
   <div class="h-full">
     <div class="mb-4">
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Mapa de Vehículos</h1>
-      <p class="text-gray-600 dark:text-gray-400">Ubicación en tiempo real de la flota</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Vehicle Map</h1>
+      <p class="text-gray-600 dark:text-gray-400">Real-time fleet location</p>
     </div>
     
     <!-- Mapa -->
     <!-- Reserve left space for admin sidebar (lg) and reduce height on small screens -->
     <div ref="mapContainer" class="w-full h-[500px] lg:ml-0 lg:pl-0 rounded-lg shadow-lg z-0" style="height: 60vh;"></div>
     <div class="map-legend absolute top-6 right-6 bg-white/90 dark:bg-gray-900/90 text-sm p-2 rounded shadow">
-      <div class="font-semibold mb-1">Leyenda</div>
-      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Disponible (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Ocupado (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Arrancado (Mongo)</span></div>
+      <div class="font-semibold mb-1">Legend</div>
+      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Available (Postgres)</span></div>
+      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Occupied (Postgres)</span></div>
+      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Running (Mongo)</span></div>
     </div>
     
     <!-- Lista de vehículos -->
@@ -131,8 +131,8 @@ const addVehicleMarkers = () => {
         <div class="p-2">
           <p class="font-bold">${v.plate}</p>
           <p class="text-sm">${v.brand} ${v.model}</p>
-          <p class="text-xs text-gray-500">Postgres Disponibilidad: ${v.postgres_active ? 'Ocupado' : 'Disponible'}</p>
-          <p class="text-xs text-gray-500">Arrancado (Mongo): ${v.mongo_active ? 'Sí' : 'No'}</p>
+          <p class="text-xs text-gray-500">Postgres Availability: ${v.postgres_active ? 'Occupied' : 'Available'}</p>
+          <p class="text-xs text-gray-500">Running (Mongo): ${v.mongo_active ? 'Yes' : 'No'}</p>
         </div>
       `)
 

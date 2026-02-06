@@ -3,10 +3,10 @@
   <div class="relative min-h-[100dvh] bg-gray-800">
     <div ref="mapContainer" class="absolute inset-0" style="height: calc(100vh - 4rem);"></div>
     <div class="map-legend absolute top-4 right-4 bg-white/90 dark:bg-gray-900/90 text-sm p-2 rounded shadow">
-      <div class="font-semibold mb-1">Leyenda</div>
-      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Disponible (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Ocupado (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Arrancado (Mongo)</span></div>
+      <div class="font-semibold mb-1">Legend</div>
+      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Available (Postgres)</span></div>
+      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Occupied (Postgres)</span></div>
+      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Running (Mongo)</span></div>
     </div>
   </div>
 </template>
@@ -38,9 +38,9 @@ let map: L.Map | null = null
 const markers: Map<number, L.Marker> = new Map()
 
 const createVehicleIcon = (postgresActive?: boolean, mongoActive?: boolean) => {
-  // Relleno: verde si disponible (postgresActive false), naranja si ocupado (postgresActive true)
+  // Fill: green if available (postgresActive false), orange if occupied (postgresActive true)
   const color = postgresActive ? '#f59e0b' : '#22c55e'
-  // Borde: rojo si arrancado (mongoActive true), blanco si apagado
+  // Border: red if running (mongoActive true), white if off
   const borderColor = mongoActive ? '#ef4444' : '#ffffff'
 
   return L.divIcon({
@@ -103,15 +103,15 @@ const addVehicleMarkers = () => {
         <div class="p-2">
           <p class="font-bold">${vehicle.plate}</p>
           <p class="text-sm">${vehicle.brand} ${vehicle.model}</p>
-          <p class="text-xs text-gray-500">Disponible (Postgres): ${vehicle.postgres_active ? 'No' : 'Sí'}</p>
-          <p class="text-xs text-gray-500">Arrancado (Mongo): ${vehicle.status === 'active' ? 'Sí' : 'No'}</p>
+          <p class="text-xs text-gray-500">Available (Postgres): ${vehicle.postgres_active ? 'No' : 'Yes'}</p>
+          <p class="text-xs text-gray-500">Running (Mongo): ${vehicle.status === 'active' ? 'Yes' : 'No'}</p>
         </div>
       `)
     
     markers.set(vehicle.id, marker)
   })
 
-  // Ajustar vista para mostrar todos los vehículos
+  // Adjust view to show all vehicles
   if (vehicles.value.length > 0) {
     const bounds = L.latLngBounds(vehicles.value.map(v => [v.latitude, v.longitude]))
     map.fitBounds(bounds, { padding: [50, 50] })
@@ -144,7 +144,7 @@ onMounted(() => {
           if (map) {
             map.setView([lat, lng], 15)
             const youMarker = L.marker([lat, lng]).addTo(map)
-            youMarker.bindPopup('<b>Estás aquí</b>').openPopup()
+            youMarker.bindPopup('<b>You are here</b>').openPopup()
             L.circle([lat, lng], { radius: 50 }).addTo(map)
           }
         },
