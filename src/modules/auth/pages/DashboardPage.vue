@@ -57,7 +57,7 @@
       <div v-else-if="isLoading" class="flex items-center justify-center py-12">
         <div class="text-center">
           <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <p class="mt-4 text-gray-300">Loading user...</p>
+          <p class="mt-4 text-gray-300">Cargando panel...</p>
         </div>
       </div>
 
@@ -66,9 +66,9 @@
         <h2 class="mb-4 text-2xl font-bold text-white">Tickets</h2>
         <div class="rounded-lg bg-gray-800/50 p-6">
           <div class="flex gap-4">
-            <button @click="router.push('/tickets/create')" class="px-3 py-2 bg-indigo-500 text-white rounded">Create ticket</button>
-            <button @click="router.push('/tickets/mine')" class="px-3 py-2 bg-gray-600 text-white rounded">Manage my tickets</button>
-            <button v-if="user && user.roles && user.roles.some(r => r.name.toLowerCase() === 'admin')" @click="router.push('/tickets')" class="px-3 py-2 bg-purple-600 text-white rounded">Manage tickets (Admin)</button>
+            <button @click="router.push({ name: 'CreateTicketMessage' })" class="px-3 py-2 bg-indigo-500 text-white rounded">Create ticket</button>
+            <button @click="router.push({ name: 'TicketsList' })" class="px-3 py-2 bg-gray-600 text-white rounded">Manage my tickets</button>
+            <button v-if="isAdmin" @click="router.push({ path: '/tickets' })" class="px-3 py-2 bg-purple-600 text-white rounded">Manage tickets (Admin)</button>
           </div>
         </div>
       </div>
@@ -78,16 +78,32 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { useAuth } from '../composables/useAuth'
 
 const router = useRouter()
 const { user, isLoading, logout, getToken } = useAuth()
 const token = getToken()
 
+// Prefer checking permissions if backend provides them; fallback to role name check encapsulated here
+const isAdmin = computed(() => {
+  const u = user.value
+  if (!u) return false
+  // If permissions are flattened on user (e.g., user.permissions) check them
+  if ((u as any).permissions && Array.isArray((u as any).permissions)) {
+    return (u as any).permissions.includes('can.view.all.tickets') || (u as any).permissions.includes('can.manage.tickets')
+  }
+  // Otherwise check roles without scattering logic in template
+  if (u.roles && Array.isArray(u.roles)) {
+    return u.roles.some((r: any) => (r.name || '').toString().toLowerCase() === 'admin')
+  }
+  return false
+})
+
 const handleLogout = async () => {
   try {
     await logout()
-    router.push('/login')
+    router.push({ path: '/login' })
   } catch (error) {
     console.error('Logout failed:', error)
   }
