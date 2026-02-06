@@ -57,7 +57,7 @@
       <div v-else-if="isLoading" class="flex items-center justify-center py-12">
         <div class="text-center">
           <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <p class="mt-4 text-gray-300">Cargando panel...</p>
+          <p class="mt-4 text-gray-300">Loading user...</p>
         </div>
       </div>
 
