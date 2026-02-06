@@ -2,6 +2,12 @@
   <!-- Contenedor principal del mapa -->
   <div class="relative min-h-[100dvh] bg-gray-800">
     <div ref="mapContainer" class="absolute inset-0" style="height: calc(100vh - 4rem);"></div>
+    <div class="map-legend absolute top-4 right-4 bg-white/90 dark:bg-gray-900/90 text-sm p-2 rounded shadow">
+      <div class="font-semibold mb-1">Leyenda</div>
+      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Disponible (Postgres)</span></div>
+      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Ocupado (Postgres)</span></div>
+      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Arrancado (Mongo)</span></div>
+    </div>
   </div>
 </template>
 
@@ -22,6 +28,7 @@ interface Vehicle {
   latitude: number
   longitude: number
   postgres_active?: boolean
+  mongo_active?: boolean
   status: 'active' | 'inactive'
 }
 
@@ -172,10 +179,11 @@ onUnmounted(() => {
 .leaflet-tile-pane,
 .leaflet-shadow-pane,
 .leaflet-marker-pane,
-.leaflet-popup-pane,
-.leaflet-control {
+.leaflet-popup-pane {
   z-index: 0 !important;
 }
+/* Legend styling */
+.map-legend { z-index: 10001; }
 /* Allow sidebar and menus to receive pointer events above the map */
 .admin-sidebar,
 .app-sidebar,
