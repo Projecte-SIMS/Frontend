@@ -16,25 +16,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'reservas', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
-      // Tickets routes inside AppLayout
-      {
-        path: 'tickets/create',
-        name: 'CreateTicketMessage',
-        component: () => import('@/modules/tickets/pages/CreateTicketMessagePage.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: 'tickets/mine',
-        name: 'TicketsList',
-        component: () => import('@/modules/tickets/pages/TicketsListPage.vue'),
-        meta: { requiresAuth: true }
-      },
-      {
-        path: 'tickets/:id/view',
-        name: 'UserTicketManage',
-        component: () => import('@/modules/tickets/pages/UserTicketManagePage.vue'),
-        meta: { requiresAuth: true }
-      },
+
     ]
   },
   {
@@ -48,12 +30,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
-      {
-        path: 'tickets/:id',
-        name: 'AdminTicketManage',
-        component: () => import('@/modules/tickets/pages/AdminTicketManagePage.vue'),
-        meta: { requiresAuth: true, requiresAdmin: true }
-      },
+
     ]
   },
   

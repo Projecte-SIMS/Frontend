@@ -107,7 +107,6 @@
       <div class="mx-auto max-w-md px-2 py-2 grid grid-cols-5 text-center text-xs text-gray-300">
         <RouterLink to="/" class="py-2 rounded-xl" :class="isActive('/') ? 'text-white bg-white/5' : ''">Mapa</RouterLink>
         <RouterLink to="/reservas" class="py-2 rounded-xl" :class="isActive('/reservas') ? 'text-white bg-white/5' : ''">Reservas</RouterLink>
-        <RouterLink to="/tickets/mine" class="py-2 rounded-xl" :class="route.path.startsWith('/tickets') ? 'text-white bg-white/5' : ''">Tickets</RouterLink>
         <RouterLink to="/favoritos" class="py-2 rounded-xl" :class="isActive('/favoritos') ? 'text-white bg-white/5' : ''">Fav</RouterLink>
         <RouterLink to="/perfil" class="py-2 rounded-xl" :class="isActive('/perfil') ? 'text-white bg-white/5' : ''">Perfil</RouterLink>
       </div>
@@ -134,7 +133,6 @@ const user = {
 const navigation = [
   { name: 'Mapa', to: '/vehicles-map' },
   { name: 'Reservas', to: '/reservas' },
-  { name: 'Tickets', to: '/tickets/mine' },
   { name: 'Favoritos', to: '/favoritos' },
   { name: 'Perfil', to: '/perfil' },
 ]

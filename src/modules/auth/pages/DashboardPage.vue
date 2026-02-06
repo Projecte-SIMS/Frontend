@@ -66,9 +66,8 @@
         <h2 class="mb-4 text-2xl font-bold text-white">Tickets</h2>
         <div class="rounded-lg bg-gray-800/50 p-6">
           <div class="flex gap-4">
-            <button @click="router.push({ name: 'CreateTicketMessage' })" class="px-3 py-2 bg-indigo-500 text-white rounded">Create ticket</button>
-            <button @click="router.push({ name: 'TicketsList' })" class="px-3 py-2 bg-gray-600 text-white rounded">Manage my tickets</button>
-            <button v-if="isAdmin" @click="router.push({ path: '/tickets' })" class="px-3 py-2 bg-purple-600 text-white rounded">Manage tickets (Admin)</button>
+
+
           </div>
         </div>
       </div>
@@ -91,7 +90,8 @@ const isAdmin = computed(() => {
   if (!u) return false
   // If permissions are flattened on user (e.g., user.permissions) check them
   if ((u as any).permissions && Array.isArray((u as any).permissions)) {
-    return (u as any).permissions.includes('can.view.all.tickets') || (u as any).permissions.includes('can.manage.tickets')
+    // check generic admin-like permissions if present
+    return (u as any).permissions.some((p: string) => p.startsWith('can.manage') || p.startsWith('can.view'))
   }
   // Otherwise check roles without scattering logic in template
   if (u.roles && Array.isArray(u.roles)) {
