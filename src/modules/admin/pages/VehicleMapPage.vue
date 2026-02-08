@@ -16,22 +16,21 @@
     </div>
     
     <!-- Lista de vehículos -->
-    <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div
-        v-for="vehicle in vehicles"
-        :key="vehicle.id"
-        class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow cursor-pointer hover:shadow-lg transition-shadow"
-        @click="centerOnVehicle(vehicle)"
-      >
-        <div class="flex items-center gap-3">
-          <div :class="[
-            'w-3 h-3 rounded-full',
-            vehicle.status === 'active' ? 'bg-green-500' : 'bg-gray-400'
-          ]"></div>
-          <div>
+    <div class="mt-4 space-y-3">
+      <div v-for="vehicle in vehicles" :key="vehicle.id" class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow flex items-center justify-between cursor-pointer hover:shadow-lg transition-shadow">
+        <div class="flex items-center gap-4" @click="centerOnVehicle(vehicle)">
+          <div class="flex flex-col">
             <p class="font-semibold text-gray-900 dark:text-white">{{ vehicle.plate }}</p>
             <p class="text-sm text-gray-500 dark:text-gray-400">{{ vehicle.brand }} {{ vehicle.model }}</p>
           </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs px-2 py-1 rounded-full" :class="vehicle.postgres_active ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'">{{ vehicle.postgres_active ? 'Occupied' : 'Available' }}</span>
+            <span class="text-xs px-2 py-1 rounded-full" :class="vehicle.mongo_active ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'">{{ vehicle.mongo_active ? 'Running' : 'Stopped' }}</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <button class="text-sm text-indigo-600 hover:underline" @click.stop="centerOnVehicle(vehicle)">Centrar</button>
+          <button class="text-sm text-gray-600 hover:underline" @click.stop="markers.get(vehicle.id)?.openPopup()">Abrir popup</button>
         </div>
       </div>
     </div>
@@ -177,9 +176,7 @@ onUnmounted(() => {
 .leaflet-pane,
 .leaflet-overlay-pane,
 .leaflet-tile-pane,
-.leaflet-shadow-pane,
-.leaflet-marker-pane,
-.leaflet-popup-pane {
+.leaflet-shadow-pane {
   z-index: 0 !important;
 }
 /* Legend styling */

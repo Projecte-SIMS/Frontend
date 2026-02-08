@@ -79,6 +79,7 @@ const fetchVehicles = async () => {
       latitude: v.latitude,
       longitude: v.longitude,
       postgres_active: v.postgres_active,
+      mongo_active: v.mongo_active,
       status: (v.mongo_active === true) ? 'active' : 'inactive',
     }))
 
@@ -103,8 +104,8 @@ const addVehicleMarkers = () => {
         <div class="p-2">
           <p class="font-bold">${vehicle.plate}</p>
           <p class="text-sm">${vehicle.brand} ${vehicle.model}</p>
-          <p class="text-xs text-gray-500">Available (Postgres): ${vehicle.postgres_active ? 'No' : 'Yes'}</p>
-          <p class="text-xs text-gray-500">Running (Mongo): ${vehicle.status === 'active' ? 'Yes' : 'No'}</p>
+          <p class="text-xs text-gray-500">Postgres Availability: ${vehicle.postgres_active ? 'Occupied' : 'Available'}</p>
+          <p class="text-xs text-gray-500">Running (Mongo): ${vehicle.mongo_active ? 'Yes' : 'No'}</p>
         </div>
       `)
     
@@ -177,9 +178,7 @@ onUnmounted(() => {
 .leaflet-pane,
 .leaflet-overlay-pane,
 .leaflet-tile-pane,
-.leaflet-shadow-pane,
-.leaflet-marker-pane,
-.leaflet-popup-pane {
+.leaflet-shadow-pane {
   z-index: 0 !important;
 }
 /* Legend styling */
