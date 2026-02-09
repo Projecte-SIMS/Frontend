@@ -19,6 +19,7 @@ const vehicles = ref<Vehicle[]>([])
 const map = ref<L.Map | null>(null)
 const mapContainer = ref<HTMLElement | null>(null)
 const markers: Map<number, L.Marker> = new Map()
+let userMarker: L.Marker | L.CircleMarker | null = null
 
 // reactive filters & search
 const searchQuery = ref('')
@@ -143,8 +144,11 @@ const addVehicleMarkers = () => {
   })
 
   if (vehicles.value.length > 0 && map.value) {
-    const bounds = L.latLngBounds(vehicles.value.map(v => [v.latitude, v.longitude]))
-    map.value!.fitBounds(bounds, { padding: [50, 50] })
+    // If user location is set, avoid auto-fitting bounds so map stays centered on user
+    if (!userLocation.value) {
+      const bounds = L.latLngBounds(vehicles.value.map(v => [v.latitude, v.longitude]))
+      map.value!.fitBounds(bounds, { padding: [50, 50] })
+    }
   }
 }
 
@@ -158,7 +162,27 @@ const centerOnVehicle = (vehicle: Vehicle) => {
 
 const setUserLocation = (lat: number, lng: number) => {
   userLocation.value = { lat, lng }
+  // add or move user marker
+  if (map.value) {
+    if (userMarker) {
+      // update existing marker
+      try { userMarker.setLatLng([lat, lng]) } catch { /* ignore if circle */ }
+    } else if (map.value) {
+      // use a circle marker for user to ensure visible and distinct
+      userMarker = L.circleMarker([lat, lng], { radius: 8, color: '#2563eb', weight: 2, fillColor: '#60a5fa', fillOpacity: 0.9 }).addTo(map.value as any)
+      try { userMarker.bindPopup('<b>You are here</b>') } catch {}
+    }
+    // ensure user marker is on top
+    if ((userMarker as any)?.bringToFront) (userMarker as any).bringToFront()
+  }
   applyFiltersAndMarkers()
+}
+
+const destroyUserMarker = () => {
+  if (userMarker) {
+    userMarker.remove()
+    userMarker = null
+  }
 }
 
 const setRadiusMeters = (m: number | null) => {
@@ -206,5 +230,9 @@ export function useMap() {
     setUserLocation,
     radiusMeters,
     setRadiusMeters,
+    // expose user marker functions for diagnostics
+    _internal: {
+      getUserMarker: () => userMarker
+    }
   }
 }

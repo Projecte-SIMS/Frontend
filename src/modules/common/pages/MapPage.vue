@@ -41,7 +41,8 @@ import { useRoute } from 'vue-router'
 import { useMap } from '@/modules/common/composables/useMap'
 
 const route = useRoute()
-const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation } = useMap()
+const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation, _internal } = useMap()
+let userMarker: any = null
 
 const nearbyAvailable = ref<any[]>([])
 
@@ -54,7 +55,9 @@ const locateMe = () => {
     setUserLocation(lat, lng)
     if (map.value) {
       map.value.setView([lat, lng], 13)
-      if ((window as any).L?.marker) (window as any).L.marker([lat, lng]).addTo(map.value).bindPopup('<b>You are here</b>').openPopup()
+      // user marker handled by setUserLocation
+      setUserLocation(lat, lng)
+      userMarker?.openPopup()
     }
   }, err => console.warn('Geolocation failed', err))
 }
@@ -88,36 +91,49 @@ function computeNearbyAvailable() {
 onMounted(() => {
   initMap()
   const view = route.query.view?.toString()
-  if (route.path === '/vehicles-map' || view === 'all') {
-    fetchVehicles('/vehicles-map').catch(err => console.error(err))
-  } else {
-    // allow locating user and then fetch vehicles within radius
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude
-          const lng = pos.coords.longitude
-          setUserLocation(lat, lng)
-          if (map.value) {
-            map.value.setView([lat, lng], 15)
-          }
+
+  // Always ask for geolocation when entering the vehicles map to center on user
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude
+        const lng = pos.coords.longitude
+        setUserLocation(lat, lng)
+        if (map.value) {
+          map.value.setView([lat, lng], 15)
+        }
+        fetchVehicles('/vehicles-map').catch(err => console.error(err))
+        // try to grab userMarker via exposed internal function
+        try { userMarker = _internal?.getUserMarker?.() ?? null } catch { userMarker = null }
+        // compute nearby from user location
+        setTimeout(() => computeNearbyAvailable(), 400)
+      },
+      (err) => {
+        console.warn('Geolocation failed or denied', err)
+        // fallback to default behavior
+        if (route.path === '/vehicles-map' || view === 'all') {
           fetchVehicles('/vehicles-map').catch(err => console.error(err))
-        },
-        (err) => {
-          console.warn('Geolocation failed or denied', err)
-        },
-        { enableHighAccuracy: true }
-      )
+        } else {
+          fetchVehicles('/vehicles-map').catch(err => console.error(err))
+        }
+        setTimeout(() => computeNearbyAvailable(), 600)
+      },
+      { enableHighAccuracy: true }
+    )
+  } else {
+    // if geolocation not available, fallback to current logic
+    if (route.path === '/vehicles-map' || view === 'all') {
+      fetchVehicles('/vehicles-map').catch(err => console.error(err))
     } else {
       fetchVehicles('/vehicles-map').catch(err => console.error(err))
     }
+    setTimeout(() => computeNearbyAvailable(), 600)
   }
 
-  // compute when map moves and initial compute after load
+  // compute when map moves
   if (map.value) {
     map.value.on('moveend', () => computeNearbyAvailable())
   }
-  setTimeout(() => computeNearbyAvailable(), 600)
 })
 
 onUnmounted(() => {
