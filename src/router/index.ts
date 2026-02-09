@@ -21,15 +21,15 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin',
     component: AdminLayout,
+    meta: { requiresAuth: true },
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
-      {
-        path: 'map',
+      { path: 'map',
         name: 'AdminVehicleMap',
         component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
-
+      { path: 'vehicles', component: () => import('@/modules/admin/vehicles/pages/VehiclesPage.vue') },
     ]
   },
   
