@@ -146,7 +146,6 @@ const addVehicleMarkers = () => {
           <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#0f172a">
             <div style="display:flex;justify-content:space-between"><span style="color:#334155">mec muc</span><strong style="color:#0f172a"> </strong></div>
             <div style="display:flex;justify-content:space-between"><span style="color:#334155">Disponibility</span><strong style="color:${v.postgres_active ? '#bf8700' : '#15803d'}">${v.postgres_active ? 'Occupied' : 'Available'}</strong></div>
-            <div style="display:flex;justify-content:space-between"><span style="color:#334155">State</span><strong style="color:${v.mongo_active ? '#b91c1c' : '#475569'}">${v.mongo_active ? 'Running' : 'Idle'}</strong></div>
           </div>
         </div>
       `)
