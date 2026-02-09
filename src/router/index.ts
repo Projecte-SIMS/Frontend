@@ -11,10 +11,11 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: AppLayout,
     children: [
-      { path: '', component: () => import('@/modules/common/pages/MapPage.vue') },
+      { path: 'vehicles-map', component: () => import('@/modules/common/pages/MapPage.vue') },
       { path: 'reservas', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+
     ]
   },
   {
@@ -23,6 +24,11 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'map',
+        name: 'AdminVehicleMap',
+        component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
       { path: 'vehicles', component: () => import('@/modules/admin/vehicles/pages/VehiclesPage.vue') },
     ]
   },

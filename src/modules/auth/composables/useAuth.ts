@@ -42,9 +42,12 @@ export function useAuth() {
   }
 
   const fetchUser = async (): Promise<boolean> => {
+    isLoading.value = true
+    error.value = null
     try {
       const response = await apiClient.get<UserResponse>('/user')
-      user.value = response.data.user
+      // Merge instead of overwrite to avoid losing existing reactive refs or fields
+      user.value = Object.assign({}, user.value || {}, response.data.user)
       return true
     } catch (err: any) {
       if (err.response?.status === 401) {
@@ -53,6 +56,8 @@ export function useAuth() {
         user.value = null
       }
       return false
+    } finally {
+      isLoading.value = false
     }
   }
 

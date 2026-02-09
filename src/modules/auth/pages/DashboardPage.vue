@@ -54,10 +54,21 @@
         </div>
       </div>
 
-      <div v-else class="flex items-center justify-center py-12">
+      <div v-else-if="isLoading" class="flex items-center justify-center py-12">
         <div class="text-center">
           <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
           <p class="mt-4 text-gray-300">Loading user...</p>
+        </div>
+      </div>
+
+      <!-- Tickets section -->
+      <div class="mt-8">
+        <h2 class="mb-4 text-2xl font-bold text-white">Tickets</h2>
+        <div class="rounded-lg bg-gray-800/50 p-6">
+          <div class="flex gap-4">
+
+
+          </div>
         </div>
       </div>
     </div>
@@ -66,11 +77,28 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 import { useAuth } from '../composables/useAuth'
 
 const router = useRouter()
 const { user, isLoading, logout, getToken } = useAuth()
 const token = getToken()
+
+// Prefer checking permissions if backend provides them; fallback to role name check encapsulated here
+const isAdmin = computed(() => {
+  const u = user.value
+  if (!u) return false
+  // If permissions are flattened on user (e.g., user.permissions) check them
+  if ((u as any).permissions && Array.isArray((u as any).permissions)) {
+    // check generic admin-like permissions if present
+    return (u as any).permissions.some((p: string) => p.startsWith('can.manage') || p.startsWith('can.view'))
+  }
+  // Otherwise check roles without scattering logic in template
+  if (u.roles && Array.isArray(u.roles)) {
+    return u.roles.some((r: any) => (r.name || '').toString().toLowerCase() === 'admin')
+  }
+  return false
+})
 
 const handleLogout = async () => {
   try {
