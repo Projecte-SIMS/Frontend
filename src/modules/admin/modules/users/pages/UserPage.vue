@@ -87,7 +87,7 @@
             </button>
             <button
               v-if="isCurrentUserAdmin"
-              class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+              class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
               @click="navigateToEdit(user)"
               title="Edit"
             >
