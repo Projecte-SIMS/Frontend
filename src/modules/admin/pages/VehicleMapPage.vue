@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
-import { useMap } from '@/composables/useMap'
+import { useMap } from '@/modules/common/composables/useMap'
 
 const { mapContainer, vehicles, markers, initMap, fetchVehicles, centerOnVehicle, destroyMap } = useMap()
 
