@@ -11,6 +11,7 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: AppLayout,
     children: [
+      { path: '', component: () => import('@/modules/common/pages/HomePage.vue') },
       { path: 'vehicles-map', component: () => import('@/modules/common/pages/MapPage.vue') },
       { path: 'reservas', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
