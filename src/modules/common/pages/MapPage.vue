@@ -41,7 +41,7 @@ import { useRoute } from 'vue-router'
 import { useMap } from '@/modules/common/composables/useMap'
 
 const route = useRoute()
-const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles } = useMap()
+const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation } = useMap()
 
 const nearbyAvailable = ref<any[]>([])
 
@@ -61,15 +61,18 @@ const locateMe = () => {
 
 function computeNearbyAvailable() {
   if (!map.value) return
-  const center = map.value.getCenter()
+  // prefer user's location if available, fallback to map center
+  const centerPoint = (userLocation.value && userLocation.value.lat && userLocation.value.lng)
+    ? { lat: userLocation.value.lat, lng: userLocation.value.lng }
+    : map.value.getCenter()
   const R = 6371000
   const toRad = (x: number) => (x * Math.PI) / 180
   nearbyAvailable.value = rawVehicles.value
     .map(v => {
       if (v.latitude == null || v.longitude == null) return null
-      const dLat = toRad(v.latitude - center.lat)
-      const dLon = toRad(v.longitude - center.lng)
-      const lat1 = toRad(center.lat)
+      const dLat = toRad(v.latitude - centerPoint.lat)
+      const dLon = toRad(v.longitude - centerPoint.lng)
+      const lat1 = toRad(centerPoint.lat)
       const lat2 = toRad(v.latitude)
       const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
