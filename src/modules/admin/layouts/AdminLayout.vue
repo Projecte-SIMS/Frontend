@@ -54,7 +54,7 @@
     </TransitionRoot>
 
     <!-- Static sidebar for desktop -->
-    <div class="hidden lg:fixed lg:inset-y-0 lg:z-[9999] lg:flex lg:w-72 lg:flex-col dark:bg-gray-900">
+    <div class="hidden lg:fixed lg:inset-y-0 lg:z-[50] lg:flex lg:w-72 lg:flex-col dark:bg-gray-900">
       <!-- Sidebar component, swap this element with another sidebar if you like -->
       <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 dark:border-white/10 dark:bg-black/10">
         <div class="flex h-16 shrink-0 items-center">
@@ -106,7 +106,6 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {
   Bars3Icon,
@@ -119,15 +118,7 @@ import {
   MapIcon,
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
+import { useAdmin } from '@/modules/admin/composables/useAdmin'
 
-const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
-  { name: 'Mapa Vehículos', href: '/admin/map', icon: MapIcon, current: false },
-  { name: 'Users', href: '/admin/users', icon: UsersIcon, current: false },
-  { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon, current: false },
-  { name: 'Bookings', href: '/admin/bookings', icon: CalendarDaysIcon, current: false },
-  { name: 'Vehicles', href: '/admin/vehicles', icon: TruckIcon, current: false },
-]
-
-const sidebarOpen = ref(false)
+const { navigation, sidebarOpen } = useAdmin()
 </script>

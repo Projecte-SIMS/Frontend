@@ -1,1 +1,4 @@
-declare module 'vue3-toastify'
+declare module 'vue3-toastify' {
+  const content: any
+  export default content
+}
