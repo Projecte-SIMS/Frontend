@@ -37,10 +37,10 @@
                     <li>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <a :href="item.href" :class="[item.current ? 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white', 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']">
+                          <router-link :to="item.href" :class="[item.current ? 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white', 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']">
                             <component :is="item.icon" :class="[item.current ? 'text-indigo-600 dark:text-white' : 'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white', 'size-6 shrink-0']" aria-hidden="true" />
                             {{ item.name }}
-                          </a>
+                          </router-link>
                         </li>
                       </ul>
                     </li>
@@ -66,10 +66,10 @@
             <li>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
-                  <a :href="item.href" :class="[item.current ? 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white', 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']">
+                  <router-link :to="item.href" :class="[item.current ? 'bg-gray-50 text-indigo-600 dark:bg-white/5 dark:text-white' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white', 'group flex gap-x-3 rounded-md p-2 text-sm/6 font-semibold']">
                     <component :is="item.icon" :class="[item.current ? 'text-indigo-600 dark:text-white' : 'text-gray-400 group-hover:text-indigo-600 dark:group-hover:text-white', 'size-6 shrink-0']" aria-hidden="true" />
                     {{ item.name }}
-                  </a>
+                  </router-link>
                 </li>
               </ul>
             </li>
@@ -99,14 +99,15 @@
 
     <main class="py-10 lg:pl-72">
       <div class="px-4 sm:px-6 lg:px-8">
-        <!-- Your content -->
+        <router-view />
       </div>
     </main>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {
   Bars3Icon,
@@ -119,14 +120,23 @@ import {
   XMarkIcon,
 } from '@heroicons/vue/24/outline'
 
-const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
-  { name: 'Users', href: '/admin/users', icon: UsersIcon, current: false },
-  { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon, current: false },
-  { name: 'Bookings', href: '/admin/bookings', icon: CalendarDaysIcon, current: false },
-  { name: 'Vehicles', href: '/admin/vehicles', icon: TruckIcon, current: false },
-  { name: 'Tickets', href: '/admin/tickets', icon: TicketIcon, current: false },
+const route = useRoute()
+
+const navigationItems = [
+  { name: 'Dashboard', href: '/admin', icon: HomeIcon },
+  { name: 'Users', href: '/admin/users', icon: UsersIcon },
+  { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon },
+  { name: 'Bookings', href: '/admin/bookings', icon: CalendarDaysIcon },
+  { name: 'Vehicles', href: '/admin/vehicles', icon: TruckIcon },
+  { name: 'Tickets', href: '/admin/tickets', icon: TicketIcon },
 ]
+
+const navigation = computed(() => 
+  navigationItems.map(item => ({
+    ...item,
+    current: route.path === item.href || (item.href !== '/admin' && route.path.startsWith(item.href))
+  }))
+)
 
 const sidebarOpen = ref(false)
 </script>

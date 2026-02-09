@@ -20,8 +20,10 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin',
     component: AdminLayout,
+    meta: { requiresAuth: true },
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'vehicles', component: () => import('@/modules/admin/vehicles/pages/VehiclesPage.vue') },
     ]
   },
   
