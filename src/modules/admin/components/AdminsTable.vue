@@ -18,12 +18,12 @@
           </thead>
 
           <tbody class="divide-y divide-gray-200 dark:divide-white/10">
-            <!-- filas -->
+              <!-- rows -->
             <slot />
           </tbody>
         </table>
 
-        <!-- opcional: empty state dentro de la tabla -->
+          <!-- optional: empty state inside the table -->
         <div
           v-if="empty"
           class="py-10 text-center text-sm text-gray-500 dark:text-gray-400"
@@ -51,7 +51,7 @@ function thClass(idx: number) {
   // Copia tu estilo exacto del ejemplo Tailwind:
   // 1ª columna: pr-3 pl-4 sm:pl-0
   // columnas intermedias: px-3
-  // última (acciones): pr-4 pl-3 sm:pr-0 (normalmente sr-only)
+  // last (actions): pr-4 pl-3 sm:pr-0 (typically sr-only)
   const base = 'py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-white'
   const first = 'pr-3 pl-4 sm:pl-0'
   const middle = 'px-3'

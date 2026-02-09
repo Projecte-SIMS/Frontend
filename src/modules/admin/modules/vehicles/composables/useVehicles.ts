@@ -30,7 +30,7 @@ export function useVehicles() {
         total: response.data.total
       }
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error al cargar vehículos'
+      error.value = err.response?.data?.message || 'Error loading vehicles'
       console.error('Error loading vehicles:', err)
     } finally {
       loading.value = false
@@ -44,7 +44,7 @@ export function useVehicles() {
       const response = await api.post<{ data: Vehicle; message: string }>('/vehicles', data)
       return response.data.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error al crear vehículo'
+      error.value = err.response?.data?.message || 'Error creating vehicle'
       throw err
     } finally {
       loading.value = false
@@ -57,7 +57,7 @@ export function useVehicles() {
     try {
       await api.delete(`/vehicles/${id}`)
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error al eliminar vehículo'
+      error.value = err.response?.data?.message || 'Error deleting vehicle'
       throw err
     } finally {
       loading.value = false

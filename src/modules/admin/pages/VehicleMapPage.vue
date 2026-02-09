@@ -5,7 +5,7 @@
       <p class="text-gray-600 dark:text-gray-400">Real-time fleet location</p>
     </div>
     
-    <!-- Mapa -->
+    <!-- Map -->
     <!-- Reserve left space for admin sidebar (lg) and reduce height on small screens -->
     <div ref="mapContainer" class="w-full h-[500px] lg:ml-0 lg:pl-0 rounded-lg shadow-lg z-0" style="height: 60vh;"></div>
     <div class="map-legend absolute top-6 right-6 bg-white/90 dark:bg-gray-900/90 text-sm p-2 rounded shadow">
@@ -15,7 +15,7 @@
       <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Running (Mongo)</span></div>
     </div>
     
-    <!-- Lista de vehículos -->
+    <!-- Vehicles list -->
     <div class="mt-4 space-y-3">
       <div v-for="vehicle in vehicles" :key="vehicle.id" class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow flex items-center justify-between cursor-pointer hover:shadow-lg transition-shadow">
         <div class="flex items-center gap-4" @click="centerOnVehicle(vehicle)">
@@ -29,8 +29,8 @@
           </div>
         </div>
         <div class="flex items-center gap-2">
-          <button class="text-sm text-indigo-600 hover:underline" @click.stop="centerOnVehicle(vehicle)">Centrar</button>
-          <button class="text-sm text-gray-600 hover:underline" @click.stop="markers.get(vehicle.id)?.openPopup()">Abrir popup</button>
+          <button class="text-sm text-indigo-600 hover:underline" @click.stop="centerOnVehicle(vehicle)">Center</button>
+          <button class="text-sm text-gray-600 hover:underline" @click.stop="markers.get(vehicle.id)?.openPopup()">Open popup</button>
         </div>
       </div>
     </div>

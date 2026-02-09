@@ -26,10 +26,11 @@ const emit = defineEmits<{
 </script>
 
 <style scoped>
-.modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; z-index:50 }
-.modal-panel { background:white; width:100%; max-width:720px; border-radius:8px; overflow:hidden }
-.modal-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #eee }
+.modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:50 }
+.modal-panel { background:#111827; color:#fff; width:100%; max-width:720px; border-radius:8px; overflow:hidden; border:1px solid #374151; box-shadow:0 20px 25px -5px rgba(0,0,0,0.1) }
+.modal-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid #374151 }
 .modal-body { padding:16px }
-.modal-footer { padding:12px 16px; border-top:1px solid #eee; text-align:right }
-.close-btn { background:transparent; border:none; font-size:16px; cursor:pointer }
+.modal-footer { padding:12px 16px; border-top:1px solid #374151; text-align:right }
+.close-btn { background:transparent; border:none; font-size:16px; cursor:pointer; color:#9CA3AF; transition:color 0.2s }
+.close-btn:hover { color:#F3F4F6 }
 </style>

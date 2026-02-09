@@ -2,15 +2,15 @@
   <div class="px-4 sm:px-6 lg:px-8">
     <!-- Header -->
     <PageHeading
-      title="Vehículos"
-      description="Gestión de vehículos de la flota"
+      title="Vehicles"
+      description="Fleet management"
     >
       <template #actions>
         <button
           type="button"
           class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Añadir vehículo
+          Add vehicle
         </button>
       </template>
     </PageHeading>
@@ -21,14 +21,14 @@
         v-model="filters.search"
         @input="handleSearch"
         type="text"
-        placeholder="Buscar por matrícula, marca o modelo..."
+        placeholder="Search by license plate, brand or model..."
         class="block w-full max-w-md rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
       />
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="mt-8 text-center text-gray-500 dark:text-gray-400">
-      Cargando vehículos...
+      <div v-if="loading" class="mt-8 text-center text-gray-500 dark:text-gray-400">
+      Loading vehicles...
     </div>
 
     <!-- Error state -->
@@ -43,7 +43,7 @@
       :empty="vehicles.length === 0"
     >
       <template #empty>
-        No hay vehículos disponibles
+        No vehicles available
       </template>
 
       <tr v-for="vehicle in vehicles" :key="vehicle.id">
@@ -65,14 +65,14 @@
                 : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
             ]"
           >
-            {{ vehicle.active ? 'Activo' : 'Inactivo' }}
+            {{ vehicle.active ? 'Active' : 'Inactive' }}
           </span>
         </AdminTd>
         <AdminTd variant="actions">
           <button
             class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300"
           >
-            Ver<span class="sr-only">, {{ vehicle.license_plate }}</span>
+            View<span class="sr-only">, {{ vehicle.license_plate }}</span>
           </button>
         </AdminTd>
       </tr>
@@ -101,11 +101,11 @@ import PageHeading from '@/modules/admin/components/PageHeading.vue'
 const { vehicles, loading, error, pagination, getVehicles } = useVehicles()
 
 const columns = [
-  { key: 'license_plate', label: 'Matrícula' },
-  { key: 'brand', label: 'Marca' },
-  { key: 'model', label: 'Modelo' },
-  { key: 'active', label: 'Estado' },
-  { key: 'actions', label: 'Acciones', srOnly: true }
+  { key: 'license_plate', label: 'License Plate' },
+  { key: 'brand', label: 'Brand' },
+  { key: 'model', label: 'Model' },
+  { key: 'active', label: 'Status' },
+  { key: 'actions', label: 'Actions', srOnly: true }
 ]
 
 const filters = ref<VehicleFilters>({

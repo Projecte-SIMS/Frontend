@@ -12,7 +12,7 @@ import {
 export function useAdmin() {
   const navigation = [
     { name: 'Dashboard', href: '/admin', icon: HomeIcon, current: true },
-    { name: 'Mapa Vehículos', href: '/admin/map', icon: MapIcon, current: false },
+    { name: 'Vehicle Map', href: '/admin/map', icon: MapIcon, current: false },
     { name: 'Users', href: '/admin/users', icon: UsersIcon, current: false },
     { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon, current: false },
     { name: 'Bookings', href: '/admin/bookings', icon: CalendarDaysIcon, current: false },
