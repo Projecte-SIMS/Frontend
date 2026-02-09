@@ -125,6 +125,7 @@ const route = useRoute()
 
 const navigationItems = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
+  { name: 'Map', href: '/admin/map', icon: MapIcon },
   { name: 'Users', href: '/admin/users', icon: UsersIcon },
   { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon },
   { name: 'Bookings', href: '/admin/bookings', icon: CalendarDaysIcon },

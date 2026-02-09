@@ -38,10 +38,66 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import { useMap } from '@/modules/common/composables/useMap'
 
-const { mapContainer, vehicles, markers, initMap, fetchVehicles, centerOnVehicle, destroyMap } = useMap()
+const { mapContainer, vehicles, markers, map, initMap, fetchVehicles, centerOnVehicle, destroyMap, setSearchQuery, setShowOperativeOnly, setUserLocation, setRadiusMeters, rawVehicles } = useMap()
+
+const query = ref('')
+const operativeOnly = ref(false)
+const radiusKm = ref<number | null>(null)
+const full = ref(false)
+
+const onSearch = () => setSearchQuery(query.value)
+const onToggleOperative = () => setShowOperativeOnly(operativeOnly.value)
+const onRadiusChange = () => setRadiusMeters(radiusKm.value ? radiusKm.value * 1000 : null)
+
+const exportCSV = () => {
+  const rows = (vehicles.value || []).map((v: any) => ({ id: v.id, plate: v.plate, brand: v.brand, model: v.model, lat: v.latitude, lng: v.longitude, postgres_active: v.postgres_active, mongo_active: v.mongo_active }))
+  if (rows.length === 0) {
+    alert('No vehicles to export')
+    return
+  }
+  const first = rows[0] as any
+  const header = Object.keys(first).join(',')
+  const csvRows = rows.map((r: any) => Object.values(r).map((val: any) => `"${String(val).replace(/"/g, '""')}"`).join(','))
+  const csv = [header, ...csvRows].join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `vehicles-${new Date().toISOString()}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+const refresh = () => fetchVehicles('/vehicles-map-admin')
+const fitBounds = () => {
+  if (!map.value) return
+  const arr = (vehicles.value || []).filter(v => v.latitude != null && v.longitude != null).map(v => [v.latitude, v.longitude])
+  if (arr.length === 0) return
+  const bounds = (window as any).L.latLngBounds(arr)
+  map.value.fitBounds(bounds, { padding: [50,50] })
+}
+
+const toggleFull = () => {
+  full.value = !full.value
+  // wait for DOM then invalidate size
+  setTimeout(() => map.value?.invalidateSize(), 200)
+}
+
+const locateMe = () => {
+  if (!navigator.geolocation) return
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude
+    const lng = pos.coords.longitude
+    setUserLocation(lat, lng)
+    if (map.value) {
+      map.value.setView([lat, lng], 13)
+      if ((window as any).L?.marker) (window as any).L.marker([lat, lng]).addTo(map.value).bindPopup('<b>You are here</b>').openPopup()
+    }
+  }, err => console.warn('Geolocation failed', err))
+}
 
 onMounted(() => {
   initMap()

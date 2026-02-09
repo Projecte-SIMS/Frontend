@@ -20,6 +20,12 @@ const map = ref<L.Map | null>(null)
 const mapContainer = ref<HTMLElement | null>(null)
 const markers: Map<number, L.Marker> = new Map()
 
+// reactive filters & search
+const searchQuery = ref('')
+const showOperativeOnly = ref(false)
+const userLocation = ref<{ lat: number; lng: number } | null>(null)
+const radiusMeters = ref<number | null>(null)
+
 const createVehicleIcon = (postgresActive?: boolean, mongoActive?: boolean) => {
   const color = postgresActive ? '#f59e0b' : '#22c55e'
   const borderColor = mongoActive ? '#ef4444' : '#ffffff'
@@ -48,10 +54,12 @@ const createVehicleIcon = (postgresActive?: boolean, mongoActive?: boolean) => {
   })
 }
 
+const rawVehicles = ref<Vehicle[]>([])
+
 const fetchVehicles = async (endpoint = '/vehicles-map') => {
   try {
     const response = await apiClient.get(endpoint)
-    vehicles.value = response.data.map((v: any) => ({
+    rawVehicles.value = response.data.map((v: any) => ({
       id: v.id,
       plate: v.plate,
       brand: v.brand,
@@ -63,7 +71,7 @@ const fetchVehicles = async (endpoint = '/vehicles-map') => {
       status: (v.mongo_active === true) ? 'active' : 'inactive',
     }))
 
-    addVehicleMarkers()
+    applyFiltersAndMarkers()
   } catch (error) {
     console.error('Error fetching vehicles:', error)
   }
@@ -77,6 +85,38 @@ const initMap = () => {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map.value as any)
+}
+
+const withinRadius = (v: Vehicle) => {
+  if (!userLocation.value || !radiusMeters.value) return true
+  const R = 6371000 // metres
+  const toRad = (x: number) => (x * Math.PI) / 180
+  const dLat = toRad(v.latitude - userLocation.value.lat)
+  const dLon = toRad(v.longitude - userLocation.value.lng)
+  const lat1 = toRad(userLocation.value.lat)
+  const lat2 = toRad(v.latitude)
+
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  const d = R * c
+  return d <= (radiusMeters.value || 0)
+}
+
+const applyFiltersAndMarkers = () => {
+  // apply search, operative filter and proximity
+  const q = searchQuery.value.trim().toLowerCase()
+  const filtered = rawVehicles.value.filter(v => {
+    if (showOperativeOnly.value && !v.mongo_active) return false
+    if (q) {
+      const combined = `${v.plate} ${v.brand} ${v.model}`.toLowerCase()
+      if (!combined.includes(q)) return false
+    }
+    if (!withinRadius(v)) return false
+    return true
+  })
+
+  vehicles.value = filtered
+  addVehicleMarkers()
 }
 
 const addVehicleMarkers = () => {
@@ -116,6 +156,26 @@ const centerOnVehicle = (vehicle: Vehicle) => {
   }
 }
 
+const setUserLocation = (lat: number, lng: number) => {
+  userLocation.value = { lat, lng }
+  applyFiltersAndMarkers()
+}
+
+const setRadiusMeters = (m: number | null) => {
+  radiusMeters.value = m
+  applyFiltersAndMarkers()
+}
+
+const setSearchQuery = (q: string) => {
+  searchQuery.value = q
+  applyFiltersAndMarkers()
+}
+
+const setShowOperativeOnly = (v: boolean) => {
+  showOperativeOnly.value = v
+  applyFiltersAndMarkers()
+}
+
 const destroyMap = () => {
   if (map.value) {
     map.value.remove()
@@ -136,5 +196,15 @@ export function useMap() {
     addVehicleMarkers,
     centerOnVehicle,
     destroyMap,
+    // new api
+    rawVehicles,
+    searchQuery,
+    setSearchQuery,
+    showOperativeOnly,
+    setShowOperativeOnly,
+    userLocation,
+    setUserLocation,
+    radiusMeters,
+    setRadiusMeters,
   }
 }
