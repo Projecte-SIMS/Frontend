@@ -76,7 +76,7 @@ const initMap = () => {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map.value)
+  }).addTo(map.value as any)
 }
 
 const addVehicleMarkers = () => {
@@ -89,7 +89,7 @@ const addVehicleMarkers = () => {
     if (v.latitude == null || v.longitude == null) return
 
     const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
-      .addTo(map.value!)
+      .addTo(map.value as any)
       .bindPopup(`
         <div class="p-2">
           <p class="font-bold">${v.plate}</p>
