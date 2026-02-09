@@ -132,15 +132,21 @@ const addVehicleMarkers = () => {
     const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
       .addTo(map.value as any)
       .bindPopup(`
-        <div style="min-width:200px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
-            <div style="font-weight:700;">${v.plate}</div>
-            <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
+        <div style="min-width:220px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#0f172a">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+            <div style="display:flex;flex-direction:column">
+              <div style="font-weight:700;font-size:15px;color:#0f172a">${v.plate}</div>
+              <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
+            </div>
+            <div style="padding:4px 8px;border-radius:9999px;background:${v.mongo_active ? '#fee2e2' : '#ecfccb'};color:${v.mongo_active ? '#991b1b' : '#4d7c0f'};font-size:12px;font-weight:600">${v.mongo_active ? 'Running' : 'Idle'}</div>
           </div>
-          <div style="margin-top:8px; display:flex;flex-direction:column;gap:6px;">
-            <div style="font-size:13px;"><strong>mec muc</strong></div>
-            <div style="font-size:13px;"><strong>Postgres Availability:</strong> <span style="color:${v.postgres_active ? '#d97706' : '#16a34a'}">${v.postgres_active ? 'Occupied' : 'Available'}</span></div>
-            <div style="font-size:13px;"><strong>Running (Mongo):</strong> <span style="color:${v.mongo_active ? '#ef4444' : '#6b7280'}">${v.mongo_active ? 'Yes' : 'No'}</span></div>
+
+          <hr style="margin:8px 0;border-color:#e6eef8" />
+
+          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#0f172a">
+            <div style="display:flex;justify-content:space-between"><span style="color:#334155">mec muc</span><strong style="color:#0f172a"> </strong></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:#334155">Disponibility</span><strong style="color:${v.postgres_active ? '#bf8700' : '#15803d'}">${v.postgres_active ? 'Occupied' : 'Available'}</strong></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:#334155">State</span><strong style="color:${v.mongo_active ? '#b91c1c' : '#475569'}">${v.mongo_active ? 'Running' : 'Idle'}</strong></div>
           </div>
         </div>
       `)
