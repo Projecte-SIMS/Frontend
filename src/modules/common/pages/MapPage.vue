@@ -18,7 +18,7 @@
         <div class="mt-2">
           <div v-if="nearbyAvailable.length === 0" class="text-sm text-gray-400">No nearby available vehicles found.</div>
           <ul v-else class="space-y-2">
-            <li v-for="v in nearbyAvailable" :key="v.id" class="flex items-center justify-between p-2 bg-white/3 rounded">
+            <li v-for="v in nearbyAvailable" :key="v.id" class="flex items-center justify-between p-2 bg-white/3 rounded cursor-pointer hover:bg-white/6" @click="onNearbyClick(v)">
               <div>
                 <div class="font-medium">{{ v.plate }}</div>
                 <div class="text-xs text-gray-300">{{ v.brand }} {{ v.model }}</div>
@@ -41,7 +41,7 @@ import { useRoute } from 'vue-router'
 import { useMap } from '@/modules/common/composables/useMap'
 
 const route = useRoute()
-const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation, _internal } = useMap()
+const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation, _internal, centerOnVehicle } = useMap()
 let userMarker: any = null
 
 const nearbyAvailable = ref<any[]>([])
@@ -135,6 +135,11 @@ onMounted(() => {
     map.value.on('moveend', () => computeNearbyAvailable())
   }
 })
+
+function onNearbyClick(v: any) {
+  // center on vehicle and open popup
+  centerOnVehicle(v)
+}
 
 onUnmounted(() => {
   destroyMap()
