@@ -103,7 +103,7 @@ const isAdmin = computed(() => {
 const handleLogout = async () => {
   try {
     await logout()
-    router.replace('/login')
+    router.push('/login')
   } catch (error) {
     console.error('Logout failed:', error)
   }
