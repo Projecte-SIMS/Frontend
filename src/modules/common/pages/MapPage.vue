@@ -23,7 +23,7 @@
                 <div class="font-medium">{{ v.plate }}</div>
                 <div class="text-xs text-gray-300">{{ v.brand }} {{ v.model }}</div>
               </div>
-              <div class="text-sm text-gray-300">{{ (v.distanceMeters/1000).toFixed(2) }} km</div>
+              <div class="text-sm text-gray-300">{{ v.distanceMeters < 1000 ? `${Math.round(v.distanceMeters)} m` : `${(v.distanceMeters/1000).toFixed(2)} km` }}</div>
             </li>
           </ul>
         </div>
