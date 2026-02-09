@@ -132,11 +132,16 @@ const addVehicleMarkers = () => {
     const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
       .addTo(map.value as any)
       .bindPopup(`
-        <div class="p-2">
-          <p class="font-bold">${v.plate}</p>
-          <p class="text-sm">${v.brand} ${v.model}</p>
-          <p class="text-xs text-gray-500">Postgres Availability: ${v.postgres_active ? 'Occupied' : 'Available'}</p>
-          <p class="text-xs text-gray-500">Running (Mongo): ${v.mongo_active ? 'Yes' : 'No'}</p>
+        <div style="min-width:200px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+            <div style="font-weight:700;">${v.plate}</div>
+            <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
+          </div>
+          <div style="margin-top:8px; display:flex;flex-direction:column;gap:6px;">
+            <div style="font-size:13px;"><strong>mec muc</strong></div>
+            <div style="font-size:13px;"><strong>Postgres Availability:</strong> <span style="color:${v.postgres_active ? '#d97706' : '#16a34a'}">${v.postgres_active ? 'Occupied' : 'Available'}</span></div>
+            <div style="font-size:13px;"><strong>Running (Mongo):</strong> <span style="color:${v.mongo_active ? '#ef4444' : '#6b7280'}">${v.mongo_active ? 'Yes' : 'No'}</span></div>
+          </div>
         </div>
       `)
 

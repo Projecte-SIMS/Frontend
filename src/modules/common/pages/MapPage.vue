@@ -13,17 +13,30 @@
         </div>
       </details>
 
-      <details class="map-legend-details bg-transparent mt-3 p-3 rounded border border-white/5">
-        <summary class="font-semibold mb-1 cursor-pointer">Nearby available vehicles ▾</summary>
-        <div class="mt-2">
+      <details class="map-legend-details bg-transparent mt-3 rounded border border-white/5 shadow-sm">
+        <summary class="flex items-center justify-between font-semibold mb-1 cursor-pointer px-2 py-1">
+          <span>Nearby vehicles</span>
+          <span class="text-xs text-gray-400">≤ 2 km</span>
+        </summary>
+        <div class="mt-2 px-1 py-1">
           <div v-if="nearbyAvailable.length === 0" class="text-sm text-gray-400">No nearby available vehicles found.</div>
-          <ul v-else class="space-y-2">
-            <li v-for="v in nearbyAvailable" :key="v.id" class="flex items-center justify-between p-2 bg-white/3 rounded cursor-pointer hover:bg-white/6" @click="onNearbyClick(v)">
-              <div>
-                <div class="font-medium">{{ v.plate }}</div>
-                <div class="text-xs text-gray-300">{{ v.brand }} {{ v.model }}</div>
+          <ul v-else class="space-y-2 max-h-48 overflow-y-auto pr-1">
+            <li v-for="v in nearbyAvailable.slice(0,6)" :key="v.id" class="flex items-center justify-between gap-3 p-1 rounded-md hover:bg-white/6 transition-colors" @click="onNearbyClick(v)">
+              <div class="flex items-center gap-3">
+                <div class="flex items-center justify-center w-8 h-8 rounded-full" :style="{ background: 'linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02))' }">
+                  <span :style="{ width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', background: v.mongo_active ? '#ef4444' : (v.postgres_active ? '#f59e0b' : '#22c55e'), border: '2px solid #fff' }"></span>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-sm font-medium truncate">{{ v.plate }}</div>
+                  <div class="text-xs text-gray-400 truncate">{{ v.brand }} {{ v.model }}</div>
+                </div>
               </div>
-              <div class="text-sm text-gray-300">{{ v.distanceMeters < 1000 ? `${Math.round(v.distanceMeters)} m` : `${(v.distanceMeters/1000).toFixed(2)} km` }}</div>
+              <div>
+                <div class="text-right">
+                  <div class="text-sm font-semibold text-indigo-200">{{ v.distanceMeters < 1000 ? `${Math.round(v.distanceMeters)} m` : `${(v.distanceMeters/1000).toFixed(2)} km` }}</div>
+                  <div class="text-xs text-gray-400">{{ v.mongo_active ? 'Running' : (v.postgres_active ? 'Occupied' : 'Available') }}</div>
+                </div>
+              </div>
             </li>
           </ul>
         </div>
@@ -41,7 +54,7 @@ import { useRoute } from 'vue-router'
 import { useMap } from '@/modules/common/composables/useMap'
 
 const route = useRoute()
-const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation, _internal, centerOnVehicle } = useMap()
+const { mapContainer, map, vehicles, markers, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation, _internal, centerOnVehicle } = useMap()
 let userMarker: any = null
 
 const nearbyAvailable = ref<any[]>([])
@@ -134,11 +147,43 @@ onMounted(() => {
   if (map.value) {
     map.value.on('moveend', () => computeNearbyAvailable())
   }
+
+  // attach click handlers to markers so clicking a map marker opens the selected panel
+  function attachMarkerClicks() {
+    if (!markers) return
+    try {
+      markers.forEach((m, id) => {
+        // remove previous handlers
+        try { m.off && m.off('click') } catch {}
+        try { m.on && m.on('click', () => {
+          const v = rawVehicles.value.find(rv => rv.id === id)
+          if (v) {
+            selectedVehicle.value = v
+            showSelectedPanel.value = true
+            centerOnVehicle(v)
+          }
+        }) } catch {}
+      })
+    } catch (e) {}
+  }
+
+  // schedule attaching handlers after markers are likely added
+  setTimeout(() => attachMarkerClicks(), 1000)
 })
+
+const selectedVehicle = ref<any | null>(null)
+const showSelectedPanel = ref(false)
 
 function onNearbyClick(v: any) {
   // center on vehicle and open popup
   centerOnVehicle(v)
+  selectedVehicle.value = v
+  showSelectedPanel.value = true
+}
+
+function closeSelectedPanel() {
+  showSelectedPanel.value = false
+  selectedVehicle.value = null
 }
 
 onUnmounted(() => {
@@ -170,4 +215,22 @@ onUnmounted(() => {
   z-index: 9999 !important;
   position: relative;
 }
+
+/* compact legend / nearby list tweaks */
+.map-controls .map-legend-details {
+  width: 18rem;
+  font-size: 0.875rem;
+}
+.map-controls .map-legend-details summary { padding: 0 }
+.map-controls .map-legend-details ul { padding: 0 }
+.map-controls .map-legend-details li { padding: 0 }
+
+/* selected panel and transition */
+.selected-vehicle-panel { max-width: 18rem; }
+.slide-fade-enter-active { transition: all .2s ease; }
+.slide-fade-leave-active { transition: all .15s ease; }
+.slide-fade-enter-from { transform: translateY(8px); opacity: 0; }
+.slide-fade-enter-to { transform: translateY(0); opacity: 1; }
+.slide-fade-leave-from { transform: translateY(0); opacity: 1; }
+.slide-fade-leave-to { transform: translateY(8px); opacity: 0; }
 </style>
