@@ -2,24 +2,33 @@
   <!-- Contenedor principal del mapa -->
   <div class="relative min-h-[100dvh] bg-gray-800">
     <div ref="mapContainer" class="absolute inset-0" style="height: calc(100vh - 4rem);"></div>
-    <div class="map-controls absolute top-4 right-4 bg-white/95 dark:bg-gray-900/95 text-sm p-3 rounded shadow w-72">
-      <div class="font-semibold mb-2">Buscar vehículos</div>
-      <div class="space-y-2">
-        <input v-model="query" @input="onSearch" placeholder="Placa, marca o modelo" class="w-full px-2 py-1 rounded border" />
-        <div class="flex gap-2 items-center">
-          <label class="flex items-center gap-2"><input type="checkbox" v-model="operativeOnly" @change="onToggleOperative" /> Solo operativos</label>
-        </div>
-        <div class="flex gap-2 items-center">
-          <input type="number" v-model.number="radiusKm" @input="onRadiusChange" placeholder="Radio (km)" class="w-1/2 px-2 py-1 rounded border" />
-          <button class="ml-auto px-2 py-1 bg-indigo-600 text-white rounded" @click="locateMe">Mi ubicación</button>
-        </div>
+    <div class="map-controls absolute top-4 right-4 lg:right-20 bg-white/95 dark:bg-gray-900/95 text-sm p-4 rounded-lg shadow w-80 backdrop-blur">
+      <div class="flex items-center justify-between mb-2">
+        <div class="font-semibold text-sm">Nearby vehicles</div>
+        <button @click="refresh" class="text-xs text-indigo-600">Refresh</button>
       </div>
-      <hr class="my-2" />
-      <div class="font-semibold mb-1">Leyenda</div>
-      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Available (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Occupied (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Running (Mongo)</span></div>
+      <div>
+        <select v-model="selectedVehicleId" @change="onSelectVehicle" class="w-full px-3 py-2 rounded border">
+          <option value="">-- Select nearby vehicle --</option>
+          <option v-for="v in nearbyVehicles" :key="v.id" :value="v.id">{{ v.plate }} — {{ (v.distanceMeters/1000).toFixed(2) }} km</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2 mt-2">
+        <input type="number" v-model.number="radiusKm" @input="onRadiusChange" placeholder="Radius (km)" class="w-32 px-2 py-1 rounded border" />
+      </div>
+      <hr class="my-3" />
+      <details class="map-legend-details bg-transparent">
+        <summary class="font-semibold mb-1 cursor-pointer">Legend ▾</summary>
+        <div class="mt-2 space-y-2">
+          <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Available</span></div>
+          <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Occupied</span></div>
+          <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Running</span></div>
+        </div>
+      </details>
     </div>
+
+    <!-- Floating locate button -->
+    <button @click="locateMe" aria-label="Go to my location" class="fixed bottom-6 right-6 z-50 p-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700">📍</button>
   </div>
 </template>
 
@@ -29,16 +38,9 @@ import { useRoute } from 'vue-router'
 import { useMap } from '@/modules/common/composables/useMap'
 
 const route = useRoute()
-const { mapContainer, map, vehicles, initMap, fetchVehicles, setSearchQuery, setShowOperativeOnly, setUserLocation, setRadiusMeters, addVehicleMarkers, destroyMap } = useMap()
+const { mapContainer, map, vehicles, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap } = useMap()
 
-const query = ref('')
-const operativeOnly = ref(false)
-const radiusKm = ref<number | null>(null)
-
-const onSearch = () => setSearchQuery(query.value)
-const onToggleOperative = () => setShowOperativeOnly(operativeOnly.value)
-const onRadiusChange = () => setRadiusMeters(radiusKm.value ? radiusKm.value * 1000 : null)
-
+const refresh = () => fetchVehicles('/vehicles-map')
 const locateMe = () => {
   if (!navigator.geolocation) return
   navigator.geolocation.getCurrentPosition(pos => {
