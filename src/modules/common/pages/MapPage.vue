@@ -3,20 +3,7 @@
   <div class="relative min-h-[100dvh] bg-gray-800">
     <div ref="mapContainer" class="absolute inset-0" style="height: calc(100vh - 4rem);"></div>
     <div class="map-controls absolute top-4 right-4 lg:right-20 bg-white/95 dark:bg-gray-900/95 text-sm p-4 rounded-lg shadow w-80 backdrop-blur">
-      <div class="flex items-center justify-between mb-2">
-        <div class="font-semibold text-sm">Nearby vehicles</div>
-        <button @click="refresh" class="text-xs text-indigo-600">Refresh</button>
-      </div>
-      <div>
-        <select v-model="selectedVehicleId" @change="onSelectVehicle" class="w-full px-3 py-2 rounded border">
-          <option value="">-- Select nearby vehicle --</option>
-          <option v-for="v in nearbyVehicles" :key="v.id" :value="v.id">{{ v.plate }} — {{ (v.distanceMeters/1000).toFixed(2) }} km</option>
-        </select>
-      </div>
-      <div class="flex items-center gap-2 mt-2">
-        <input type="number" v-model.number="radiusKm" @input="onRadiusChange" placeholder="Radius (km)" class="w-32 px-2 py-1 rounded border" />
-      </div>
-      <hr class="my-3" />
+
       <details class="map-legend-details bg-transparent">
         <summary class="font-semibold mb-1 cursor-pointer">Legend ▾</summary>
         <div class="mt-2 space-y-2">
