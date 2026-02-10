@@ -20,6 +20,8 @@ const map = ref<L.Map | null>(null)
 const mapContainer = ref<HTMLElement | null>(null)
 const markers: Map<number, L.Marker> = new Map()
 let userMarker: L.Marker | L.CircleMarker | null = null
+let pollInterval: ReturnType<typeof setInterval> | null = null
+let pollEndpoint = '/vehicles-map'
 
 // reactive filters & search
 const searchQuery = ref('')
@@ -124,38 +126,76 @@ const applyFiltersAndMarkers = () => {
 const addVehicleMarkers = () => {
   if (!map.value) return
 
-  markers.forEach(m => m.remove())
-  markers.clear()
+  const visibleIds = new Set<number>()
 
   vehicles.value.forEach(v => {
     if (v.latitude == null || v.longitude == null) return
+    visibleIds.add(v.id)
 
-    const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
-      .addTo(map.value as any)
-      .bindPopup(`
-        <div style="min-width:220px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#0f172a">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-            <div style="display:flex;flex-direction:column">
-              <div style="font-weight:700;font-size:15px;color:#0f172a">${v.plate}</div>
-              <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
+    if (markers.has(v.id)) {
+      // update existing marker position and icon
+      const m = markers.get(v.id) as any
+      try {
+        m.setLatLng([v.latitude, v.longitude])
+        m.setIcon(createVehicleIcon(v.postgres_active, v.mongo_active))
+        // update popup content if present
+        const popup = m.getPopup && m.getPopup()
+        if (popup) {
+          popup.setContent(`
+            <div style="min-width:220px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#0f172a">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <div style="display:flex;flex-direction:column">
+                  <div style="font-weight:700;font-size:15px;color:#0f172a">${v.plate}</div>
+                  <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
+                </div>
+                <div style="padding:4px 8px;border-radius:9999px;background:${v.mongo_active ? '#fee2e2' : '#ecfccb'};color:${v.mongo_active ? '#991b1b' : '#4d7c0f'};font-size:12px;font-weight:600">${v.mongo_active ? 'Running' : 'Idle'}</div>
+              </div>
+
+              <hr style="margin:8px 0;border-color:#e6eef8" />
+
+              <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#0f172a">
+                <div style="display:flex;justify-content:space-between"><span style="color:#334155">mec muc</span><strong style="color:#0f172a"> </strong></div>
+                <div style="display:flex;justify-content:space-between"><span style="color:#334155">Disponibility</span><strong style="color:${v.postgres_active ? '#bf8700' : '#15803d'}">${v.postgres_active ? 'Occupied' : 'Available'}</strong></div>
+              </div>
             </div>
-            <div style="padding:4px 8px;border-radius:9999px;background:${v.mongo_active ? '#fee2e2' : '#ecfccb'};color:${v.mongo_active ? '#991b1b' : '#4d7c0f'};font-size:12px;font-weight:600">${v.mongo_active ? 'Running' : 'Idle'}</div>
+          `)
+        }
+      } catch (e) { /* ignore */ }
+    } else {
+      const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
+        .addTo(map.value as any)
+        .bindPopup(`
+          <div style="min-width:220px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#0f172a">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+              <div style="display:flex;flex-direction:column">
+                <div style="font-weight:700;font-size:15px;color:#0f172a">${v.plate}</div>
+                <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
+              </div>
+              <div style="padding:4px 8px;border-radius:9999px;background:${v.mongo_active ? '#fee2e2' : '#ecfccb'};color:${v.mongo_active ? '#991b1b' : '#4d7c0f'};font-size:12px;font-weight:600">${v.mongo_active ? 'Running' : 'Idle'}</div>
+            </div>
+
+            <hr style="margin:8px 0;border-color:#e6eef8" />
+
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#0f172a">
+              <div style="display:flex;justify-content:space-between"><span style="color:#334155">mec muc</span><strong style="color:#0f172a"> </strong></div>
+              <div style="display:flex;justify-content:space-between"><span style="color:#334155">Disponibility</span><strong style="color:${v.postgres_active ? '#bf8700' : '#15803d'}">${v.postgres_active ? 'Occupied' : 'Available'}</strong></div>
+            </div>
           </div>
+        `)
 
-          <hr style="margin:8px 0;border-color:#e6eef8" />
+      markers.set(v.id, marker)
+    }
+  })
 
-          <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#0f172a">
-            <div style="display:flex;justify-content:space-between"><span style="color:#334155">mec muc</span><strong style="color:#0f172a"> </strong></div>
-            <div style="display:flex;justify-content:space-between"><span style="color:#334155">Disponibility</span><strong style="color:${v.postgres_active ? '#bf8700' : '#15803d'}">${v.postgres_active ? 'Occupied' : 'Available'}</strong></div>
-          </div>
-        </div>
-      `)
-
-    markers.set(v.id, marker)
+  // remove markers that are no longer present
+  markers.forEach((m, id) => {
+    if (!visibleIds.has(id)) {
+      try { m.remove() } catch (e) {}
+      markers.delete(id)
+    }
   })
 
   if (vehicles.value.length > 0 && map.value) {
-    // If user location is set, avoid auto-fitting bounds so map stays centered on user
     if (!userLocation.value) {
       const bounds = L.latLngBounds(vehicles.value.map(v => [v.latitude, v.longitude]))
       map.value!.fitBounds(bounds, { padding: [50, 50] })
@@ -216,6 +256,11 @@ const destroyMap = () => {
     map.value.remove()
     map.value = null
   }
+  if (pollInterval) {
+    clearInterval(pollInterval)
+    pollInterval = null
+  }
+  markers.forEach(m => { try { m.remove() } catch {} })
   markers.clear()
 }
 
