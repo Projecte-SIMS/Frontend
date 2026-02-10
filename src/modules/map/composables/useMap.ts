@@ -87,15 +87,6 @@ const initMap = () => {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map.value as any)
 
-  // Force marker reposition after zoom/move end to avoid markers getting visually stuck
-  map.value.on('zoomend moveend', () => {
-    markers.forEach(m => {
-      try {
-        const ll = (m as any).getLatLng()
-        m.setLatLng(ll)
-      } catch (e) { /* ignore */ }
-    })
-  })
 }
 
 const withinRadius = (v: Vehicle) => {
