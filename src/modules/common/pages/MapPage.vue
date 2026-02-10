@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useMap } from '@/modules/common/composables/useMap'
+import { useMap } from '@/modules/map/composables/useMap'
 
 const route = useRoute()
 const { mapContainer, map, vehicles, markers, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation, _internal, centerOnVehicle } = useMap()

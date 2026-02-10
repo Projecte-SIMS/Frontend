@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useMap } from '@/modules/common/composables/useMap'
+import { useMap } from '@/modules/map/composables/useMap'
 
 const router = useRouter()
 const openMap = () => router.push('/vehicles-map')
