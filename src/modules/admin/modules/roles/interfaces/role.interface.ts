@@ -21,7 +21,6 @@ export interface Role {
 
 export interface RoleForm {
   name: string
-  description?: string
   permissions: number[]
 }
 

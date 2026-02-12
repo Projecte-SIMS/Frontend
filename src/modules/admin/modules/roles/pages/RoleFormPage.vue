@@ -48,17 +48,6 @@
               {{ validationErrors.name }}
             </p>
           </FormField>
-
-          <!-- Description -->
-          <FormField label="Description">
-            <textarea
-              v-model="form.description"
-              placeholder="Role description"
-              rows="3"
-              :disabled="isAdminRole"
-              class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
-            />
-          </FormField>
         </div>
 
         <!-- Permissions Table -->
@@ -187,7 +176,6 @@ const isEditMode = computed(() => route.params.id !== undefined)
 
 const form = reactive<RoleForm>({
   name: '',
-  description: '',
   permissions: [],
 })
 
@@ -243,7 +231,6 @@ onMounted(async () => {
 
     if (currentRole.value) {
       form.name = currentRole.value.name
-      form.description = currentRole.value.description || ''
       form.permissions = currentRole.value.permissions?.map((p) => p.id) || []
     } else {
       toast.error('Error loading role')

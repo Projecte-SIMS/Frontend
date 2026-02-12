@@ -1,5 +1,5 @@
 <template>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center justify-center gap-2">
     <input
       :id="permissionId"
       type="checkbox"
@@ -8,13 +8,6 @@
       :disabled="disabled"
       class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 disabled:opacity-50 cursor-pointer"
     />
-    <label
-      :for="permissionId"
-      class="text-sm font-medium text-gray-900 cursor-pointer"
-      :class="{ 'opacity-50': disabled }"
-    >
-      {{ label }}
-    </label>
   </div>
 </template>
 

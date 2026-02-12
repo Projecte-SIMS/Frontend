@@ -54,23 +54,8 @@
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Description</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ currentRole.description || '-' }}</dd>
-          </div>
-
-          <div class="sm:col-span-1">
             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Permissions</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ currentRole.permissions?.length || 0 }}</dd>
-          </div>
-
-          <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Created at</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ formatDate(currentRole.created_at) }}</dd>
-          </div>
-
-          <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Updated at</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ formatDate(currentRole.updated_at) }}</dd>
           </div>
         </dl>
       </div>

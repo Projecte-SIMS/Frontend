@@ -51,10 +51,13 @@
           {{ role.name }}
         </AdminTd>
         <AdminTd variant="muted">
-          {{ role.description || '-' }}
+          {{ role.permissions?.length || 0 }}
         </AdminTd>
         <AdminTd variant="muted">
-          {{ role.permissions?.length || 0 }}
+          {{ formatDate(role.created_at) }}
+        </AdminTd>
+        <AdminTd variant="muted">
+          {{ formatDate(role.updated_at) }}
         </AdminTd>
         <AdminTd variant="actions">
           <div class="flex gap-2">
@@ -125,9 +128,9 @@ const roleToDelete = ref<Role | null>(null)
 
 const columns = [
   { key: 'name', label: 'Name' },
-  { key: 'description', label: 'Description' },
   { key: 'permissions', label: 'Permissions' },
   { key: 'created_at', label: 'Created at' },
+  { key: 'updated_at', label: 'Updated at' },
   { key: 'actions', label: 'Actions', srOnly: true },
 ]
 

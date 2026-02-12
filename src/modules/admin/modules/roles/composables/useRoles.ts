@@ -26,7 +26,12 @@ export const useRoles = () => {
     error.value = null
 
     try {
-      const response = await api.get(`/roles?page=${page}`)
+      let url = `/roles?page=${page}`
+      if (filters.search) {
+        url += `&search=${encodeURIComponent(filters.search)}`
+      }
+
+      const response = await api.get(url)
       const data = response.data
 
       roles.value = data.data || data
@@ -38,15 +43,6 @@ export const useRoles = () => {
           per_page: data.per_page,
           total: data.total,
         }
-      }
-
-      // Client-side filtering by search
-      if (filters.search) {
-        const searchTerm = filters.search.toLowerCase()
-        roles.value = roles.value.filter((role) =>
-          role.name.toLowerCase().includes(searchTerm) ||
-          role.description?.toLowerCase().includes(searchTerm)
-        )
       }
     } catch (err) {
       error.value = 'Failed to load roles'
@@ -78,7 +74,6 @@ export const useRoles = () => {
     try {
       const payload = {
         name: data.name,
-        description: data.description || '',
         permissions: data.permissions,
       }
 
@@ -107,7 +102,6 @@ export const useRoles = () => {
 
       const payload = {
         name: data.name,
-        description: data.description || '',
         permissions: data.permissions,
       }
 
