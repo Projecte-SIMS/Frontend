@@ -5,11 +5,15 @@ import { authRoutes } from '@/modules/auth/router'
 import AppLayout from '@/modules/common/layouts/AppLayout.vue'
 import AdminLayout from '@/modules/admin/layouts/AdminLayout.vue'
 import NotFoundPage from '@/modules/common/pages/NotFoundPage.vue'
+import { userRoutes } from '@/modules/admin/modules/users/router'
+import { vehicleRoutes } from '@/modules/admin/modules/vehicles/router'
+import { rolesRoutes } from '@/modules/admin/modules/roles/router'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: AppLayout,
+    meta: { requiresAuth: true },
     children: [
       { path: '', component: () => import('@/modules/common/pages/HomePage.vue') },
       { path: 'vehicles-map', component: () => import('@/modules/common/pages/MapPage.vue') },
@@ -23,6 +27,7 @@ const routes: RouteRecordRaw[] = [
     path: '/admin',
     component: AdminLayout,
     meta: { requiresAuth: true },
+
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'map',
@@ -30,6 +35,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
+<<<<<<< HEAD
       { path: 'vehicles', component: () => import('@/modules/admin/vehicles/pages/VehiclesPage.vue') },
       {
         path: 'bookings',
@@ -40,6 +46,14 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   
+=======
+      ...vehicleRoutes,
+      ...userRoutes,
+      ...rolesRoutes
+    ],
+},
+
+>>>>>>> origin/develop
   ...authRoutes,
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage }

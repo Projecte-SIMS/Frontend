@@ -21,4 +21,27 @@ export function showToast(payload: string | Error | unknown) {
   })
 }
 
+export function useToast() {
+  return {
+    success: (message: string | Error | unknown) => {
+      const msg = formatMessage(message)
+      toast(msg, { 
+        theme: 'dark', 
+        type: 'success',
+        pauseOnHover: false, 
+        pauseOnFocusLoss: false
+      })
+    },
+    error: (message: string | Error | unknown) => {
+      const msg = formatMessage(message)
+      toast(msg, { 
+        theme: 'dark', 
+        type: 'error',
+        pauseOnHover: false, 
+        pauseOnFocusLoss: false
+      })
+    }
+  }
+}
+
 export default showToast
