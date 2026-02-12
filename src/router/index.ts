@@ -7,6 +7,7 @@ import AdminLayout from '@/modules/admin/layouts/AdminLayout.vue'
 import NotFoundPage from '@/modules/common/pages/NotFoundPage.vue'
 import { userRoutes } from '@/modules/admin/modules/users/router'
 import { vehicleRoutes } from '@/modules/admin/modules/vehicles/router'
+import { rolesRoutes } from '@/modules/admin/modules/roles/router'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -34,7 +35,8 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, requiresAdmin: true }
       },
       ...vehicleRoutes,
-      ...userRoutes
+      ...userRoutes,
+      ...rolesRoutes
     ],
 },
 
