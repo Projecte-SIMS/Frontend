@@ -1,0 +1,377 @@
+<template>
+  <div class="px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <PageHeading
+      title="Reservas"
+      description="Gestión de reservas de vehículos"
+    >
+      <template #actions>
+        <button
+          type="button"
+          @click="openCreateModal"
+          class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Nueva reserva
+        </button>
+      </template>
+    </PageHeading>
+
+    <!-- Filters -->
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex gap-4 w-full sm:w-auto">
+        <input
+          v-model="filters.search"
+          @input="handleSearch"
+          type="text"
+          placeholder="Buscar por huésped, email o matrícula..."
+          class="block w-full max-w-md rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+        />
+
+        <select
+          v-model="filters.status"
+          @change="handleStatusChange"
+          class="block w-full sm:w-48 rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+        >
+          <option value="">Todos los estados</option>
+          <option value="active">Activas</option>
+          <option value="pending">Pendientes</option>
+          <option value="finished">Finalizadas</option>
+          <option value="cancelled">Canceladas</option>
+        </select>
+      </div>
+
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        {{ pagination.total }} reservas
+      </p>
+    </div>
+
+    <!-- Formulario creación (modal) -->
+    <Modal :show="showCreateModal" @close="closeCreateModal">
+      <template #header>
+        <h3 class="text-lg font-medium">Crear reserva</h3>
+      </template>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <FormInput
+          v-model="createForm.user_id"
+          label="ID usuario (opcional)"
+          placeholder="Ej: 1"
+          type="number"
+        />
+        <FormInput
+          v-model="createForm.vehicle_id"
+          label="ID vehículo"
+          placeholder="Ej: 3"
+          type="number"
+        />
+        <FormField label="Fecha y hora de inicio (scheduled_start)">
+          <input
+            v-model="createForm.scheduled_start"
+            type="datetime-local"
+            class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+          />
+        </FormField>
+      </div>
+
+      <template #footer>
+        <button
+          type="button"
+          class="mr-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          @click="closeCreateModal"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          :disabled="creating"
+          class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50"
+          @click="handleCreate"
+        >
+          {{ creating ? 'Creando...' : 'Crear reserva' }}
+        </button>
+      </template>
+    </Modal>
+
+    <!-- Loading state -->
+    <div v-if="loading" class="mt-8 text-center text-gray-500 dark:text-gray-400">
+      Cargando reservas...
+    </div>
+
+    <!-- Error state -->
+    <div v-else-if="error" class="mt-8 text-center text-red-500">
+      {{ error }}
+    </div>
+
+    <!-- Table -->
+    <AdminsTable
+      v-else
+      :columns="columns"
+      :empty="bookings.length === 0"
+    >
+      <template #empty>
+        No hay reservas disponibles
+      </template>
+
+      <tr v-for="booking in bookings" :key="booking.id">
+        <AdminTd first variant="primary">
+          <div class="flex items-center gap-3">
+            <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">
+              {{ getInitials(booking.user?.name || `U${booking.user_id ?? ''}`) }}
+            </div>
+            <div>
+              <div class="text-sm font-medium text-gray-900 dark:text-white">
+                <!-- Si no viene la relación de usuario, mostramos el ID -->
+                <span v-if="booking.user">
+                  {{ booking.user.name }}
+                </span>
+                <span v-else>
+                  Usuario #{{ booking.user_id ?? '-' }}
+                </span>
+              </div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">
+                {{ booking.user?.email || '-' }}
+              </div>
+            </div>
+          </div>
+        </AdminTd>
+
+        <AdminTd variant="muted">
+          <div v-if="booking.vehicle">
+            <div class="text-sm text-gray-900 dark:text-white">
+              {{ booking.vehicle.brand }} {{ booking.vehicle.model }}
+            </div>
+            <div class="text-xs font-mono text-gray-500 dark:text-gray-400">
+              {{ booking.vehicle.license_plate }}
+            </div>
+          </div>
+          <div v-else>
+            <div class="text-sm text-gray-900 dark:text-white">
+              Vehículo #{{ booking.vehicle_id ?? '-' }}
+            </div>
+          </div>
+        </AdminTd>
+
+        <AdminTd variant="muted">
+          <div class="text-xs text-gray-900 dark:text-white">
+            <span class="font-semibold">{{ formatDateDay(getStartDate(booking)) }}</span>
+            · {{ formatDateHour(getStartDate(booking)) }}
+          </div>
+          <div class="text-xs text-gray-500 dark:text-gray-400">
+            → {{ formatDateDay(getEndDate(booking)) }} · {{ formatDateHour(getEndDate(booking)) }}
+          </div>
+        </AdminTd>
+
+        <AdminTd variant="muted">
+          {{ formatCurrency(getTotal(booking)) }}
+        </AdminTd>
+
+        <AdminTd variant="muted">
+          <span
+            :class="[
+              'inline-flex rounded-full px-2 py-1 text-xs font-semibold',
+              getStatusClasses(booking.status),
+            ]"
+          >
+            {{ booking.status }}
+          </span>
+        </AdminTd>
+
+        <AdminTd variant="actions">
+          <div class="flex gap-2">
+            <button
+              v-if="booking.status === 'active'"
+              @click="handleForceFinish(booking.id)"
+              class="text-amber-600 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300 text-xs"
+            >
+              Forzar fin
+            </button>
+            <button
+              @click="handleDelete(booking.id)"
+              class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-xs"
+            >
+              Eliminar
+            </button>
+          </div>
+        </AdminTd>
+      </tr>
+    </AdminsTable>
+
+    <!-- Pagination -->
+    <AdminPagination
+      v-if="pagination.total > 0"
+      :page="pagination.current_page"
+      :per-page="pagination.per_page"
+      :total="pagination.total"
+      @update:page="handlePageChange"
+    />
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useBookings } from '../composables/useBookings'
+import type { Booking, BookingFilters, BookingCreatePayload } from '../interfaces/booking.interface'
+import AdminsTable from '@/modules/admin/components/AdminsTable.vue'
+import AdminTd from '@/modules/admin/components/AdminTd.vue'
+import AdminPagination from '@/modules/admin/components/AdminPagination.vue'
+import PageHeading from '@/modules/admin/components/PageHeading.vue'
+import Modal from '@/modules/admin/components/Modal.vue'
+import FormInput from '@/modules/admin/components/FormInput.vue'
+import FormField from '@/modules/admin/components/FormField.vue'
+import showToast from '@/modules/common/composables/useToast'
+
+const { bookings, loading, error, pagination, getBookings, forceFinishBooking, deleteBooking, createBooking } = useBookings()
+
+const columns = [
+  { key: 'guest', label: 'Huésped' },
+  { key: 'vehicle', label: 'Vehículo' },
+  { key: 'schedule', label: 'Horario' },
+  { key: 'price', label: 'Precio' },
+  { key: 'status', label: 'Estado' },
+  { key: 'actions', label: 'Acciones', srOnly: true },
+]
+
+const filters = ref<BookingFilters>({
+  search: '',
+  status: '',
+})
+
+const showCreateModal = ref(false)
+const creating = ref(false)
+
+const createForm = ref<{
+  user_id: string
+  vehicle_id: string
+  scheduled_start: string
+}>({
+  user_id: '',
+  vehicle_id: '',
+  scheduled_start: '',
+})
+
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+
+const loadBookings = (page = 1) => {
+  getBookings(page, filters.value)
+}
+
+onMounted(() => {
+  loadBookings()
+})
+
+const openCreateModal = () => {
+  showCreateModal.value = true
+}
+
+const handleSearch = () => {
+  if (searchTimeout) clearTimeout(searchTimeout)
+  searchTimeout = setTimeout(() => {
+    pagination.value.current_page = 1
+    loadBookings()
+  }, 500)
+}
+
+const handleStatusChange = () => {
+  pagination.value.current_page = 1
+  loadBookings()
+}
+
+const handlePageChange = (page: number) => {
+  pagination.value.current_page = page
+  loadBookings(page)
+}
+
+const closeCreateModal = () => {
+  showCreateModal.value = false
+}
+
+const handleCreate = async () => {
+  if (!createForm.value.vehicle_id || !createForm.value.scheduled_start) {
+    showToast('Rellena vehículo y fecha/hora de inicio')
+    return
+  }
+
+  const payload: BookingCreatePayload = {
+    vehicle_id: Number(createForm.value.vehicle_id),
+    scheduled_start: createForm.value.scheduled_start,
+  }
+
+  if (createForm.value.user_id) {
+    payload.user_id = Number(createForm.value.user_id)
+  }
+
+  creating.value = true
+  try {
+    await createBooking(payload)
+    showToast('Reserva creada correctamente')
+    createForm.value = { user_id: '', vehicle_id: '', scheduled_start: '' }
+    showCreateModal.value = false
+    loadBookings(pagination.value.current_page)
+  } catch (e: any) {
+    showToast(e)
+  } finally {
+    creating.value = false
+  }
+}
+
+const handleForceFinish = async (id: number) => {
+  if (!confirm('¿Seguro que quieres forzar el fin de esta reserva?')) return
+  try {
+    await forceFinishBooking(id)
+    showToast('Reserva finalizada correctamente')
+    loadBookings(pagination.value.current_page)
+  } catch (e: any) {
+    showToast(e)
+  }
+}
+
+const handleDelete = async (id: number) => {
+  if (!confirm('¿Seguro que quieres eliminar esta reserva?')) return
+  try {
+    await deleteBooking(id)
+    showToast('Reserva eliminada correctamente')
+    loadBookings(pagination.value.current_page)
+  } catch (e: any) {
+    showToast(e)
+  }
+}
+
+const getInitials = (name?: string) =>
+  name
+    ? name
+        .split(' ')
+        .map((x) => x[0])
+        .join('')
+        .substring(0, 2)
+        .toUpperCase()
+    : '??'
+
+const formatDateDay = (d: string) =>
+  d ? new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '-'
+
+const formatDateHour = (d: string) =>
+  d ? new Date(d).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '--:--'
+
+const formatCurrency = (v: number) =>
+  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(v)
+
+const getStatusClasses = (s: string) => {
+  const map: Record<string, string> = {
+    active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+    finished: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    completed: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
+    cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+  }
+  return map[s] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+}
+
+const getStartDate = (booking: Booking) =>
+  booking.start_time || booking.scheduled_start || booking.trip?.engine_started_at || ''
+
+const getEndDate = (booking: Booking) =>
+  booking.end_time || booking.activation_deadline || booking.trip?.engine_started_at || ''
+
+const getTotal = (booking: Booking) =>
+  booking.total_price ?? booking.trip?.total_amount ?? 0
+</script>

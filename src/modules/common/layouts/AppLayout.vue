@@ -56,9 +56,21 @@
               >
                 <MenuItems class="absolute right-0 z-40 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 outline -outline-offset-1 outline-white/10">
                   <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                    <a :href="item.href" :class="[active ? 'bg-white/5 outline-none' : '', 'block px-4 py-2 text-sm text-gray-300']">
+                    <button
+                      v-if="item.type === 'logout'"
+                      type="button"
+                      @click="handleLogout"
+                      :class="[active ? 'bg-white/5 outline-none' : '', 'block w-full text-left px-4 py-2 text-sm text-gray-300']"
+                    >
                       {{ item.name }}
-                    </a>
+                    </button>
+                    <RouterLink
+                      v-else
+                      :to="item.to"
+                      :class="[active ? 'bg-white/5 outline-none' : '', 'block px-4 py-2 text-sm text-gray-300']"
+                    >
+                      {{ item.name }}
+                    </RouterLink>
                   </MenuItem>
                 </MenuItems>
               </transition>
@@ -117,11 +129,15 @@
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { useAuth } from '@/modules/auth/composables/useAuth'
+import showToast from '@/modules/common/composables/useToast'
 
 const route = useRoute()
+const router = useRouter()
+const { logout } = useAuth()
 const isActive = (path: string) => route.path === path
 
 const user = {
@@ -139,8 +155,19 @@ const navigation = [
 ]
 
 const userNavigation = [
-  { name: 'Your profile', href: '/perfil' },
-  { name: 'Settings', href: '/settings' },
-  { name: 'Sign out', href: '/logout' },
+  { name: 'Your profile', to: '/perfil', type: 'link' },
+  { name: 'Settings', to: '/settings', type: 'link' },
+  { name: 'Sign out', type: 'logout' },
 ]
+
+const handleLogout = async () => {
+  try {
+    await logout()
+    showToast('Sesión cerrada correctamente')
+  } catch (_) {
+    // El propio useAuth ya muestra el error si falla
+  } finally {
+    router.push('/login')
+  }
+}
 </script>

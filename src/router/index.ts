@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'bookings',
         name: 'AdminBookings',
-        component: () => import('@/modules/admin/modules/bookings/pages/BookingsPage.vue'),
+        component: () => import('@/modules/admin/bookings/pages/BookingsPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
     ]
