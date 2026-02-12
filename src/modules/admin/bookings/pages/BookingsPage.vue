@@ -2,8 +2,8 @@
   <div class="px-4 sm:px-6 lg:px-8">
     <!-- Header -->
     <PageHeading
-      title="Reservas"
-      description="Gestión de reservas de vehículos"
+      title="Bookings"
+      description="Vehicle bookings management"
     >
       <template #actions>
         <button
@@ -11,7 +11,7 @@
           @click="openCreateModal"
           class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Nueva reserva
+          New booking
         </button>
       </template>
     </PageHeading>
@@ -23,7 +23,7 @@
           v-model="filters.search"
           @input="handleSearch"
           type="text"
-          placeholder="Buscar por huésped, email o matrícula..."
+          placeholder="Search by guest, email or plate..."
           class="block w-full max-w-md rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
         />
 
@@ -32,39 +32,39 @@
           @change="handleStatusChange"
           class="block w-full sm:w-48 rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
         >
-          <option value="">Todos los estados</option>
-          <option value="active">Activas</option>
-          <option value="pending">Pendientes</option>
-          <option value="finished">Finalizadas</option>
-          <option value="cancelled">Canceladas</option>
+          <option value="">All statuses</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="finished">Finished</option>
+          <option value="cancelled">Cancelled</option>
         </select>
       </div>
 
       <p class="text-sm text-gray-500 dark:text-gray-400">
-        {{ pagination.total }} reservas
+        {{ pagination.total }} bookings
       </p>
     </div>
 
     <!-- Formulario creación (modal) -->
     <Modal :show="showCreateModal" @close="closeCreateModal">
       <template #header>
-        <h3 class="text-lg font-medium">Crear reserva</h3>
+        <h3 class="text-lg font-medium">Create booking</h3>
       </template>
 
       <div class="grid gap-4 sm:grid-cols-2">
         <FormInput
           v-model="createForm.user_id"
-          label="ID usuario (opcional)"
-          placeholder="Ej: 1"
+          label="User ID (optional)"
+          placeholder="e.g. 1"
           type="number"
         />
         <FormInput
           v-model="createForm.vehicle_id"
-          label="ID vehículo"
-          placeholder="Ej: 3"
+          label="Vehicle ID"
+          placeholder="e.g. 3"
           type="number"
         />
-        <FormField label="Fecha y hora de inicio (scheduled_start)">
+        <FormField label="Start date and time (scheduled_start)">
           <input
             v-model="createForm.scheduled_start"
             type="datetime-local"
@@ -79,7 +79,7 @@
           class="mr-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
           @click="closeCreateModal"
         >
-          Cancelar
+          Cancel
         </button>
         <button
           type="button"
@@ -87,14 +87,14 @@
           class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50"
           @click="handleCreate"
         >
-          {{ creating ? 'Creando...' : 'Crear reserva' }}
+          {{ creating ? 'Creating...' : 'Create booking' }}
         </button>
       </template>
     </Modal>
 
     <!-- Loading state -->
     <div v-if="loading" class="mt-8 text-center text-gray-500 dark:text-gray-400">
-      Cargando reservas...
+      Loading bookings...
     </div>
 
     <!-- Error state -->
@@ -109,7 +109,7 @@
       :empty="bookings.length === 0"
     >
       <template #empty>
-        No hay reservas disponibles
+        No bookings available
       </template>
 
       <tr v-for="booking in bookings" :key="booking.id">
@@ -120,12 +120,11 @@
             </div>
             <div>
               <div class="text-sm font-medium text-gray-900 dark:text-white">
-                <!-- Si no viene la relación de usuario, mostramos el ID -->
                 <span v-if="booking.user">
                   {{ booking.user.name }}
                 </span>
                 <span v-else>
-                  Usuario #{{ booking.user_id ?? '-' }}
+                  User #{{ booking.user_id ?? '-' }}
                 </span>
               </div>
               <div class="text-xs text-gray-500 dark:text-gray-400">
@@ -146,7 +145,7 @@
           </div>
           <div v-else>
             <div class="text-sm text-gray-900 dark:text-white">
-              Vehículo #{{ booking.vehicle_id ?? '-' }}
+              Vehicle #{{ booking.vehicle_id ?? '-' }}
             </div>
           </div>
         </AdminTd>
@@ -183,13 +182,13 @@
               @click="handleForceFinish(booking.id)"
               class="text-amber-600 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300 text-xs"
             >
-              Forzar fin
+              Force finish
             </button>
             <button
               @click="handleDelete(booking.id)"
               class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-xs"
             >
-              Eliminar
+              Delete
             </button>
           </div>
         </AdminTd>
@@ -218,9 +217,11 @@ import PageHeading from '@/modules/admin/components/PageHeading.vue'
 import Modal from '@/modules/admin/components/Modal.vue'
 import FormInput from '@/modules/admin/components/FormInput.vue'
 import FormField from '@/modules/admin/components/FormField.vue'
-import showToast from '@/modules/common/composables/useToast'
+import { useToast } from '@/modules/common/composables/useToast'
 
 const { bookings, loading, error, pagination, getBookings, forceFinishBooking, deleteBooking, createBooking } = useBookings()
+
+const { success: toastSuccess, error: toastError } = useToast()
 
 const columns = [
   { key: 'guest', label: 'Huésped' },
@@ -287,7 +288,7 @@ const closeCreateModal = () => {
 
 const handleCreate = async () => {
   if (!createForm.value.vehicle_id || !createForm.value.scheduled_start) {
-    showToast('Rellena vehículo y fecha/hora de inicio')
+    toastError('Fill vehicle and start date/time')
     return
   }
 
@@ -303,36 +304,36 @@ const handleCreate = async () => {
   creating.value = true
   try {
     await createBooking(payload)
-    showToast('Reserva creada correctamente')
+    toastSuccess('Booking created successfully')
     createForm.value = { user_id: '', vehicle_id: '', scheduled_start: '' }
     showCreateModal.value = false
     loadBookings(pagination.value.current_page)
   } catch (e: any) {
-    showToast(e)
+    toastError(e)
   } finally {
     creating.value = false
   }
 }
 
 const handleForceFinish = async (id: number) => {
-  if (!confirm('¿Seguro que quieres forzar el fin de esta reserva?')) return
+  if (!confirm('Are you sure you want to force finish this booking?')) return
   try {
     await forceFinishBooking(id)
-    showToast('Reserva finalizada correctamente')
+    toastSuccess('Booking finished successfully')
     loadBookings(pagination.value.current_page)
   } catch (e: any) {
-    showToast(e)
+    toastError(e)
   }
 }
 
 const handleDelete = async (id: number) => {
-  if (!confirm('¿Seguro que quieres eliminar esta reserva?')) return
+  if (!confirm('Are you sure you want to delete this booking?')) return
   try {
     await deleteBooking(id)
-    showToast('Reserva eliminada correctamente')
+    toastSuccess('Booking deleted successfully')
     loadBookings(pagination.value.current_page)
   } catch (e: any) {
-    showToast(e)
+    toastError(e)
   }
 }
 

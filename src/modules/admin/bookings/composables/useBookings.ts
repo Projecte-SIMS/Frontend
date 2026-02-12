@@ -33,7 +33,7 @@ export function useBookings() {
       }
     } catch (err: any) {
       console.error(err)
-      error.value = err?.response?.data?.message || 'Error al cargar reservas'
+      error.value = err?.response?.data?.message || 'Error loading bookings'
     } finally {
       loading.value = false
     }
@@ -43,7 +43,7 @@ export function useBookings() {
     try {
       await api.post(`/admin/reservations/${id}/force-finish`)
     } catch (err: any) {
-      throw err?.response?.data?.message || 'Error al finalizar reserva'
+      throw err?.response?.data?.message || 'Error finishing booking'
     }
   }
 
@@ -51,7 +51,7 @@ export function useBookings() {
     try {
       await api.delete(`/admin/reservations/${id}`)
     } catch (err: any) {
-      throw err?.response?.data?.message || 'Error al eliminar reserva'
+      throw err?.response?.data?.message || 'Error deleting booking'
     }
   }
 
@@ -62,7 +62,7 @@ export function useBookings() {
       const response = await api.post<{ data: Booking }>('/reservations', payload)
       return response.data.data
     } catch (err: any) {
-      throw err?.response?.data?.message || 'Error al crear reserva'
+      throw err?.response?.data?.message || 'Error creating booking'
     }
   }
 

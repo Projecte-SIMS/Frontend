@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('@/modules/common/pages/HomePage.vue') },
       { path: 'vehicles-map', component: () => import('@/modules/common/pages/MapPage.vue') },
-      { path: 'reservas', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'bookings', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
 
@@ -27,16 +27,17 @@ const routes: RouteRecordRaw[] = [
     path: '/admin',
     component: AdminLayout,
     meta: { requiresAuth: true },
-
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
-      { path: 'map',
+      {
+        path: 'map',
         name: 'AdminVehicleMap',
         component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
-<<<<<<< HEAD
-      { path: 'vehicles', component: () => import('@/modules/admin/vehicles/pages/VehiclesPage.vue') },
+      ...vehicleRoutes,
+      ...userRoutes,
+      ...rolesRoutes,
       {
         path: 'bookings',
         name: 'AdminBookings',
@@ -45,15 +46,6 @@ const routes: RouteRecordRaw[] = [
       },
     ]
   },
-  
-=======
-      ...vehicleRoutes,
-      ...userRoutes,
-      ...rolesRoutes
-    ],
-},
-
->>>>>>> origin/develop
   ...authRoutes,
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage }
