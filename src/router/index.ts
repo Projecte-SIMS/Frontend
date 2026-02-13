@@ -17,7 +17,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('@/modules/common/pages/HomePage.vue') },
       { path: 'vehicles-map', component: () => import('@/modules/common/pages/MapPage.vue') },
-      { path: 'reservas', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'bookings', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
 
@@ -27,20 +27,25 @@ const routes: RouteRecordRaw[] = [
     path: '/admin',
     component: AdminLayout,
     meta: { requiresAuth: true },
-
     children: [
       { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
-      { path: 'map',
+      {
+        path: 'map',
         name: 'AdminVehicleMap',
         component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
       ...vehicleRoutes,
       ...userRoutes,
-      ...rolesRoutes
-    ],
-},
-
+      ...rolesRoutes,
+      {
+        path: 'bookings',
+        name: 'AdminBookings',
+        component: () => import('@/modules/admin/bookings/pages/BookingsPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+    ]
+  },
   ...authRoutes,
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage }

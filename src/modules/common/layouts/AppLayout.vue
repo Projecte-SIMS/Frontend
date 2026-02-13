@@ -56,9 +56,21 @@
               >
                 <MenuItems class="absolute right-0 z-40 mt-2 w-48 origin-top-right rounded-md bg-gray-800 py-1 outline -outline-offset-1 outline-white/10">
                   <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                    <a :href="item.href" :class="[active ? 'bg-white/5 outline-none' : '', 'block px-4 py-2 text-sm text-gray-300']">
+                    <button
+                      v-if="item.type === 'logout'"
+                      type="button"
+                      @click="handleLogout"
+                      :class="[active ? 'bg-white/5 outline-none' : '', 'block w-full text-left px-4 py-2 text-sm text-gray-300']"
+                    >
                       {{ item.name }}
-                    </a>
+                    </button>
+                    <RouterLink
+                      v-else
+                      :to="item.to"
+                      :class="[active ? 'bg-white/5 outline-none' : '', 'block px-4 py-2 text-sm text-gray-300']"
+                    >
+                      {{ item.name }}
+                    </RouterLink>
                   </MenuItem>
                 </MenuItems>
               </transition>
@@ -108,7 +120,7 @@
     <nav class="fixed bottom-0 left-0 right-0 z-30 border-t border-white/10 bg-gray-900/90 backdrop-blur sm:hidden">
       <div class="mx-auto max-w-md px-2 py-2 grid grid-cols-5 text-center text-xs text-gray-300">
         <RouterLink to="/" class="py-2 rounded-xl" :class="isActive('/') ? 'text-white bg-white/5' : ''">Mapa</RouterLink>
-        <RouterLink to="/reservas" class="py-2 rounded-xl" :class="isActive('/reservas') ? 'text-white bg-white/5' : ''">Reservas</RouterLink>
+        <RouterLink to="/bookings" class="py-2 rounded-xl" :class="isActive('/bookings') ? 'text-white bg-white/5' : ''">Bookings</RouterLink>
         <RouterLink to="/favoritos" class="py-2 rounded-xl" :class="isActive('/favoritos') ? 'text-white bg-white/5' : ''">Fav</RouterLink>
         <RouterLink to="/perfil" class="py-2 rounded-xl" :class="isActive('/perfil') ? 'text-white bg-white/5' : ''">Perfil</RouterLink>
       </div>
@@ -117,12 +129,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { useAuth } from '@/modules/auth/composables/useAuth'
+import showToast from '@/modules/common/composables/useToast'
 
 const route = useRoute()
+const router = useRouter()
+const { logout } = useAuth()
 const isActive = (path: string) => route.path === path
 
 const user = {
@@ -134,14 +149,25 @@ const user = {
 
 const navigation = [
   { name: 'Mapa', to: '/vehicles-map' },
-  { name: 'Reservas', to: '/reservas' },
+  { name: 'Bookings', to: '/bookings' },
   { name: 'Favoritos', to: '/favoritos' },
   { name: 'Perfil', to: '/perfil' },
 ]
 
 const userNavigation = [
-  { name: 'Your profile', href: '/perfil' },
-  { name: 'Settings', href: '/settings' },
-  { name: 'Sign out', href: '/logout' },
+  { name: 'Your profile', to: '/perfil', type: 'link' },
+  { name: 'Settings', to: '/settings', type: 'link' },
+  { name: 'Sign out', type: 'logout' },
 ]
+
+const handleLogout = async () => {
+  try {
+    await logout()
+    showToast('Sesión cerrada correctamente')
+  } catch (_) {
+    // El propio useAuth ya muestra el error si falla
+  } finally {
+    router.push('/login')
+  }
+}
 </script>
