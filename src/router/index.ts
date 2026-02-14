@@ -18,6 +18,8 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('@/modules/common/pages/HomePage.vue') },
       { path: 'vehicles-map', component: () => import('@/modules/common/pages/MapPage.vue') },
       { path: 'bookings', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'tickets', component: () => import('@/modules/common/pages/TicketsPage.vue') },
+      { path: 'tickets/:id', component: () => import('@/modules/common/pages/TicketConversationPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
 
