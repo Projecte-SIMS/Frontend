@@ -1,61 +1,59 @@
 <template>
-  <div class="p-6">
+  <div class="p-4">
     <h1 class="text-2xl font-semibold mb-4">Admin - Tickets</h1>
-    <div v-if="loading">Loading tickets...</div>
-    <div v-else>
-      <table class="min-w-full table-auto text-left">
-        <thead>
-          <tr class="text-sm text-gray-400">
-            <th class="px-3 py-2">ID</th>
-            <th class="px-3 py-2">Subject</th>
-            <th class="px-3 py-2">User</th>
-            <th class="px-3 py-2">Email</th>
-            <th class="px-3 py-2">Status</th>
-            <th class="px-3 py-2">Created</th>
-            <th class="px-3 py-2">Last message</th>
-            <th class="px-3 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-white/5">
-          <tr v-for="t in tickets" :key="t.id" class="text-sm">
-            <td class="px-3 py-2">{{ t.id }}</td>
-            <td class="px-3 py-2">{{ t.subject || t.title || '-' }}</td>
-            <td class="px-3 py-2">{{ t.user?.name || t.user_name || '-' }}</td>
-            <td class="px-3 py-2">{{ t.user?.email || t.user_email || '-' }}</td>
-            <td class="px-3 py-2">{{ t.status || '-' }}</td>
-            <td class="px-3 py-2">{{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}</td>
-            <td class="px-3 py-2">{{ t.last_message?.content || t.message || t.description || '' }}</td>
-            <td class="px-3 py-2">
-              <button @click.prevent="toggleExpand(t.id)" class="text-indigo-400">{{ expanded[t.id] ? 'Hide' : 'View' }}</button>
-            </td>
-          </tr>
-          <template v-for="t in tickets" :key="t.id">
-            <tr class="text-sm">
-              <td class="px-3 py-2">{{ t.id }}</td>
-              <td class="px-3 py-2">{{ t.subject || t.title || '-' }}</td>
-              <td class="px-3 py-2">{{ t.user?.name || t.user_name || '-' }}</td>
-              <td class="px-3 py-2">{{ t.user?.email || t.user_email || '-' }}</td>
-              <td class="px-3 py-2">{{ t.status || '-' }}</td>
-              <td class="px-3 py-2">{{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}</td>
-              <td class="px-3 py-2">{{ t.last_message?.content || t.message || t.description || '' }}</td>
-              <td class="px-3 py-2">
-                <button @click.prevent="toggleExpand(t.id)" class="text-indigo-400">{{ expanded[t.id] ? 'Hide' : 'View' }}</button>
-              </td>
-            </tr>
-            <tr v-if="expanded[t.id]" class="bg-gray-900">
-              <td colspan="8" class="p-4">
-                <div v-if="loadingDetails[t.id]">Loading conversation...</div>
-                <div v-else>
-                  <div v-for="m in details[t.id] || []" :key="m.id" class="p-2 border-b border-white/5">
-                    <div class="text-sm text-gray-400">{{ m.user?.name || (m.is_support ? 'Support' : 'User') }} • {{ m.created_at ? new Date(m.created_at).toLocaleString() : '' }}</div>
-                    <div class="mt-1">{{ m.content || m.message || m.body || '' }}</div>
-                  </div>
+
+    <div v-if="loading" class="text-gray-400">Loading tickets...</div>
+
+    <div v-else class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-if="tickets.length === 0" class="text-gray-400">No tickets found.</div>
+
+      <div v-for="t in tickets" :key="t.id" class="relative bg-gray-800 p-2 rounded-md shadow-sm text-sm">
+        <div class="flex items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-3">
+              <div class="text-sm font-semibold">{{ t.subject || t.title || `Ticket #${t.id}` }}</div>
+              <div class="text-sm text-gray-400">• {{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}</div>
+            </div>
+
+            <div class="mt-2 text-sm text-gray-300">
+              <div class="text-xs text-gray-400">User</div>
+              <div class="truncate">{{ t.user?.name || t.user_name || '-' }} <span class="text-gray-500">({{ t.user?.email || t.user_email || '-' }})</span></div>
+            </div>
+
+            <div class="mt-3 text-sm text-gray-300">
+              <div class="text-xs text-gray-400">Last message</div>
+              <div class="mt-1">{{ t.last_message?.content || t.message || t.description || '-' }}</div>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-end gap-2">
+            <button @click.prevent="toggleExpand(t.id)" class="text-indigo-400 text-sm">{{ expanded[t.id] ? 'Hide' : 'View conversation' }}</button>
+            <RouterLink :to="`/admin/tickets/${t.id}`" class="text-indigo-300 text-sm">Open detail</RouterLink>
+          </div>
+        </div>
+
+        <transition name="fade">
+          <div v-if="expanded[t.id]" class="mt-2 bg-gray-900 p-2 rounded">
+            <div v-if="loadingDetails[t.id]" class="text-gray-400">Loading conversation...</div>
+            <div v-else>
+              <div v-for="m in details[t.id] || []" :key="m.id" class="mb-2 p-1 rounded border border-white/5">
+                <div class="text-xs text-gray-400">{{ m.user?.name || (m.is_support ? 'Support' : 'User') }} • {{ m.created_at ? new Date(m.created_at).toLocaleString() : '' }}</div>
+                <div class="mt-1 text-sm text-gray-200">{{ m.content || m.message || m.body || '' }}</div>
+              </div>
+
+              <div class="mt-2">
+                <textarea v-model="replyForms[t.id]" rows="2" class="w-full p-1 bg-gray-800 border border-white/10 rounded text-sm" placeholder="Escribe una respuesta..."></textarea>
+                <div class="text-right mt-2">
+                  <button @click.prevent="sendReply(t.id)" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-xs">Enviar</button>
                 </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+              </div>
+            </div>
+          </div>
+        </transition>
+        <div class="absolute right-2 bottom-2">
+          <span class="inline-block px-2 py-0.5 rounded text-xs" :class="t.active ? 'bg-green-700 text-white' : 'bg-red-700 text-white'">{{ t.active ? 'Active' : 'Inactive' }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
