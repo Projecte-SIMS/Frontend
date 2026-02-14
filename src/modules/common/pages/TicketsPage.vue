@@ -8,8 +8,9 @@
 
     <div v-if="loading" class="text-gray-400">Loading your tickets...</div>
 
-    <div v-else class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-      <div v-for="t in tickets" :key="t.id" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words self-start">
+    <div v-else>
+      <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-for="t in tickets.filter(tt => tt.active)" :key="t.id" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words self-start">
         <div class="flex items-start justify-between gap-2">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
@@ -46,6 +47,54 @@
           </div>
         </transition>
 
+      </div>
+      </div>
+
+      <div class="mt-4">
+        <h2 class="text-lg font-semibold mb-2">Completed</h2>
+        <div v-if="tickets.filter(tt => !tt.active).length === 0" class="text-gray-400">No completed tickets</div>
+        <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-2">
+          <div v-for="t in tickets.filter(tt => !tt.active)" :key="`done-${t.id}`" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words">
+            <div class="flex items-start justify-between gap-2">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2">
+                  <div class="font-medium truncate text-sm max-w-full">{{ (t.subject || t.title) ? (t.subject || t.title) : `Ticket #${t.id}` }}<span class="ml-2 inline-block px-2 py-0.5 rounded bg-gray-700 text-xs">{{ (details[t.id]?.length || t.messages?.length || t.messages_count || 0) }} msgs</span></div>
+                  <div class="text-xs text-gray-400">• {{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}</div>
+                </div>
+
+                <div class="mt-1 text-xs text-gray-300 max-h-12 overflow-hidden">{{ t.description || t.last_message?.content || t.message || '-' }}</div>
+              </div>
+
+              <div class="flex flex-col items-end gap-1">
+                <button @click.prevent="toggle(t.id)" class="text-indigo-400 text-xs">{{ expanded[t.id] ? 'Hide' : 'Open' }}</button>
+                <RouterLink :to="`/tickets/${t.id}`" class="text-indigo-300 text-xs">Full view</RouterLink>
+              </div>
+            </div>
+
+            <transition name="fade">
+              <div v-if="expanded[t.id]" class="mt-2 bg-gray-900 p-2 rounded text-sm">
+                <div v-if="loadingDetails[t.id]" class="text-gray-400">Loading...</div>
+                <div v-else>
+                  <div v-for="m in details[t.id] || []" :key="m.id" class="mb-1 p-1 rounded border border-white/5 break-words">
+                    <div class="text-xs text-gray-400">{{ m.user?.name || 'You' }} • {{ m.created_at ? new Date(m.created_at).toLocaleString() : '' }}</div>
+                    <div class="mt-1 text-sm text-gray-200">{{ m.content || m.message || m.body || '' }}</div>
+                  </div>
+
+                  <div class="mt-1 pb-6"> <!-- pad bottom so badge doesn't overlap -->
+                    <textarea v-model="replies[t.id]" rows="2" class="w-full p-1 bg-gray-800 border border-white/10 rounded text-sm" placeholder="Escribe un mensaje..."></textarea>
+                    <div class="text-right mt-1">
+                      <button @click.prevent="sendMessage(t.id)" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-xs">Enviar</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </transition>
+
+            <div class="absolute right-2 bottom-2">
+              <span class="inline-block px-2 py-0.5 rounded text-xs" :class="t.active ? 'bg-green-700 text-white' : 'bg-red-700 text-white'">{{ t.active ? 'Active' : 'Inactive' }}</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

@@ -99,7 +99,13 @@
 
     <main class="py-10 lg:pl-72">
       <div class="px-4 sm:px-6 lg:px-8">
-        <router-view />
+        <div v-if="isAdmin || isLoading">
+          <router-view />
+        </div>
+        <div v-else class="p-8 text-center text-gray-500">
+          <h2 class="text-lg font-semibold mb-2">Not authorized</h2>
+          <p>Your account does not have permission to access the admin area.</p>
+        </div>
       </div>
     </main>
   </div>
@@ -108,6 +114,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useAuth } from '@/modules/auth/composables/useAuth'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {
   Bars3Icon,
@@ -141,4 +148,6 @@ const navigation = computed(() =>
 )
 
 const sidebarOpen = ref(false)
+const { user, isLoading } = useAuth()
+const isAdmin = computed(() => !!(user.value && user.value.roles && user.value.roles.some((r: any) => (r.name || '').toLowerCase() === 'admin')))
 </script>
