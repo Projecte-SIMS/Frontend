@@ -10,7 +10,7 @@
 
     <div v-else>
       <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="t in tickets.filter(tt => tt.active)" :key="t.id" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words self-start">
+        <div v-for="t in activeTickets" :key="t.id" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words self-start">
         <div class="flex items-start justify-between gap-2">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
@@ -54,7 +54,7 @@
         <h2 class="text-lg font-semibold mb-2">Completed</h2>
         <div v-if="tickets.filter(tt => !tt.active).length === 0" class="text-gray-400">No completed tickets</div>
         <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mt-2">
-          <div v-for="t in tickets.filter(tt => !tt.active)" :key="`done-${t.id}`" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words">
+          <div v-for="t in completedTickets" :key="`done-${t.id}`" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words">
             <div class="flex items-start justify-between gap-2">
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
@@ -101,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
 
@@ -110,6 +110,19 @@ const loading = ref(false)
 const creating = ref(false)
 const showForm = ref(false)
 const form = ref({ title: '', description: '' })
+
+import { useAuth } from '@/modules/auth/composables/useAuth'
+const { user } = useAuth()
+
+const isAdminUser = (u: any) => !!(u && u.roles && u.roles.some((r: any) => (r.name || '').toLowerCase() === 'admin'))
+
+const visibleTickets = computed(() => {
+  if (isAdminUser(user.value)) return tickets.value
+  return tickets.value.filter(t => t.user_id === user.value?.id || t.user?.id === user.value?.id)
+})
+
+const activeTickets = computed(() => visibleTickets.value.filter((t: any) => t.active))
+const completedTickets = computed(() => visibleTickets.value.filter((t: any) => !t.active))
 
 const expanded = ref<Record<string, boolean>>({})
 const details = ref<Record<string, any[]>>({})
