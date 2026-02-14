@@ -1,34 +1,59 @@
 <template>
-  <div class="p-6">
-    <div class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl font-semibold">Tickets</h1>
-      <button @click="showForm = !showForm" class="px-3 py-1 rounded bg-indigo-600 text-white">New Ticket</button>
+  <div class="p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h1 class="text-xl font-semibold">My Tickets</h1>
+      <button @click="showForm = !showForm" class="px-2 py-1 rounded bg-indigo-600 text-white text-sm">New Ticket</button>
     </div>
 
-    <div v-if="showForm" class="mb-4 bg-gray-800 p-4 rounded">
-      <input v-model="form.title" placeholder="Asunto" class="w-full mb-2 p-2 rounded bg-gray-900 border border-white/10" />
-      <textarea v-model="form.message" placeholder="Descripción" class="w-full mb-2 p-2 rounded bg-gray-900 border border-white/10" rows="4"></textarea>
-      <div class="text-right">
-        <button @click="createTicket" :disabled="creating" class="px-3 py-1 rounded bg-green-600 text-white">{{ creating ? 'Creando...' : 'Crear ticket' }}</button>
+    <div v-if="showForm" class="mb-3 bg-gray-800 p-3 rounded text-sm">
+      <input v-model="form.title" placeholder="Título (requerido)" class="w-full mb-2 p-1 rounded bg-gray-900 border border-white/10" />
+      <textarea v-model="form.description" placeholder="Descripción (opcional)" class="w-full mb-2 p-1 rounded bg-gray-900 border border-white/10" rows="3"></textarea>
+      <div class="flex items-center gap-2 justify-end">
+        <button @click="createTicket" :disabled="creating" class="px-3 py-1 rounded bg-green-600 text-white text-sm">{{ creating ? 'Creando...' : 'Crear' }}</button>
       </div>
     </div>
 
-    <div>
-      <div v-if="loading">Loading tickets...</div>
-      <ul v-else class="space-y-2">
-        <li v-for="t in tickets" :key="t.id" class="p-3 bg-gray-800 rounded">
-          <RouterLink :to="`/tickets/${t.id}`" class="block">
-            <div class="flex justify-between">
-              <div>
-                <div class="font-semibold">{{ t.subject || t.title || `Ticket #${t.id}` }}</div>
-                <div class="text-sm text-gray-400">{{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}</div>
-              </div>
-              <div class="text-sm text-gray-300">{{ t.status || '-' }}</div>
+    <div v-if="loading" class="text-gray-400">Loading your tickets...</div>
+
+    <div v-else class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+      <div v-for="t in tickets" :key="t.id" class="relative bg-gray-800 p-3 sm:p-2 rounded-md shadow-sm text-sm flex flex-col justify-between break-words self-start">
+        <div class="flex items-start justify-between gap-2">
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2">
+              <div class="font-medium truncate text-sm max-w-full">{{ (t.subject || t.title) ? (t.subject || t.title) : `Ticket #${t.id}` }}</div>
+              <div class="text-xs text-gray-400">• {{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}</div>
             </div>
-            <div class="mt-2 text-gray-300">{{ t.description || t.last_message?.content || t.message || '' }}</div>
-          </RouterLink>
-        </li>
-      </ul>
+
+            <div class="mt-1 text-xs text-gray-300 max-h-12 overflow-hidden">{{ t.description || t.last_message?.content || t.message || '-' }}</div>
+          </div>
+
+          <div class="flex flex-col items-end gap-1">
+            <span class="inline-block px-2 py-0.5 rounded text-xs" :class="t.active ? 'bg-green-700 text-white' : 'bg-red-700 text-white'">{{ t.active ? 'Active' : 'Inactive' }}</span>
+            <button @click.prevent="toggle(t.id)" class="text-indigo-400 text-xs">{{ expanded[t.id] ? 'Hide' : 'Open' }}</button>
+            <RouterLink :to="`/tickets/${t.id}`" class="text-indigo-300 text-xs">Full view</RouterLink>
+          </div>
+        </div>
+
+        <transition name="fade">
+          <div v-if="expanded[t.id]" class="mt-2 bg-gray-900 p-2 rounded text-sm">
+            <div v-if="loadingDetails[t.id]" class="text-gray-400">Loading...</div>
+            <div v-else>
+              <div v-for="m in details[t.id] || []" :key="m.id" class="mb-1 p-1 rounded border border-white/5 break-words">
+                <div class="text-xs text-gray-400">{{ m.user?.name || 'You' }} • {{ m.created_at ? new Date(m.created_at).toLocaleString() : '' }}</div>
+                <div class="mt-1 text-sm text-gray-200">{{ m.content || m.message || m.body || '' }}</div>
+              </div>
+
+              <div class="mt-1 pb-6"> <!-- pad bottom so badge doesn't overlap -->
+                <textarea v-model="replies[t.id]" rows="2" class="w-full p-1 bg-gray-800 border border-white/10 rounded text-sm" placeholder="Escribe un mensaje..."></textarea>
+                <div class="text-right mt-1">
+                  <button @click.prevent="sendMessage(t.id)" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-xs">Enviar</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </transition>
+
+      </div>
     </div>
   </div>
 </template>
@@ -42,42 +67,85 @@ const tickets = ref<any[]>([])
 const loading = ref(false)
 const creating = ref(false)
 const showForm = ref(false)
-const form = ref({ title: '', message: '' })
+const form = ref({ title: '', description: '' })
+
+const expanded = ref<Record<string, boolean>>({})
+const details = ref<Record<string, any[]>>({})
+const loadingDetails = ref<Record<string, boolean>>({})
+const replies = ref<Record<string, string>>({})
 
 const load = async () => {
   loading.value = true
   try {
     const res = await apiClient.get('/tickets')
-    // Support paginated or plain array responses
     tickets.value = res.data.data ?? res.data ?? []
   } catch (e) {
     console.error(e)
+    showToast('Error cargando tus tickets', 'error')
   } finally {
     loading.value = false
   }
 }
 
 const createTicket = async () => {
-  if (!form.value.title || !form.value.message) return
+  if (!form.value.title) return
   creating.value = true
   try {
-    // send multiple possible field names to satisfy different backend expectations
-    const payload = {
-      subject: form.value.title,
-      title: form.value.title,
-      description: form.value.message,
-      message: form.value.message,
-    }
+    const payload = { title: form.value.title, description: form.value.description }
     const res = await apiClient.post('/tickets', payload)
     const newTicket = res.data.data ?? res.data
     if (newTicket) tickets.value.unshift(newTicket)
     form.value.title = ''
-    form.value.message = ''
+    form.value.description = ''
     showForm.value = false
-  } catch (e) {
+  } catch (e: any) {
     console.error(e)
+    const resp = e?.response
+    if (resp?.data) showToast(JSON.stringify(resp.data), 'error')
+    else showToast('Error creando ticket', 'error')
   } finally {
     creating.value = false
+  }
+}
+
+const toggle = async (ticketId: string | number) => {
+  const idStr = String(ticketId)
+  const isExpanded = !!expanded.value[idStr]
+  expanded.value = { ...(expanded.value || {}), [idStr]: !isExpanded }
+  if (!isExpanded && !(details.value && details.value[idStr])) {
+    loadingDetails.value = { ...(loadingDetails.value || {}), [idStr]: true }
+    try {
+      const res = await apiClient.get(`/tickets/${ticketId}`)
+      const data = res.data.data ?? res.data
+      details.value = { ...(details.value || {}), [idStr]: data.messages ?? data.data?.messages ?? [] }
+    } catch (e) {
+      console.error(e)
+      showToast('Error cargando conversación', 'error')
+    } finally {
+      loadingDetails.value = { ...(loadingDetails.value || {}), [idStr]: false }
+    }
+  }
+}
+
+const sendMessage = async (ticketId: string | number) => {
+  const idStr = String(ticketId)
+  const text = (replies.value || {})[idStr] || ''
+  if (!text) return
+  try {
+    const payload = { ticket_id: ticketId, message: text }
+    const res = await apiClient.post(`/tickets/${ticketId}/messages`, payload)
+    const newMsg = res.data.data ?? res.data
+    if (newMsg) {
+      const arr = details.value[idStr] || []
+      arr.push(newMsg)
+      details.value = { ...(details.value || {}), [idStr]: arr }
+      replies.value = { ...(replies.value || {}), [idStr]: '' }
+    }
+  } catch (e: any) {
+    console.error(e)
+    const resp = e?.response
+    if (resp?.data) showToast(JSON.stringify(resp.data), 'error')
+    else showToast('Error enviando mensaje', 'error')
   }
 }
 
