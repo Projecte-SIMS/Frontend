@@ -64,7 +64,7 @@ const query = ref('')
 const operativeOnly = ref(false)
 const radiusKm = ref<number | null>(null)
 const full = ref(false)
-const legendOpen = ref(true)
+const legendOpen = ref(false)
 
 const onSearch = () => setSearchQuery(query.value)
 const onToggleOperative = () => setShowOperativeOnly(operativeOnly.value)
