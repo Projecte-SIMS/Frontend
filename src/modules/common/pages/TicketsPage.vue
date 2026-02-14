@@ -2,16 +2,9 @@
   <div class="p-4">
     <div class="flex items-center justify-between mb-3">
       <h1 class="text-xl font-semibold">My Tickets</h1>
-      <button @click="showForm = !showForm" class="px-2 py-1 rounded bg-indigo-600 text-white text-sm">New Ticket</button>
+      <RouterLink to="/tickets/create" class="px-2 py-1 rounded bg-indigo-600 text-white text-sm">New Ticket</RouterLink>
     </div>
 
-    <div v-if="showForm" class="mb-3 bg-gray-800 p-3 rounded text-sm">
-      <input v-model="form.title" placeholder="Título (requerido)" class="w-full mb-2 p-1 rounded bg-gray-900 border border-white/10" />
-      <textarea v-model="form.description" placeholder="Descripción (opcional)" class="w-full mb-2 p-1 rounded bg-gray-900 border border-white/10" rows="3"></textarea>
-      <div class="flex items-center gap-2 justify-end">
-        <button @click="createTicket" :disabled="creating" class="px-3 py-1 rounded bg-green-600 text-white text-sm">{{ creating ? 'Creando...' : 'Crear' }}</button>
-      </div>
-    </div>
 
     <div v-if="loading" class="text-gray-400">Loading your tickets...</div>
 
