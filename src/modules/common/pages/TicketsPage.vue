@@ -13,7 +13,7 @@
         <div class="flex items-start justify-between gap-2">
           <div class="flex-1 min-w-0">
             <div class="flex items-center gap-2">
-              <div class="font-medium truncate text-sm max-w-full">{{ (t.subject || t.title) ? (t.subject || t.title) : `Ticket #${t.id}` }}</div>
+              <div class="font-medium truncate text-sm max-w-full">{{ (t.subject || t.title) ? (t.subject || t.title) : `Ticket #${t.id}` }}<span class="ml-2 inline-block px-2 py-0.5 rounded bg-gray-700 text-xs">{{ (details[t.id]?.length || t.messages?.length || t.messages_count || 0) }} msgs</span></div>
               <div class="text-xs text-gray-400">• {{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}</div>
             </div>
 
