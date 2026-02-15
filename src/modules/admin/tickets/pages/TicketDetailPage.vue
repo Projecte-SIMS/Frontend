@@ -24,9 +24,9 @@
     </div>
 
     <div class="mt-3">
-      <textarea v-model="reply" rows="3" class="w-full p-2 bg-gray-900 border border-white/10 rounded text-sm" placeholder="Responder..."></textarea>
+      <textarea v-model="reply" rows="3" class="w-full p-2 bg-gray-900 border border-white/10 rounded text-sm" placeholder="Reply..."></textarea>
       <div class="text-right mt-2">
-        <button @click="sendReply" class="px-3 py-1 rounded bg-indigo-600 text-white text-sm">Enviar</button>
+        <button @click="sendReply" class="px-3 py-1 rounded bg-indigo-600 text-white text-sm">Send</button>
       </div>
     </div>
   </div>
@@ -57,7 +57,7 @@ const load = async () => {
     messages.value = data.messages ?? data.data?.messages ?? []
   } catch (e) {
     console.error(e)
-    showToast('Error cargando ticket', 'error')
+    showToast('Error loading ticket', 'error')
   } finally {
     loading.value = false
   }
@@ -71,12 +71,12 @@ const sendReply = async () => {
     const newMsg = res.data.data ?? res.data
     if (newMsg) messages.value.push(newMsg)
     reply.value = ''
-    showToast('Mensaje enviado')
+    showToast('Message sent')
   } catch (e: any) {
     console.error(e)
     const resp = e?.response
     if (resp?.data) showToast(JSON.stringify(resp.data), 'error')
-    else showToast('Error enviando mensaje', 'error')
+    else showToast('Error sending message', 'error')
   }
 }
 
@@ -87,10 +87,10 @@ const updateStatus = async () => {
     ticket.value = res.data.data ?? res.data ?? ticket.value
     // normalize
     ticket.value.active = !!(ticket.value.active)
-    showToast('Estado actualizado')
+    showToast('Status updated')
   } catch (e) {
     console.error(e)
-    showToast('Error actualizando estado', 'error')
+    showToast('Error updating status', 'error')
   }
 }
 

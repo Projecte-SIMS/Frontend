@@ -45,7 +45,7 @@
       </p>
     </div>
 
-    <!-- Formulario creación (modal) -->
+    <!-- Creation form (modal) -->
     <Modal :show="showCreateModal" @close="closeCreateModal">
       <template #header>
         <h3 class="text-lg font-medium">Create booking</h3>
@@ -224,12 +224,12 @@ const { bookings, loading, error, pagination, getBookings, forceFinishBooking, d
 const { success: toastSuccess, error: toastError } = useToast()
 
 const columns = [
-  { key: 'guest', label: 'Huésped' },
-  { key: 'vehicle', label: 'Vehículo' },
-  { key: 'schedule', label: 'Horario' },
-  { key: 'price', label: 'Precio' },
-  { key: 'status', label: 'Estado' },
-  { key: 'actions', label: 'Acciones', srOnly: true },
+  { key: 'guest', label: 'Guest' },
+  { key: 'vehicle', label: 'Vehicle' },
+  { key: 'schedule', label: 'Schedule' },
+  { key: 'price', label: 'Price' },
+  { key: 'status', label: 'Status' },
+  { key: 'actions', label: 'Actions', srOnly: true },
 ]
 
 const filters = ref<BookingFilters>({

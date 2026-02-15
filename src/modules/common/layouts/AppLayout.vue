@@ -111,7 +111,7 @@
       </DisclosurePanel>
     </Disclosure>
 
-    <!-- Contenido (MAPA / PÁGINAS) -->
+    <!-- Content (MAP / PAGES) -->
     <main class="relative min-h-[calc(100dvh-4rem)] pb-16">
       <router-view />
     </main>
@@ -119,11 +119,11 @@
     <!-- Bottom nav (mobile-first) -->
     <nav class="fixed bottom-0 left-0 right-0 z-30 border-t border-white/10 bg-gray-900/90 backdrop-blur sm:hidden">
       <div class="mx-auto max-w-md px-2 py-2 grid grid-cols-5 text-center text-xs text-gray-300">
-        <RouterLink to="/" class="py-2 rounded-xl" :class="isActive('/') ? 'text-white bg-white/5' : ''">Mapa</RouterLink>
+        <RouterLink to="/" class="py-2 rounded-xl" :class="isActive('/') ? 'text-white bg-white/5' : ''">Map</RouterLink>
         <RouterLink to="/bookings" class="py-2 rounded-xl" :class="isActive('/bookings') ? 'text-white bg-white/5' : ''">Bookings</RouterLink>
         <RouterLink to="/tickets" class="py-2 rounded-xl" :class="isActive('/tickets') ? 'text-white bg-white/5' : ''">Tickets</RouterLink>
         <RouterLink to="/favoritos" class="py-2 rounded-xl" :class="isActive('/favoritos') ? 'text-white bg-white/5' : ''">Fav</RouterLink>
-        <RouterLink to="/perfil" class="py-2 rounded-xl" :class="isActive('/perfil') ? 'text-white bg-white/5' : ''">Perfil</RouterLink>
+        <RouterLink to="/perfil" class="py-2 rounded-xl" :class="isActive('/perfil') ? 'text-white bg-white/5' : ''">Profile</RouterLink>
       </div>
     </nav>
   </div>
@@ -149,11 +149,11 @@ const user = {
 }
 
 const navigation = [
-  { name: 'Mapa', to: '/vehicles-map' },
+  { name: 'Map', to: '/vehicles-map' },
   { name: 'Bookings', to: '/bookings' },
   { name: 'Tickets', to: '/tickets' },
-  { name: 'Favoritos', to: '/favoritos' },
-  { name: 'Perfil', to: '/perfil' },
+  { name: 'Favorites', to: '/favoritos' },
+  { name: 'Profile', to: '/perfil' },
 ]
 
 const userNavigation = [
@@ -165,7 +165,7 @@ const userNavigation = [
 const handleLogout = async () => {
   try {
     await logout()
-    showToast('Sesión cerrada correctamente')
+    showToast('Logged out successfully')
   } catch (_) {
     // El propio useAuth ya muestra el error si falla
   } finally {

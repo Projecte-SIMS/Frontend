@@ -81,9 +81,9 @@
                   </div>
 
                   <div class="mt-1 pb-6"> <!-- pad bottom so badge doesn't overlap -->
-                    <textarea v-model="replies[t.id]" rows="2" class="w-full p-1 bg-gray-800 border border-white/10 rounded text-sm" placeholder="Escribe un mensaje..."></textarea>
+                    <textarea v-model="replies[t.id]" rows="2" class="w-full p-1 bg-gray-800 border border-white/10 rounded text-sm" placeholder="Write a message..."></textarea>
                     <div class="text-right mt-1">
-                      <button @click.prevent="sendMessage(t.id)" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-xs">Enviar</button>
+                      <button @click.prevent="sendMessage(t.id)" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-xs">Send</button>
                     </div>
                   </div>
                 </div>
@@ -136,7 +136,7 @@ const load = async () => {
     tickets.value = res.data.data ?? res.data ?? []
   } catch (e) {
     console.error(e)
-    showToast('Error cargando tus tickets', 'error')
+    showToast('Error loading your tickets', 'error')
   } finally {
     loading.value = false
   }
@@ -157,7 +157,7 @@ const createTicket = async () => {
     console.error(e)
     const resp = e?.response
     if (resp?.data) showToast(JSON.stringify(resp.data), 'error')
-    else showToast('Error creando ticket', 'error')
+    else showToast('Error creating ticket', 'error')
   } finally {
     creating.value = false
   }
@@ -175,7 +175,7 @@ const toggle = async (ticketId: string | number) => {
       details.value = { ...(details.value || {}), [idStr]: data.messages ?? data.data?.messages ?? [] }
     } catch (e) {
       console.error(e)
-      showToast('Error cargando conversación', 'error')
+      showToast('Error loading conversation', 'error')
     } finally {
       loadingDetails.value = { ...(loadingDetails.value || {}), [idStr]: false }
     }
@@ -200,7 +200,7 @@ const sendMessage = async (ticketId: string | number) => {
     console.error(e)
     const resp = e?.response
     if (resp?.data) showToast(JSON.stringify(resp.data), 'error')
-    else showToast('Error enviando mensaje', 'error')
+    else showToast('Error sending message', 'error')
   }
 }
 

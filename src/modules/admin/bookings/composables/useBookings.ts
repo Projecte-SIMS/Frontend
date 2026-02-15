@@ -57,7 +57,7 @@ export function useBookings() {
 
   const createBooking = async (payload: BookingCreatePayload) => {
     try {
-      // El backend expone la creación en POST /reservations (operaciones de usuario)
+      // The backend exposes creation at POST /reservations (user operations)
       // Desde admin usamos el mismo endpoint pero podemos pasar user_id opcionalmente.
       const response = await api.post<{ data: Booking }>('/reservations', payload)
       return response.data.data

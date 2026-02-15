@@ -3,13 +3,13 @@
     <h1 class="text-2xl font-semibold mb-4">Admin - Tickets</h1>
 
     <div class="flex items-center gap-3 mb-4">
-      <label class="text-sm text-gray-400">Filtro:</label>
+      <label class="text-sm text-gray-400">Filter:</label>
       <select v-model="filterType" class="bg-gray-800 text-sm rounded px-2 py-1">
-        <option value="all">Todos</option>
-        <option value="user">Por usuario</option>
+        <option value="all">All</option>
+        <option value="user">By user</option>
       </select>
       <select v-if="filterType === 'user'" v-model="userFilter" class="bg-gray-800 text-sm rounded px-2 py-1">
-        <option value="">-- Seleccionar usuario --</option>
+        <option value="">-- Select user --</option>
         <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
       </select>
     </div>
@@ -54,9 +54,9 @@
               </div>
 
               <div class="mt-2">
-                <textarea v-model="replyForms[t.id]" rows="2" class="w-full p-1 bg-gray-800 border border-white/10 rounded text-sm" placeholder="Escribe una respuesta..."></textarea>
+                <textarea v-model="replyForms[t.id]" rows="2" class="w-full p-1 bg-gray-800 border border-white/10 rounded text-sm" placeholder="Write a reply..."></textarea>
                 <div class="text-right mt-2">
-                  <button @click.prevent="sendReply(t.id)" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-xs">Enviar</button>
+                  <button @click.prevent="sendReply(t.id)" class="px-2 py-0.5 rounded bg-indigo-600 text-white text-xs">Send</button>
                 </div>
               </div>
             </div>
@@ -69,7 +69,7 @@
     </div>
 
     <div class="mt-6">
-      <h2 class="text-xl font-semibold mb-2">Completadas</h2>
+      <h2 class="text-xl font-semibold mb-2">Completed</h2>
       <div class="grid gap-2 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <div v-if="completedTickets.length === 0" class="text-gray-400">No completed tickets.</div>
 
@@ -180,7 +180,7 @@ const sendReply = async (ticketId: string | number) => {
     console.error(e)
     const resp = e?.response
     if (resp?.data) showToast(JSON.stringify(resp.data), 'error')
-    else showToast('Error enviando mensaje', 'error')
+    else showToast('Error sending message', 'error')
   }
 }
 

@@ -19,9 +19,9 @@
     </div>
 
     <div class="mt-6 bg-gray-800 p-4 rounded">
-      <textarea v-model="form.message" rows="4" class="w-full p-2 bg-gray-900 border border-white/10 rounded" placeholder="Escribe un mensaje..."></textarea>
+      <textarea v-model="form.message" rows="4" class="w-full p-2 bg-gray-900 border border-white/10 rounded" placeholder="Write a message..."></textarea>
       <div class="text-right mt-2">
-        <button @click="sendMessage" :disabled="sending" class="px-3 py-1 rounded bg-indigo-600 text-white">{{ sending ? 'Enviando...' : 'Enviar' }}</button>
+        <button @click="sendMessage" :disabled="sending" class="px-3 py-1 rounded bg-indigo-600 text-white">{{ sending ? 'Sending...' : 'Send' }}</button>
       </div>
     </div>
   </div>
@@ -52,7 +52,7 @@ const load = async () => {
     messages.value = data.messages ?? data.data?.messages ?? []
   } catch (e) {
     console.error(e)
-    showToast('Error cargando conversación', 'error')
+    showToast('Error loading conversation', 'error')
   } finally {
     loading.value = false
   }
@@ -85,7 +85,7 @@ const sendMessage = async () => {
       console.error(resp.data)
     } else {
       console.error(e)
-      showToast('Error enviando mensaje', 'error')
+      showToast('Error sending message', 'error')
     }
   } finally {
     sending.value = false
@@ -96,10 +96,10 @@ const deleteMessage = async (messageId: number | string) => {
   try {
     await apiClient.delete(`/messages/${messageId}`)
     messages.value = messages.value.filter(m => m.id !== messageId)
-    showToast('Mensaje eliminado')
+    showToast('Message deleted')
   } catch (e) {
     console.error(e)
-    showToast('Error eliminando mensaje', 'error')
+    showToast('Error deleting message', 'error')
   }
 }
 
