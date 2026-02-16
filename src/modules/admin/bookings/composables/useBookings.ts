@@ -45,7 +45,7 @@ export function useBookings() {
     error.value = null
 
     try {
-      // AdminReservationController@show devuelve la reserva directamente, no envuelta en { data: ... }
+      // AdminReservationController@show returns the booking directly, not wrapped in { data: ... }
       const response = await api.get<Booking>(`/admin/reservations/${id}`)
       currentBooking.value = response.data
       return response.data
