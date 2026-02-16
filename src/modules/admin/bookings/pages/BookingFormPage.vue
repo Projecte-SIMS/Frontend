@@ -24,7 +24,7 @@
     <div v-else class="bg-white dark:bg-gray-900 shadow rounded-lg">
       <div class="px-4 py-5 sm:px-6">
         <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white">
-          {{ isEditMode ? 'Edit booking' : 'Create booking' }}
+          Edit booking
         </h3>
       </div>
 
@@ -79,7 +79,7 @@
             >
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {{ saving ? 'Saving...' : (isEditMode ? 'Save changes' : 'Create booking') }}
+            {{ saving ? 'Saving...' : 'Save changes' }}
           </button>
         </div>
       </form>
@@ -98,11 +98,10 @@ import { useToast } from '@/modules/common/composables/useToast'
 
 const route = useRoute()
 const router = useRouter()
-const { getBooking, createBooking, updateBooking, loading } = useBookings()
+const { getBooking, updateBooking, loading } = useBookings()
 const { success: toastSuccess, error: toastError } = useToast()
 
 const bookingId = computed(() => (route.params.id ? Number(route.params.id) : null))
-const isEditMode = computed(() => !!bookingId.value)
 
 const form = reactive<{
   user_id: string
@@ -119,7 +118,7 @@ const form = reactive<{
 const saving = ref(false)
 
 onMounted(async () => {
-  if (isEditMode.value && bookingId.value) {
+  if (bookingId.value) {
     try {
       const booking = await getBooking(bookingId.value)
       if (booking.user_id) form.user_id = String(booking.user_id)
@@ -148,13 +147,13 @@ const handleSubmit = async () => {
       payload.user_id = Number(form.user_id)
     }
 
-    if (isEditMode.value && bookingId.value) {
-      await updateBooking(bookingId.value, payload)
-      toastSuccess('Booking updated successfully')
-    } else {
-      await createBooking(payload)
-      toastSuccess('Booking created successfully')
+    if (!bookingId.value) {
+      toastError('Missing booking id')
+      return
     }
+
+    await updateBooking(bookingId.value, payload)
+    toastSuccess('Booking updated successfully')
 
     router.push('/admin/bookings')
   } catch (e: any) {
