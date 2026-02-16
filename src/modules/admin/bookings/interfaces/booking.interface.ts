@@ -23,7 +23,7 @@ export type BookingStatus = 'active' | 'pending' | 'finished' | 'cancelled' | 'c
 export interface Booking {
   id: number
   status: BookingStatus
-  // Campos clásicos de reservas (si los devuelve el backend)
+  // Classic booking fields (if returned by backend)
   user_id?: number
   vehicle_id?: number
   start_time?: string
@@ -56,7 +56,7 @@ export interface BookingPagination {
   total: number
 }
 
-// Payload básico para crear reservas desde el admin
+// Basic payload to create bookings from admin
 // El backend solo requiere: vehicle_id y scheduled_start
 export interface BookingCreatePayload {
   vehicle_id: number

@@ -18,6 +18,9 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('@/modules/common/pages/HomePage.vue') },
       { path: 'vehicles-map', component: () => import('@/modules/common/pages/MapPage.vue') },
       { path: 'bookings', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: 'tickets', component: () => import('@/modules/tickets/pages/TicketsPage.vue') },
+      { path: 'tickets/create', component: () => import('@/modules/tickets/pages/CreateTicketPage.vue') },
+      { path: 'tickets/:id', component: () => import('@/modules/tickets/pages/TicketConversationPage.vue') },
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
 
@@ -45,6 +48,18 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
+        path: 'tickets',
+        name: 'AdminTickets',
+        component: () => import('@/modules/admin/tickets/pages/TicketsPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'tickets/:id',
+        name: 'AdminTicketDetail',
+        component: () => import('@/modules/admin/tickets/pages/TicketDetailPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
         path: 'bookings/:id',
         name: 'AdminBookingDetail',
         component: () => import('@/modules/admin/bookings/pages/BookingDetailPage.vue'),
@@ -55,7 +70,7 @@ const routes: RouteRecordRaw[] = [
         name: 'AdminBookingEdit',
         component: () => import('@/modules/admin/bookings/pages/BookingFormPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
-      },
+      }
     ]
   },
   ...authRoutes,

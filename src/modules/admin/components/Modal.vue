@@ -46,8 +46,7 @@ const emit = defineEmits<{
   (e: 'close'): void
 }>()
 </script>
-<<<<<<< HEAD
-=======
+
 
 <style scoped>
 .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:50 }
@@ -58,4 +57,3 @@ const emit = defineEmits<{
 .close-btn { background:transparent; border:none; font-size:16px; cursor:pointer; color:#9CA3AF; transition:color 0.2s }
 .close-btn:hover { color:#F3F4F6 }
 </style>
->>>>>>> origin/develop

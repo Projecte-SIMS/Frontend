@@ -9,28 +9,45 @@
     <!-- Reserve left space for admin sidebar (lg) and reduce height on small screens -->
     <div ref="mapContainer" class="w-full h-[500px] lg:ml-0 lg:pl-0 rounded-lg shadow-lg z-0" style="height: 60vh;"></div>
     <div class="map-legend absolute top-6 right-6 bg-white/90 dark:bg-gray-900/90 text-sm p-2 rounded shadow">
-      <div class="font-semibold mb-1">Legend</div>
-      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Available (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Occupied (Postgres)</span></div>
-      <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Running (Mongo)</span></div>
+      <div class="flex items-center justify-between mb-1">
+        <div class="font-semibold">Legend</div>
+        <button @click="legendOpen = !legendOpen" class="text-xs px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800">{{ legendOpen ? 'Hide' : 'Show' }}</button>
+      </div>
+      <div v-if="legendOpen">
+        <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Available</span></div>
+        <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Occupied</span></div>
+        <div class="flex items-center gap-2"><span style="width:12px;height:12px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>Running</span></div>
+      </div>
     </div>
     
-    <!-- Vehicles list -->
-    <div class="mt-4 space-y-3">
-      <div v-for="vehicle in vehicles" :key="vehicle.id" class="bg-white dark:bg-gray-800 rounded-lg p-4 shadow flex items-center justify-between cursor-pointer hover:shadow-lg transition-shadow">
-        <div class="flex items-center gap-4" @click="centerOnVehicle(vehicle)">
-          <div class="flex flex-col">
-            <p class="font-semibold text-gray-900 dark:text-white">{{ vehicle.plate }}</p>
-            <p class="text-sm text-gray-500 dark:text-gray-400">{{ vehicle.brand }} {{ vehicle.model }}</p>
+    <!-- Vehicles list as responsive cards -->
+    <div class="mt-4">
+      <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-for="vehicle in vehicles" :key="vehicle.id" class="bg-white dark:bg-gray-800 rounded-lg p-3 shadow hover:shadow-lg transition-shadow flex flex-col justify-between">
+          <div @click="centerOnVehicle(vehicle)" class="cursor-pointer">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="font-semibold text-gray-900 dark:text-white truncate">{{ vehicle.plate }}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 truncate">{{ vehicle.brand }} {{ vehicle.model }}</p>
+              </div>
+              <div class="flex flex-col items-end gap-1">
+                <span class="text-xs px-2 py-0.5 rounded-full" :class="vehicle.postgres_active ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'">{{ vehicle.postgres_active ? 'Occupied' : 'Available' }}</span>
+                <span class="text-xs px-2 py-0.5 rounded-full" :class="vehicle.mongo_active ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'">{{ vehicle.mongo_active ? 'Running' : 'Stopped' }}</span>
+              </div>
+            </div>
+
+            <div class="mt-2 text-xs text-gray-500 flex items-center justify-between gap-2">
+              <div class="truncate">Lat: {{ vehicle.latitude ?? '-' }}, Lng: {{ vehicle.longitude ?? '-' }}</div>
+              <div class="text-right text-xs text-gray-400">ID: {{ vehicle.id }}</div>
+            </div>
           </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs px-2 py-1 rounded-full" :class="vehicle.postgres_active ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'">{{ vehicle.postgres_active ? 'Occupied' : 'Available' }}</span>
-            <span class="text-xs px-2 py-1 rounded-full" :class="vehicle.mongo_active ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'">{{ vehicle.mongo_active ? 'Running' : 'Stopped' }}</span>
+
+          <div class="mt-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <!-- Actions removed: clicking plate centers and opens popup -->
+            </div>
+            <div class="text-xs text-gray-400">{{ vehicle.updated_at ? new Date(vehicle.updated_at).toLocaleString() : '' }}</div>
           </div>
-        </div>
-        <div class="flex items-center gap-2">
-          <button class="text-sm text-indigo-600 hover:underline" @click.stop="centerOnVehicle(vehicle)">Center</button>
-          <button class="text-sm text-gray-600 hover:underline" @click.stop="markers.get(vehicle.id)?.openPopup()">Open popup</button>
         </div>
       </div>
     </div>
@@ -47,6 +64,7 @@ const query = ref('')
 const operativeOnly = ref(false)
 const radiusKm = ref<number | null>(null)
 const full = ref(false)
+const legendOpen = ref(false)
 
 const onSearch = () => setSearchQuery(query.value)
 const onToggleOperative = () => setShowOperativeOnly(operativeOnly.value)

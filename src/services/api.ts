@@ -1,12 +1,12 @@
 import axios from 'axios'
 import showToast from '@/modules/common/composables/useToast'
 
-// VALE PEÑA COMENTARI EN ESPAÑOL QUE ESPERO QEU ALGU LO LLEGIXQUE
-// Este archiu configura axios per a utiltizar la api en base a les coockies
-// que pasa ? que si volem seguretat hauriem de fer la cockie httpOnly pero
-// en aquest cas no podriem accedir al token des del frontend i per tant no
-// podríem afegir-lo a les peticions. Així que fem-ho així per ara i ja
-// millorarem la seguretat més endavant si mos enrecordem. Tonoto quien lo lea
+// NOTE: previous comment contained Spanish/Catalan; translated to English
+// This file configures axios to use the API based on cookies.
+// If stronger security is required, httpOnly cookies would be preferable,
+// but then the frontend cannot access the token to add it to requests.
+// For now the token is read from cookies and added to request headers.
+// Improve security later as needed.
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
