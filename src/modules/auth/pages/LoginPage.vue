@@ -75,7 +75,7 @@ const handleSubmit = async () => {
   const success = await login(email.value, password.value)
   
   if (success) {
-    router.push('/dashboard')
+    router.push('/admin')
   }
 }
 </script>

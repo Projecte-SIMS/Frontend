@@ -82,8 +82,8 @@ router.beforeEach(async (to, from, next) => {
     // Protected route and not authenticated -> go to login
     next('/login')
   } else if (to.path === '/login' && isAuthenticated.value) {
-    // Already authenticated attempting to go to login -> go to dashboard
-    next('/dashboard')
+    // Already authenticated attempting to go to login -> go to admin dashboard
+    next('/admin')
   } else {
     // All good
     next()
