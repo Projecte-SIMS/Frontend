@@ -45,7 +45,7 @@
         </p>
       </RouterLink>
 
-      <!-- Tarjeta de Tickets (modulo desactivado) -->
+      <!-- Tickets card (module disabled) -->
       <div
         v-for="item in disabledItems"
         :key="item.name"
