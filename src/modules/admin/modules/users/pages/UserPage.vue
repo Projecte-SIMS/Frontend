@@ -47,7 +47,10 @@
       </template>
 
       <tr v-for="user in users" :key="user.id">
-        <AdminTd first variant="primary">
+        <AdminTd first variant="muted">
+          {{ user.id }}
+        </AdminTd>
+        <AdminTd variant="primary">
           {{ user.name }}
         </AdminTd>
         <AdminTd variant="muted">
@@ -144,6 +147,7 @@ const { users, loading, error, pagination, getUsers, isCurrentUserAdmin } = useU
 const toast = useToast()
 
 const columns = [
+  { key: 'id', label: 'ID' },
   { key: 'name', label: 'Name' },
   { key: 'username', label: 'Username' },
   { key: 'email', label: 'Email' },
