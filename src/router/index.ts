@@ -48,7 +48,6 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true, requiresAdmin: true }
       },
       {
-<<<<<<< HEAD
         path: 'tickets',
         name: 'AdminTickets',
         component: () => import('@/modules/admin/tickets/pages/TicketsPage.vue'),
@@ -58,7 +57,9 @@ const routes: RouteRecordRaw[] = [
         path: 'tickets/:id',
         name: 'AdminTicketDetail',
         component: () => import('@/modules/admin/tickets/pages/TicketDetailPage.vue'),
-=======
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
         path: 'bookings/:id',
         name: 'AdminBookingDetail',
         component: () => import('@/modules/admin/bookings/pages/BookingDetailPage.vue'),
@@ -68,9 +69,8 @@ const routes: RouteRecordRaw[] = [
         path: 'bookings/:id/edit',
         name: 'AdminBookingEdit',
         component: () => import('@/modules/admin/bookings/pages/BookingFormPage.vue'),
->>>>>>> origin/develop
         meta: { requiresAuth: true, requiresAdmin: true }
-      },
+      }
     ]
   },
   ...authRoutes,
