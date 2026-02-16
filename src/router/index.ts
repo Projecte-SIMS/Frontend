@@ -28,7 +28,7 @@ const routes: RouteRecordRaw[] = [
     component: AdminLayout,
     meta: { requiresAuth: true },
     children: [
-      { path: '', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
+      { path: '', component: () => import('@/modules/admin/pages/AdminDashboardPage.vue') },
       {
         path: 'map',
         name: 'AdminVehicleMap',
@@ -42,6 +42,18 @@ const routes: RouteRecordRaw[] = [
         path: 'bookings',
         name: 'AdminBookings',
         component: () => import('@/modules/admin/bookings/pages/BookingsPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'bookings/:id',
+        name: 'AdminBookingDetail',
+        component: () => import('@/modules/admin/bookings/pages/BookingDetailPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'bookings/:id/edit',
+        name: 'AdminBookingEdit',
+        component: () => import('@/modules/admin/bookings/pages/BookingFormPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
     ]
@@ -70,8 +82,8 @@ router.beforeEach(async (to, from, next) => {
     // Protected route and not authenticated -> go to login
     next('/login')
   } else if (to.path === '/login' && isAuthenticated.value) {
-    // Already authenticated attempting to go to login -> go to dashboard
-    next('/dashboard')
+    // Already authenticated attempting to go to login -> go to admin dashboard
+    next('/admin')
   } else {
     // All good
     next()

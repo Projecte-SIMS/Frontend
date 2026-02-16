@@ -178,17 +178,28 @@
         <AdminTd variant="actions">
           <div class="flex gap-2">
             <button
-              v-if="booking.status === 'active'"
-              @click="handleForceFinish(booking.id)"
-              class="text-amber-600 hover:text-amber-900 dark:text-amber-400 dark:hover:text-amber-300 text-xs"
+              class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+              @click="navigateToDetail(booking.id)"
+              title="View"
             >
-              Force finish
+              <span class="material-icons text-xl">visibility</span>
+              <span class="sr-only">View, booking #{{ booking.id }}</span>
+            </button>
+            <button
+              class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
+              @click="navigateToEdit(booking.id)"
+              title="Edit"
+            >
+              <span class="material-icons text-xl">edit</span>
+              <span class="sr-only">Edit, booking #{{ booking.id }}</span>
             </button>
             <button
               @click="handleDelete(booking.id)"
-              class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-xs"
+              class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors"
+              title="Delete"
             >
-              Delete
+              <span class="material-icons text-xl">delete</span>
+              <span class="sr-only">Delete, booking #{{ booking.id }}</span>
             </button>
           </div>
         </AdminTd>
@@ -208,6 +219,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useBookings } from '../composables/useBookings'
 import type { Booking, BookingFilters, BookingCreatePayload } from '../interfaces/booking.interface'
 import AdminsTable from '@/modules/admin/components/AdminsTable.vue'
@@ -219,7 +231,8 @@ import FormInput from '@/modules/admin/components/FormInput.vue'
 import FormField from '@/modules/admin/components/FormField.vue'
 import { useToast } from '@/modules/common/composables/useToast'
 
-const { bookings, loading, error, pagination, getBookings, forceFinishBooking, deleteBooking, createBooking } = useBookings()
+const router = useRouter()
+const { bookings, loading, error, pagination, getBookings, deleteBooking, createBooking } = useBookings()
 
 const { success: toastSuccess, error: toastError } = useToast()
 
@@ -315,17 +328,6 @@ const handleCreate = async () => {
   }
 }
 
-const handleForceFinish = async (id: number) => {
-  if (!confirm('Are you sure you want to force finish this booking?')) return
-  try {
-    await forceFinishBooking(id)
-    toastSuccess('Booking finished successfully')
-    loadBookings(pagination.value.current_page)
-  } catch (e: any) {
-    toastError(e)
-  }
-}
-
 const handleDelete = async (id: number) => {
   if (!confirm('Are you sure you want to delete this booking?')) return
   try {
@@ -372,7 +374,14 @@ const getStartDate = (booking: Booking) =>
 
 const getEndDate = (booking: Booking) =>
   booking.end_time || booking.activation_deadline || booking.trip?.engine_started_at || ''
-
 const getTotal = (booking: Booking) =>
   booking.total_price ?? booking.trip?.total_amount ?? 0
+
+const navigateToDetail = (id: number) => {
+  router.push(`/admin/bookings/${id}`)
+}
+
+const navigateToEdit = (id: number) => {
+  router.push(`/admin/bookings/${id}/edit`)
+}
 </script>

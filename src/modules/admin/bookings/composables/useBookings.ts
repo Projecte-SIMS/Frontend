@@ -4,6 +4,7 @@ import type { Booking, BookingFilters, BookingPagination, BookingCreatePayload }
 
 export function useBookings() {
   const bookings = ref<Booking[]>([])
+  const currentBooking = ref<Booking | null>(null)
   const loading = ref(false)
   const error = ref<string | null>(null)
   const pagination = ref({
@@ -39,6 +40,24 @@ export function useBookings() {
     }
   }
 
+  const getBooking = async (id: number) => {
+    loading.value = true
+    error.value = null
+
+    try {
+      // AdminReservationController@show returns the booking directly, not wrapped in { data: ... }
+      const response = await api.get<Booking>(`/admin/reservations/${id}`)
+      currentBooking.value = response.data
+      return response.data
+    } catch (err: any) {
+      console.error(err)
+      error.value = err?.response?.data?.message || 'Error loading booking'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   const forceFinishBooking = async (id: number) => {
     try {
       await api.post(`/admin/reservations/${id}/force-finish`)
@@ -55,6 +74,24 @@ export function useBookings() {
     }
   }
 
+  const updateBooking = async (id: number, payload: Partial<BookingCreatePayload>) => {
+    loading.value = true
+    error.value = null
+
+    try {
+      // AdminReservationController@update devuelve { message, data: reservation }
+      const response = await api.put<{ message: string; data: Booking }>(`/admin/reservations/${id}`, payload)
+      currentBooking.value = response.data.data
+      return response.data.data
+    } catch (err: any) {
+      console.error(err)
+      error.value = err?.response?.data?.message || 'Error updating booking'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   const createBooking = async (payload: BookingCreatePayload) => {
     try {
       // El backend expone la creación en POST /reservations (operaciones de usuario)
@@ -68,12 +105,15 @@ export function useBookings() {
 
   return {
     bookings,
+    currentBooking,
     loading,
     error,
     pagination,
     getBookings,
+    getBooking,
     forceFinishBooking,
     deleteBooking,
     createBooking,
+    updateBooking,
   }
 }
