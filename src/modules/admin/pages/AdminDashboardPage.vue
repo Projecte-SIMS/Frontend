@@ -44,37 +44,6 @@
           Go to {{ item.name.toLowerCase() }}
         </p>
       </RouterLink>
-
-      <!-- Tickets card (module disabled) -->
-      <div
-        v-for="item in disabledItems"
-        :key="item.name"
-        class="relative overflow-hidden rounded-xl bg-gray-50 dark:bg-gray-800/60 p-6 ring-1 ring-gray-200 dark:ring-white/10 opacity-80"
-      >
-        <div class="flex items-center justify-between">
-          <div>
-            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
-              {{ item.name }}
-            </h2>
-            <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">
-              {{ item.description }}
-            </p>
-          </div>
-          <div
-            class="flex h-12 w-12 items-center justify-center rounded-xl"
-            :class="item.bgClass"
-          >
-            <component
-              :is="item.icon"
-              class="h-6 w-6"
-              :class="item.iconClass"
-            />
-          </div>
-        </div>
-        <p class="mt-4 text-xs text-gray-500 dark:text-gray-400">
-          Ticket module disabled in the frontend.
-        </p>
-      </div>
     </div>
   </div>
 </template>
@@ -89,6 +58,7 @@ import {
   UsersIcon,
   TicketIcon,
 } from '@heroicons/vue/24/outline'
+import apiClient from '@/services/api'
 import { useUsers } from '@/modules/admin/modules/users/composables/useUsers'
 import { useVehicles } from '@/modules/admin/modules/vehicles/composables/useVehicles'
 import { useRoles } from '@/modules/admin/modules/roles/composables/useRoles'
@@ -115,6 +85,8 @@ const {
   getBookings,
 } = useBookings()
 
+const ticketsCount = ref(0)
+
 const loadingStats = ref(false)
 
 onMounted(async () => {
@@ -126,6 +98,15 @@ onMounted(async () => {
       getVehicles(1).catch((e) => console.error('Error loading vehicles stats', e)),
       getRoles(1).catch((e) => console.error('Error loading roles stats', e)),
       getBookings(1).catch((e) => console.error('Error loading bookings stats', e)),
+      (async () => {
+        try {
+          const res = await apiClient.get('/tickets')
+          const arr = (res.data && (res.data.data ?? res.data)) || []
+          ticketsCount.value = Array.isArray(arr) ? arr.length : 0
+        } catch (err) {
+          console.error('Error loading tickets stats', err)
+        }
+      })(),
     ])
   } catch (e) {
     console.error('Error loading admin stats', e)
@@ -171,15 +152,14 @@ const items = computed(() => [
     iconClass: 'text-orange-400',
     count: vehiclesPagination.value.total || vehicles.value.length,
   },
-])
-
-const disabledItems = [
   {
     name: 'Tickets',
-    description: 'Ticket management (currently disabled).',
+    description: 'Manage support tickets.',
+    to: '/admin/tickets',
     icon: TicketIcon,
     bgClass: 'bg-rose-500/20',
     iconClass: 'text-rose-400',
+    count: ticketsCount.value,
   },
-]
+])
 </script>
