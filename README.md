@@ -1,42 +1,74 @@
-# project-sims-frontend
+# SIMS – Frontend Blade
+**Versión:** Sprint 5 – First Deployment  
+**Fecha:** 2026-02-23
 
-This template should help get you started developing with Vue 3 in Vite.
+---
 
-## Recommended IDE Setup
+## Descripción General
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+Este repositorio contiene el frontend web de SIMS, implementado en Laravel Blade. Proporciona interfaces para usuarios y administradores, permitiendo la gestión y visualización de vehículos, tickets, reservas, roles y permisos.
 
-## Recommended Browser Setup
+---
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd)
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+## Arquitectura y Componentes
 
-## Type Support for `.vue` Imports in TS
+- **Vistas Blade:** Login, registro, panel de usuario, panel de administración, CRUD de entidades.
+- **Formularios:** Apuntan a endpoints auditados del backend, usan CSRF y validaciones básicas.
+- **Navegación:** Menús y enlaces funcionales, diferenciados por rol (usuario/admin).
+- **Integración:** Consumo directo de endpoints backend, sin lógica de negocio en frontend.
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
+---
 
-## Customize configuration
+## Integración
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+- **Backend Laravel:** Consume endpoints protegidos para autenticación, gestión y visualización.
+- **Roles:** Navegación y vistas diferenciadas para usuarios y administradores.
 
-## Project Setup
+---
 
-```sh
-npm install
-```
+## Formularios y Vistas Principales
 
-### Compile and Hot-Reload for Development
+| Vista/Formulario      | Endpoint         | Método | Acceso         |
+|----------------------|------------------|--------|----------------|
+| Login                | /login           | POST   | Público        |
+| Registro             | /register        | POST   | Público        |
+| Panel usuario        | /user/panel      | GET    | Usuario        |
+| Panel admin          | /admin/panel     | GET    | Admin          |
+| CRUD vehículos       | /vehicles        | CRUD   | Admin          |
+| CRUD tickets         | /tickets         | CRUD   | Usuario/Admin  |
+| CRUD reservas        | /reservations    | CRUD   | Usuario/Admin  |
+| CRUD roles           | /roles           | CRUD   | Admin          |
+| CRUD permisos        | /permissions     | CRUD   | Admin          |
 
-```sh
-npm run dev
-```
+---
 
-### Type-Check, Compile and Minify for Production
+## Seguridad y Validaciones
 
-```sh
-npm run build
-```
+- **Protección por middleware/auth y roles.**
+- **Validaciones básicas en todos los formularios.**
+- **Protección CSRF en todos los formularios.**
+
+---
+
+## Despliegue y Entorno
+
+- Variables de entorno en `.env` (no exponer credenciales reales).
+- Docker y `docker-compose.yml` disponibles.
+- Requiere PHP 8+, Composer, Node.js (para assets).
+
+---
+
+## Estado Actual
+
+- Vistas y formularios completos y auditados.
+- Navegación y roles correctamente implementados.
+- Listo para integración y despliegue.
+
+---
+
+## Recomendaciones
+
+- Mejorar validaciones y experiencia de usuario en futuros sprints.
+- Añadir tests de integración frontend-backend.
+
+---
