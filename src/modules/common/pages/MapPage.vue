@@ -97,7 +97,7 @@ function computeNearbyAvailable() {
     })
     .filter(Boolean)
     .filter(v => !v.mongo_active && v.distanceMeters <= 2000)
-    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .sort((a, b) => a?.distanceMeters - b?.distanceMeters)
     .slice(0, 10)
 }
 

@@ -181,12 +181,12 @@ onMounted(async () => {
   if (isEditMode.value && userId.value) {
     try {
       const user = await getUser(userId.value)
-      formData.name = user.name
-      formData.username = user.username
-      formData.email = user.email
-      formData.active = user.active
+      formData.name = user?.name || ''
+      formData.username = user?.username || ''
+      formData.email = user?.email || ''
+      formData.active = user?.active ?? false
       if (user.roles && user.roles.length > 0) {
-        formData.role_id = user.roles[0].id
+        formData.role_id = user?.roles?.[0]?.id
       }
     } catch (err) {
       toast.error('Error loading user')

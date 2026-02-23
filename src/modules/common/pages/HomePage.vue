@@ -48,7 +48,7 @@ function computeDistancesAndFilter() {
     })
     .filter(Boolean)
     .filter(v => !v.mongo_active) // available means postgres not occupied (based on icon logic)
-    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .sort((a, b) => a?.distanceMeters - b?.distanceMeters)
     .slice(0, 10)
 }
 

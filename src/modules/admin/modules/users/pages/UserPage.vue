@@ -60,8 +60,8 @@
           {{ user.email }}
         </AdminTd>
         <AdminTd variant="muted">
-          <span v-if="user.roles && user.roles.length > 0" class="inline-block">
-            {{ user.roles[0].name }}
+          <span v-if="user?.roles && user.roles.length > 0" class="inline-block">
+            {{ user?.roles?.[0]?.name || '' }}
           </span>
           <span v-else class="text-gray-400">-</span>
         </AdminTd>

@@ -1,3 +1,8 @@
+export interface Role {
+  id: number
+  name: string
+}
+
 export interface User {
   id: number
   name: string
@@ -6,7 +11,7 @@ export interface User {
   active: boolean
   created_at: string
   updated_at: string
-  role: string
+  roles: Role[]
 }
 
 export interface UserForm {
