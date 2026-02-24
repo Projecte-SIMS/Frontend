@@ -89,7 +89,7 @@ const exportCSV = () => {
   URL.revokeObjectURL(url)
 }
 
-const refresh = () => fetchVehicles('/vehicles-map-admin')
+const refresh = () => fetchVehicles('/admin/vehicles/map')
 const fitBounds = () => {
   if (!map.value) return
   const arr = (vehicles.value || []).filter(v => v.latitude != null && v.longitude != null).map(v => [v.latitude, v.longitude])
@@ -119,7 +119,7 @@ const locateMe = () => {
 
 onMounted(() => {
   initMap()
-  fetchVehicles('/vehicles-map-admin').catch(err => console.error(err))
+  fetchVehicles('/admin/vehicles/map').catch(err => console.error(err))
 })
 
 onUnmounted(() => {
