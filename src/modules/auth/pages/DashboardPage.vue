@@ -4,33 +4,53 @@
       <div class="lg:col-start-3 lg:row-end-1" v-if="user">
         <h2 class="mb-6 text-2xl font-bold text-white">User Profile</h2>
         <div class="rounded-lg bg-gray-800/50 outline-1 -outline-offset-1 outline-white/10">
-          <dl class="flex flex-wrap">
-            <div class="flex-auto pt-6 pl-6">
-              <dt class="text-sm/6 font-semibold text-gray-100">Name</dt>
-              <dd class="mt-1 text-base font-semibold text-white">{{ user.name }}</dd>
-            </div>
-            <div class="flex-none self-end px-6 pt-4">
-              <dt class="sr-only">Status</dt>
-              <dd class="inline-flex items-center rounded-md bg-blue-500/15 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-500/20">Active</dd>
-            </div>
-            <div class="mt-6 flex w-full flex-none gap-x-4 border-t border-white/5 px-6 pt-6">
-              <dd class="text-sm/6 font-medium text-white break-all">{{ user.email }}</dd>
-            </div>
-            <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
-              <dt class="text-sm/6 font-semibold text-gray-100">Token</dt>
-              <dd class="mt-2 text-xs font-mono text-gray-300 break-all bg-gray-700/50 rounded p-3 max-h-24 overflow-y-auto">{{ token }}</dd>
-            </div>
-          </dl>
-          <div class="mt-6 border-t border-white/5 px-6 py-6 flex gap-4">
-            <button
-              @click="handleLogout"
-              :disabled="isLoading"
-              class="text-sm/6 font-semibold text-white hover:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
-            >
-              {{ isLoading ? 'Logging out...' : 'Logout' }} <span aria-hidden="true">→</span>
-            </button>
-          </div>
-        </div>
+  <dl class="flex flex-wrap">
+    <div class="flex-auto pt-6 pl-6">
+      <dt class="text-sm/6 font-semibold text-gray-100">Nombre</dt>
+      <dd class="mt-1 text-base font-semibold text-white">{{ user.name }}</dd>
+      <dt class="text-sm/6 font-semibold text-gray-100 mt-4">Usuario</dt>
+      <dd class="mt-1 text-base font-semibold text-white">{{ user.username }}</dd>
+      <dt class="text-sm/6 font-semibold text-gray-100 mt-4">Email</dt>
+      <dd class="mt-1 text-base font-semibold text-white">{{ user.email }}</dd>
+    </div>
+    <div class="flex-none self-end px-6 pt-4">
+      <dt class="sr-only">Status</dt>
+      <dd class="inline-flex items-center rounded-md bg-blue-500/15 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-500/20">Active</dd>
+    </div>
+    <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
+      <dt class="text-sm/6 font-semibold text-gray-100">Token</dt>
+      <dd class="mt-2 text-xs font-mono text-gray-300 break-all bg-gray-700/50 rounded p-3 max-h-24 overflow-y-auto">{{ token }}</dd>
+    </div>
+    <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
+      <dt class="text-sm/6 font-semibold text-gray-100">Rol</dt>
+      <dd class="mt-2 text-base font-semibold text-white">{{ user.roles && user.roles.length > 0 ? user.roles[0].name : 'Sin rol' }}</dd>
+    </div>
+    <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
+      <dt class="text-sm/6 font-semibold text-gray-100">Permisos</dt>
+      <dd class="mt-2 text-xs font-mono text-gray-300 break-all bg-gray-700/50 rounded p-3 max-h-24 overflow-y-auto">
+        <span v-if="user.roles && user.roles.length > 0 && user.roles[0].permissions && user.roles[0].permissions.length > 0">
+          <span v-for="perm in user.roles[0].permissions" :key="perm.id" class="inline-block mr-2">{{ perm.name }}</span>
+        </span>
+        <span v-else>Sin permisos</span>
+      </dd>
+    </div>
+  </dl>
+  <div class="mt-6 border-t border-white/5 px-6 py-6 flex gap-4">
+    <button
+      @click="router.push('/perfil/editar')"
+      class="text-sm/6 font-semibold text-indigo-400 hover:text-indigo-200 transition-colors cursor-pointer"
+    >
+      Editar información
+    </button>
+    <button
+      @click="handleLogout"
+      :disabled="isLoading"
+      class="text-sm/6 font-semibold text-white hover:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
+    >
+      {{ isLoading ? 'Logging out...' : 'Logout' }} <span aria-hidden="true">→</span>
+    </button>
+  </div>
+</div>
       </div>
 
       <div v-if="user && user.roles && user.roles.length > 0" class="mt-8">

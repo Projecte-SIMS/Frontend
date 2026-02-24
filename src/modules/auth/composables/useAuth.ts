@@ -45,7 +45,7 @@ export function useAuth() {
     isLoading.value = true
     error.value = null
     try {
-      const response = await apiClient.get<UserResponse>('/user')
+      const response = await apiClient.get<UserResponse>('/users/me')
       // Merge instead of overwrite to avoid losing existing reactive refs or fields
       user.value = Object.assign({}, user.value || {}, response.data.user)
       return true
@@ -75,6 +75,17 @@ export function useAuth() {
         setCookie(TOKEN_COOKIE_NAME, token)
         // Fetch user data after successful login
         const userFetched = await fetchUser()
+        // Redirección según rol
+        if (user.value && user.value.roles && user.value.roles.length > 0) {
+          const isAdmin = user.value.roles.some((r: any) => (r.name || '').toLowerCase() === 'admin')
+          if (isAdmin) {
+            router.push('/admin')
+          } else {
+            router.push('/')
+          }
+        } else {
+          router.push('/')
+        }
         return userFetched
       } else {
         error.value = 'No token received from server'

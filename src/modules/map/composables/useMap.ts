@@ -21,7 +21,7 @@ const mapContainer = ref<HTMLElement | null>(null)
 const markers: Map<number, L.Marker> = new Map()
 let userMarker: L.Marker | L.CircleMarker | null = null
 let pollInterval: ReturnType<typeof setInterval> | null = null
-let pollEndpoint = '/vehicles-map'
+let pollEndpoint = '/vehicles/map'
 
 // reactive filters & search
 const searchQuery = ref('')
@@ -59,7 +59,7 @@ const createVehicleIcon = (postgresActive?: boolean, mongoActive?: boolean) => {
 
 const rawVehicles = ref<Vehicle[]>([])
 
-const fetchVehicles = async (endpoint = '/vehicles-map') => {
+const fetchVehicles = async (endpoint = '/vehicles/map') => {
   try {
     const response = await apiClient.get(endpoint)
     rawVehicles.value = response.data.map((v: any) => ({

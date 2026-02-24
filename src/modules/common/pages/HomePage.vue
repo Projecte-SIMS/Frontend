@@ -23,7 +23,7 @@ import { useRouter } from 'vue-router'
 import { useMap } from '@/modules/map/composables/useMap'
 
 const router = useRouter()
-const openMap = () => router.push('/vehicles-map')
+const openMap = () => router.push('/vehicles/map')
 
 const { map, mapContainer, initMap, destroyMap, fetchVehicles, addVehicleMarkers, rawVehicles } = useMap()
 const miniMap = ref<HTMLElement | null>(null)
@@ -57,7 +57,7 @@ onMounted(async () => {
   mapContainer.value = miniMap.value
   initMap()
   try {
-    await fetchVehicles('/vehicles-map')
+    await fetchVehicles('/vehicles/map')
     addVehicleMarkers()
     // compute after markers added
     setTimeout(() => computeDistancesAndFilter(), 400)

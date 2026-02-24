@@ -23,7 +23,7 @@ export function useUsers() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.get<User[]>('/users')
+      const response = await api.get<User[]>('/admin/users')
       let filteredUsers = response.data
 
       // Filter by search if present

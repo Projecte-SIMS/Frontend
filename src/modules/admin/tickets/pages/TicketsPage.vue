@@ -75,7 +75,7 @@
               <div class="flex flex-col items-end gap-2">
                 <button
                   @click.prevent="toggleExpand(t.id)"
-                  class="text-indigo-600 text-xs hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
+                  class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800 dark:bg-gray-800 dark:text-indigo-300 dark:hover:bg-indigo-900 dark:hover:text-indigo-100 transition"
                 >
                   {{ expanded[t.id] ? 'Hide' : 'View conversation' }}
                 </button>
@@ -97,7 +97,7 @@
                   <div
                     v-for="m in details[t.id] || []"
                     :key="m.id"
-                    class="rounded border border-gray-200 p-2 dark:border-white/5"
+                    class="rounded-lg border border-gray-200 p-3 bg-gray-50 dark:bg-gray-900/80 dark:border-white/10 flex flex-col gap-1"
                   >
                     <div class="text-xs text-gray-500 dark:text-gray-400">
                       {{ m.user?.name || (m.is_support ? 'Support' : 'User') }} •
@@ -112,7 +112,7 @@
                     <textarea
                       v-model="replyForms[t.id]"
                       rows="2"
-                      class="w-full rounded-md bg-white p-2 text-sm text-gray-900 ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:bg-gray-900/60 dark:text-gray-100 dark:ring-white/10"
+                      class="w-full rounded-lg bg-white p-2 text-sm text-gray-900 ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:bg-gray-900/70 dark:text-gray-100 dark:ring-white/10"
                       placeholder="Write a reply..."
                     ></textarea>
                     <div class="mt-2 text-right">

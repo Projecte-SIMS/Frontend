@@ -59,7 +59,7 @@ let userMarker: any = null
 
 const nearbyAvailable = ref<any[]>([])
 
-const refresh = () => fetchVehicles('/vehicles-map')
+const refresh = () => fetchVehicles('/vehicles/map')
 const locateMe = () => {
   if (!navigator.geolocation) return
   navigator.geolocation.getCurrentPosition(pos => {
@@ -115,7 +115,7 @@ onMounted(() => {
         if (map.value) {
           map.value.setView([lat, lng], 15)
         }
-        fetchVehicles('/vehicles-map').catch(err => console.error(err))
+        fetchVehicles('/vehicles/map').catch(err => console.error(err))
         // try to grab userMarker via exposed internal function
         try { userMarker = _internal?.getUserMarker?.() ?? null } catch { userMarker = null }
         // compute nearby from user location
@@ -124,10 +124,10 @@ onMounted(() => {
       (err) => {
         console.warn('Geolocation failed or denied', err)
         // fallback to default behavior
-        if (route.path === '/vehicles-map' || view === 'all') {
-          fetchVehicles('/vehicles-map').catch(err => console.error(err))
+        if (route.path === '/vehicles/map' || view === 'all') {
+          fetchVehicles('/vehicles/map').catch(err => console.error(err))
         } else {
-          fetchVehicles('/vehicles-map').catch(err => console.error(err))
+          fetchVehicles('/vehicles/map').catch(err => console.error(err))
         }
         setTimeout(() => computeNearbyAvailable(), 600)
       },
@@ -135,10 +135,10 @@ onMounted(() => {
     )
   } else {
     // if geolocation not available, fallback to current logic
-    if (route.path === '/vehicles-map' || view === 'all') {
-      fetchVehicles('/vehicles-map').catch(err => console.error(err))
+    if (route.path === '/vehicles/map' || view === 'all') {
+      fetchVehicles('/vehicles/map').catch(err => console.error(err))
     } else {
-      fetchVehicles('/vehicles-map').catch(err => console.error(err))
+      fetchVehicles('/vehicles/map').catch(err => console.error(err))
     }
     setTimeout(() => computeNearbyAvailable(), 600)
   }

@@ -39,7 +39,7 @@
         <div
           v-for="m in messages"
           :key="m.id"
-          class="rounded-md bg-gray-50 px-4 py-2 dark:bg-gray-900/80"
+          class="rounded-lg border border-gray-200 px-4 py-2 bg-gray-50 dark:bg-gray-900/80 dark:border-white/10 flex flex-col gap-1"
         >
           <div class="text-xs text-gray-600 dark:text-gray-400">
             {{ m.user?.name || (m.is_support ? 'Support' : 'User') }} •
@@ -56,7 +56,7 @@
         <textarea
           v-model="reply"
           rows="3"
-          class="w-full rounded-md bg-white p-2 text-sm text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:bg-gray-900 dark:text-gray-100 dark:ring-gray-700"
+          class="w-full rounded-lg bg-white p-2 text-sm text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:bg-gray-900/70 dark:text-gray-100 dark:ring-gray-700"
           placeholder="Reply..."
         ></textarea>
         <div class="mt-2 text-right">

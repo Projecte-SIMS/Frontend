@@ -149,10 +149,10 @@ const user = {
 }
 
 const navigation = [
-  { name: 'Map', to: '/vehicles-map' },
-  { name: 'Bookings', to: '/bookings' },
+  { name: 'Map', to: '/vehicles/map' },
+  { name: 'Vehicles', to: '/vehicles' },
   { name: 'Tickets', to: '/tickets' },
-  { name: 'Favorites', to: '/favoritos' },
+  { name: 'Bookings', to: '/bookings' },
   { name: 'Profile', to: '/perfil' },
 ]
 

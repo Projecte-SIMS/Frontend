@@ -26,7 +26,7 @@ export const useRoles = () => {
     error.value = null
 
     try {
-      let url = `/roles?page=${page}`
+      let url = `/admin/roles?page=${page}`
       if (filters.search) {
         url += `&search=${encodeURIComponent(filters.search)}`
       }
@@ -57,7 +57,7 @@ export const useRoles = () => {
     error.value = null
 
     try {
-      const response = await api.get(`/roles/${id}`)
+      const response = await api.get(`/admin/roles/${id}`)
       currentRole.value = response.data
     } catch (err) {
       error.value = 'Failed to load role'
