@@ -2,7 +2,7 @@
   <!-- Contenedor principal del mapa -->
   <div class="relative min-h-[100dvh] bg-gray-800">
     <div ref="mapContainer" class="absolute inset-0" style="height: calc(100vh - 4rem);"></div>
-    <aside class="map-controls absolute top-4 right-4 lg:right-20 bg-white/95 dark:bg-gray-900/95 text-sm p-6 rounded-2xl shadow-xl w-80 max-w-full backdrop-blur border border-white/10 animate-fade-in">
+    <aside v-show="panelOpen" class="map-controls absolute top-4 right-4 lg:right-20 bg-white/95 dark:bg-gray-900/95 text-sm p-6 rounded-2xl shadow-xl w-80 max-w-full backdrop-blur border border-white/10 animate-fade-in">
   <div class="flex items-center justify-between mb-4">
     <div class="font-bold text-lg text-gray-900 dark:text-white">Opciones del mapa</div>
     <button @click="panelOpen = false" class="text-gray-400 hover:text-indigo-500 transition" title="Cerrar panel">
@@ -73,6 +73,12 @@
   </div>
 </details>
 </aside>
+<!-- Botón para abrir el panel lateral -->
+<button v-if="!panelOpen" @click="panelOpen = true" class="fixed top-20 right-6 z-50 p-3 bg-gray-900 text-indigo-400 rounded-full shadow-lg hover:bg-indigo-500 animate-fade-in" title="Mostrar opciones del mapa">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7zm7.5-3.5a7.5 7.5 0 0 1-1.05 3.85l1.6 1.6a1 1 0 0 1-1.42 1.42l-1.6-1.6A7.5 7.5 0 0 1 12 20.5a7.5 7.5 0 0 1-3.85-1.05l-1.6 1.6a1 1 0 0 1-1.42-1.42l1.6-1.6A7.5 7.5 0 0 1 3.5 12a7.5 7.5 0 0 1 1.05-3.85l-1.6-1.6a1 1 0 0 1 1.42-1.42l1.6 1.6A7.5 7.5 0 0 1 12 3.5a7.5 7.5 0 0 1 3.85 1.05l1.6-1.6a1 1 0 0 1 1.42 1.42l-1.6 1.6A7.5 7.5 0 0 1 20.5 12z" />
+  </svg>
+</button>
 
     <!-- Floating locate button -->
     <button @click="locateMe" aria-label="Go to my location" class="fixed bottom-6 right-6 z-50 p-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700">📍</button>
@@ -90,6 +96,7 @@ let userMarker: any = null
 
 const nearbyAvailable = ref<any[]>([])
 const nearbyRadiusKm = ref(2)
+const panelOpen = ref(false)
 
 function onRadiusChange() {
   computeNearbyAvailable();
