@@ -1,4 +1,4 @@
-# SIMS – Frontend Blade
+# SIMS – Frontend Vue
 **Versión:** Sprint 5 – First Deployment  
 **Fecha:** 2026-02-23
 
@@ -6,55 +6,80 @@
 
 ## Descripción General
 
-Este repositorio contiene el frontend web de SIMS, implementado en Laravel Blade. Proporciona interfaces para usuarios y administradores, permitiendo la gestión y visualización de vehículos, tickets, reservas, roles y permisos.
+Este repositorio contiene el frontend web de SIMS, implementado en Vue 3 + Vite. Proporciona interfaces para usuarios y administradores, permitiendo la gestión y visualización de vehículos, tickets, reservas, roles y permisos.
+
+---
+
+## Stack y Librerías Principales
+
+- **Vue 3** – Framework principal
+- **Vite** – Bundler y servidor de desarrollo
+- **Vue Router** – Enrutamiento SPA
+- **TailwindCSS** – Utilidades CSS
+- **@headlessui/vue** y **@heroicons/vue** – Componentes accesibles y SVG icons
+- **Leaflet** – Mapas interactivos
+- **Axios** – Llamadas HTTP
+- **vue3-toastify** – Notificaciones
+
+### Dependencias (package.json)
+
+- @headlessui/vue
+- @heroicons/vue
+- @tailwindcss/vite
+- @types/leaflet
+- axios
+- leaflet
+- tailwindcss
+- vue
+- vue-router
+- vue3-toastify
+
+### DevDependencies
+
+- @vitejs/plugin-vue
+- vite-plugin-vue-devtools
+- vue-tsc
+- typescript
+- @types/node
+- npm-run-all2
+
+---
+
+## Desarrollo y Ejecución
+
+1. Instala dependencias:
+   ```bash
+   npm install
+   ```
+2. Ejecuta en modo desarrollo:
+   ```bash
+   npm run dev
+   ```
+3. Compila para producción:
+   ```bash
+   npm run build
+   ```
+4. Variables de entorno en `.env` (ejemplo: endpoints backend, claves API, etc).
+5. Docker y `docker-compose.yml` disponibles para despliegue.
+6. Node.js 20+ recomendado.
 
 ---
 
 ## Arquitectura y Componentes
 
-- **Vistas Blade:** Login, registro, panel de usuario, panel de administración, CRUD de entidades.
-- **Formularios:** Apuntan a endpoints auditados del backend, usan CSRF y validaciones básicas.
-- **Navegación:** Menús y enlaces funcionales, diferenciados por rol (usuario/admin).
-- **Integración:** Consumo directo de endpoints backend, sin lógica de negocio en frontend.
-
----
-
-## Integración
-
-- **Backend Laravel:** Consume endpoints protegidos para autenticación, gestión y visualización.
-- **Roles:** Navegación y vistas diferenciadas para usuarios y administradores.
-
----
-
-## Formularios y Vistas Principales
-
-| Vista/Formulario      | Endpoint         | Método | Acceso         |
-|----------------------|------------------|--------|----------------|
-| Login                | /login           | POST   | Público        |
-| Registro             | /register        | POST   | Público        |
-| Panel usuario        | /user/panel      | GET    | Usuario        |
-| Panel admin          | /admin/panel     | GET    | Admin          |
-| CRUD vehículos       | /vehicles        | CRUD   | Admin          |
-| CRUD tickets         | /tickets         | CRUD   | Usuario/Admin  |
-| CRUD reservas        | /reservations    | CRUD   | Usuario/Admin  |
-| CRUD roles           | /roles           | CRUD   | Admin          |
-| CRUD permisos        | /permissions     | CRUD   | Admin          |
+- **SPA Vue:** Login, registro, panel de usuario, panel de administración, CRUD de entidades.
+- **Mapas:** Vista de vehículos en mapa interactivo (Leaflet).
+- **Chatbot:** Asistente AI flotante disponible en toda la app.
+- **Navegación:** Menús y rutas diferenciadas por rol (usuario/admin).
+- **Integración:** Consumo de endpoints backend vía Axios.
 
 ---
 
 ## Seguridad y Validaciones
 
-- **Protección por middleware/auth y roles.**
-- **Validaciones básicas en todos los formularios.**
-- **Protección CSRF en todos los formularios.**
-
----
-
-## Despliegue y Entorno
-
-- Variables de entorno en `.env` (no exponer credenciales reales).
-- Docker y `docker-compose.yml` disponibles.
-- Requiere PHP 8+, Composer, Node.js (para assets).
+- **Protección por roles y autenticación.**
+- **Validaciones básicas en formularios.**
+- **No exponer credenciales en frontend.**
 
 ---
 
