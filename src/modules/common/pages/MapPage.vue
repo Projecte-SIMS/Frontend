@@ -17,6 +17,7 @@
     <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" v-model="showAvailableOnly" class="accent-indigo-500" /> Solo disponibles</label>
     <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" v-model="showRunningOnly" class="accent-indigo-500" /> Solo en marcha</label>
   </div>
+  <button @click="locateMe" aria-label="Centrar en mi ubicación" class="mt-2 px-3 py-2 rounded bg-indigo-600 text-white text-xs hover:bg-indigo-700 transition flex items-center gap-1"><span>📍</span> Centrar en mi ubicación</button>
 </div>
 <div class="mb-3 flex items-center justify-between">
   <span class="text-xs text-gray-500">Vehículos mostrados: <b>{{ filteredCount }}</b></span>
@@ -80,8 +81,7 @@
   </svg>
 </button>
 
-    <!-- Floating locate button -->
-    <button @click="locateMe" aria-label="Go to my location" class="fixed bottom-6 right-6 z-50 p-3 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700">📍</button>
+
   </div>
 </template>
 

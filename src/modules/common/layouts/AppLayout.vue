@@ -115,6 +115,7 @@
     <!-- Content (MAP / PAGES) -->
     <main class="relative min-h-[calc(100dvh-4rem)] pb-16">
       <router-view />
+      <ChatbotPage />
     </main>
 
     <!-- Bottom nav (mobile-first) -->
@@ -155,8 +156,7 @@ const navigation = [
   { name: 'Tickets', to: '/tickets' },
   { name: 'Bookings', to: '/bookings' },
   { name: 'Profile', to: '/perfil' },
-  { name: 'AI Assistant', to: '/chatbot' },
-]
+  ]
 
 const userNavigation = [
   { name: 'Your profile', to: '/perfil', type: 'link' },
@@ -175,4 +175,5 @@ const handleLogout = async () => {
   }
 }
 
+import ChatbotPage from '@/modules/common/pages/ChatbotPage.vue'
 </script>
