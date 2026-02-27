@@ -12,7 +12,7 @@ Este documento detalla los pasos para poner en marcha el entorno de desarrollo y
 ### Pasos de Instalación
 1. **Clonación**:
    ```bash
-   git clone [url-del-repositorio]
+   git clone https://github.com/Projecte-SIMS/Frontend.git
    cd project-sims-frontend
    ```
 2. **Instalación de Dependencias**:
