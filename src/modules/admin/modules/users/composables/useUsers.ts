@@ -69,7 +69,7 @@ export function useUsers() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.post<{ data: User; message: string }>('/users', data)
+      const response = await api.post<{ data: User; message: string }>('/admin/users', data)
       return response.data.data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error creating user'
@@ -83,7 +83,7 @@ export function useUsers() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.put<{ data: User; message: string }>(`/users/${id}`, data)
+      const response = await api.put<{ data: User; message: string }>(`/admin/users/${id}`, data)
       return response.data.data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error updating user'
@@ -97,7 +97,7 @@ export function useUsers() {
     loading.value = true
     error.value = null
     try {
-      await api.delete(`/users/${id}`)
+      await api.delete(`/admin/users/${id}`)
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error deleting user'
       throw err
@@ -110,7 +110,7 @@ export function useUsers() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.get<{ data: User }>(`/users/${id}`)
+      const response = await api.get<{ data: User }>(`/admin/users/${id}`)
       return response.data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error fetching user'

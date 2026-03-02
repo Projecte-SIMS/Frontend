@@ -2,6 +2,13 @@
 import { ref, onMounted, nextTick, computed } from "vue"
 import apiClient from "@/services/api"
 import { useAuth } from "@/modules/auth/composables/useAuth"
+import { 
+  ChatBubbleLeftEllipsisIcon, 
+  XMarkIcon, 
+  PaperAirplaneIcon,
+  SparklesIcon,
+  ArrowPathIcon
+} from '@heroicons/vue/24/outline'
 
 interface Message {
   role: "user" | "assistant" | "system"
@@ -10,7 +17,6 @@ interface Message {
 
 const { user } = useAuth()
 
-// Get user's primary role name
 const userRole = computed(() => {
   if (user.value?.roles && user.value.roles.length > 0) {
     return user.value.roles[0].name || 'Client'
@@ -18,7 +24,6 @@ const userRole = computed(() => {
   return 'Client'
 })
 
-// Role-specific welcome messages
 const getWelcomeMessage = () => {
   const role = userRole.value
   switch (role) {
@@ -57,7 +62,6 @@ const sendMessage = async () => {
   await scrollToBottom()
 
   try {
-    // Send only user and assistant messages, backend will inject role-specific system prompt
     const response = await apiClient.post("/chatbot/chat", {
       messages: messages.value.filter(m => m.role !== 'system')
     })
@@ -83,43 +87,134 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <button @click="isOpen = !isOpen" class="fixed bottom-6 right-6 z-50 bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-full shadow-lg">
-      {{ isOpen ? 'Cerrar Asistente' : 'Abrir Asistente' }}
+  <div class="fixed bottom-6 right-6 z-[100]">
+    <!-- Floating Action Button -->
+    <button 
+      @click="isOpen = !isOpen" 
+      :class="[
+        isOpen 
+          ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 rotate-90' 
+          : 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-indigo-500/40 hover:scale-110'
+      ]"
+      class="group relative flex h-14 w-14 items-center justify-center rounded-2xl shadow-2xl transition-all duration-300 active:scale-95"
+    >
+      <div v-if="!isOpen" class="absolute -inset-1 animate-pulse rounded-2xl bg-indigo-500/20 blur-lg group-hover:bg-indigo-500/40 transition-all"></div>
+      
+      <XMarkIcon v-if="isOpen" class="size-6 transition-all" />
+      <div v-else class="relative flex items-center justify-center">
+        <ChatBubbleLeftEllipsisIcon class="size-7" />
+        <span class="absolute -top-1 -right-1 flex h-3 w-3">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+        </span>
+      </div>
     </button>
-    <transition name="fade">
-      <div v-if="isOpen" class="fixed bottom-20 right-6 z-50 w-96 max-w-full bg-gray-900 text-white rounded-xl shadow-2xl border border-white/10 p-4 md:p-6 flex flex-col" style="height: 500px;">
-        <div class="mb-4 flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-indigo-400">Asistente SIMS</h1>
-          <span class="text-xs text-gray-400">{{ userRole }}</span>
+
+    <!-- Chat Window -->
+    <Transition
+      enter-active-class="transition ease-out duration-300"
+      enter-from-class="transform opacity-0 translate-y-4"
+      enter-to-class="transform opacity-100 translate-y-0"
+      leave-active-class="transition ease-in duration-200"
+      leave-from-class="transform opacity-100 translate-y-0"
+      leave-to-class="transform opacity-0 translate-y-4"
+    >
+      <div v-if="isOpen" class="absolute bottom-20 right-0 w-[calc(100vw-2.5rem)] sm:w-[400px] max-w-none bg-white dark:bg-gray-900 rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.25)] border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden will-change-transform" style="height: 550px; max-height: calc(100vh - 8rem);">
+        <!-- Header -->
+        <div class="px-6 py-5 bg-gradient-to-r from-indigo-600 to-purple-700 text-white relative shrink-0">
+          <div class="flex items-center gap-3">
+            <div class="size-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
+              <SparklesIcon class="size-6" />
+            </div>
+            <div>
+              <h2 class="text-base font-black tracking-tight leading-none">Asistente SIMS</h2>
+              <div class="flex items-center gap-1.5 mt-1.5">
+                <span class="size-1.5 rounded-full bg-green-400 animate-pulse"></span>
+                <span class="text-[10px] font-bold uppercase tracking-widest opacity-80">AI Online · {{ userRole }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="absolute -right-4 -top-4 size-24 rounded-full bg-white/10 blur-2xl"></div>
         </div>
+
+        <!-- Messages Area -->
         <div 
           ref="chatBox"
-          class="flex-grow overflow-y-auto space-y-4 p-4 bg-gray-800 rounded-xl shadow-inner border border-white/10 mb-4 scrollbar-thin scrollbar-thumb-gray-600"
+          class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/50 dark:bg-gray-950/20 custom-scrollbar"
         >
-          <div v-for="(msg, index) in messages.filter(m => m && m.role !== 'system')" :key="index" :class="['flex', msg.role === 'user' ? 'justify-end' : 'justify-start']">
-            <div class="p-3 rounded-lg" :class="msg.role === 'user' ? 'bg-indigo-500 text-white' : 'bg-gray-700 text-indigo-200'">
+          <div v-for="(msg, index) in messages" :key="index" :class="['flex w-full', msg.role === 'user' ? 'justify-end' : 'justify-start animate-fade-in']">
+            <div 
+              :class="[
+                msg.role === 'user' 
+                  ? 'bg-indigo-600 text-white rounded-2xl rounded-tr-none shadow-lg shadow-indigo-500/10' 
+                  : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700'
+              ]"
+              class="max-w-[85%] p-4 text-sm font-medium leading-relaxed"
+            >
               {{ msg.content }}
             </div>
           </div>
+          
+          <!-- Loading Indicator -->
+          <div v-if="isLoading" class="flex justify-start animate-fade-in">
+            <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700">
+              <div class="flex gap-1">
+                <span class="size-1.5 rounded-full bg-indigo-400 animate-bounce"></span>
+                <span class="size-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]"></span>
+                <span class="size-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.4s]"></span>
+              </div>
+            </div>
+          </div>
         </div>
-        <form @submit.prevent="sendMessage" class="flex gap-2 mt-4">
-          <input
-            v-model="userInput"
-            type="text"
-            placeholder="Escribe tu mensaje..."
-            class="flex-1 rounded-lg bg-gray-700 text-white p-3 border border-white/10 focus:outline-none focus:border-indigo-400"
-            :disabled="isLoading"
-          />
-          <button
-            type="submit"
-            class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-50"
-            :disabled="isLoading || !userInput.trim()"
-          >
-            Enviar
-          </button>
-        </form>
+
+        <!-- Input Area -->
+        <div class="p-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 shrink-0">
+          <form @submit.prevent="sendMessage" class="flex items-end gap-2 bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-1.5 border border-gray-100 dark:border-gray-700/50 focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
+            <textarea
+              v-model="userInput"
+              rows="1"
+              placeholder="Escribe un mensaje..."
+              class="flex-1 bg-transparent border-0 focus:ring-0 text-sm font-medium text-gray-900 dark:text-white py-2.5 px-3 resize-none custom-scrollbar"
+              :disabled="isLoading"
+              @keydown.enter.prevent="sendMessage"
+            ></textarea>
+            <button
+              type="submit"
+              class="flex size-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:grayscale"
+              :disabled="isLoading || !userInput.trim()"
+            >
+              <PaperAirplaneIcon v-if="!isLoading" class="size-5 -rotate-45 -mr-0.5" />
+              <ArrowPathIcon v-else class="size-5 animate-spin" />
+            </button>
+          </form>
+          <p class="text-[9px] text-center text-gray-400 mt-2 font-bold uppercase tracking-widest">Powered by Project SIMS AI</p>
+        </div>
       </div>
-    </transition>
+    </Transition>
   </div>
 </template>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+</style>

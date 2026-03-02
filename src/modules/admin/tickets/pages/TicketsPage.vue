@@ -328,7 +328,7 @@ const closedCount = computed(() => tickets.value.filter(t => !t.active).length)
 const loadTickets = async () => {
   loading.value = true
   try {
-    const res = await apiClient.get('/tickets')
+    const res = await apiClient.get('/admin/tickets')
     tickets.value = res.data.data ?? res.data ?? []
   } catch (e) {
     console.error(e)

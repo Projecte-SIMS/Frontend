@@ -83,12 +83,16 @@ const fetchVehicles = async (endpoint = '/vehicles/map') => {
 const initMap = () => {
   if (!mapContainer.value) return
 
-  map.value = L.map(mapContainer.value).setView([41.3851, 2.1734], 13)
+  map.value = L.map(mapContainer.value, {
+    zoomControl: false // Desactivamos el por defecto para posicionarlo donde queramos
+  }).setView([41.3851, 2.1734], 13)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map.value as any)
 
+  // Opcional: Añadirlo en una posición que no moleste por defecto
+  L.control.zoom({ position: 'bottomleft' }).addTo(map.value as any)
 }
 
 const withinRadius = (v: Vehicle) => {
@@ -138,50 +142,10 @@ const addVehicleMarkers = () => {
       try {
         m.setLatLng([v.latitude, v.longitude])
         m.setIcon(createVehicleIcon(v.postgres_active, v.mongo_active))
-        // update popup content if present
-        const popup = m.getPopup && m.getPopup()
-        if (popup) {
-          popup.setContent(`
-            <div style="min-width:220px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#0f172a">
-              <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                <div style="display:flex;flex-direction:column">
-                  <div style="font-weight:700;font-size:15px;color:#0f172a">${v.plate}</div>
-                  <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
-                </div>
-                <div style="padding:4px 8px;border-radius:9999px;background:${v.mongo_active ? '#fee2e2' : '#ecfccb'};color:${v.mongo_active ? '#991b1b' : '#4d7c0f'};font-size:12px;font-weight:600">${v.mongo_active ? 'Running' : 'Idle'}</div>
-              </div>
-
-              <hr style="margin:8px 0;border-color:#e6eef8" />
-
-              <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#0f172a">
-                <div style="display:flex;justify-content:space-between"><span style="color:#334155">mec muc</span><strong style="color:#0f172a"> </strong></div>
-                <div style="display:flex;justify-content:space-between"><span style="color:#334155">Disponibility</span><strong style="color:${v.postgres_active ? '#bf8700' : '#15803d'}">${v.postgres_active ? 'Occupied' : 'Available'}</strong></div>
-              </div>
-            </div>
-          `)
-        }
       } catch (e) { /* ignore */ }
     } else {
       const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
         .addTo(map.value as any)
-        .bindPopup(`
-          <div style="min-width:220px; font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color:#0f172a">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-              <div style="display:flex;flex-direction:column">
-                <div style="font-weight:700;font-size:15px;color:#0f172a">${v.plate}</div>
-                <div style="font-size:12px;color:#6b7280">${v.brand} ${v.model}</div>
-              </div>
-              <div style="padding:4px 8px;border-radius:9999px;background:${v.mongo_active ? '#fee2e2' : '#ecfccb'};color:${v.mongo_active ? '#991b1b' : '#4d7c0f'};font-size:12px;font-weight:600">${v.mongo_active ? 'Running' : 'Idle'}</div>
-            </div>
-
-            <hr style="margin:8px 0;border-color:#e6eef8" />
-
-            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:#0f172a">
-              <div style="display:flex;justify-content:space-between"><span style="color:#334155">mec muc</span><strong style="color:#0f172a"> </strong></div>
-              <div style="display:flex;justify-content:space-between"><span style="color:#334155">Disponibility</span><strong style="color:${v.postgres_active ? '#bf8700' : '#15803d'}">${v.postgres_active ? 'Occupied' : 'Available'}</strong></div>
-            </div>
-          </div>
-        `)
 
       markers.set(v.id, marker)
     }

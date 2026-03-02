@@ -1,286 +1,276 @@
 <template>
-  <!-- Contenedor principal del mapa -->
-  <div class="relative min-h-[100dvh] bg-gray-800">
-    <div ref="mapContainer" class="absolute inset-0" style="height: calc(100vh - 4rem);"></div>
-    <aside v-show="panelOpen" class="map-controls absolute top-4 right-4 lg:right-20 bg-white/95 dark:bg-gray-900/95 text-sm p-6 rounded-2xl shadow-xl w-80 max-w-full backdrop-blur border border-white/10 animate-fade-in">
-  <div class="flex items-center justify-between mb-4">
-    <div class="font-bold text-lg text-gray-900 dark:text-white">Opciones del mapa</div>
-    <button @click="panelOpen = false" class="text-gray-400 hover:text-indigo-500 transition" title="Cerrar panel">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-    </button>
-  </div>
-  <div class="mb-3 flex flex-col gap-2">
-  <input v-model="search" type="text" placeholder="Buscar por matrícula, marca..." class="w-full px-3 py-2 rounded bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
-  <div class="flex gap-2 items-center">
-    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" v-model="showAvailableOnly" class="accent-indigo-500" /> Solo disponibles</label>
-    <label class="flex items-center gap-1 cursor-pointer"><input type="checkbox" v-model="showRunningOnly" class="accent-indigo-500" /> Solo en marcha</label>
-  </div>
-  <button @click="locateMe" aria-label="Centrar en mi ubicación" class="mt-2 px-3 py-2 rounded bg-indigo-600 text-white text-xs hover:bg-indigo-700 transition flex items-center gap-1"><span>📍</span> Centrar en mi ubicación</button>
-</div>
-<div class="mb-3 flex items-center justify-between">
-  <span class="text-xs text-gray-500">Vehículos mostrados: <b>{{ filteredCount }}</b></span>
-  <button @click="refresh" class="px-2 py-1 rounded bg-indigo-600 text-white text-xs hover:bg-indigo-700 transition flex items-center gap-1"><svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582M20 20v-5h-.581M5.635 19.364A9 9 0 104.582 9.582" /></svg>Actualizar</button>
-</div>
-<details class="map-legend-details bg-transparent mb-3">
-  <summary class="font-semibold mb-1 cursor-pointer">Leyenda ▾</summary>
-  <div class="mt-2 space-y-2">
-    <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#22c55e;display:inline-block;border:2px solid #ffffff"></span><span>Disponible</span></div>
-    <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#f59e0b;display:inline-block;border:2px solid #ffffff"></span><span>Ocupado</span></div>
-    <div class="flex items-center gap-2"><span style="width:14px;height:14px;border-radius:50%;background:#ffffff;display:inline-block;border:3px solid #ef4444"></span><span>En marcha</span></div>
-  </div>
-</details>
-<details class="bg-transparent mb-2">
-  <summary class="font-semibold mb-1 cursor-pointer">Ayuda rápida ▾</summary>
-  <ul class="text-xs text-gray-500 mt-2 space-y-1 list-disc list-inside">
-    <li>Haz clic en un vehículo para centrar el mapa.</li>
-    <li>Filtra por estado o busca por matrícula.</li>
-    <li>Usa el botón 📍 para centrar en tu ubicación.</li>
-    <li>Actualiza para ver cambios en tiempo real.</li>
-    <li>Última actualización: 2026-02-24 22:52</li>
-  </ul>
-</details>
-<div class="mb-4">
-  <label class="block text-xs text-gray-500 mb-1">Radio de búsqueda (km): <b>{{ nearbyRadiusKm }}</b></label>
-  <input type="range" min="1" max="20" step="1" v-model="nearbyRadiusKm" @input="onSliderInput" @change="onRadiusChange" class="w-full accent-indigo-500" />
-</div>
-<details class="map-legend-details bg-transparent mb-3 rounded border border-white/5 shadow-sm">
-  <summary class="flex items-center justify-between font-semibold mb-1 cursor-pointer px-2 py-1">
-    <span>Vehículos cercanos</span>
-    <span class="text-xs text-gray-400">≤ {{ nearbyRadiusKm }} km</span>
-  </summary>
-  <div class="mt-2 px-1 py-1">
-    <div v-if="nearbyAvailable.length === 0" class="text-sm text-gray-400">No hay vehículos cercanos disponibles.</div>
-    <ul v-else class="space-y-2 max-h-48 overflow-y-auto pr-1">
-      <li v-for="v in nearbyAvailable.slice(0,6)" :key="v.id" class="flex items-center justify-between gap-3 p-1 rounded-md hover:bg-indigo-50/10 transition-colors cursor-pointer" @click="onNearbyClick(v)">
-        <div class="flex items-center gap-3">
-          <div class="flex items-center justify-center w-8 h-8 rounded-full" :style="{ background: 'linear-gradient(180deg, rgba(99,102,241,0.12), rgba(99,102,241,0.04))' }">
-            <span :style="{ width: '10px', height: '10px', borderRadius: '50%', display: 'inline-block', background: v.mongo_active ? '#ef4444' : (v.postgres_active ? '#f59e0b' : '#22c55e'), border: '2px solid #fff' }"></span>
+  <!-- Full Screen Wrapper: Bloqueado debajo de la cabecera (top-16) -->
+  <!-- Eliminamos lg:left-72 porque el layout de cliente NO tiene sidebar lateral fijo -->
+  <div class="fixed top-16 bottom-0 left-0 right-0 z-0 overflow-hidden font-sans bg-gray-100 dark:bg-gray-950">
+    <!-- Map Container -->
+    <div ref="mapContainer" class="absolute inset-0 z-0"></div>
+
+    <!-- UI Overlay Layer -->
+    <div class="absolute inset-0 pointer-events-none z-10 p-4 sm:p-6 flex flex-col">
+      
+      <!-- Top Area: Search & Tools -->
+      <div class="flex flex-col sm:flex-row items-start justify-between gap-4 pointer-events-auto w-full max-w-7xl mx-auto">
+        <div class="relative w-full sm:w-80 group">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors">
+            <MagnifyingGlassIcon class="size-4" />
           </div>
-          <div class="min-w-0">
-            <div class="text-sm font-medium truncate">{{ v.plate }}</div>
-            <div class="text-xs text-gray-400 truncate">{{ v.brand }} {{ v.model }}</div>
+          <input 
+            v-model="search" 
+            type="text" 
+            placeholder="Buscar vehículo..." 
+            class="block w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-0 shadow-2xl shadow-indigo-500/10 text-sm font-semibold text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none ring-1 ring-gray-900/5 dark:ring-white/10"
+          />
+        </div>
+
+        <div class="flex items-center gap-2 self-end sm:self-auto">
+          <button @click="locateMe" class="p-2.5 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5 hover:bg-white active:scale-95 transition-all" title="Mi ubicación">
+            <MapPinIcon class="size-5" />
+          </button>
+          <button @click="refresh" class="p-2.5 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5 hover:bg-white active:scale-95 transition-all" title="Actualizar">
+            <ArrowPathIcon class="size-5" :class="{'animate-spin': isRefreshing}" />
+          </button>
+          <button @click="panelOpen = !panelOpen" :class="[panelOpen ? 'bg-indigo-600 text-white shadow-indigo-500/40' : 'bg-white/90 dark:bg-gray-900/90 text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5']" class="p-2.5 rounded-xl backdrop-blur-xl transition-all active:scale-95">
+            <AdjustmentsHorizontalIcon class="size-5" />
+          </button>
+        </div>
+      </div>
+
+      <!-- Center / Flexible Area -->
+      <div class="flex-1 relative mt-4">
+        <!-- Panel Lateral -->
+        <Transition
+          enter-active-class="transition ease-out duration-300"
+          enter-from-class="translate-x-full opacity-0"
+          enter-to-class="translate-x-0 opacity-100"
+          leave-active-class="transition ease-in duration-200"
+          leave-from-class="translate-x-0 opacity-100"
+          leave-to-class="translate-x-full opacity-0"
+        >
+          <div v-if="panelOpen" class="absolute top-0 right-0 bottom-4 w-full max-w-sm pointer-events-auto">
+            <div class="h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/20 dark:border-gray-800 flex flex-col">
+              <div class="px-6 pt-6 pb-2 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+                <h2 class="text-[10px] font-black text-indigo-500 uppercase tracking-widest leading-none">Opciones</h2>
+                <button @click="panelOpen = false" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400"><XMarkIcon class="size-4" /></button>
+              </div>
+              <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6 custom-scrollbar">
+                <section>
+                  <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">Cercanos <span>{{ filteredNearby.length }}</span></h3>
+                  <div v-if="filteredNearby.length === 0" class="py-6 text-center bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+                    <p class="text-[9px] text-gray-400 italic font-medium">No se encontraron vehículos</p>
+                  </div>
+                  <div v-else class="space-y-2">
+                    <button v-for="v in filteredNearby" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-indigo-500/30 hover:shadow-lg transition-all group">
+                      <div class="flex items-center gap-2.5 min-w-0">
+                        <TruckIcon class="size-4 text-indigo-500 shrink-0" />
+                        <div class="min-w-0">
+                          <p class="text-[11px] font-bold text-gray-900 dark:text-white truncate">{{ v.plate }}</p>
+                          <p class="text-[9px] text-gray-400 font-bold uppercase truncate">{{ v.brand }} {{ v.model }}</p>
+                        </div>
+                      </div>
+                      <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400">{{ formatDistance(v.distanceMeters) }}</p>
+                    </button>
+                  </div>
+                </section>
+              </div>
+            </div>
+          </div>
+        </Transition>
+      </div>
+
+      <!-- Bottom Area: Selected Vehicle Card -->
+      <Transition
+        enter-active-class="transition ease-out duration-300"
+        enter-from-class="translate-y-full opacity-0 scale-95"
+        enter-to-class="translate-y-0 opacity-100 scale-100"
+        leave-active-class="transition ease-in duration-200"
+        leave-from-class="translate-y-0 opacity-100 scale-100"
+        leave-to-class="translate-y-full opacity-0 scale-95"
+      >
+        <div v-if="selectedVehicle" class="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-sm pointer-events-auto px-4">
+          <div class="bg-gray-900 dark:bg-gray-900 rounded-[1.5rem] shadow-[0_24px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden relative text-white">
+            <button @click="selectedVehicle = null" class="absolute top-2 right-2 z-20 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all">
+              <XMarkIcon class="size-4" />
+            </button>
+
+            <div class="flex flex-col sm:flex-row h-full">
+              <!-- Left: Image -->
+              <div class="w-full sm:w-[35%] h-24 sm:h-auto bg-gray-800 relative">
+                <img :src="'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'" class="size-full object-cover opacity-80" />
+              </div>
+
+              <!-- Right: Content -->
+              <div class="flex-1 p-4 flex flex-col justify-between min-w-0">
+                <div class="min-w-0 mb-3 text-left">
+                  <h2 class="text-sm font-black truncate tracking-tight leading-none text-white">{{ selectedVehicle.brand }} {{ selectedVehicle.model }}</h2>
+                  <p class="text-indigo-400 font-mono font-black text-[9px] mt-1 uppercase leading-none">{{ selectedVehicle.plate }}</p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center">
+                    <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">Distancia</p>
+                    <div class="flex items-center gap-1 font-black text-white text-[10px] leading-none">
+                      <MapPinIcon class="size-2.5 text-indigo-400" /> {{ formatDistance(selectedVehicle.distanceMeters) }}
+                    </div>
+                  </div>
+                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-xs">
+                    <span class="text-green-400 font-bold text-[10px]">0.15€</span><span class="text-[8px] text-gray-500">/min</span>
+                  </div>
+                </div>
+
+                <button @click="confirmBooking" :disabled="isBooking" class="w-full py-2 rounded-xl bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50">
+                  {{ isBooking ? 'Procesando...' : 'Reservar ahora' }}
+                </button>
+              </div>
+            </div>
           </div>
         </div>
-        <div>
-          <div class="text-right">
-            <div class="text-sm font-semibold text-indigo-400">{{ v.distanceMeters < 1000 ? `${Math.round(v.distanceMeters)} m` : `${(v.distanceMeters/1000).toFixed(2)} km` }}</div>
-            <div class="text-xs text-gray-400">{{ v.mongo_active ? 'En marcha' : (v.postgres_active ? 'Ocupado' : 'Disponible') }}</div>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
-</details>
-</aside>
-<!-- Botón para abrir el panel lateral -->
-<button v-if="!panelOpen" @click="panelOpen = true" class="fixed top-20 right-6 z-50 p-3 bg-gray-900 text-indigo-400 rounded-full shadow-lg hover:bg-indigo-500 animate-fade-in" title="Mostrar opciones del mapa">
-  <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15.5A3.5 3.5 0 1 0 12 8.5a3.5 3.5 0 0 0 0 7zm7.5-3.5a7.5 7.5 0 0 1-1.05 3.85l1.6 1.6a1 1 0 0 1-1.42 1.42l-1.6-1.6A7.5 7.5 0 0 1 12 20.5a7.5 7.5 0 0 1-3.85-1.05l-1.6 1.6a1 1 0 0 1-1.42-1.42l1.6-1.6A7.5 7.5 0 0 1 3.5 12a7.5 7.5 0 0 1 1.05-3.85l-1.6-1.6a1 1 0 0 1 1.42-1.42l1.6 1.6A7.5 7.5 0 0 1 12 3.5a7.5 7.5 0 0 1 3.85 1.05l1.6-1.6a1 1 0 0 1 1.42 1.42l-1.6 1.6A7.5 7.5 0 0 1 20.5 12z" />
-  </svg>
-</button>
-
-
+      </Transition>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { onMounted, onUnmounted, ref, watch, computed } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useMap } from '@/modules/map/composables/useMap'
+import apiClient from '@/services/api'
+import showToast from '@/modules/common/composables/useToast'
+import {
+  MagnifyingGlassIcon,
+  MapPinIcon,
+  ArrowPathIcon,
+  XMarkIcon,
+  BoltIcon,
+  CalendarIcon,
+  AdjustmentsHorizontalIcon,
+  TruckIcon
+} from '@heroicons/vue/24/outline'
 
 const route = useRoute()
-const { mapContainer, map, vehicles, markers, initMap, fetchVehicles, setUserLocation, addVehicleMarkers, destroyMap, rawVehicles, userLocation, _internal, centerOnVehicle } = useMap()
-let userMarker: any = null
+const router = useRouter()
+const { mapContainer, map, initMap, fetchVehicles, setUserLocation, destroyMap, rawVehicles, centerOnVehicle, markers, setSearchQuery } = useMap()
 
-const nearbyAvailable = ref<any[]>([])
-const nearbyRadiusKm = ref(2)
+const search = ref('')
+const selectedVehicle = ref<any | null>(null)
+const isRefreshing = ref(false)
+const isBooking = ref(false)
 const panelOpen = ref(false)
+const nearbyRadiusKm = ref(5)
+const nearbyAvailable = ref<any[]>([])
 
-function onRadiusChange() {
-  computeNearbyAvailable();
-}
-function onSliderInput() {}
-function onFilter() {
-  computeNearbyAvailable();
-}
-function onSearch() {
-  computeNearbyAvailable();
+watch(search, (newVal) => {
+  setSearchQuery(newVal)
+  computeNearbyAvailable()
+})
+
+const formatDistance = (meters?: number) => {
+  if (meters == null) return '-'
+  return meters < 1000 ? `${Math.round(meters)} m` : `${(meters/1000).toFixed(1)} km`
 }
 
-const refresh = () => fetchVehicles('/vehicles/map')
+const filteredNearby = computed(() => {
+  return nearbyAvailable.value.filter(v => !v.mongo_active)
+})
+
+const refresh = async () => {
+  isRefreshing.value = true
+  try {
+    await fetchVehicles('/vehicles/map')
+    computeNearbyAvailable()
+  } finally {
+    isRefreshing.value = false
+  }
+}
+
 const locateMe = () => {
   if (!navigator.geolocation) return
   navigator.geolocation.getCurrentPosition(pos => {
-    const lat = pos.coords.latitude
-    const lng = pos.coords.longitude
-    setUserLocation(lat, lng)
-    if (map.value) {
-      map.value.setView([lat, lng], 13)
-      // user marker handled by setUserLocation
-      setUserLocation(lat, lng)
-      userMarker?.openPopup()
-    }
-  }, err => console.warn('Geolocation failed', err))
+    const { latitude, longitude } = pos.coords
+    setUserLocation(latitude, longitude)
+    map.value?.setView([latitude, longitude], 15)
+    computeNearbyAvailable()
+  })
 }
 
 function computeNearbyAvailable() {
   if (!map.value) return
-  // prefer user's location if available, fallback to map center
-  const centerPoint = (userLocation.value && userLocation.value.lat && userLocation.value.lng)
-    ? { lat: userLocation.value.lat, lng: userLocation.value.lng }
-    : map.value.getCenter()
-  const R = 6371000
-  const toRad = (x: number) => (x * Math.PI) / 180
+  const center = map.value.getCenter()
+  const R = 6371
   nearbyAvailable.value = rawVehicles.value
     .map(v => {
       if (v.latitude == null || v.longitude == null) return null
-      const dLat = toRad(v.latitude - centerPoint.lat)
-      const dLon = toRad(v.longitude - centerPoint.lng)
-      const lat1 = toRad(centerPoint.lat)
-      const lat2 = toRad(v.latitude)
-      const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
+      const dLat = (v.latitude - center.lat) * Math.PI / 180
+      const dLon = (v.longitude - center.lng) * Math.PI / 180
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(center.lat * Math.PI / 180) * Math.cos(v.latitude * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2)
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-      const d = R * c
+      const d = R * c * 1000
       return { ...v, distanceMeters: d }
     })
     .filter(Boolean)
-    .filter(v => !v.mongo_active && v.distanceMeters <= nearbyRadiusKm.value * 1000)
-    .sort((a, b) => a?.distanceMeters - b?.distanceMeters)
+    .filter(v => v.distanceMeters <= nearbyRadiusKm.value * 1000)
+    .sort((a, b) => a.distanceMeters - b.distanceMeters)
     .slice(0, 10)
 }
 
-onMounted(() => {
-  initMap()
-  const view = route.query.view?.toString()
-
-  // Always ask for geolocation when entering the vehicles map to center on user
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        const lat = pos.coords.latitude
-        const lng = pos.coords.longitude
-        setUserLocation(lat, lng)
-        if (map.value) {
-          map.value.setView([lat, lng], 15)
-        }
-        fetchVehicles('/vehicles/map').catch(err => console.error(err))
-        // try to grab userMarker via exposed internal function
-        try { userMarker = _internal?.getUserMarker?.() ?? null } catch { userMarker = null }
-        // compute nearby from user location
-        setTimeout(() => computeNearbyAvailable(), 400)
-      },
-      (err) => {
-        console.warn('Geolocation failed or denied', err)
-        // fallback to default behavior
-        if (route.path === '/vehicles/map' || view === 'all') {
-          fetchVehicles('/vehicles/map').catch(err => console.error(err))
-        } else {
-          fetchVehicles('/vehicles/map').catch(err => console.error(err))
-        }
-        setTimeout(() => computeNearbyAvailable(), 600)
-      },
-      { enableHighAccuracy: true }
-    )
-  } else {
-    // if geolocation not available, fallback to current logic
-    if (route.path === '/vehicles/map' || view === 'all') {
-      fetchVehicles('/vehicles/map').catch(err => console.error(err))
-    } else {
-      fetchVehicles('/vehicles/map').catch(err => console.error(err))
-    }
-    setTimeout(() => computeNearbyAvailable(), 600)
-  }
-
-  // compute when map moves
-  if (map.value) {
-    map.value.on('moveend', () => computeNearbyAvailable())
-  }
-
-  // attach click handlers to markers so clicking a map marker opens the selected panel
-  function attachMarkerClicks() {
-    if (!markers) return
-    try {
-      markers.forEach((m, id) => {
-        // remove previous handlers
-        try { m.off && m.off('click') } catch {}
-        try { m.on && m.on('click', () => {
-          const v = rawVehicles.value.find(rv => rv.id === id)
-          if (v) {
-            selectedVehicle.value = v
-            showSelectedPanel.value = true
-            centerOnVehicle(v)
-          }
-        }) } catch {}
-      })
-    } catch (e) {}
-  }
-
-  // schedule attaching handlers after markers are likely added
-  setTimeout(() => attachMarkerClicks(), 1000)
-})
-
-const selectedVehicle = ref<any | null>(null)
-const showSelectedPanel = ref(false)
-
-function onNearbyClick(v: any) {
-  // center on vehicle and open popup
-  centerOnVehicle(v)
+const onNearbyClick = (v: any) => {
   selectedVehicle.value = v
-  showSelectedPanel.value = true
+  centerOnVehicle(v)
+  if (window.innerWidth < 640) panelOpen.value = false
 }
 
-function closeSelectedPanel() {
-  showSelectedPanel.value = false
-  selectedVehicle.value = null
+const confirmBooking = async () => {
+  if (!selectedVehicle.value) return
+  isBooking.value = true
+  try {
+    const payload = { vehicle_id: selectedVehicle.value.id, scheduled_start: new Date().toISOString() }
+    await apiClient.post('/reservations', payload)
+    showToast('¡Vehículo reservado!', 'success')
+    router.push('/bookings')
+  } catch (e: any) {
+    showToast(e.response?.data?.message || 'Error al reservar', 'error')
+  } finally {
+    isBooking.value = false
+  }
 }
 
-onUnmounted(() => {
-  destroyMap()
+watch(() => markers?.size, () => {
+  markers?.forEach((marker, id) => {
+    marker.off('click').on('click', () => {
+      const v = rawVehicles.value.find(rv => rv.id === id)
+      if (v) {
+        selectedVehicle.value = v
+        centerOnVehicle(v)
+      }
+    })
+  })
+}, { immediate: true })
+
+onMounted(async () => {
+  initMap()
+  await fetchVehicles('/vehicles/map')
+  if (route.query.select) {
+    const v = rawVehicles.value.find(rv => rv.id === Number(route.query.select))
+    if (v) { selectedVehicle.value = v; centerOnVehicle(v) }
+  }
+  locateMe()
+  if (map.value) map.value.on('moveend', computeNearbyAvailable)
 })
+
+onUnmounted(() => { destroyMap() })
 </script>
 
-<style>
-.vehicle-marker {
-  background: transparent !important;
-  border: none !important;
-}
-/* Ensure Leaflet map and all its panes stay below the app sidebar */
-.leaflet-container,
-.leaflet-control-container,
-.leaflet-map-pane,
-.leaflet-pane,
-.leaflet-overlay-pane,
-.leaflet-tile-pane,
-.leaflet-shadow-pane {
-  z-index: 0 !important;
-}
-/* Legend styling */
-.map-legend { z-index: 10001; }
-/* Allow sidebar and menus to receive pointer events above the map */
-.admin-sidebar,
-.app-sidebar,
-.fixed-sidebar {
-  z-index: 9999 !important;
-  position: relative;
-}
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
 
-/* compact legend / nearby list tweaks */
-.map-controls .map-legend-details {
-  width: 18rem;
-  font-size: 0.875rem;
-}
-.map-controls .map-legend-details summary { padding: 0 }
-.map-controls .map-legend-details ul { padding: 0 }
-.map-controls .map-legend-details li { padding: 0 }
-
-/* selected panel and transition */
-.selected-vehicle-panel { max-width: 18rem; }
-.slide-fade-enter-active { transition: all .2s ease; }
-.slide-fade-leave-active { transition: all .15s ease; }
-.slide-fade-enter-from { transform: translateY(8px); opacity: 0; }
-.slide-fade-enter-to { transform: translateY(0); opacity: 1; }
-.slide-fade-leave-from { transform: translateY(0); opacity: 1; }
-.slide-fade-leave-to { transform: translateY(8px); opacity: 0; }
+:deep(.leaflet-container) { z-index: 0 !important; border-radius: 0 !important; height: 100% !important; width: 100% !important; }
+:deep(.leaflet-control-container) { z-index: 5 !important; }
+:deep(.leaflet-bottom.leaflet-left) { bottom: 2rem !important; left: 1.5rem !important; }
+:deep(.leaflet-bar) { border: none !important; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important; border-radius: 1rem !important; overflow: hidden; }
+:deep(.leaflet-bar a) { background-color: rgba(255, 255, 255, 0.9) !important; color: #4f46e5 !important; width: 36px !important; height: 36px !important; line-height: 36px !important; font-weight: bold !important; border-bottom: 1px solid #f3f4f6 !important; }
+.dark :deep(.leaflet-bar a) { background-color: rgba(17, 24, 39, 0.9) !important; color: #818cf8 !important; border-bottom: 1px solid #374151 !important; }
 </style>

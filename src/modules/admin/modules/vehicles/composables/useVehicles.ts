@@ -21,7 +21,7 @@ export function useVehicles() {
       if (filters.search) params.search = filters.search
       if (filters.active !== undefined) params.active = filters.active
 
-      const response = await api.get<VehiclePagination>('/vehicles', { params })
+      const response = await api.get<VehiclePagination>('/admin/vehicles', { params })
       vehicles.value = response.data.data
       pagination.value = {
         current_page: response.data.current_page,
@@ -41,7 +41,7 @@ export function useVehicles() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.post<{ data: Vehicle; message: string }>('/vehicles', data)
+      const response = await api.post<{ data: Vehicle; message: string }>('/admin/vehicles', data)
       return response.data.data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error creating vehicle'
@@ -55,7 +55,7 @@ export function useVehicles() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.get<{ data: Vehicle }>(`/vehicles/${id}`)
+      const response = await api.get<{ data: Vehicle }>(`/admin/vehicles/${id}`)
       return response.data.data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error loading vehicle'
@@ -69,7 +69,7 @@ export function useVehicles() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.put<{ data: Vehicle; message: string }>(`/vehicles/${id}`, data)
+      const response = await api.put<{ data: Vehicle; message: string }>(`/admin/vehicles/${id}`, data)
       return response.data.data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error updating vehicle'
@@ -83,7 +83,7 @@ export function useVehicles() {
     loading.value = true
     error.value = null
     try {
-      await api.delete(`/vehicles/${id}`)
+      await api.delete(`/admin/vehicles/${id}`)
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error deleting vehicle'
       throw err

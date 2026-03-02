@@ -1,95 +1,129 @@
 <template>
-  <div class="min-h-screen bg-gray-900 p-8">
-    <div class="mx-auto max-w-7xl">
-      <div class="lg:col-start-3 lg:row-end-1" v-if="user">
-        <h2 class="mb-6 text-2xl font-bold text-white">User Profile</h2>
-        <div class="rounded-lg bg-gray-800/50 outline-1 -outline-offset-1 outline-white/10">
-  <dl class="flex flex-wrap">
-    <div class="flex-auto pt-6 pl-6">
-      <dt class="text-sm/6 font-semibold text-gray-100">Nombre</dt>
-      <dd class="mt-1 text-base font-semibold text-white">{{ user.name }}</dd>
-      <dt class="text-sm/6 font-semibold text-gray-100 mt-4">Usuario</dt>
-      <dd class="mt-1 text-base font-semibold text-white">{{ user.username }}</dd>
-      <dt class="text-sm/6 font-semibold text-gray-100 mt-4">Email</dt>
-      <dd class="mt-1 text-base font-semibold text-white">{{ user.email }}</dd>
-    </div>
-    <div class="flex-none self-end px-6 pt-4">
-      <dt class="sr-only">Status</dt>
-      <dd class="inline-flex items-center rounded-md bg-blue-500/15 px-2 py-1 text-xs font-medium text-blue-400 inset-ring inset-ring-blue-500/20">Active</dd>
-    </div>
-    <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
-      <dt class="text-sm/6 font-semibold text-gray-100">Token</dt>
-      <dd class="mt-2 text-xs font-mono text-gray-300 break-all bg-gray-700/50 rounded p-3 max-h-24 overflow-y-auto">{{ token }}</dd>
-    </div>
-    <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
-      <dt class="text-sm/6 font-semibold text-gray-100">Rol</dt>
-      <dd class="mt-2 text-base font-semibold text-white">{{ user.roles && user.roles.length > 0 ? user.roles[0].name : 'Sin rol' }}</dd>
-    </div>
-    <div class="mt-6 w-full border-t border-white/5 px-6 pt-6">
-      <dt class="text-sm/6 font-semibold text-gray-100">Permisos</dt>
-      <dd class="mt-2 text-xs font-mono text-gray-300 break-all bg-gray-700/50 rounded p-3 max-h-24 overflow-y-auto">
-        <span v-if="user.roles && user.roles.length > 0 && user.roles[0].permissions && user.roles[0].permissions.length > 0">
-          <span v-for="perm in user.roles[0].permissions" :key="perm.id" class="inline-block mr-2">{{ perm.name }}</span>
-        </span>
-        <span v-else>Sin permisos</span>
-      </dd>
-    </div>
-  </dl>
-  <div class="mt-6 border-t border-white/5 px-6 py-6 flex gap-4">
-    <button
-      @click="router.push('/perfil/editar')"
-      class="text-sm/6 font-semibold text-indigo-400 hover:text-indigo-200 transition-colors cursor-pointer"
-    >
-      Editar información
-    </button>
-    <button
-      @click="handleLogout"
-      :disabled="isLoading"
-      class="text-sm/6 font-semibold text-white hover:text-gray-300 transition-colors disabled:opacity-50 cursor-pointer"
-    >
-      {{ isLoading ? 'Logging out...' : 'Logout' }} <span aria-hidden="true">→</span>
-    </button>
-  </div>
-</div>
-      </div>
-
-      <div v-if="user && user.roles && user.roles.length > 0" class="mt-8">
-        <h2 class="mb-6 text-2xl font-bold text-white">Roles & Permissions</h2>
-        <div class="grid gap-4">
-          <div v-for="role in user.roles" :key="role.id" class="rounded-lg bg-gray-800/50 outline-1 -outline-offset-1 outline-white/10 p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-lg font-semibold text-white">{{ role.name }}</h3>
-              <span class="inline-flex items-center rounded-md bg-purple-500/15 px-2 py-1 text-xs font-medium text-purple-400 inset-ring inset-ring-purple-500/20">Role</span>
-            </div>
-            <div v-if="role.permissions && role.permissions.length > 0">
-              <p class="text-sm text-gray-400 mb-3">Permissions:</p>
-              <div class="flex flex-wrap gap-2">
-                <span v-for="permission in role.permissions" :key="permission.id" class="inline-flex items-center rounded-full bg-gray-700 px-3 py-1 text-xs font-medium text-gray-200">
-                  {{ permission.name }}
-                </span>
-              </div>
-            </div>
-            <div v-else class="text-sm text-gray-400">No permissions assigned</div>
+  <div class="max-w-4xl mx-auto space-y-8">
+    <!-- Header Section -->
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-700 px-8 py-6 text-white shadow-xl shadow-indigo-500/10">
+      <div class="relative z-10 flex flex-col md:flex-row items-center gap-5">
+        <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-3xl font-bold backdrop-blur-md">
+          {{ userInitials }}
+        </div>
+        <div class="text-center md:text-left">
+          <h1 class="text-2xl font-bold">{{ user?.name }}</h1>
+          <p class="text-indigo-100 text-sm flex items-center justify-center md:justify-start gap-1.5 opacity-90">
+            <UserIcon class="size-3.5" />
+            @{{ user?.username }}
+          </p>
+          <div class="mt-2.5 flex flex-wrap justify-center md:justify-start gap-2">
+            <span v-for="role in user?.roles" :key="role.id" class="px-2.5 py-0.5 rounded-lg bg-white/15 text-[10px] font-bold uppercase tracking-widest backdrop-blur-sm">
+              {{ role.name }}
+            </span>
           </div>
         </div>
-      </div>
-
-      <div v-else-if="isLoading" class="flex items-center justify-center py-12">
-        <div class="text-center">
-          <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
-          <p class="mt-4 text-gray-300">Loading user...</p>
+        <div class="md:ml-auto">
+          <button
+            @click="router.push('/perfil/editar')"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-indigo-600 font-bold text-xs hover:bg-indigo-50 transition-all shadow-md active:scale-95"
+          >
+            <PencilSquareIcon class="size-4" />
+            Editar Perfil
+          </button>
         </div>
       </div>
+      
+      <!-- Abstract Background Shapes -->
+      <div class="absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-3xl"></div>
+      <div class="absolute -left-10 -bottom-10 size-48 rounded-full bg-purple-500/20 blur-3xl"></div>
+    </div>
 
-      <!-- Tickets section -->
-      <div class="mt-8">
-        <h2 class="mb-4 text-2xl font-bold text-white">Tickets</h2>
-        <div class="rounded-lg bg-gray-800/50 p-6">
-          <div class="flex gap-4">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Info Col -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Account Details -->
+        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+            <IdentificationIcon class="size-6 text-indigo-500" />
+            Detalles de la cuenta
+          </h2>
+          <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
+            <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Nombre Completo</dt>
+              <dd class="text-gray-900 dark:text-white font-medium">{{ user?.name }}</dd>
+            </div>
+            <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Correo Electrónico</dt>
+              <dd class="text-gray-900 dark:text-white font-medium">{{ user?.email }}</dd>
+            </div>
+            <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Nombre de Usuario</dt>
+              <dd class="text-gray-900 dark:text-white font-medium">@{{ user?.username }}</dd>
+            </div>
+            <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Estado</dt>
+              <dd class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold uppercase tracking-wider">
+                <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                Activo
+              </dd>
+            </div>
+          </dl>
+        </section>
 
-
+        <!-- Permissions Section -->
+        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+            <KeyIcon class="size-6 text-indigo-500" />
+            Permisos Activos
+          </h2>
+          <div v-if="userPermissions.length > 0" class="flex flex-wrap gap-2">
+            <span
+              v-for="permission in userPermissions"
+              :key="permission"
+              class="inline-flex items-center rounded-xl bg-gray-100 dark:bg-gray-800 px-3 py-1.5 text-xs font-semibold text-gray-600 dark:text-gray-300 border border-gray-200/50 dark:border-gray-700/50"
+            >
+              {{ permission }}
+            </span>
           </div>
-        </div>
+          <div v-else class="text-center py-6 text-gray-500 italic">
+            No tienes permisos específicos asignados.
+          </div>
+        </section>
+      </div>
+
+      <!-- Sidebar Col -->
+      <div class="space-y-8">
+        <!-- Stats/Actions -->
+        <section class="bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl p-8 border border-indigo-100 dark:border-indigo-900/30">
+          <h3 class="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-4">Seguridad</h3>
+          <p class="text-sm text-indigo-700/70 dark:text-indigo-400/70 mb-6">
+            Mantén tu cuenta protegida cambiando tu contraseña regularmente.
+          </p>
+          <button
+            @click="router.push('/perfil/editar')"
+            class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 active:scale-95"
+          >
+            <ShieldCheckIcon class="size-5" />
+            Seguridad de la cuenta
+          </button>
+          
+          <div class="mt-8 pt-8 border-t border-indigo-200 dark:border-indigo-900/50">
+            <button
+              @click="handleLogout"
+              class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition-all active:scale-95 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20"
+            >
+              <ArrowRightOnRectangleIcon class="size-5" />
+              Cerrar Sesión
+            </button>
+          </div>
+        </section>
+
+        <!-- Quick Info -->
+        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm">
+          <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Token de Acceso</h3>
+          <div class="bg-gray-50 dark:bg-gray-950 rounded-xl p-4 font-mono text-[10px] break-all text-gray-500 dark:text-gray-400 max-h-32 overflow-y-auto border border-gray-100 dark:border-gray-800 custom-scrollbar">
+            {{ token }}
+          </div>
+          <p class="mt-3 text-[10px] text-gray-400 text-center">
+            Este token es sensible. No lo compartas con nadie.
+          </p>
+        </section>
       </div>
     </div>
   </div>
@@ -99,25 +133,38 @@
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { useAuth } from '../composables/useAuth'
+import {
+  UserIcon,
+  PencilSquareIcon,
+  IdentificationIcon,
+  KeyIcon,
+  ShieldCheckIcon,
+  ArrowRightOnRectangleIcon
+} from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const { user, isLoading, logout, getToken } = useAuth()
 const token = getToken()
 
-// Prefer checking permissions if backend provides them; fallback to role name check encapsulated here
-const isAdmin = computed(() => {
-  const u = user.value
-  if (!u) return false
-  // If permissions are flattened on user (e.g., user.permissions) check them
-  if ((u as any).permissions && Array.isArray((u as any).permissions)) {
-    // check generic admin-like permissions if present
-    return (u as any).permissions.some((p: string) => p.startsWith('can.manage') || p.startsWith('can.view'))
+const userInitials = computed(() => {
+  const name = user.value?.name || 'U'
+  return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+})
+
+const userPermissions = computed(() => {
+  const permissions: string[] = []
+  if (user.value?.roles) {
+    user.value.roles.forEach((role: any) => {
+      if (role.permissions) {
+        role.permissions.forEach((p: any) => {
+          if (!permissions.includes(p.name)) {
+            permissions.push(p.name)
+          }
+        })
+      }
+    })
   }
-  // Otherwise check roles without scattering logic in template
-  if (u.roles && Array.isArray(u.roles)) {
-    return u.roles.some((r: any) => (r.name || '').toString().toLowerCase() === 'admin')
-  }
-  return false
+  return permissions.sort()
 })
 
 const handleLogout = async () => {
@@ -129,3 +176,19 @@ const handleLogout = async () => {
   }
 }
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+</style>

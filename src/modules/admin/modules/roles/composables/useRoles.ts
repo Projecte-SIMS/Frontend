@@ -77,7 +77,7 @@ export const useRoles = () => {
         permissions: data.permissions,
       }
 
-      await api.post('/roles', payload)
+      await api.post('/admin/roles', payload)
       success('Rol creado exitosamente')
       return true
     } catch (err: any) {
@@ -105,7 +105,7 @@ export const useRoles = () => {
         permissions: data.permissions,
       }
 
-      await api.put(`/roles/${id}`, payload)
+      await api.put(`/admin/roles/${id}`, payload)
       success('Rol actualizado exitosamente')
       return true
     } catch (err: any) {
@@ -128,7 +128,7 @@ export const useRoles = () => {
         return false
       }
 
-      await api.delete(`/roles/${id}`)
+      await api.delete(`/admin/roles/${id}`)
       success('Rol eliminado exitosamente')
       return true
     } catch (err: any) {

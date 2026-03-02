@@ -48,7 +48,7 @@ export const usePermissions = () => {
     error.value = null
 
     try {
-      const response = await api.get('/permissions')
+      const response = await api.get('/admin/permissions')
       const data = response.data
 
       // Transform flat response into PermissionGroup structure
