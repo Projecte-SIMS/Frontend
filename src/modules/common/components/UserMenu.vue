@@ -13,7 +13,7 @@
       </div>
       <component 
         :is="placement === 'right' ? ChevronRightIcon : ChevronDownIcon" 
-        :class="['size-3.5 text-gray-400 transition-transform duration-200 group-hover:text-gray-600 dark:group-hover:text-gray-300', showMenu ? (placement === 'right' ? 'rotate-180' : 'rotate-180') : '']" 
+        :class="['size-3.5 text-gray-400 transition-transform duration-200 group-hover:text-gray-600 dark:group-hover:text-gray-300', showMenu ? 'rotate-180' : '']" 
       />
     </button>
     
@@ -76,6 +76,13 @@
 
         <div class="p-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-900/30">
           <button
+            @click="openTickets"
+            class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+          >
+            <TicketIcon class="size-5 text-gray-400" />
+            Mis tickets
+          </button>
+          <button
             @click="openProfile"
             class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
           >
@@ -105,7 +112,8 @@ import {
   UserCircleIcon,
   ArrowRightOnRectangleIcon,
   PlusIcon,
-  XMarkIcon
+  XMarkIcon,
+  TicketIcon
 } from '@heroicons/vue/24/outline'
 
 const props = withDefaults(defineProps<{
@@ -151,6 +159,11 @@ const handleAddAccount = () => {
   showMenu.value = false
   document.cookie = 'token=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;'
   window.location.href = '/login'
+}
+
+const openTickets = () => {
+  showMenu.value = false
+  router.push('/tickets')
 }
 
 const openProfile = () => {

@@ -34,6 +34,7 @@
 
           <!-- Acciones Derecha (User Menu) -->
           <div class="flex items-center gap-3">
+            <!-- Botón Admin (si aplica) -->
             <router-link 
               v-if="isAdmin" 
               to="/admin" 
@@ -43,10 +44,12 @@
               Admin
             </router-link>
 
+            <!-- Menú de Usuario -->
             <div class="transition-all hover:scale-105 active:scale-95 duration-200">
               <UserMenu />
             </div>
 
+            <!-- Menú Móvil (Hamburguesa) -->
             <button 
               @click="mobileMenuOpen = !mobileMenuOpen"
               class="p-2 rounded-xl text-gray-500 md:hidden hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 active:scale-75"
@@ -58,7 +61,7 @@
         </div>
       </div>
 
-      <!-- Navegación Móvil -->
+      <!-- Navegación Móvil (Desplegable) -->
       <Transition
         enter-active-class="transition ease-out duration-300"
         enter-from-class="opacity-0 -translate-y-4"
@@ -91,16 +94,21 @@
       </Transition>
     </header>
 
-    <!-- Contenido principal -->
+    <!-- Contenido principal con transición de página -->
     <main class="relative">
       <router-view v-slot="{ Component }">
-        <transition name="page" mode="out-in" appear>
+        <transition
+          name="page"
+          mode="out-in"
+          appear
+        >
           <div :key="route.path" :class="[isFullPage ? '' : 'py-6 sm:py-8 lg:py-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8']">
             <component :is="Component" />
           </div>
         </transition>
       </router-view>
       
+      <!-- El Chatbot flotante siempre arriba -->
       <ChatbotPage />
     </main>
   </div>
@@ -130,9 +138,7 @@ const mobileMenuOpen = ref(false)
 const isFullPage = computed(() => route.path === '/vehicles/map')
 
 const isActive = (path: string) => {
-  // Mejora de lógica para evitar solapamiento entre /vehicles y /vehicles/map
   if (path === route.path) return true
-  // Para /vehicles solo marcamos si es exacto o no es el mapa
   if (path === '/vehicles' && route.path.startsWith('/vehicles') && route.path !== '/vehicles/map') return true
   return false
 }
@@ -145,21 +151,49 @@ const navigation = [
   { name: 'Mapa', to: '/vehicles/map', icon: MapIcon },
   { name: 'Vehículos', to: '/vehicles', icon: TruckIcon },
   { name: 'Reservas', to: '/bookings', icon: CalendarDaysIcon },
-  { name: 'Tickets', to: '/tickets', icon: TicketIcon },
-  { name: 'Perfil', to: '/perfil', icon: UserIcon },
 ]
 </script>
 
 <style scoped>
+/* Transición de página suave */
 .page-enter-active,
 .page-leave-active {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.page-enter-from { opacity: 0; transform: translateY(10px); }
-.page-leave-to { opacity: 0; transform: translateY(-10px); }
 
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-.dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Scrollbar personalizado para el layout */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #e2e8f0;
+  border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #1e293b;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
 </style>

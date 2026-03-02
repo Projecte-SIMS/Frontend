@@ -8,7 +8,7 @@
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
-        Back to bookings
+        Volver a reservas
       </router-link>
     </div>
 
@@ -17,7 +17,7 @@
         <svg class="animate-spin h-8 w-8 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
-        Loading booking...
+        Cargando reserva...
       </div>
     </div>
 
@@ -36,66 +36,75 @@
       </div>
     </div>
 
-    <div v-else-if="booking" class="bg-white dark:bg-gray-900 shadow rounded-lg">
-      <div class="px-4 py-5 sm:px-6 flex items-center justify-between">
+    <div v-else-if="booking" class="bg-white dark:bg-gray-900 shadow rounded-[2.5rem] border border-gray-100 dark:border-gray-800 overflow-hidden">
+      <div class="px-6 py-6 sm:px-8 flex items-center justify-between">
         <div>
-          <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white">
-            Booking #{{ booking.id }}
+          <h3 class="text-xl font-black leading-6 text-gray-900 dark:text-white uppercase tracking-tight">
+            Reserva #{{ booking.id }}
           </h3>
           <p class="mt-1 max-w-2xl text-sm text-gray-500 dark:text-gray-400">
-            Full booking information
+            Detalles completos de la reserva
           </p>
         </div>
         <div class="flex gap-3">
           <router-link
             :to="`/admin/bookings/${booking.id}/edit`"
-            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-700"
+            class="inline-flex items-center px-6 py-2.5 border border-transparent text-sm font-black uppercase tracking-widest rounded-xl shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 active:scale-95 transition-all"
           >
-            Edit
+            Editar
           </router-link>
         </div>
       </div>
 
-      <div class="border-t border-gray-200 dark:border-gray-700 px-4 py-5 sm:px-6">
-        <dl class="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+      <div class="border-t border-gray-100 dark:border-gray-800 px-6 py-8 sm:px-8">
+        <dl class="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Guest</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-              <span v-if="booking.user">{{ booking.user.name }} ({{ booking.user.email }})</span>
-              <span v-else>User #{{ booking.user_id ?? '-' }}</span>
+            <dt class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Usuario</dt>
+            <dd class="mt-1 text-sm font-bold text-gray-900 dark:text-white flex items-center gap-3">
+              <div class="size-8 rounded-full bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center text-xs">
+                {{ getUserInitials(booking.user?.name) }}
+              </div>
+              <div v-if="booking.user" class="min-w-0">
+                <p class="truncate">{{ booking.user.name }}</p>
+                <p class="text-xs font-medium text-gray-500">{{ booking.user.email }}</p>
+              </div>
+              <span v-else>Usuario #{{ booking.user_id ?? '-' }}</span>
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Vehicle</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-              <span v-if="booking.vehicle">
-                {{ booking.vehicle.brand }} {{ booking.vehicle.model }} - {{ booking.vehicle.license_plate }}
-              </span>
-              <span v-else>Vehicle #{{ booking.vehicle_id ?? '-' }}</span>
+            <dt class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Vehículo</dt>
+            <dd class="mt-1 text-sm font-bold text-gray-900 dark:text-white flex items-center gap-3">
+              <div class="size-8 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400">
+                <TruckIcon class="size-4" />
+              </div>
+              <div v-if="booking.vehicle" class="min-w-0">
+                <p class="truncate">{{ booking.vehicle.brand }} {{ booking.vehicle.model }}</p>
+                <p class="text-xs font-mono text-indigo-500">{{ booking.vehicle.license_plate }}</p>
+              </div>
+              <span v-else>Vehículo #{{ booking.vehicle_id ?? '-' }}</span>
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
+            <dt class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Estado</dt>
+            <dd class="mt-1">
               <span
                 :class="[
-                  'inline-flex rounded-full px-2 py-1 text-xs font-semibold',
-                  booking.status === 'active'
-                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-                    : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
+                  'inline-flex rounded-xl px-3 py-1 text-xs font-black uppercase tracking-widest',
+                  getStatusClasses(booking.status),
                 ]"
               >
-                {{ booking.status }}
+                {{ translateStatus(booking.status) }}
               </span>
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Schedule</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-              <div v-if="booking.scheduled_start">
+            <dt class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Horario Programado</dt>
+            <dd class="mt-1 text-sm font-bold text-gray-900 dark:text-white">
+              <div v-if="booking.scheduled_start" class="flex items-center gap-2">
+                <ClockIcon class="size-4 text-gray-400" />
                 {{ formatDateTime(booking.scheduled_start) }}
               </div>
               <div v-else class="text-gray-400">-</div>
@@ -103,17 +112,18 @@
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total price</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-              <span v-if="booking.total_price != null">{{ formatCurrency(booking.total_price) }}</span>
-              <span v-else class="text-gray-400">-</span>
+            <dt class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Coste Total</dt>
+            <dd class="mt-1 text-xl font-black text-gray-900 dark:text-white">
+              <span v-if="getTotal(booking) != null">{{ formatCurrency(getTotal(booking)) }}</span>
+              <span v-else class="text-gray-400 text-sm">-</span>
             </dd>
           </div>
 
           <div class="sm:col-span-1" v-if="booking.trip">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Trip</dt>
-            <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-              {{ booking.trip.minutes_driven }} min · {{ formatCurrency(booking.trip.total_amount) }}
+            <dt class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2">Detalles del Viaje</dt>
+            <dd class="mt-1 text-sm font-bold text-gray-900 dark:text-white flex items-center gap-2">
+              <ArrowTrendingUpIcon class="size-4 text-green-500" />
+              {{ booking.trip.minutes_driven }} minutos conducidos
             </dd>
           </div>
         </dl>
@@ -127,12 +137,16 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { useBookings } from '../composables/useBookings'
 import type { Booking } from '../interfaces/booking.interface'
+import { 
+  TruckIcon, 
+  ClockIcon, 
+  ArrowTrendingUpIcon 
+} from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const { currentBooking, getBooking, loading, error } = useBookings()
 
 const booking = computed<Booking | null>(() => currentBooking.value)
-
 const bookingId = ref<number>(Number(route.params.id))
 
 onMounted(async () => {
@@ -146,7 +160,13 @@ onMounted(async () => {
 })
 
 const formatDateTime = (value: string) => {
-  return new Date(value).toLocaleString('es-ES')
+  return new Date(value).toLocaleString('es-ES', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
 }
 
 const formatCurrency = (value: number) => {
@@ -155,4 +175,34 @@ const formatCurrency = (value: number) => {
     currency: 'EUR',
   }).format(value)
 }
+
+const getUserInitials = (name?: string) => {
+  if (!name) return '?'
+  return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+}
+
+const getStatusClasses = (s: string) => {
+  const map: Record<string, string> = {
+    active: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+    completed: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+    cancelled: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400',
+    pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400',
+    expired: 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-400',
+  }
+  return map[s] || 'bg-gray-100 text-gray-800'
+}
+
+const translateStatus = (s: string) => {
+  const map: Record<string, string> = {
+    active: 'Activo',
+    completed: 'Completado',
+    cancelled: 'Cancelado',
+    pending: 'Pendiente',
+    expired: 'Expirado',
+  }
+  return map[s] || s
+}
+
+const getTotal = (booking: Booking) =>
+  booking.total_price ?? booking.trip?.total_amount ?? 0
 </script>

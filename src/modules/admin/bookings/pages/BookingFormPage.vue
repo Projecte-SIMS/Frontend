@@ -8,7 +8,7 @@
         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
-        Back to bookings
+        Volver a reservas
       </router-link>
     </div>
 
@@ -17,29 +17,29 @@
         <svg class="animate-spin h-8 w-8 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
         </svg>
-        Loading...
+        Cargando...
       </div>
     </div>
 
-    <div v-else class="bg-white dark:bg-gray-900 shadow rounded-lg">
-      <div class="px-4 py-5 sm:px-6">
-        <h3 class="text-lg font-medium leading-6 text-gray-900 dark:text-white">
-          Edit booking
+    <div v-else class="bg-white dark:bg-gray-900 shadow rounded-[2.5rem] border border-gray-100 dark:border-gray-800 overflow-hidden">
+      <div class="px-6 py-6 sm:px-8">
+        <h3 class="text-xl font-black leading-6 text-gray-900 dark:text-white uppercase tracking-tight">
+          Editar reserva
         </h3>
       </div>
 
-      <form @submit.prevent="handleSubmit" class="px-4 py-5 sm:px-6 space-y-6 border-t border-gray-200 dark:border-gray-700">
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <FormField label="User ID (optional)">
+      <form @submit.prevent="handleSubmit" class="px-6 py-8 sm:px-8 space-y-8 border-t border-gray-100 dark:border-gray-800">
+        <div class="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2">
+          <FormField label="ID de Usuario (opcional)">
             <FormInput
               v-model="form.user_id"
               type="number"
               min="1"
-              placeholder="e.g. 1"
+              placeholder="ej. 1"
             />
           </FormField>
 
-          <FormField label="Vehicle ID">
+          <FormField label="ID de Vehículo">
             <FormInput
               v-model="form.vehicle_id"
               type="number"
@@ -48,27 +48,27 @@
             />
           </FormField>
 
-          <FormField label="Start date and time (scheduled_start)">
+          <FormField label="Fecha y hora de inicio (scheduled_start)">
             <input
               v-model="form.scheduled_start"
               type="datetime-local"
               required
-              class="block w-full rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+              class="block w-full rounded-2xl border-0 px-4 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700 outline-none transition-all"
             />
           </FormField>
         </div>
 
-        <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-100 dark:border-gray-800">
           <router-link
             to="/admin/bookings"
-            class="flex-1 px-4 py-2 text-center text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+            class="flex-1 px-6 py-3.5 text-center text-sm font-black uppercase tracking-widest text-gray-700 bg-gray-100 rounded-2xl hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 transition-all active:scale-95"
           >
-            Cancel
+            Cancelar
           </router-link>
           <button
             type="submit"
             :disabled="saving"
-            class="flex-1 inline-flex items-center justify-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex-1 inline-flex items-center justify-center px-6 py-3.5 bg-indigo-600 text-white text-sm font-black uppercase tracking-widest rounded-2xl shadow-lg shadow-indigo-500/25 hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <svg
               v-if="saving"
@@ -79,7 +79,7 @@
             >
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
             </svg>
-            {{ saving ? 'Saving...' : 'Save changes' }}
+            {{ saving ? 'Guardando...' : 'Guardar cambios' }}
           </button>
         </div>
       </form>
@@ -128,7 +128,7 @@ onMounted(async () => {
         form.scheduled_start = d.toISOString().slice(0, 16)
       }
     } catch (e) {
-      toastError('Error loading booking')
+      toastError('Error al cargar la reserva')
       router.push('/admin/bookings')
     }
   }
@@ -148,16 +148,16 @@ const handleSubmit = async () => {
     }
 
     if (!bookingId.value) {
-      toastError('Missing booking id')
+      toastError('ID de reserva faltante')
       return
     }
 
     await updateBooking(bookingId.value, payload)
-    toastSuccess('Booking updated successfully')
+    toastSuccess('Reserva actualizada con éxito')
 
     router.push('/admin/bookings')
   } catch (e: any) {
-    toastError(e?.response?.data?.message || 'Error saving booking')
+    toastError(e?.response?.data?.message || 'Error al guardar la reserva')
   } finally {
     saving.value = false
   }

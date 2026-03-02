@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuth } from '@/modules/auth/composables/useAuth'
 import api from '@/services/api'
 import type { Booking } from '@/modules/admin/bookings/interfaces/booking.interface'
@@ -8,6 +8,10 @@ export default function useBookingsUser() {
   const loading = ref(false)
   const error = ref<string | null>(null)
   const { user } = useAuth()
+
+  const hasActiveBooking = computed(() => {
+    return bookings.value.some(b => ['pending', 'active'].includes(b.status))
+  })
 
   const getBookings = async () => {
     loading.value = true
@@ -22,5 +26,5 @@ export default function useBookingsUser() {
     }
   }
 
-  return { bookings, loading, error, getBookings }
+  return { bookings, loading, error, getBookings, hasActiveBooking }
 }

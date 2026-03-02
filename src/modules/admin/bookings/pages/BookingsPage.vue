@@ -2,8 +2,8 @@
   <div class="px-4 sm:px-6 lg:px-8">
     <!-- Header -->
     <PageHeading
-      title="Bookings"
-      description="Vehicle bookings management"
+      title="Reservas"
+      description="Gestión de reservas de vehículos"
     >
       <template #actions>
         <button
@@ -11,7 +11,7 @@
           @click="openCreateModal"
           class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          New booking
+          Nueva reserva
         </button>
       </template>
     </PageHeading>
@@ -23,7 +23,7 @@
           v-model="filters.search"
           @input="handleSearch"
           type="text"
-          placeholder="Search by guest, email or plate..."
+          placeholder="Buscar por usuario, email o matrícula..."
           class="block w-full max-w-md rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
         />
 
@@ -32,39 +32,40 @@
           @change="handleStatusChange"
           class="block w-full sm:w-48 rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
         >
-          <option value="">All statuses</option>
-          <option value="active">Active</option>
-          <option value="pending">Pending</option>
-          <option value="finished">Finished</option>
-          <option value="cancelled">Cancelled</option>
+          <option value="">Todos los estados</option>
+          <option value="active">Activo</option>
+          <option value="pending">Pendiente</option>
+          <option value="completed">Completado</option>
+          <option value="cancelled">Cancelado</option>
+          <option value="expired">Expirado</option>
         </select>
       </div>
 
       <p class="text-sm text-gray-500 dark:text-gray-400">
-        {{ pagination.total }} bookings
+        {{ pagination.total }} reservas
       </p>
     </div>
 
     <!-- Creation form (modal) -->
     <Modal :show="showCreateModal" @close="closeCreateModal">
       <template #header>
-        <h3 class="text-lg font-medium">Create booking</h3>
+        <h3 class="text-lg font-medium">Crear reserva</h3>
       </template>
 
       <div class="grid gap-4 sm:grid-cols-2">
         <FormInput
           v-model="createForm.user_id"
-          label="User ID (optional)"
-          placeholder="e.g. 1"
+          label="ID de Usuario (opcional)"
+          placeholder="ej. 1"
           type="number"
         />
         <FormInput
           v-model="createForm.vehicle_id"
-          label="Vehicle ID"
-          placeholder="e.g. 3"
+          label="ID de Vehículo"
+          placeholder="ej. 3"
           type="number"
         />
-        <FormField label="Start date and time (scheduled_start)">
+        <FormField label="Fecha y hora de inicio (scheduled_start)">
           <input
             v-model="createForm.scheduled_start"
             type="datetime-local"
@@ -76,10 +77,10 @@
       <template #footer>
         <button
           type="button"
-          class="mr-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+          class="mr-2 rounded-md border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-800"
           @click="closeCreateModal"
         >
-          Cancel
+          Cancelar
         </button>
         <button
           type="button"
@@ -87,14 +88,14 @@
           class="rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50"
           @click="handleCreate"
         >
-          {{ creating ? 'Creating...' : 'Create booking' }}
+          {{ creating ? 'Creando...' : 'Crear reserva' }}
         </button>
       </template>
     </Modal>
 
     <!-- Loading state -->
     <div v-if="loading" class="mt-8 text-center text-gray-500 dark:text-gray-400">
-      Loading bookings...
+      Cargando reservas...
     </div>
 
     <!-- Error state -->
@@ -109,7 +110,7 @@
       :empty="bookings.length === 0"
     >
       <template #empty>
-        No bookings available
+        No hay reservas disponibles
       </template>
 
       <tr v-for="booking in bookings" :key="booking.id">
@@ -124,7 +125,7 @@
                   {{ booking.user.name }}
                 </span>
                 <span v-else>
-                  User #{{ booking.user_id ?? '-' }}
+                  Usuario #{{ booking.user_id ?? '-' }}
                 </span>
               </div>
               <div class="text-xs text-gray-500 dark:text-gray-400">
@@ -145,7 +146,7 @@
           </div>
           <div v-else>
             <div class="text-sm text-gray-900 dark:text-white">
-              Vehicle #{{ booking.vehicle_id ?? '-' }}
+              Vehículo #{{ booking.vehicle_id ?? '-' }}
             </div>
           </div>
         </AdminTd>
@@ -167,11 +168,11 @@
         <AdminTd variant="muted">
           <span
             :class="[
-              'inline-flex rounded-full px-2 py-1 text-xs font-semibold',
+              'inline-flex rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-wider',
               getStatusClasses(booking.status),
             ]"
           >
-            {{ booking.status }}
+            {{ translateStatus(booking.status) }}
           </span>
         </AdminTd>
 
@@ -180,26 +181,26 @@
             <button
               class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
               @click="navigateToDetail(booking.id)"
-              title="View"
+              title="Ver"
             >
               <span class="material-icons text-xl">visibility</span>
-              <span class="sr-only">View, booking #{{ booking.id }}</span>
+              <span class="sr-only">Ver, reserva #{{ booking.id }}</span>
             </button>
             <button
               class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
               @click="navigateToEdit(booking.id)"
-              title="Edit"
+              title="Editar"
             >
               <span class="material-icons text-xl">edit</span>
-              <span class="sr-only">Edit, booking #{{ booking.id }}</span>
+              <span class="sr-only">Editar, reserva #{{ booking.id }}</span>
             </button>
             <button
               @click="handleDelete(booking.id)"
               class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors"
-              title="Delete"
+              title="Eliminar"
             >
               <span class="material-icons text-xl">delete</span>
-              <span class="sr-only">Delete, booking #{{ booking.id }}</span>
+              <span class="sr-only">Eliminar, reserva #{{ booking.id }}</span>
             </button>
           </div>
         </AdminTd>
@@ -237,12 +238,12 @@ const { bookings, loading, error, pagination, getBookings, deleteBooking, create
 const { success: toastSuccess, error: toastError } = useToast()
 
 const columns = [
-  { key: 'guest', label: 'Guest' },
-  { key: 'vehicle', label: 'Vehicle' },
-  { key: 'schedule', label: 'Schedule' },
-  { key: 'price', label: 'Price' },
-  { key: 'status', label: 'Status' },
-  { key: 'actions', label: 'Actions', srOnly: true },
+  { key: 'guest', label: 'Usuario' },
+  { key: 'vehicle', label: 'Vehículo' },
+  { key: 'schedule', label: 'Horario' },
+  { key: 'price', label: 'Precio' },
+  { key: 'status', label: 'Estado' },
+  { key: 'actions', label: 'Acciones', srOnly: true },
 ]
 
 const filters = ref<BookingFilters>({
@@ -301,7 +302,7 @@ const closeCreateModal = () => {
 
 const handleCreate = async () => {
   if (!createForm.value.vehicle_id || !createForm.value.scheduled_start) {
-    toastError('Fill vehicle and start date/time')
+    toastError('Rellena el vehículo y la fecha/hora de inicio')
     return
   }
 
@@ -317,7 +318,7 @@ const handleCreate = async () => {
   creating.value = true
   try {
     await createBooking(payload)
-    toastSuccess('Booking created successfully')
+    toastSuccess('Reserva creada con éxito')
     createForm.value = { user_id: '', vehicle_id: '', scheduled_start: '' }
     showCreateModal.value = false
     loadBookings(pagination.value.current_page)
@@ -329,10 +330,10 @@ const handleCreate = async () => {
 }
 
 const handleDelete = async (id: number) => {
-  if (!confirm('Are you sure you want to delete this booking?')) return
+  if (!confirm('¿Estás seguro de que quieres eliminar esta reserva?')) return
   try {
     await deleteBooking(id)
-    toastSuccess('Booking deleted successfully')
+    toastSuccess('Reserva eliminada con éxito')
     loadBookings(pagination.value.current_page)
   } catch (e: any) {
     toastError(e)
@@ -350,10 +351,10 @@ const getInitials = (name?: string) =>
     : '??'
 
 const formatDateDay = (d: string) =>
-  d ? new Date(d).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }) : '-'
+  d ? new Date(d).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' }) : '-'
 
 const formatDateHour = (d: string) =>
-  d ? new Date(d).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' }) : '--:--'
+  d ? new Date(d).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '--:--'
 
 const formatCurrency = (v: number) =>
   new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(v)
@@ -361,12 +362,23 @@ const formatCurrency = (v: number) =>
 const getStatusClasses = (s: string) => {
   const map: Record<string, string> = {
     active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-    finished: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     completed: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200',
     cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
     pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+    expired: 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200',
   }
   return map[s] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
+}
+
+const translateStatus = (s: string) => {
+  const map: Record<string, string> = {
+    active: 'Activo',
+    completed: 'Completado',
+    cancelled: 'Cancelado',
+    pending: 'Pendiente',
+    expired: 'Expirado',
+  }
+  return map[s] || s
 }
 
 const getStartDate = (booking: Booking) =>

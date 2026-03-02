@@ -93,16 +93,16 @@
         <span class="sr-only">Open sidebar</span>
         <Bars3Icon class="size-6" aria-hidden="true" />
       </button>
-      <div class="flex-1 flex items-center gap-2">
+      <div class="flex-1 flex items-center gap-2 text-left">
         <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
           <span class="text-sm font-bold text-white">S</span>
         </div>
-        <span class="text-sm font-semibold text-gray-900 dark:text-white">SIMS Admin</span>
+        <span class="text-sm font-semibold text-gray-900 dark:text-white text-left">SIMS Admin</span>
       </div>
     </div>
 
     <main class="py-8 lg:pl-72 relative">
-      <div class="px-4 sm:px-6 lg:px-8">
+      <div :class="[isFullPage ? '' : 'px-4 sm:px-6 lg:px-8']">
         <div v-if="isAdmin || isLoading">
           <router-view />
         </div>
@@ -137,6 +137,8 @@ import UserMenu from '@/modules/common/components/UserMenu.vue'
 const route = useRoute()
 const { user, isLoading } = useAuth()
 const sidebarOpen = ref(false)
+
+const isFullPage = computed(() => ['/admin/map', '/admin/iot-devices'].includes(route.path))
 
 const isAdmin = computed(() => !!(user.value && user.value.roles && user.value.roles.some((r: any) => (r.name || '').toLowerCase() === 'admin')))
 

@@ -1,4 +1,5 @@
 <template>
+  <!-- Full Screen Wrapper inside the layout content area -->
   <div class="relative h-[calc(100vh-4rem)] overflow-hidden font-sans bg-gray-100 dark:bg-gray-950">
     <!-- Map Container -->
     <div ref="mapContainer" class="absolute inset-0 z-0 border-0 outline-none"></div>
@@ -35,6 +36,15 @@
 
       <!-- Center / Flexible Area -->
       <div class="flex-1 relative mt-4">
+        <!-- Active Booking Banner (Overlay on map) -->
+        <div v-if="hasActiveBooking" class="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-auto">
+          <div class="bg-amber-600/90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 border border-amber-400/30">
+            <ExclamationTriangleIcon class="size-4" />
+            <span class="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">Ya tienes una reserva activa</span>
+            <router-link to="/bookings" class="bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg text-[9px] font-black transition-colors uppercase">Ver</router-link>
+          </div>
+        </div>
+
         <!-- Panel Lateral -->
         <Transition
           enter-active-class="transition ease-out duration-300"
@@ -85,12 +95,12 @@
         leave-to-class="translate-y-full opacity-0 scale-95"
       >
         <div v-if="selectedVehicle" class="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-sm pointer-events-auto px-4">
-          <div class="bg-gray-900 dark:bg-gray-900 rounded-[1.5rem] shadow-[0_24px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden relative text-white">
+          <div class="bg-gray-900 dark:bg-gray-900 rounded-[1.5rem] shadow-[0_24px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden relative">
             <button @click="closeSelected" class="absolute top-2 right-2 z-20 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all">
               <XMarkIcon class="size-4" />
             </button>
 
-            <div class="flex flex-col sm:flex-row h-full">
+            <div class="flex flex-col sm:flex-row h-full text-white text-left">
               <!-- Left: Image -->
               <div class="w-full sm:w-[35%] h-24 sm:h-auto bg-gray-800 relative">
                 <img :src="'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'" class="size-full object-cover opacity-80" />
@@ -110,13 +120,20 @@
                       <MapPinIcon class="size-2.5 text-indigo-400" /> {{ formatDistance(selectedVehicle.distanceMeters) }}
                     </div>
                   </div>
-                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left text-[10px] font-bold">
-                    <span class="text-green-400">0.15€</span><span class="text-[8px] text-gray-500">/min</span>
+                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left">
+                    <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">Precio</p>
+                    <div class="flex items-center gap-1 font-black text-white text-[10px] leading-none">
+                      <span class="text-green-400">0.15€</span><span class="text-[8px] text-gray-500">/min</span>
+                    </div>
                   </div>
                 </div>
 
-                <button @click="confirmBooking" :disabled="isBooking" class="w-full py-2 rounded-xl bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50">
-                  {{ isBooking ? 'Procesando...' : 'Reservar ahora' }}
+                <button 
+                  @click="openConfirm" 
+                  :disabled="selectedVehicle.is_mine || hasActiveBooking" 
+                  class="w-full py-2 rounded-xl bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale"
+                >
+                  {{ selectedVehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite alcanzado' : 'Reservar ahora') }}
                 </button>
               </div>
             </div>
@@ -124,6 +141,15 @@
         </div>
       </Transition>
     </div>
+
+    <!-- Confirm Modal -->
+    <ReservationConfirmModal 
+      :is-open="isConfirmOpen"
+      :vehicle="selectedVehicle"
+      :loading="isReserving"
+      @close="isConfirmOpen = false"
+      @confirm="handleReserve"
+    />
   </div>
 </template>
 
@@ -133,6 +159,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { useMap } from '@/modules/map/composables/useMap'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
+import ReservationConfirmModal from '@/modules/common/components/ReservationConfirmModal.vue'
+import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
 import {
   MagnifyingGlassIcon,
   MapPinIcon,
@@ -141,16 +169,21 @@ import {
   BoltIcon,
   CalendarIcon,
   AdjustmentsHorizontalIcon,
-  TruckIcon
+  TruckIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const router = useRouter()
 const { mapContainer, map, initMap, fetchVehicles, setUserLocation, destroyMap, rawVehicles, centerOnVehicle, markers, setSearchQuery, selectedVehicle } = useMap()
 
+// Usar el composable de reservas para bloquear el botón
+const { getBookings, hasActiveBooking } = useBookingsUser()
+
 const search = ref('')
 const isRefreshing = ref(false)
-const isBooking = ref(false)
+const isReserving = ref(false)
+const isConfirmOpen = ref(false)
 const panelOpen = ref(false)
 const nearbyRadiusKm = ref(5)
 const nearbyAvailable = ref<any[]>([])
@@ -221,24 +254,31 @@ const closeSelected = () => {
   selectedVehicle.value = null
 }
 
-const confirmBooking = async () => {
+const openConfirm = () => {
+  isConfirmOpen.value = true
+}
+
+const handleReserve = async () => {
   if (!selectedVehicle.value) return
-  isBooking.value = true
+  isReserving.value = true
   try {
     const payload = { vehicle_id: selectedVehicle.value.id, scheduled_start: new Date().toISOString() }
-    await apiClient.post('/reservations', payload)
-    showToast('¡Vehículo reservado!', 'success')
+    const response = await apiClient.post('/reservations', payload)
+    showToast(response.data.message || '¡Vehículo reservado!', 'success')
     router.push('/bookings')
   } catch (e: any) {
     showToast(e.response?.data?.message || 'Error al reservar', 'error')
   } finally {
-    isBooking.value = false
+    isReserving.value = false
+    isConfirmOpen.value = false
   }
 }
 
 onMounted(async () => {
   initMap()
   await fetchVehicles('/vehicles/map')
+  getBookings() // Cargar reservas para verificar estado
+  
   if (route.query.select) {
     const v = rawVehicles.value.find(rv => rv.id === Number(route.query.select))
     if (v) { selectedVehicle.value = v; centerOnVehicle(v) }

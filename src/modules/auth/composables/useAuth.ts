@@ -182,10 +182,19 @@ export function useAuth() {
         password,
         role_id: 2
       }
-      if (await apiClient.post<RegisterResponse>('/users', registerData)) router.push('/login')
+      const response = await apiClient.post<LoginResponse>('/register', registerData)
+      
+      const token = response.data.token
+      if (token) {
+        setCookie(TOKEN_COOKIE_NAME, token)
+        await fetchUser()
+        showToast('¡Registro completado con éxito!', 'success')
+        // Force full reload to home to ensure fresh state
+        window.location.href = '/'
+      }
     } catch (err: any) {
-      const msg = err.response?.data?.message || 'Error registering'
-      showToast(msg)
+      const msg = err.response?.data?.message || 'Error al registrarse'
+      showToast(msg, 'error')
     } finally {
       isLoading.value = false
     }
