@@ -66,7 +66,7 @@ import { useRouter, RouterLink } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 
 const router = useRouter()
-const { login, isLoading, error } = useAuth()
+const { login, isLoading, error, user } = useAuth()
 
 const email = ref('')
 const password = ref('')
@@ -75,7 +75,16 @@ const handleSubmit = async () => {
   const success = await login(email.value, password.value)
   
   if (success) {
-    router.push('/admin')
+    // Redirigir según el rol del usuario
+    const isAdmin = user.value?.roles?.some((r: any) => 
+      (r.name || '').toLowerCase() === 'admin'
+    )
+    
+    if (isAdmin) {
+      router.push('/admin')
+    } else {
+      router.push('/')
+    }
   }
 }
 </script>

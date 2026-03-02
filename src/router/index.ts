@@ -10,6 +10,13 @@ import { vehicleRoutes } from '@/modules/admin/modules/vehicles/router'
 import { rolesRoutes } from '@/modules/admin/modules/roles/router'
 
 const routes: RouteRecordRaw[] = [
+  // Ruta PÚBLICA para ver el mapa de vehículos disponibles (sin login)
+  {
+    path: '/map',
+    name: 'PublicMap',
+    component: () => import('@/modules/common/pages/PublicMapPage.vue'),
+    meta: { requiresAuth: false }
+  },
   {
     path: '/',
     component: AppLayout,
@@ -39,6 +46,12 @@ const routes: RouteRecordRaw[] = [
         path: 'map',
         name: 'AdminVehicleMap',
         component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'iot-devices',
+        name: 'AdminIoTDevices',
+        component: () => import('@/modules/admin/pages/IoTDevicesPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
       ...vehicleRoutes,

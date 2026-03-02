@@ -1,18 +1,38 @@
 <script setup lang="ts">
-import { ref, onMounted, nextTick } from "vue"
+import { ref, onMounted, nextTick, computed } from "vue"
 import apiClient from "@/services/api"
+import { useAuth } from "@/modules/auth/composables/useAuth"
 
 interface Message {
   role: "user" | "assistant" | "system"
   content: string
 }
 
+const { user } = useAuth()
+
+// Get user's primary role name
+const userRole = computed(() => {
+  if (user.value?.roles && user.value.roles.length > 0) {
+    return user.value.roles[0].name || 'Client'
+  }
+  return 'Client'
+})
+
+// Role-specific welcome messages
+const getWelcomeMessage = () => {
+  const role = userRole.value
+  switch (role) {
+    case 'Admin':
+      return '¡Hola Admin! Soy el asistente AI de SIMS. Puedo ayudarte con la gestión de usuarios, vehículos, reservas y configuración del sistema. ¿Qué necesitas?'
+    case 'Maintenance':
+      return '¡Hola! Soy el asistente de SIMS para el equipo de mantenimiento. Puedo ayudarte con información técnica de vehículos y procedimientos. ¿En qué puedo asistirte?'
+    default:
+      return '¡Hola! Soy el asistente AI de SIMS. Puedo ayudarte a reservar vehículos, resolver dudas sobre el servicio y gestionar tus reservas. ¿En qué puedo ayudarte hoy?'
+  }
+}
+
 const messages = ref<Message[]>([
-  {
-    role: "system",
-    content: "Eres el asistente AI de SIMS, una empresa de carsharing. Responde en español y ayuda a los usuarios con reservas, vehículos y preguntas sobre SIMS."
-  },
-  { role: "assistant", content: "¡Hola! Soy el asistente AI de SIMS. ¿En qué puedo ayudarte hoy?" }
+  { role: "assistant", content: getWelcomeMessage() }
 ])
 
 const userInput = ref("")
@@ -37,17 +57,18 @@ const sendMessage = async () => {
   await scrollToBottom()
 
   try {
+    // Send only user and assistant messages, backend will inject role-specific system prompt
     const response = await apiClient.post("/chatbot/chat", {
-      messages: messages.value
+      messages: messages.value.filter(m => m.role !== 'system')
     })
 
     const aiResponse = response.data.choices[0].message.content
     messages.value.push({ role: "assistant", content: aiResponse })
   } catch (error: any) {
     console.error(error)
-    let errorMsg = "Sorry, something went wrong. Please check your API key configuration."
+    let errorMsg = "Lo siento, ha ocurrido un error. Por favor, inténtalo de nuevo."
     if (error.response && error.response.status === 401) {
-      errorMsg = "You need to be logged in to use the chatbot."
+      errorMsg = "Necesitas iniciar sesión para usar el asistente."
     }
     messages.value.push({ role: "assistant", content: errorMsg })
   } finally {
@@ -69,7 +90,8 @@ onMounted(() => {
     <transition name="fade">
       <div v-if="isOpen" class="fixed bottom-20 right-6 z-50 w-96 max-w-full bg-gray-900 text-white rounded-xl shadow-2xl border border-white/10 p-4 md:p-6 flex flex-col" style="height: 500px;">
         <div class="mb-4 flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-indigo-400">AI Assistant</h1>
+          <h1 class="text-2xl font-bold text-indigo-400">Asistente SIMS</h1>
+          <span class="text-xs text-gray-400">{{ userRole }}</span>
         </div>
         <div 
           ref="chatBox"
@@ -85,7 +107,7 @@ onMounted(() => {
           <input
             v-model="userInput"
             type="text"
-            placeholder="Type your message..."
+            placeholder="Escribe tu mensaje..."
             class="flex-1 rounded-lg bg-gray-700 text-white p-3 border border-white/10 focus:outline-none focus:border-indigo-400"
             :disabled="isLoading"
           />
@@ -94,7 +116,7 @@ onMounted(() => {
             class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg disabled:opacity-50"
             :disabled="isLoading || !userInput.trim()"
           >
-            Send
+            Enviar
           </button>
         </form>
       </div>

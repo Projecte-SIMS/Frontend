@@ -1,23 +1,21 @@
 <template>
-  <div
-    class="border-b border-gray-200 pb-5 sm:flex sm:items-center sm:justify-between
-           dark:border-white/10"
-  >
-    <div>
-      <h3 class="text-base font-semibold text-gray-900 dark:text-white">
-        {{ title }}
-      </h3>
+  <div class="mb-8">
+    <div class="sm:flex sm:items-center sm:justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          {{ title }}
+        </h1>
+        <p
+          v-if="description"
+          class="mt-1 text-sm text-gray-500 dark:text-gray-400"
+        >
+          {{ description }}
+        </p>
+      </div>
 
-      <p
-        v-if="description"
-        class="mt-1 text-sm text-gray-500 dark:text-gray-400"
-      >
-        {{ description }}
-      </p>
-    </div>
-
-    <div v-if="$slots.actions" class="mt-3 flex sm:mt-0 sm:ml-4 gap-2">
-      <slot name="actions" />
+      <div v-if="$slots.actions" class="mt-4 flex flex-shrink-0 gap-3 sm:mt-0 sm:ml-4">
+        <slot name="actions" />
+      </div>
     </div>
   </div>
 </template>

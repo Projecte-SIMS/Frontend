@@ -1,293 +1,452 @@
 <template>
-  <div class="px-4 sm:px-6 lg:px-8 py-6">
-    <!-- Header + filtros (mismo estilo sencillo que otros CRUDs) -->
-    <div class="flex flex-col gap-2">
-      <h1 class="text-2xl font-semibold text-gray-900 dark:text-white">Admin - Tickets</h1>
-      <div class="flex flex-wrap items-center gap-3 text-sm text-gray-600 dark:text-gray-300">
-        <span class="text-gray-500 dark:text-gray-400">Filter:</span>
+  <div class="px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <PageHeading
+      title="Tickets de Soporte"
+      description="Gestión de tickets y soporte al cliente"
+    />
+
+    <!-- Filtros y estadísticas -->
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-wrap items-center gap-3">
+        <input
+          v-model="searchQuery"
+          type="text"
+          placeholder="Buscar por asunto o usuario..."
+          class="block w-full sm:w-64 rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+        />
         <select
-          v-model="filterType"
-          class="rounded-md bg-white px-3 py-1 text-sm text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:bg-gray-900 dark:text-white dark:ring-gray-700"
+          v-model="statusFilter"
+          class="rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
         >
-          <option value="all">All</option>
-          <option value="user">By user</option>
+          <option value="all">Todos los estados</option>
+          <option value="active">Activos</option>
+          <option value="closed">Cerrados</option>
         </select>
-        <select
-          v-if="filterType === 'user'"
-          v-model="userFilter"
-          class="rounded-md bg-white px-3 py-1 text-sm text-gray-900 shadow-sm ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:bg-gray-900 dark:text-white dark:ring-gray-700"
-        >
-          <option value="">-- Select user --</option>
-          <option v-for="u in users" :key="u.id" :value="u.id">{{ u.name }}</option>
-        </select>
+      </div>
+      
+      <div class="flex items-center gap-4 text-sm">
+        <span class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-green-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">{{ activeCount }} activos</span>
+        </span>
+        <span class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-gray-400"></span>
+          <span class="text-gray-600 dark:text-gray-400">{{ closedCount }} cerrados</span>
+        </span>
       </div>
     </div>
 
     <!-- Loading -->
-    <div v-if="loading" class="mt-6 text-sm text-gray-500 dark:text-gray-400">
-      Loading tickets...
+    <div v-if="loading" class="flex items-center justify-center py-12">
+      <div class="text-gray-500 dark:text-gray-400">Cargando tickets...</div>
     </div>
 
-    <!-- Contenido -->
-    <div v-else class="mt-6 space-y-8">
-      <!-- Activos -->
-      <section>
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Active tickets</h2>
-        <div class="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          <div v-if="filteredActiveTickets.length === 0" class="text-gray-500 dark:text-gray-400 text-sm col-span-full">
-            No tickets found.
-          </div>
+    <!-- Tabla de tickets -->
+    <AdminsTable
+      v-else
+      :columns="columns"
+      :empty="filteredTickets.length === 0"
+    >
+      <template #empty>
+        No se encontraron tickets
+      </template>
 
-          <div
-            v-for="t in filteredActiveTickets"
-            :key="t.id"
-            class="relative rounded-xl bg-white p-4 ring-1 ring-gray-200 text-sm flex flex-col gap-3 shadow-sm dark:bg-gray-900/60 dark:ring-white/10"
-          >
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex-1">
-                <div class="flex items-center gap-2">
-                  <div class="text-sm font-semibold text-gray-900 dark:text-white">
-                    {{ t.subject || t.title || `Ticket #${t.id}` }}
-                  </div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">
-                    • {{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}
-                  </div>
-                </div>
-
-                <div class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-                  <div class="text-xs text-gray-500 dark:text-gray-400">User</div>
-                  <div class="truncate">
-                    {{ t.user?.name || t.user_name || '-' }}
-                    <span class="text-gray-500 dark:text-gray-400">
-                      ({{ t.user?.email || t.user_email || '-' }})
-                    </span>
-                  </div>
-                </div>
-
-                <div class="mt-3 text-sm text-gray-700 dark:text-gray-300">
-                  <div class="text-xs text-gray-500 dark:text-gray-400">Last message</div>
-                  <div class="mt-1 line-clamp-2">
-                    {{ t.last_message?.content || t.message || t.description || '-' }}
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex flex-col items-end gap-2">
-                <button
-                  @click.prevent="toggleExpand(t.id)"
-                  class="inline-flex items-center gap-1 rounded-md bg-gray-100 px-2 py-1 text-xs font-medium text-indigo-700 hover:bg-indigo-50 hover:text-indigo-800 dark:bg-gray-800 dark:text-indigo-300 dark:hover:bg-indigo-900 dark:hover:text-indigo-100 transition"
-                >
-                  {{ expanded[t.id] ? 'Hide' : 'View conversation' }}
-                </button>
-                <RouterLink
-                  :to="`/admin/tickets/${t.id}`"
-                  class="text-indigo-600 text-xs hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-                >
-                  Open detail
-                </RouterLink>
-              </div>
+      <tr 
+        v-for="ticket in filteredTickets" 
+        :key="ticket.id"
+        class="hover:bg-gray-50 dark:hover:bg-gray-700/50 cursor-pointer transition-colors"
+        @click="openTicketDetail(ticket.id)"
+      >
+        <AdminTd first variant="primary">
+          <div class="flex items-center gap-3">
+            <div :class="[
+              'flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold',
+              ticket.active 
+                ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+                : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+            ]">
+              #{{ ticket.id }}
             </div>
+            <div>
+              <p class="font-medium text-gray-900 dark:text-white">
+                {{ ticket.subject || ticket.title || `Ticket #${ticket.id}` }}
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
+                {{ ticket.message || ticket.description || '-' }}
+              </p>
+            </div>
+          </div>
+        </AdminTd>
 
-            <transition name="fade">
-              <div v-if="expanded[t.id]" class="mt-3 rounded-md bg-gray-50 p-3 space-y-2 dark:bg-gray-950/60">
-                <div v-if="loadingDetails[t.id]" class="text-gray-500 dark:text-gray-400 text-xs">
-                  Loading conversation...
-                </div>
-                <div v-else class="space-y-2 max-h-48 overflow-y-auto text-sm">
-                  <div
-                    v-for="m in details[t.id] || []"
-                    :key="m.id"
-                    class="rounded-lg border border-gray-200 p-3 bg-gray-50 dark:bg-gray-900/80 dark:border-white/10 flex flex-col gap-1"
-                  >
-                    <div class="text-xs text-gray-500 dark:text-gray-400">
-                      {{ m.user?.name || (m.is_support ? 'Support' : 'User') }} •
-                      {{ m.created_at ? new Date(m.created_at).toLocaleString() : '' }}
-                    </div>
-                    <div class="mt-1 text-sm text-gray-800 dark:text-gray-200">
-                      {{ m.content || m.message || m.body || '' }}
-                    </div>
-                  </div>
+        <AdminTd variant="muted">
+          <div>
+            <p class="text-gray-900 dark:text-white">{{ ticket.user?.name || ticket.user_name || '-' }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ ticket.user?.email || ticket.user_email || '-' }}</p>
+          </div>
+        </AdminTd>
 
-                  <div class="pt-1 border-t border-gray-200 dark:border-white/10">
-                    <textarea
-                      v-model="replyForms[t.id]"
-                      rows="2"
-                      class="w-full rounded-lg bg-white p-2 text-sm text-gray-900 ring-1 ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 dark:bg-gray-900/70 dark:text-gray-100 dark:ring-white/10"
-                      placeholder="Write a reply..."
-                    ></textarea>
-                    <div class="mt-2 text-right">
-                      <button
-                        @click.prevent="sendReply(t.id)"
-                        class="rounded bg-indigo-600 px-3 py-1 text-xs font-medium text-white hover:bg-indigo-500"
-                      >
-                        Send
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </transition>
+        <AdminTd variant="muted">
+          <span :class="[
+            'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
+            ticket.active 
+              ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' 
+              : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'
+          ]">
+            {{ ticket.active ? 'Activo' : 'Cerrado' }}
+          </span>
+        </AdminTd>
 
-            <div class="absolute right-3 top-3">
-              <span
-                class="inline-block rounded-full px-2 py-0.5 text-xs font-medium"
-                :class="t.active ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-300' : 'bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-300'"
-              >
-                {{ t.active ? 'Active' : 'Inactive' }}
+        <AdminTd variant="muted">
+          <div class="text-sm">
+            <p class="text-gray-900 dark:text-white">{{ formatDate(ticket.created_at) }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ formatTime(ticket.created_at) }}</p>
+          </div>
+        </AdminTd>
+
+        <AdminTd variant="muted">
+          <span v-if="ticket.messages && ticket.messages.length > 0" class="text-gray-600 dark:text-gray-400">
+            {{ ticket.messages.length }} mensajes
+          </span>
+          <span v-else class="text-gray-400">Sin mensajes</span>
+        </AdminTd>
+
+        <AdminTd variant="actions">
+          <div class="flex items-center gap-2" @click.stop>
+            <button
+              @click="openTicketDetail(ticket.id)"
+              class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
+              title="Ver detalle"
+            >
+              <span class="material-icons text-xl">visibility</span>
+            </button>
+            <button
+              v-if="ticket.active"
+              @click="closeTicket(ticket.id)"
+              class="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300 transition-colors"
+              title="Cerrar ticket"
+            >
+              <span class="material-icons text-xl">check_circle</span>
+            </button>
+            <button
+              v-else
+              @click="reopenTicket(ticket.id)"
+              class="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300 transition-colors"
+              title="Reabrir ticket"
+            >
+              <span class="material-icons text-xl">refresh</span>
+            </button>
+          </div>
+        </AdminTd>
+      </tr>
+    </AdminsTable>
+
+    <!-- Modal de detalle -->
+    <Modal :show="showDetailModal" @close="closeDetailModal" size="lg">
+      <template #header>
+        <div class="flex items-center gap-3">
+          <div :class="[
+            'flex h-10 w-10 items-center justify-center rounded-full text-sm font-semibold',
+            selectedTicket?.active 
+              ? 'bg-green-100 text-green-700' 
+              : 'bg-gray-100 text-gray-500'
+          ]">
+            #{{ selectedTicket?.id }}
+          </div>
+          <div>
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+              {{ selectedTicket?.subject || selectedTicket?.title || `Ticket #${selectedTicket?.id}` }}
+            </h3>
+            <p class="text-sm text-gray-500">
+              {{ selectedTicket?.user?.name }} · {{ formatDate(selectedTicket?.created_at) }}
+            </p>
+          </div>
+        </div>
+      </template>
+
+      <div class="space-y-4">
+        <!-- Mensaje original -->
+        <div class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-1">Mensaje original:</p>
+          <p class="text-gray-900 dark:text-white">{{ selectedTicket?.message || selectedTicket?.description || '-' }}</p>
+        </div>
+
+        <!-- Conversación -->
+        <div v-if="loadingMessages" class="text-center py-4 text-gray-500">
+          Cargando mensajes...
+        </div>
+        <div v-else class="space-y-3 max-h-64 overflow-y-auto">
+          <div
+            v-for="msg in ticketMessages"
+            :key="msg.id"
+            :class="[
+              'rounded-lg p-3',
+              msg.is_support 
+                ? 'bg-indigo-50 dark:bg-indigo-900/20 ml-4' 
+                : 'bg-gray-50 dark:bg-gray-800 mr-4'
+            ]"
+          >
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm font-medium" :class="msg.is_support ? 'text-indigo-700 dark:text-indigo-400' : 'text-gray-700 dark:text-gray-300'">
+                {{ msg.is_support ? 'Soporte' : (msg.user?.name || 'Usuario') }}
               </span>
+              <span class="text-xs text-gray-500">{{ formatDateTime(msg.created_at) }}</span>
             </div>
+            <p class="text-sm text-gray-800 dark:text-gray-200">{{ msg.content || msg.message || msg.body }}</p>
           </div>
         </div>
-      </section>
 
-      <!-- Completados -->
-      <section>
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Completed</h2>
-        <div class="mt-3 grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-          <div v-if="completedTickets.length === 0" class="text-gray-500 dark:text-gray-400 text-sm col-span-full">
-            No completed tickets.
+        <!-- Responder -->
+        <div v-if="selectedTicket?.active" class="border-t pt-4 dark:border-gray-700">
+          <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Responder como soporte
+          </label>
+          <textarea
+            v-model="replyMessage"
+            rows="3"
+            class="w-full rounded-lg border-0 px-4 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+            placeholder="Escribe tu respuesta..."
+          ></textarea>
+        </div>
+      </div>
+
+      <template #footer>
+        <div class="flex items-center justify-between w-full">
+          <div>
+            <button
+              v-if="selectedTicket?.active"
+              @click="closeTicketFromModal"
+              class="text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+            >
+              Cerrar ticket
+            </button>
           </div>
-
-          <div
-            v-for="t in completedTickets"
-            :key="'completed-' + t.id"
-            class="relative rounded-xl bg-white p-4 ring-1 ring-gray-200 text-sm flex flex-col gap-3 shadow-sm dark:bg-gray-900/60 dark:ring-white/10"
-          >
-            <div class="flex items-start justify-between gap-4">
-              <div class="flex-1">
-                <div class="flex items-center gap-2">
-                  <div class="text-sm font-semibold text-gray-900 dark:text-white">
-                    {{ t.subject || t.title || `Ticket #${t.id}` }}
-                  </div>
-                  <div class="text-xs text-gray-500 dark:text-gray-400">
-                    • {{ t.created_at ? new Date(t.created_at).toLocaleString() : '' }}
-                  </div>
-                </div>
-
-                <div class="mt-2 text-sm text-gray-700 dark:text-gray-300">
-                  <div class="text-xs text-gray-500 dark:text-gray-400">User</div>
-                  <div class="truncate">
-                    {{ t.user?.name || t.user_name || '-' }}
-                    <span class="text-gray-500 dark:text-gray-400">
-                      ({{ t.user?.email || t.user_email || '-' }})
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="flex flex-col items-end gap-2">
-                <RouterLink
-                  :to="`/admin/tickets/${t.id}`"
-                  class="text-indigo-600 text-xs hover:text-indigo-500 dark:text-indigo-300 dark:hover:text-indigo-200"
-                >
-                  Open detail
-                </RouterLink>
-              </div>
-            </div>
-
-            <div class="absolute right-3 top-3">
-              <span class="inline-block rounded-full px-2 py-0.5 text-xs font-medium bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-300">Completed</span>
-            </div>
+          <div class="flex gap-3">
+            <button
+              type="button"
+              class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              @click="closeDetailModal"
+            >
+              Cerrar
+            </button>
+            <button
+              v-if="selectedTicket?.active"
+              type="button"
+              :disabled="!replyMessage.trim() || sendingReply"
+              class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="sendReplyFromModal"
+            >
+              {{ sendingReply ? 'Enviando...' : 'Enviar respuesta' }}
+            </button>
           </div>
         </div>
-      </section>
+      </template>
+    </Modal>
+
+    <!-- Toast -->
+    <div 
+      v-if="toastMessage" 
+      class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 animate-fade-in"
+      :class="toastType === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'"
+    >
+      {{ toastMessage }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import apiClient from '@/services/api'
-import { useToast } from '@/modules/common/composables/useToast'
+import AdminsTable from '@/modules/admin/components/AdminsTable.vue'
+import AdminTd from '@/modules/admin/components/AdminTd.vue'
+import PageHeading from '@/modules/admin/components/PageHeading.vue'
+import Modal from '@/modules/admin/components/Modal.vue'
 
+const router = useRouter()
+
+// State
 const tickets = ref<any[]>([])
 const loading = ref(false)
-const toast = useToast()
+const searchQuery = ref('')
+const statusFilter = ref('all')
 
-// expanded state per ticket and cache for details
-const expanded = ref<Record<string, boolean>>({})
-const details = ref<Record<string, any[]>>({})
-const loadingDetails = ref<Record<string, boolean>>({})
-const replyForms = ref<Record<string, string>>({})
+// Modal state
+const showDetailModal = ref(false)
+const selectedTicket = ref<any>(null)
+const ticketMessages = ref<any[]>([])
+const loadingMessages = ref(false)
+const replyMessage = ref('')
+const sendingReply = ref(false)
 
-const filterType = ref('all') // 'all'|'user'
-const userFilter = ref('')
-const users = computed(() => {
-  const map = new Map()
-  ;(tickets.value || []).forEach((t: any) => {
-    const uid = t.user?.id ?? t.user_id ?? t.user_email
-    const name = t.user?.name ?? t.user_name ?? t.user_email ?? String(uid)
-    if (uid) map.set(String(uid), name)
-  })
-  return Array.from(map.entries()).map(([id, name]) => ({ id, name }))
-})
-const filteredActiveTickets = computed(() => {
-  return (tickets.value || []).filter((t: any) => t.active && (filterType.value !== 'user' || !userFilter.value || String(t.user?.id ?? t.user_id ?? t.user_email) === String(userFilter.value)))
-})
-const completedTickets = computed(() => {
-  return (tickets.value || []).filter((t: any) => !t.active && (filterType.value !== 'user' || !userFilter.value || String(t.user?.id ?? t.user_id ?? t.user_email) === String(userFilter.value)))
+// Toast
+const toastMessage = ref('')
+const toastType = ref<'success' | 'error'>('success')
+
+const showToast = (message: string, type: 'success' | 'error' = 'success') => {
+  toastMessage.value = message
+  toastType.value = type
+  setTimeout(() => { toastMessage.value = '' }, 3000)
+}
+
+// Table columns
+const columns = [
+  { key: 'ticket', label: 'Ticket' },
+  { key: 'user', label: 'Usuario' },
+  { key: 'status', label: 'Estado' },
+  { key: 'created', label: 'Creado' },
+  { key: 'messages', label: 'Mensajes' },
+  { key: 'actions', label: 'Acciones', srOnly: true }
+]
+
+// Computed
+const filteredTickets = computed(() => {
+  let result = tickets.value
+
+  if (statusFilter.value === 'active') {
+    result = result.filter(t => t.active)
+  } else if (statusFilter.value === 'closed') {
+    result = result.filter(t => !t.active)
+  }
+
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    result = result.filter(t => 
+      (t.subject || t.title || '').toLowerCase().includes(query) ||
+      (t.user?.name || t.user_name || '').toLowerCase().includes(query) ||
+      (t.user?.email || t.user_email || '').toLowerCase().includes(query)
+    )
+  }
+
+  return result
 })
 
-// Admin should call the general /tickets endpoint; backend will return all tickets if the user has tickets.manage
-const load = async () => {
+const activeCount = computed(() => tickets.value.filter(t => t.active).length)
+const closedCount = computed(() => tickets.value.filter(t => !t.active).length)
+
+// Methods
+const loadTickets = async () => {
   loading.value = true
   try {
     const res = await apiClient.get('/tickets')
     tickets.value = res.data.data ?? res.data ?? []
-  } catch (e: any) {
+  } catch (e) {
     console.error(e)
-    toast.error('Error loading admin tickets')
+    showToast('Error al cargar tickets', 'error')
   } finally {
     loading.value = false
   }
 }
 
-const loadDetails = async (ticketId: string | number) => {
-  loadingDetails.value = { ...(loadingDetails.value || {}), [ticketId]: true }
+const openTicketDetail = async (ticketId: number) => {
+  selectedTicket.value = tickets.value.find(t => t.id === ticketId)
+  showDetailModal.value = true
+  replyMessage.value = ''
+  
+  // Load messages
+  loadingMessages.value = true
   try {
-    // use /tickets/{id} which returns ticket with user and messages
     const res = await apiClient.get(`/tickets/${ticketId}`)
     const data = res.data.data ?? res.data
-    details.value = { ...(details.value || {}), [ticketId]: data.messages ?? data.data?.messages ?? [] }
+    ticketMessages.value = data.messages ?? []
   } catch (e) {
     console.error(e)
-    toast.error('Error loading ticket conversation')
+    ticketMessages.value = []
   } finally {
-    loadingDetails.value = { ...(loadingDetails.value || {}), [ticketId]: false }
+    loadingMessages.value = false
   }
 }
 
-const sendReply = async (ticketId: string | number) => {
-  const idStr = String(ticketId)
-  const text = (replyForms.value || {})[idStr] || ''
-  if (!text) return
+const closeDetailModal = () => {
+  showDetailModal.value = false
+  selectedTicket.value = null
+  ticketMessages.value = []
+  replyMessage.value = ''
+}
+
+const sendReplyFromModal = async () => {
+  if (!replyMessage.value.trim() || !selectedTicket.value) return
+  
+  sendingReply.value = true
   try {
-    const payload = { ticket_id: ticketId, message: text }
-    const res = await apiClient.post(`/tickets/${ticketId}/messages`, payload)
+    const res = await apiClient.post(`/tickets/${selectedTicket.value.id}/messages`, {
+      message: replyMessage.value,
+      ticket_id: selectedTicket.value.id
+    })
     const newMsg = res.data.data ?? res.data
     if (newMsg) {
-      const arr = details.value[idStr] || []
-      arr.push(newMsg)
-      details.value = { ...(details.value || {}), [idStr]: arr }
-      replyForms.value = { ...(replyForms.value || {}), [idStr]: '' }
-      toast.success('Mensaje enviado')
+      ticketMessages.value.push(newMsg)
+      replyMessage.value = ''
+      showToast('Respuesta enviada', 'success')
     }
   } catch (e: any) {
     console.error(e)
-    const resp = e?.response
-    if (resp?.data) toast.error(JSON.stringify(resp.data))
-    else toast.error('Error sending message')
+    showToast('Error al enviar respuesta', 'error')
+  } finally {
+    sendingReply.value = false
   }
 }
 
-const toggleExpand = async (ticketId: string | number) => {
-  const idStr = String(ticketId)
-  const isExpanded = !!expanded.value[idStr]
-  expanded.value = { ...(expanded.value || {}), [idStr]: !isExpanded }
-  if (!isExpanded && !(details.value && details.value[idStr])) {
-    await loadDetails(idStr)
+const closeTicket = async (ticketId: number) => {
+  try {
+    await apiClient.put(`/admin/tickets/${ticketId}`, { active: false })
+    const ticket = tickets.value.find(t => t.id === ticketId)
+    if (ticket) ticket.active = false
+    showToast('Ticket cerrado', 'success')
+  } catch (e) {
+    console.error(e)
+    showToast('Error al cerrar ticket', 'error')
   }
 }
 
-onMounted(load)
+const closeTicketFromModal = async () => {
+  if (!selectedTicket.value) return
+  await closeTicket(selectedTicket.value.id)
+  selectedTicket.value.active = false
+}
+
+const reopenTicket = async (ticketId: number) => {
+  try {
+    await apiClient.put(`/admin/tickets/${ticketId}`, { active: true })
+    const ticket = tickets.value.find(t => t.id === ticketId)
+    if (ticket) ticket.active = true
+    showToast('Ticket reabierto', 'success')
+  } catch (e) {
+    console.error(e)
+    showToast('Error al reabrir ticket', 'error')
+  }
+}
+
+// Formatters
+const formatDate = (date: string) => {
+  if (!date) return '-'
+  return new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
+}
+
+const formatTime = (date: string) => {
+  if (!date) return ''
+  return new Date(date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+}
+
+const formatDateTime = (date: string) => {
+  if (!date) return '-'
+  return new Date(date).toLocaleString('es-ES', { 
+    day: '2-digit', 
+    month: 'short', 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  })
+}
+
+onMounted(loadTickets)
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-in;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

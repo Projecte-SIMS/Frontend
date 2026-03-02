@@ -11,9 +11,9 @@ const props = defineProps<{
 }>()
 
 const base = 'py-4 text-sm whitespace-nowrap'
-const first = 'pr-3 pl-4 sm:pl-0'
+const first = 'pl-6 pr-3'
 const middle = 'px-3'
-const actions = 'pr-4 pl-3 sm:pr-0 text-right font-medium'
+const actions = 'pl-3 pr-6 text-right'
 
 const classes =
   props.variant === 'actions'
