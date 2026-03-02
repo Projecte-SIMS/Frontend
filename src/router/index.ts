@@ -26,6 +26,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'vehicles/map', component: () => import('@/modules/common/pages/MapPage.vue') },
       { path: 'vehicles', component: () => import('@/modules/common/pages/VehiclesListPage.vue') },
       { path: 'bookings', component: () => import('@/modules/bookings/BookingsList.vue') },
+      { path: 'active-vehicle', component: () => import('@/modules/bookings/pages/ActiveVehicleControlPage.vue') },
       { path: 'tickets', component: () => import('@/modules/tickets/pages/TicketsPage.vue') },
       { path: 'tickets/create', component: () => import('@/modules/tickets/pages/CreateTicketPage.vue') },
       { path: 'tickets/:id', component: () => import('@/modules/tickets/pages/TicketConversationPage.vue') },
@@ -46,6 +47,12 @@ const routes: RouteRecordRaw[] = [
         path: 'map',
         name: 'AdminVehicleMap',
         component: () => import('@/modules/admin/pages/VehicleMapPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'fleet-health',
+        name: 'AdminFleetHealth',
+        component: () => import('@/modules/admin/pages/FleetHealthPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
       },
       {

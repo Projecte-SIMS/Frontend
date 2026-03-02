@@ -17,6 +17,12 @@ export interface Vehicle {
   mongo_active?: boolean
   status: 'available' | 'reserved' | 'running'
   is_mine?: boolean
+  online?: boolean
+  speed?: number
+  rpm?: number
+  engine_temp?: number
+  battery_voltage?: number
+  device_id?: string
 }
 
 const vehicles = ref<Vehicle[]>([])
@@ -49,18 +55,22 @@ const setRadiusMeters = (m: number | null) => {
   applyFiltersAndMarkers()
 }
 
-const createVehicleIcon = (status: string, isMine?: boolean) => {
+const createVehicleIcon = (v: Vehicle) => {
   let color = '#22c55e'
   let extraClass = ''
   let statusText = 'Libre'
 
-  if (status === 'running') {
+  // If offline, show gray icon regardless of other states
+  if (v.online === false) {
+    color = '#94a3b8'
+    statusText = 'Desconectado'
+  } else if (v.status === 'running') {
     color = '#ef4444'
     extraClass = 'marker-pulse-red'
     statusText = 'En marcha'
-  } else if (status === 'reserved') {
+  } else if (v.status === 'reserved') {
     color = '#f59e0b'
-    statusText = isMine ? 'Tu Reserva' : 'Reservado'
+    statusText = v.is_mine ? 'Tu Reserva' : 'Reservado'
   }
 
   return L.divIcon({
@@ -93,7 +103,13 @@ const fetchVehicles = async (endpoint = '/vehicles/map') => {
       postgres_active: v.postgres_active,
       mongo_active: v.mongo_active,
       status: v.status,
-      is_mine: v.is_mine
+      is_mine: v.is_mine,
+      online: v.online,
+      speed: v.speed,
+      rpm: v.rpm,
+      engine_temp: v.engine_temp,
+      battery_voltage: v.battery_voltage,
+      device_id: v.device_id
     }))
 
     applyFiltersAndMarkers()
@@ -103,7 +119,6 @@ const fetchVehicles = async (endpoint = '/vehicles/map') => {
       if (updated) {
         selectedVehicle.value = updated
       } else {
-        // If vehicle disappeared from map (e.g. became 'running'), deselect it
         selectedVehicle.value = null
       }
     }
@@ -144,7 +159,6 @@ const initMap = () => {
 
   if (!pollInterval) {
     pollInterval = setInterval(() => {
-      // Check current endpoint to decide which one to poll
       const isClientMap = window.location.pathname.includes('/vehicles/map')
       const endpoint = isClientMap ? '/vehicles/map' : '/admin/vehicles/map'
       fetchVehicles(endpoint).catch(() => {})
@@ -177,7 +191,7 @@ const addVehicleMarkers = () => {
     if (v.latitude == null || v.longitude == null) return
     visibleIds.add(v.id)
 
-    const icon = createVehicleIcon(v.status, v.is_mine)
+    const icon = createVehicleIcon(v)
 
     if (markers.has(v.id)) {
       const m = markers.get(v.id) as L.Marker

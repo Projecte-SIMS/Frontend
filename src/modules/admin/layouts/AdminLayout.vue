@@ -131,6 +131,7 @@ import {
   MapIcon,
   XMarkIcon,
   CpuChipIcon,
+  HeartIcon,
 } from '@heroicons/vue/24/outline'
 import UserMenu from '@/modules/common/components/UserMenu.vue'
 
@@ -144,7 +145,8 @@ const isAdmin = computed(() => !!(user.value && user.value.roles && user.value.r
 
 const navigationItems = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
-  { name: 'Mapa', href: '/admin/map', icon: MapIcon },
+  { name: 'Mapa de Flota', href: '/admin/map', icon: MapIcon },
+  { name: 'Salud de Flota', href: '/admin/fleet-health', icon: HeartIcon },
   { name: 'Dispositivos IoT', href: '/admin/iot-devices', icon: CpuChipIcon },
   { name: 'Usuarios', href: '/admin/users', icon: UsersIcon },
   { name: 'Roles', href: '/admin/roles', icon: ShieldCheckIcon },

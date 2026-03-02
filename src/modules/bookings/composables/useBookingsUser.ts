@@ -10,7 +10,7 @@ export default function useBookingsUser() {
   const { user } = useAuth()
 
   const hasActiveBooking = computed(() => {
-    return bookings.value.some(b => ['pending', 'active'].includes(b.status))
+    return bookings.value.some(b => b.status === 'active')
   })
 
   const getBookings = async () => {
