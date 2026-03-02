@@ -1,6 +1,9 @@
 import { ref } from 'vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
+import 'leaflet.markercluster/dist/MarkerCluster.css'
+import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
+import 'leaflet.markercluster'
 import apiClient from '@/services/api'
 
 export interface Vehicle {
@@ -12,52 +15,70 @@ export interface Vehicle {
   longitude: number
   postgres_active?: boolean
   mongo_active?: boolean
-  status: 'active' | 'inactive'
+  status: 'available' | 'reserved' | 'running'
+  is_mine?: boolean
 }
 
 const vehicles = ref<Vehicle[]>([])
 const map = ref<L.Map | null>(null)
 const mapContainer = ref<HTMLElement | null>(null)
 const markers: Map<number, L.Marker> = new Map()
+const selectedVehicle = ref<Vehicle | null>(null)
+let clusterGroup: any = null
 let userMarker: L.Marker | L.CircleMarker | null = null
 let pollInterval: ReturnType<typeof setInterval> | null = null
-let pollEndpoint = '/vehicles/map'
 
-// reactive filters & search
 const searchQuery = ref('')
 const showOperativeOnly = ref(false)
 const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const radiusMeters = ref<number | null>(null)
+const rawVehicles = ref<Vehicle[]>([])
 
-const createVehicleIcon = (postgresActive?: boolean, mongoActive?: boolean) => {
-  const color = postgresActive ? '#f59e0b' : '#22c55e'
-  const borderColor = mongoActive ? '#ef4444' : '#ffffff'
+const setSearchQuery = (q: string) => {
+  searchQuery.value = q
+  applyFiltersAndMarkers()
+}
+
+const setShowOperativeOnly = (v: boolean) => {
+  showOperativeOnly.value = v
+  applyFiltersAndMarkers()
+}
+
+const setRadiusMeters = (m: number | null) => {
+  radiusMeters.value = m
+  applyFiltersAndMarkers()
+}
+
+const createVehicleIcon = (status: string, isMine?: boolean) => {
+  let color = '#22c55e'
+  let extraClass = ''
+  let statusText = 'Libre'
+
+  if (status === 'running') {
+    color = '#ef4444'
+    extraClass = 'marker-pulse-red'
+    statusText = 'En marcha'
+  } else if (status === 'reserved') {
+    color = '#f59e0b'
+    statusText = isMine ? 'Tu Reserva' : 'Reservado'
+  }
 
   return L.divIcon({
     html: `
-      <div style="
-        background-color: ${color};
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
-        border: 3px solid ${borderColor};
-        box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      ">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="18" height="18">
-          <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-        </svg>
+      <div class="custom-vehicle-marker ${extraClass}" style="--marker-color: ${color}">
+        <div class="marker-pin shadow-xl">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24">
+            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
+          </svg>
+        </div>
+        <div class="marker-label">${statusText}</div>
       </div>
     `,
-    className: 'vehicle-marker',
-    iconSize: [32, 32],
-    iconAnchor: [16, 16]
+    className: 'vehicle-div-icon',
+    iconSize: [40, 40],
+    iconAnchor: [20, 40]
   })
 }
-
-const rawVehicles = ref<Vehicle[]>([])
 
 const fetchVehicles = async (endpoint = '/vehicles/map') => {
   try {
@@ -67,14 +88,25 @@ const fetchVehicles = async (endpoint = '/vehicles/map') => {
       plate: v.plate,
       brand: v.brand,
       model: v.model,
-      latitude: v.latitude,
-      longitude: v.longitude,
+      latitude: Number(v.latitude),
+      longitude: Number(v.longitude),
       postgres_active: v.postgres_active,
       mongo_active: v.mongo_active,
-      status: (v.mongo_active === true) ? 'active' : 'inactive',
+      status: v.status,
+      is_mine: v.is_mine
     }))
 
     applyFiltersAndMarkers()
+    
+    if (selectedVehicle.value) {
+      const updated = rawVehicles.value.find(v => v.id === selectedVehicle.value?.id)
+      if (updated) {
+        selectedVehicle.value = updated
+      } else {
+        // If vehicle disappeared from map (e.g. became 'running'), deselect it
+        selectedVehicle.value = null
+      }
+    }
   } catch (error) {
     console.error('Error fetching vehicles:', error)
   }
@@ -84,37 +116,46 @@ const initMap = () => {
   if (!mapContainer.value) return
 
   map.value = L.map(mapContainer.value, {
-    zoomControl: false // Desactivamos el por defecto para posicionarlo donde queramos
+    zoomControl: false,
+    preferCanvas: true
   }).setView([41.3851, 2.1734], 13)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map.value as any)
 
-  // Opcional: Añadirlo en una posición que no moleste por defecto
   L.control.zoom({ position: 'bottomleft' }).addTo(map.value as any)
-}
 
-const withinRadius = (v: Vehicle) => {
-  if (!userLocation.value || !radiusMeters.value) return true
-  const R = 6371000 // metres
-  const toRad = (x: number) => (x * Math.PI) / 180
-  const dLat = toRad(v.latitude - userLocation.value.lat)
-  const dLon = toRad(v.longitude - userLocation.value.lng)
-  const lat1 = toRad(userLocation.value.lat)
-  const lat2 = toRad(v.latitude)
+  // @ts-ignore
+  clusterGroup = L.markerClusterGroup({
+    showCoverageOnHover: false,
+    maxClusterRadius: 40,
+    animate: true,
+    animateAddingMarkers: true,
+    iconCreateFunction: function(cluster: any) {
+      const childCount = cluster.getChildCount();
+      return L.divIcon({ 
+        html: `<div class="custom-cluster"><span>${childCount}</span></div>`, 
+        className: 'cluster-icon-parent', 
+        iconSize: [40, 40] 
+      });
+    }
+  }).addTo(map.value as any)
 
-  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
-  const d = R * c
-  return d <= (radiusMeters.value || 0)
+  if (!pollInterval) {
+    pollInterval = setInterval(() => {
+      // Check current endpoint to decide which one to poll
+      const isClientMap = window.location.pathname.includes('/vehicles/map')
+      const endpoint = isClientMap ? '/vehicles/map' : '/admin/vehicles/map'
+      fetchVehicles(endpoint).catch(() => {})
+    }, 3000)
+  }
 }
 
 const applyFiltersAndMarkers = () => {
-  // apply search, operative filter and proximity
   const q = searchQuery.value.trim().toLowerCase()
   const filtered = rawVehicles.value.filter(v => {
-    if (showOperativeOnly.value && !v.mongo_active) return false
+    if (showOperativeOnly.value && v.status !== 'running') return false
     if (q) {
       const combined = `${v.plate} ${v.brand} ${v.model}`.toLowerCase()
       if (!combined.includes(q)) return false
@@ -128,7 +169,7 @@ const applyFiltersAndMarkers = () => {
 }
 
 const addVehicleMarkers = () => {
-  if (!map.value) return
+  if (!map.value || !clusterGroup) return
 
   const visibleIds = new Set<number>()
 
@@ -136,96 +177,79 @@ const addVehicleMarkers = () => {
     if (v.latitude == null || v.longitude == null) return
     visibleIds.add(v.id)
 
-    if (markers.has(v.id)) {
-      // update existing marker position and icon
-      const m = markers.get(v.id) as any
-      try {
-        m.setLatLng([v.latitude, v.longitude])
-        m.setIcon(createVehicleIcon(v.postgres_active, v.mongo_active))
-      } catch (e) { /* ignore */ }
-    } else {
-      const marker = L.marker([v.latitude, v.longitude], { icon: createVehicleIcon(v.postgres_active, v.mongo_active) })
-        .addTo(map.value as any)
+    const icon = createVehicleIcon(v.status, v.is_mine)
 
+    if (markers.has(v.id)) {
+      const m = markers.get(v.id) as L.Marker
+      m.setLatLng([v.latitude, v.longitude])
+      m.setIcon(icon)
+    } else {
+      const marker = L.marker([v.latitude, v.longitude], { icon })
+      marker.on('click', () => {
+        selectedVehicle.value = v
+        centerOnVehicle(v)
+      })
+      clusterGroup.addLayer(marker)
       markers.set(v.id, marker)
     }
   })
 
-  // remove markers that are no longer present
   markers.forEach((m, id) => {
     if (!visibleIds.has(id)) {
-      try { m.remove() } catch (e) {}
+      clusterGroup.removeLayer(m)
       markers.delete(id)
     }
   })
-
-  if (vehicles.value.length > 0 && map.value) {
-    if (!userLocation.value) {
-      const bounds = L.latLngBounds(vehicles.value.map(v => [v.latitude, v.longitude]))
-      map.value!.fitBounds(bounds, { padding: [50, 50] })
-    }
-  }
 }
 
 const centerOnVehicle = (vehicle: Vehicle) => {
-  if (map.value) {
-    map.value.setView([vehicle.latitude, vehicle.longitude], 15)
+  if (map.value && clusterGroup) {
     const marker = markers.get(vehicle.id)
-    if (marker) marker.openPopup()
+    if (marker) {
+      clusterGroup.zoomToShowLayer(marker, () => {
+        map.value!.setView([vehicle.latitude, vehicle.longitude], 17)
+      })
+    }
   }
 }
 
 const setUserLocation = (lat: number, lng: number) => {
   userLocation.value = { lat, lng }
-  // add or move user marker
   if (map.value) {
     if (userMarker) {
-      // update existing marker
-      try { userMarker.setLatLng([lat, lng]) } catch { /* ignore if circle */ }
-    } else if (map.value) {
-      // use a circle marker for user to ensure visible and distinct
+      try { userMarker.setLatLng([lat, lng]) } catch { }
+    } else {
       userMarker = L.circleMarker([lat, lng], { radius: 8, color: '#2563eb', weight: 2, fillColor: '#60a5fa', fillOpacity: 0.9 }).addTo(map.value as any)
-      try { userMarker.bindPopup('<b>You are here</b>') } catch {}
+      userMarker.bindPopup('<b>Estás aquí</b>')
     }
-    // ensure user marker is on top
-    if ((userMarker as any)?.bringToFront) (userMarker as any).bringToFront()
-  }
-  applyFiltersAndMarkers()
-}
-
-const destroyUserMarker = () => {
-  if (userMarker) {
-    userMarker.remove()
-    userMarker = null
   }
 }
 
-const setRadiusMeters = (m: number | null) => {
-  radiusMeters.value = m
-  applyFiltersAndMarkers()
-}
-
-const setSearchQuery = (q: string) => {
-  searchQuery.value = q
-  applyFiltersAndMarkers()
-}
-
-const setShowOperativeOnly = (v: boolean) => {
-  showOperativeOnly.value = v
-  applyFiltersAndMarkers()
+const withinRadius = (v: Vehicle) => {
+  if (!userLocation.value || !radiusMeters.value) return true
+  const R = 6371000
+  const toRad = (x: number) => (x * Math.PI) / 180
+  const dLat = toRad(v.latitude - userLocation.value.lat)
+  const dLon = toRad(v.longitude - userLocation.value.lng)
+  const lat1 = toRad(userLocation.value.lat)
+  const lat2 = toRad(v.latitude)
+  const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.sin(dLon / 2) * Math.sin(dLon / 2) * Math.cos(lat1) * Math.cos(lat2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+  return (R * c) <= (radiusMeters.value || 0)
 }
 
 const destroyMap = () => {
-  if (map.value) {
-    map.value.remove()
-    map.value = null
-  }
   if (pollInterval) {
     clearInterval(pollInterval)
     pollInterval = null
   }
-  markers.forEach(m => { try { m.remove() } catch {} })
+  if (map.value) {
+    map.value.remove()
+    map.value = null
+  }
   markers.clear()
+  clusterGroup = null
+  selectedVehicle.value = null
 }
 
 export function useMap() {
@@ -234,13 +258,12 @@ export function useMap() {
     vehicles,
     map,
     markers,
-    createVehicleIcon,
+    selectedVehicle,
     fetchVehicles,
     initMap,
     addVehicleMarkers,
     centerOnVehicle,
     destroyMap,
-    // new api
     rawVehicles,
     searchQuery,
     setSearchQuery,
@@ -250,7 +273,6 @@ export function useMap() {
     setUserLocation,
     radiusMeters,
     setRadiusMeters,
-    // expose user marker functions for diagnostics
     _internal: {
       getUserMarker: () => userMarker
     }

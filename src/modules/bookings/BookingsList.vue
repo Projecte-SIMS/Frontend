@@ -57,12 +57,18 @@
               <div class="size-20 rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400">
                 <TruckIcon class="size-10" />
               </div>
-              <div>
+              <div class="text-left">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ booking.vehicle?.brand }} {{ booking.vehicle?.model }}</h3>
                 <p class="text-indigo-600 dark:text-indigo-400 font-mono font-bold">{{ booking.vehicle?.license_plate }}</p>
-                <div class="flex items-center gap-2 mt-1 text-gray-500 text-sm font-medium">
-                  <ClockIcon class="size-4" />
-                  Inicio: {{ formatDateTime(booking.scheduled_start) }}
+                <div class="mt-2 space-y-1">
+                  <div class="flex items-center gap-2 text-gray-500 text-sm font-medium">
+                    <ClockIcon class="size-4" />
+                    Inicio: {{ formatDateTime(booking.scheduled_start) }}
+                  </div>
+                  <div v-if="booking.status === 'pending' && (booking.remaining_seconds ?? 0) > 0" class="flex items-center gap-2 text-amber-600 dark:text-amber-400 text-sm font-bold animate-pulse">
+                    <ExclamationCircleIcon class="size-4" />
+                    Expira en: {{ formatRemainingTime(booking.remaining_seconds) }}
+                  </div>
                 </div>
               </div>
             </div>
@@ -148,7 +154,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, computed } from 'vue'
+import { onMounted, onUnmounted, computed } from 'vue'
 import useBookingsUser from './composables/useBookingsUser'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
@@ -159,7 +165,8 @@ import {
   TruckIcon,
   ClockIcon,
   CheckCircleIcon,
-  XCircleIcon
+  XCircleIcon,
+  ExclamationCircleIcon
 } from '@heroicons/vue/24/outline'
 
 const { bookings, loading, error, getBookings } = useBookingsUser()
@@ -178,6 +185,7 @@ const getStatusClass = (status: string) => {
     case 'pending': return 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
     case 'completed': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400'
     case 'cancelled': return 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
+    case 'expired': return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
     default: return 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400'
   }
 }
@@ -196,6 +204,14 @@ const formatDateTime = (date?: string) => {
   if (!date) return '-'
   return `${formatDate(date)} ${formatTime(date)}`
 }
+
+const formatRemainingTime = (seconds: number) => {
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins}:${secs.toString().padStart(2, '0')}`
+}
+
+let timerInterval: any = null
 
 const handleActivate = async (id: number) => {
   try {
@@ -229,5 +245,18 @@ const handleCancel = async (id: number) => {
 
 onMounted(() => {
   getBookings()
+  timerInterval = setInterval(() => {
+    bookings.value.forEach((b: any) => {
+      if (b.status === 'pending' && b.remaining_seconds > 0) {
+        b.remaining_seconds--
+      } else if (b.status === 'pending' && b.remaining_seconds <= 0) {
+        b.status = 'expired'
+      }
+    })
+  }, 1000)
+})
+
+onUnmounted(() => {
+  if (timerInterval) clearInterval(timerInterval)
 })
 </script>

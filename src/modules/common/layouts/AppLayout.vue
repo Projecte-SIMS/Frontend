@@ -1,17 +1,17 @@
 <template>
-  <div class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+  <div class="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 overflow-x-hidden">
     <!-- Topbar principal -->
-    <header class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/80">
+    <header class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/80 transition-colors duration-300 shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between gap-4">
           
           <!-- Logo y Navegación Desktop -->
           <div class="flex items-center gap-8">
-            <router-link to="/" class="flex items-center gap-2.5 group">
-              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+            <router-link to="/" class="flex items-center gap-2.5 group transition-all duration-300 hover:scale-105 active:scale-95">
+              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/30 group-hover:rotate-6 group-hover:shadow-indigo-500/50 transition-all duration-300">
                 <span class="text-lg font-bold text-white">S</span>
               </div>
-              <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">SIMS</span>
+              <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">SIMS</span>
             </router-link>
 
             <!-- Nav Links Desktop -->
@@ -22,9 +22,9 @@
                 :to="item.to"
                 :class="[
                   isActive(item.to) 
-                    ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' 
+                    ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 shadow-sm scale-105' 
                     : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white',
-                  'px-3 py-2 rounded-lg text-sm font-semibold transition-all'
+                  'px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ease-out active:scale-90 hover:-translate-y-0.5'
                 ]"
               >
                 {{ item.name }}
@@ -34,23 +34,22 @@
 
           <!-- Acciones Derecha (User Menu) -->
           <div class="flex items-center gap-3">
-            <!-- Botón Admin (si aplica) -->
             <router-link 
               v-if="isAdmin" 
               to="/admin" 
-              class="hidden sm:flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-50 hover:bg-amber-100 dark:text-amber-400 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
+              class="hidden sm:flex items-center gap-2 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 hover:bg-amber-100 dark:text-amber-400 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 rounded-xl transition-all hover:-translate-y-0.5 active:scale-90 shadow-sm border border-amber-200/50 dark:border-amber-900/50"
             >
-              <ShieldCheckIcon class="size-4" />
+              <ShieldCheckIcon class="size-3.5" />
               Admin
             </router-link>
 
-            <!-- Menú de Usuario -->
-            <UserMenu />
+            <div class="transition-all hover:scale-105 active:scale-95 duration-200">
+              <UserMenu />
+            </div>
 
-            <!-- Menú Móvil (Hamburguesa) -->
             <button 
               @click="mobileMenuOpen = !mobileMenuOpen"
-              class="p-2 rounded-lg text-gray-500 md:hidden hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              class="p-2 rounded-xl text-gray-500 md:hidden hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 active:scale-75"
             >
               <Bars3Icon v-if="!mobileMenuOpen" class="size-6" />
               <XMarkIcon v-else class="size-6" />
@@ -59,16 +58,16 @@
         </div>
       </div>
 
-      <!-- Navegación Móvil (Desplegable) -->
+      <!-- Navegación Móvil -->
       <Transition
-        enter-active-class="transition ease-out duration-200"
-        enter-from-class="opacity-0 -translate-y-2"
+        enter-active-class="transition ease-out duration-300"
+        enter-from-class="opacity-0 -translate-y-4"
         enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="transition ease-in duration-150"
+        leave-active-class="transition ease-in duration-200"
         leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-2"
+        leave-to-class="opacity-0 -translate-y-4"
       >
-        <div v-if="mobileMenuOpen" class="md:hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 space-y-1 shadow-xl">
+        <div v-if="mobileMenuOpen" class="md:hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-4 space-y-2 shadow-2xl">
           <router-link 
             v-for="item in navigation" 
             :key="item.name" 
@@ -77,25 +76,15 @@
             :class="[
               isActive(item.to) 
                 ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' 
-                : 'text-gray-600 dark:text-gray-400',
-              'block px-4 py-3 rounded-xl text-base font-semibold'
+                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800',
+              'block px-4 py-3.5 rounded-2xl text-base font-bold transition-all active:scale-[0.98]'
             ]"
           >
-            <div class="flex items-center gap-3">
-              <component :is="item.icon" class="size-5" />
+            <div class="flex items-center gap-4">
+              <div :class="[isActive(item.to) ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-800 text-gray-400']" class="p-2 rounded-xl transition-all">
+                <component :is="item.icon" class="size-5" />
+              </div>
               {{ item.name }}
-            </div>
-          </router-link>
-          
-          <router-link 
-            v-if="isAdmin" 
-            to="/admin" 
-            @click="mobileMenuOpen = false"
-            class="block px-4 py-3 rounded-xl text-base font-semibold text-amber-600 bg-amber-50 dark:text-amber-400 dark:bg-amber-900/20"
-          >
-            <div class="flex items-center gap-3">
-              <ShieldCheckIcon class="size-5" />
-              Panel de Administración
             </div>
           </router-link>
         </div>
@@ -103,10 +92,15 @@
     </header>
 
     <!-- Contenido principal -->
-    <main class="relative py-6 sm:py-8 lg:py-10">
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <router-view />
-      </div>
+    <main class="relative">
+      <router-view v-slot="{ Component }">
+        <transition name="page" mode="out-in" appear>
+          <div :key="route.path" :class="[isFullPage ? '' : 'py-6 sm:py-8 lg:py-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8']">
+            <component :is="Component" />
+          </div>
+        </transition>
+      </router-view>
+      
       <ChatbotPage />
     </main>
   </div>
@@ -133,9 +127,13 @@ const route = useRoute()
 const { user } = useAuth()
 const mobileMenuOpen = ref(false)
 
+const isFullPage = computed(() => route.path === '/vehicles/map')
+
 const isActive = (path: string) => {
-  if (path === '/' && route.path === '/') return true
-  if (path !== '/' && route.path.startsWith(path)) return true
+  // Mejora de lógica para evitar solapamiento entre /vehicles y /vehicles/map
+  if (path === route.path) return true
+  // Para /vehicles solo marcamos si es exacto o no es el mapa
+  if (path === '/vehicles' && route.path.startsWith('/vehicles') && route.path !== '/vehicles/map') return true
   return false
 }
 
@@ -151,3 +149,17 @@ const navigation = [
   { name: 'Perfil', to: '/perfil', icon: UserIcon },
 ]
 </script>
+
+<style scoped>
+.page-enter-active,
+.page-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.page-enter-from { opacity: 0; transform: translateY(10px); }
+.page-leave-to { opacity: 0; transform: translateY(-10px); }
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+</style>

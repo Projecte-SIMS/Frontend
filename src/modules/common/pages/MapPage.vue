@@ -1,9 +1,7 @@
 <template>
-  <!-- Full Screen Wrapper: Bloqueado debajo de la cabecera (top-16) -->
-  <!-- Eliminamos lg:left-72 porque el layout de cliente NO tiene sidebar lateral fijo -->
-  <div class="fixed top-16 bottom-0 left-0 right-0 z-0 overflow-hidden font-sans bg-gray-100 dark:bg-gray-950">
+  <div class="relative h-[calc(100vh-4rem)] overflow-hidden font-sans bg-gray-100 dark:bg-gray-950">
     <!-- Map Container -->
-    <div ref="mapContainer" class="absolute inset-0 z-0"></div>
+    <div ref="mapContainer" class="absolute inset-0 z-0 border-0 outline-none"></div>
 
     <!-- UI Overlay Layer -->
     <div class="absolute inset-0 pointer-events-none z-10 p-4 sm:p-6 flex flex-col">
@@ -88,7 +86,7 @@
       >
         <div v-if="selectedVehicle" class="absolute bottom-4 left-1/2 -translate-x-1/2 w-full max-w-sm pointer-events-auto px-4">
           <div class="bg-gray-900 dark:bg-gray-900 rounded-[1.5rem] shadow-[0_24px_50px_-12px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden relative text-white">
-            <button @click="selectedVehicle = null" class="absolute top-2 right-2 z-20 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all">
+            <button @click="closeSelected" class="absolute top-2 right-2 z-20 p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all">
               <XMarkIcon class="size-4" />
             </button>
 
@@ -106,14 +104,14 @@
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 mb-4">
-                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center">
+                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left">
                     <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">Distancia</p>
                     <div class="flex items-center gap-1 font-black text-white text-[10px] leading-none">
                       <MapPinIcon class="size-2.5 text-indigo-400" /> {{ formatDistance(selectedVehicle.distanceMeters) }}
                     </div>
                   </div>
-                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-xs">
-                    <span class="text-green-400 font-bold text-[10px]">0.15€</span><span class="text-[8px] text-gray-500">/min</span>
+                  <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left text-[10px] font-bold">
+                    <span class="text-green-400">0.15€</span><span class="text-[8px] text-gray-500">/min</span>
                   </div>
                 </div>
 
@@ -148,10 +146,9 @@ import {
 
 const route = useRoute()
 const router = useRouter()
-const { mapContainer, map, initMap, fetchVehicles, setUserLocation, destroyMap, rawVehicles, centerOnVehicle, markers, setSearchQuery } = useMap()
+const { mapContainer, map, initMap, fetchVehicles, setUserLocation, destroyMap, rawVehicles, centerOnVehicle, markers, setSearchQuery, selectedVehicle } = useMap()
 
 const search = ref('')
-const selectedVehicle = ref<any | null>(null)
 const isRefreshing = ref(false)
 const isBooking = ref(false)
 const panelOpen = ref(false)
@@ -220,6 +217,10 @@ const onNearbyClick = (v: any) => {
   if (window.innerWidth < 640) panelOpen.value = false
 }
 
+const closeSelected = () => {
+  selectedVehicle.value = null
+}
+
 const confirmBooking = async () => {
   if (!selectedVehicle.value) return
   isBooking.value = true
@@ -234,18 +235,6 @@ const confirmBooking = async () => {
     isBooking.value = false
   }
 }
-
-watch(() => markers?.size, () => {
-  markers?.forEach((marker, id) => {
-    marker.off('click').on('click', () => {
-      const v = rawVehicles.value.find(rv => rv.id === id)
-      if (v) {
-        selectedVehicle.value = v
-        centerOnVehicle(v)
-      }
-    })
-  })
-}, { immediate: true })
 
 onMounted(async () => {
   initMap()
@@ -273,4 +262,97 @@ onUnmounted(() => { destroyMap() })
 :deep(.leaflet-bar) { border: none !important; box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1) !important; border-radius: 1rem !important; overflow: hidden; }
 :deep(.leaflet-bar a) { background-color: rgba(255, 255, 255, 0.9) !important; color: #4f46e5 !important; width: 36px !important; height: 36px !important; line-height: 36px !important; font-weight: bold !important; border-bottom: 1px solid #f3f4f6 !important; }
 .dark :deep(.leaflet-bar a) { background-color: rgba(17, 24, 39, 0.9) !important; color: #818cf8 !important; border-bottom: 1px solid #374151 !important; }
+
+/* Custom Vehicle Markers Styles */
+:deep(.custom-vehicle-marker) {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+:deep(.marker-pin) {
+  width: 32px;
+  height: 32px;
+  border-radius: 50% 50% 50% 0;
+  background: var(--marker-color);
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 50%;
+  top: 50%;
+  margin: -24px 0 0 -16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  border: 2px solid white;
+  transition: all 0.2s ease;
+}
+
+:deep(.marker-pin svg) {
+  transform: rotate(45deg);
+  width: 18px;
+  height: 18px;
+}
+
+:deep(.marker-label) {
+  position: absolute;
+  top: 12px;
+  background: white;
+  color: #1e293b;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  border: 1px solid #e2e8f0;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(5px);
+  transition: all 0.2s ease;
+}
+
+:deep(.custom-vehicle-marker:hover .marker-label) {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+:deep(.custom-vehicle-marker:hover .marker-pin) {
+  transform: rotate(-45deg) scale(1.1);
+  z-index: 1000;
+}
+
+/* Animations for Running Vehicles */
+:deep(.marker-pulse-red .marker-pin) {
+  animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* Cluster Styling */
+:deep(.custom-cluster) {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  border-radius: 50%;
+  border: 3px solid white;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 14px;
+  box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.5);
+}
+
+:deep(.cluster-icon-parent) {
+  background: transparent !important;
+  border: none !important;
+}
 </style>
