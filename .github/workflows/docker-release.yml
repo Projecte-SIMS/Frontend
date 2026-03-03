@@ -25,7 +25,8 @@ jobs:
         run: npm ci
 
       - name: Type Check (TypeScript Validation)
-        run: npm run type-check || echo "⚠️ Advertencia: Errores de TypeScript detectados, pero continuamos con la build."
+        continue-on-error: true # Permite que el job siga aunque este paso falle
+        run: npm run type-check
 
       - name: Build Check (Production Simulation)
         run: npm run build
