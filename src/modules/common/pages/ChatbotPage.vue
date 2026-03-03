@@ -71,9 +71,17 @@ const sendMessage = async () => {
   } catch (error: any) {
     console.error(error)
     let errorMsg = "Lo siento, ha ocurrido un error. Por favor, inténtalo de nuevo."
-    if (error.response && error.response.status === 401) {
+    
+    if (error.response?.data?.error) {
+      errorMsg = error.response.data.error
+    } else if (error.response?.status === 401) {
       errorMsg = "Necesitas iniciar sesión para usar el asistente."
+    } else if (error.response?.status === 500) {
+      errorMsg = "⚠️ El servicio de IA no está disponible en este momento. El servidor externo no responde. Por favor, inténtalo más tarde."
+    } else if (error.code === 'ECONNABORTED') {
+      errorMsg = "⚠️ Tiempo de espera agotado. El servicio de IA está tardando demasiado en responder."
     }
+    
     messages.value.push({ role: "assistant", content: errorMsg })
   } finally {
     isLoading.value = false

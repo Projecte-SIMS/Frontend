@@ -187,10 +187,25 @@ const isConfirmOpen = ref(false)
 const panelOpen = ref(false)
 const nearbyRadiusKm = ref(5)
 const nearbyAvailable = ref<any[]>([])
+const myLocation = ref<{ lat: number; lng: number } | null>(null)
 
 watch(search, (newVal) => {
   setSearchQuery(newVal)
   computeNearbyAvailable()
+})
+
+// Calcular distancia cuando se selecciona un vehículo
+watch(selectedVehicle, (v) => {
+  if (v && myLocation.value && v.latitude != null && v.longitude != null) {
+    const R = 6371
+    const dLat = (v.latitude - myLocation.value.lat) * Math.PI / 180
+    const dLon = (v.longitude - myLocation.value.lng) * Math.PI / 180
+    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+              Math.cos(myLocation.value.lat * Math.PI / 180) * Math.cos(v.latitude * Math.PI / 180) *
+              Math.sin(dLon/2) * Math.sin(dLon/2)
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+    v.distanceMeters = R * c * 1000
+  }
 })
 
 const formatDistance = (meters?: number) => {
@@ -216,6 +231,7 @@ const locateMe = () => {
   if (!navigator.geolocation) return
   navigator.geolocation.getCurrentPosition(pos => {
     const { latitude, longitude } = pos.coords
+    myLocation.value = { lat: latitude, lng: longitude }
     setUserLocation(latitude, longitude)
     map.value?.setView([latitude, longitude], 15)
     computeNearbyAvailable()
@@ -223,16 +239,15 @@ const locateMe = () => {
 }
 
 function computeNearbyAvailable() {
-  if (!map.value) return
-  const center = map.value.getCenter()
+  if (!myLocation.value) return
   const R = 6371
   nearbyAvailable.value = rawVehicles.value
     .map(v => {
       if (v.latitude == null || v.longitude == null) return null
-      const dLat = (v.latitude - center.lat) * Math.PI / 180
-      const dLon = (v.longitude - center.lng) * Math.PI / 180
+      const dLat = (v.latitude - myLocation.value!.lat) * Math.PI / 180
+      const dLon = (v.longitude - myLocation.value!.lng) * Math.PI / 180
       const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-                Math.cos(center.lat * Math.PI / 180) * Math.cos(v.latitude * Math.PI / 180) *
+                Math.cos(myLocation.value!.lat * Math.PI / 180) * Math.cos(v.latitude * Math.PI / 180) *
                 Math.sin(dLon/2) * Math.sin(dLon/2)
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
       const d = R * c * 1000
@@ -284,7 +299,6 @@ onMounted(async () => {
     if (v) { selectedVehicle.value = v; centerOnVehicle(v) }
   }
   locateMe()
-  if (map.value) map.value.on('moveend', computeNearbyAvailable)
 })
 
 onUnmounted(() => { destroyMap() })

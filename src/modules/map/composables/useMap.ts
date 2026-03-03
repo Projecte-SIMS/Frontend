@@ -6,6 +6,13 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.markercluster'
 import apiClient from '@/services/api'
 
+// Extend Leaflet Map type for internal properties
+declare module 'leaflet' {
+  interface Map {
+    _animatingZoom?: boolean
+  }
+}
+
 export interface Vehicle {
   id: number
   plate: string
@@ -159,8 +166,9 @@ const initMap = () => {
 
   if (!pollInterval) {
     pollInterval = setInterval(() => {
-      const isClientMap = window.location.pathname.includes('/vehicles/map')
-      const endpoint = isClientMap ? '/vehicles/map' : '/admin/vehicles/map'
+      const pathname = window.location.pathname
+      const isAdminMap = pathname.includes('/admin/')
+      const endpoint = isAdminMap ? '/admin/vehicles/map' : '/vehicles/map'
       fetchVehicles(endpoint).catch(() => {})
     }, 3000)
   }
@@ -183,7 +191,7 @@ const applyFiltersAndMarkers = () => {
 }
 
 const addVehicleMarkers = () => {
-  if (!map.value || !clusterGroup) return
+  if (!map.value || !clusterGroup || map.value._animatingZoom) return
 
   const visibleIds = new Set<number>()
 
@@ -217,19 +225,25 @@ const addVehicleMarkers = () => {
 }
 
 const centerOnVehicle = (vehicle: Vehicle) => {
-  if (map.value && clusterGroup) {
+  if (map.value && clusterGroup && !map.value._animatingZoom) {
     const marker = markers.get(vehicle.id)
     if (marker) {
-      clusterGroup.zoomToShowLayer(marker, () => {
-        map.value!.setView([vehicle.latitude, vehicle.longitude], 17)
-      })
+      try {
+        clusterGroup.zoomToShowLayer(marker, () => {
+          if (map.value) {
+            map.value.setView([vehicle.latitude, vehicle.longitude], 17)
+          }
+        })
+      } catch (e) {
+        // Ignore errors if map was destroyed during animation
+      }
     }
   }
 }
 
 const setUserLocation = (lat: number, lng: number) => {
   userLocation.value = { lat, lng }
-  if (map.value) {
+  if (map.value && !map.value._animatingZoom) {
     if (userMarker) {
       try { userMarker.setLatLng([lat, lng]) } catch { }
     } else {
@@ -258,11 +272,25 @@ const destroyMap = () => {
     pollInterval = null
   }
   if (map.value) {
-    map.value.remove()
+    try {
+      // Stop any ongoing animations
+      map.value.stop()
+      // Remove all event listeners
+      map.value.off()
+      // Clear cluster group first
+      if (clusterGroup) {
+        clusterGroup.clearLayers()
+      }
+      // Remove the map
+      map.value.remove()
+    } catch (e) {
+      // Ignore errors during cleanup
+    }
     map.value = null
   }
   markers.clear()
   clusterGroup = null
+  userMarker = null
   selectedVehicle.value = null
 }
 

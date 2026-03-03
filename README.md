@@ -160,9 +160,9 @@ src/
 ### Rutas Públicas
 | Ruta | Componente | Descripción |
 |------|------------|-------------|
+| `/map` | PublicMapPage | Mapa público de vehículos |
 | `/login` | LoginPage | Formulario de login |
 | `/register` | RegisterPage | Formulario de registro |
-| `/map` | PublicMapPage | Mapa público de vehículos |
 
 ### Rutas Usuario (requiere auth)
 | Ruta | Componente | Descripción |

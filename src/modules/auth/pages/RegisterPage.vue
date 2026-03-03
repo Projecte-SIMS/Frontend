@@ -3,8 +3,8 @@
     <div class="sm:mx-auto sm:w-full sm:max-w-md shrink-0">
       <!-- Logo -->
       <div class="flex justify-center mb-4">
-        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 to-purple-700 shadow-xl shadow-indigo-500/30">
-          <span class="text-xl font-bold text-white">S</span>
+        <div class="h-10 w-10 rounded-2xl bg-white p-1 shadow-xl shadow-indigo-500/30">
+          <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
         </div>
       </div>
       <h2 class="text-center text-2xl font-black tracking-tight text-gray-900 dark:text-white leading-none">Crear cuenta</h2>

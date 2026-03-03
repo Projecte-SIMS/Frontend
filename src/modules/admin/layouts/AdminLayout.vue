@@ -21,8 +21,8 @@
 
               <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 dark:bg-gray-900">
                 <div class="flex h-16 shrink-0 items-center gap-3">
-                  <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
-                    <span class="text-xl font-bold text-white">S</span>
+                  <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-md">
+                    <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
                   </div>
                   <span class="text-xl font-bold text-gray-900 dark:text-white">SIMS Admin</span>
                 </div>
@@ -54,8 +54,8 @@
     <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
       <div class="flex grow flex-col gap-y-5 border-r border-gray-200 bg-white px-6 pb-4 dark:border-gray-800 dark:bg-gray-900 overflow-visible">
         <div class="flex h-16 shrink-0 items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600">
-            <span class="text-xl font-bold text-white">S</span>
+          <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-md">
+            <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
           </div>
           <span class="text-xl font-bold text-gray-900 dark:text-white">SIMS Admin</span>
         </div>
@@ -94,8 +94,8 @@
         <Bars3Icon class="size-6" aria-hidden="true" />
       </button>
       <div class="flex-1 flex items-center gap-2 text-left">
-        <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
-          <span class="text-sm font-bold text-white">S</span>
+        <div class="h-8 w-8 rounded-lg bg-white p-0.5 shadow-sm">
+          <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
         </div>
         <span class="text-sm font-semibold text-gray-900 dark:text-white text-left">SIMS Admin</span>
       </div>

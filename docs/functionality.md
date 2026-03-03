@@ -183,10 +183,15 @@ POST /api/reservations/{id}/off
 
 | Ruta | Meta | Comportamiento |
 |------|------|----------------|
-| `/map` | `requiresAuth: false` | Acceso público |
+| `/map` | `requiresAuth: false` | Mapa público de vehículos |
 | `/login` | - | Redirige a /admin si autenticado |
 | `/register` | - | Redirige a /admin si autenticado |
-| `/*` | `requiresAuth: true` | Requiere login |
+| `/` | `requiresAuth: true` | Home (requiere login) |
+| `/vehicles/*` | `requiresAuth: true` | Requiere login |
+| `/bookings` | `requiresAuth: true` | Requiere login |
+| `/tickets/*` | `requiresAuth: true` | Requiere login |
+| `/chatbot` | `requiresAuth: true` | Requiere login |
+| `/perfil/*` | `requiresAuth: true` | Requiere login |
 | `/admin/*` | `requiresAuth: true` | Requiere login + rol Admin |
 
 ---

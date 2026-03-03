@@ -8,8 +8,8 @@
           <!-- Logo y Navegación Desktop -->
           <div class="flex items-center gap-8">
             <router-link to="/" class="flex items-center gap-2.5 group transition-transform active:scale-95">
-              <div class="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <span class="text-lg font-bold text-white">S</span>
+              <div class="h-9 w-9 rounded-xl bg-white p-1 shadow-lg shadow-indigo-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
               </div>
               <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">SIMS</span>
             </router-link>
