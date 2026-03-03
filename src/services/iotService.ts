@@ -49,7 +49,7 @@ export const iotService = {
    * Verificar estado del microservicio IoT
    */
   async healthCheck(): Promise<{ ok: boolean; microservice: string }> {
-    const response = await api.get('/iot/health')
+    const response = await api.get('/admin/iot/health')
     return response.data
   },
 
