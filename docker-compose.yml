@@ -1,24 +1,32 @@
 services:
-  # Entorno de desarrollo
-  web-dev:
+  # Entorno de Desarrollo (Vite + HMR)
+  frontend-dev:
     build:
       context: .
       target: development
-    container_name: project-sims-frontend-dev
+    container_name: sims-frontend-dev
     ports:
       - "5173:5173"
     volumes:
       - .:/app
-      - node_modules:/app/node_modules
+      - /app/node_modules
     environment:
       - NODE_ENV=development
-    command: npm run dev -- --host 0.0.0.0
+      - VITE_API_URL=${VITE_API_URL:-http://localhost:8000/api}
     networks:
-      - app-network
+      - frontend-network
 
-volumes:
-  node_modules:
+  # Entorno de Producción (Nginx)
+  frontend-prod:
+    build:
+      context: .
+      target: production
+    container_name: sims-frontend-prod
+    ports:
+      - "8080:80"
+    networks:
+      - frontend-network
 
 networks:
-  app-network:
+  frontend-network:
     driver: bridge

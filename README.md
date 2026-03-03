@@ -224,11 +224,26 @@ npm run dev
 npm run build
 ```
 
-### Docker
+### Docker (Despliegue Unificado)
+
+El frontend está totalmente integrado en el ecosistema Docker del proyecto. Para levantarlo junto con el backend desde la raíz:
+
 ```bash
-docker build -t sims-frontend:latest .
-docker run -d -p 80:80 sims-frontend:latest
+docker compose up -d --build
 ```
+
+### Docker (Despliegue Independiente)
+
+Este repositorio incluye su propio `docker-compose.yml` para levantar el frontend de forma aislada:
+
+```bash
+# Dentro de la carpeta project-sims-frontend/
+docker compose up -d --build
+```
+
+**Modos de uso:**
+- **Desarrollo:** Acceso en [http://localhost:5173](http://localhost:5173). Incluye HMR (recarga en tiempo real al editar código).
+- **Producción:** Imagen optimizada con Nginx disponible en el puerto **8080** ([http://localhost:8080](http://localhost:8080)).
 
 ---
 
