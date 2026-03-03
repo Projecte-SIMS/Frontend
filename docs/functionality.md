@@ -1,57 +1,192 @@
 # Especificaciones Funcionales y Perfiles de Usuario (Sprint 5)
 
+**Última actualización:** 2026-03-03
+
 Este documento detalla las capacidades operativas reales de la plataforma SIMS, desglosadas por perfiles de acceso y módulos críticos.
+
+---
 
 ## 1. Perfiles de Usuario y Capacidades
 
-### Admin (Administrador)
-El acceso administrativo se centraliza en el **Admin Dashboard**, que ofrece:
-- **Gestión de Usuarios (`/admin/users`)**: Control de cuentas, perfiles y estados de activación.
-- **Gestión de Roles (`/admin/roles`)**: Sistema granular de permisos agrupados por módulos (ej. `users`, `vehicles`, `bookings`).
-- **Gestión de Flota (`/admin/vehicles`)**: CRUD completo de vehículos incluyendo matrícula, marca, modelo y estado operativo (`active`).
-- **Control de Reservas (`/admin/bookings`)**: Historial y gestión de alquileres en tiempo real.
-- **Soporte Técnico (`/admin/tickets`)**: Resolución de incidencias mediante un sistema de conversación directa.
+### 1.1. Admin (Administrador)
 
-### Client (Usuario Final)
+El acceso administrativo se centraliza en el **Admin Dashboard** (`/admin`):
+
+| Módulo | Ruta | Funcionalidades |
+|--------|------|-----------------|
+| Dashboard | `/admin` | Vista general del sistema |
+| Usuarios | `/admin/users` | CRUD completo, activar/desactivar cuentas |
+| Roles | `/admin/roles` | Crear, editar roles y asignar permisos |
+| Vehículos | `/admin/vehicles` | CRUD flota, ver estado IoT |
+| Mapa | `/admin/map` | Mapa con telemetría en tiempo real |
+| Fleet Health | `/admin/fleet-health` | Estado de salud de la flota |
+| IoT Devices | `/admin/iot-devices` | Gestión de dispositivos IoT |
+| Reservas | `/admin/bookings` | Ver todas las reservas, forzar finalización |
+| Tickets | `/admin/tickets` | Responder tickets de soporte |
+
+### 1.2. Client (Usuario Final)
+
 Interfaz optimizada para la movilidad y la inmediatez:
-- **Mapa Interactivo (`/vehicles/map`)**: Localización de vehículos mediante Leaflet con indicadores de disponibilidad.
-- **Home Proactiva (`/`)**: Sugerencia de vehículos cercanos calculada mediante algoritmos de distancia geodésica.
-- **Autogestión de Reservas (`/bookings`)**: Consulta de estados y tiempos de alquiler.
-- **Soporte y Ayuda**: Acceso a tickets de soporte (`/tickets`) y al Asistente AI (`/chatbot`).
 
-### Maintenance (Mantenimiento)
+| Módulo | Ruta | Funcionalidades |
+|--------|------|-----------------|
+| Home | `/` | Sugerencias de vehículos cercanos |
+| Vehículos | `/vehicles` | Lista de vehículos disponibles |
+| Mapa | `/vehicles/map` | Localización con Leaflet |
+| Reservas | `/bookings` | Ver mis reservas, activar, cancelar, finalizar |
+| Control | `/active-vehicle` | Encender/apagar vehículo activo |
+| Tickets | `/tickets` | Crear y gestionar tickets de soporte |
+| Chatbot | `/chatbot` | Asistente IA con contexto de cliente |
+| Perfil | `/perfil` | Ver y editar mi perfil |
+
+### 1.3. Maintenance (Mantenimiento)
+
 Permisos específicos para gestión técnica:
-- **Ver vehículos**: Acceso a listado de flota.
-- **Gestionar vehículos**: Actualizar estado técnico y disponibilidad.
+
+- **Ver vehículos**: Acceso a listado de flota
+- **Gestionar vehículos**: Actualizar estado técnico y disponibilidad
+- **Chatbot**: Contexto especializado en mantenimiento
+
+---
 
 ## 2. Módulos y Flujos Críticos
 
-### 2.1. Gestión de Flota y Estados
-Los vehículos en SIMS mantienen un estado de actividad dual:
-- **`active` (PostgreSQL)**: Define si el vehículo está en uso (reserva activa).
-- **`mongo_active` (MongoDB)**: Estado dinámico en tiempo real desde telemetría IoT.
+### 2.1. Flujo de Reserva
 
-### 2.2. Sistema de Ayuda con IA (Chatbot)
-El chatbot (`ChatbotPage.vue`) proporciona asistencia personalizada:
-1. Recibe el historial de mensajes (roles: `user`, `assistant`).
-2. El backend inyecta un prompt de sistema según el rol del usuario.
-3. Consulta el endpoint `/api/chatbot/chat`.
-4. Responde con contexto adaptado al perfil del usuario.
+```
+1. Usuario ve mapa de vehículos → /vehicles/map
+2. Selecciona vehículo disponible
+3. Confirma reserva (ReservationConfirmModal)
+4. Estado: "pending"
+5. Activa reserva → Estado: "active"
+6. Puede encender/apagar vehículo → /active-vehicle
+7. Finaliza reserva (FinishTripConfirmModal)
+8. Ve resumen (TripSummaryModal)
+9. Estado: "completed"
+```
 
-**Nota:** No es un sistema RAG puro con retrieval de documentos. Es un chatbot con contexto por rol.
+### 2.2. Control de Vehículos IoT
 
-### 2.3. Gestión de Soporte
-El flujo de tickets permite una comunicación bidireccional entre el cliente y el administrador, asegurando que cada incidencia tenga un seguimiento trazable desde su creación (`/tickets/create`) hasta su cierre.
+Desde `ActiveVehicleControlPage.vue`:
 
-## 3. Rutas Protegidas
+```typescript
+// Encender vehículo de reserva activa
+POST /api/reservations/{id}/on
 
-| Ruta | Acceso | Middleware |
-|------|--------|------------|
-| `/` | Todos | `requiresAuth` |
-| `/vehicles/*` | Todos | `requiresAuth` |
-| `/bookings` | Todos | `requiresAuth` |
-| `/tickets/*` | Todos | `requiresAuth` |
-| `/chatbot` | Todos | `requiresAuth` |
-| `/admin/*` | Solo Admin | `requiresAuth` + rol Admin |
+// Apagar vehículo de reserva activa
+POST /api/reservations/{id}/off
+```
+
+### 2.3. Sistema de Tickets
+
+```
+1. Usuario crea ticket → /tickets/create
+2. Admin ve ticket en → /admin/tickets
+3. Admin responde
+4. Usuario ve respuesta en → /tickets/:id
+5. Conversación continúa hasta cierre
+```
+
+### 2.4. Chatbot con IA
+
+`ChatbotPage.vue` envía mensajes a `/api/chatbot/chat`. El backend inyecta contexto según rol:
+
+| Rol | Contexto |
+|-----|----------|
+| Admin | Gestión de sistema, usuarios, flota |
+| Client | Reservas, uso del servicio, dudas |
+| Maintenance | Procedimientos técnicos, mantenimiento |
+
+**Nota:** No es RAG puro. Es un proxy a LLM con contexto inyectado.
+
+---
+
+## 3. Páginas por Módulo
+
+### Auth
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Login | `LoginPage.vue` | Formulario de login |
+| Registro | `RegisterPage.vue` | Formulario de registro |
+| Dashboard | `DashboardPage.vue` | Panel de usuario |
+| Editar Perfil | `EditProfilePage.vue` | Modificar datos |
+
+### Common
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Home | `HomePage.vue` | Página principal |
+| Mapa | `MapPage.vue` | Mapa autenticado |
+| Mapa Público | `PublicMapPage.vue` | Mapa sin login |
+| Vehículos | `VehiclesListPage.vue` | Lista de vehículos |
+| Chatbot | `ChatbotPage.vue` | Asistente IA |
+| 404 | `NotFoundPage.vue` | Página no encontrada |
+
+### Bookings
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Lista | `BookingsList.vue` | Mis reservas |
+| Control | `ActiveVehicleControlPage.vue` | On/off vehículo |
+
+### Tickets
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Lista | `TicketsPage.vue` | Mis tickets |
+| Crear | `CreateTicketPage.vue` | Nuevo ticket |
+| Conversación | `TicketConversationPage.vue` | Ver mensajes |
+
+### Admin
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Dashboard | `AdminDashboardPage.vue` | Vista general |
+| Mapa | `VehicleMapPage.vue` | Mapa con telemetría |
+| Fleet Health | `FleetHealthPage.vue` | Salud de flota |
+| IoT Devices | `IoTDevicesPage.vue` | Dispositivos IoT |
+
+### Admin > Users
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Lista | `UserPage.vue` | CRUD usuarios |
+| Detalle | `UserDetailPage.vue` | Ver usuario |
+| Formulario | `UserFormPage.vue` | Crear/editar |
+
+### Admin > Vehicles
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Lista | `VehiclesPage.vue` | CRUD vehículos |
+| Detalle | `ShowVehiclePage.vue` | Ver vehículo |
+| Crear | `CreateVehiclePage.vue` | Nuevo vehículo |
+| Editar | `EditVehiclePage.vue` | Modificar |
+
+### Admin > Roles
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Lista | `RolePage.vue` | CRUD roles |
+| Detalle | `RoleDetailPage.vue` | Ver rol |
+| Formulario | `RoleFormPage.vue` | Crear/editar |
+
+### Admin > Bookings
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Lista | `BookingsPage.vue` | Todas las reservas |
+| Detalle | `BookingDetailPage.vue` | Ver reserva |
+| Formulario | `BookingFormPage.vue` | Editar reserva |
+
+### Admin > Tickets
+| Página | Archivo | Descripción |
+|--------|---------|-------------|
+| Lista | `TicketsPage.vue` | Todos los tickets |
+| Detalle | `TicketDetailPage.vue` | Responder ticket |
+
+---
+
+## 4. Rutas Protegidas (Router Guards)
+
+| Ruta | Meta | Comportamiento |
+|------|------|----------------|
+| `/map` | `requiresAuth: false` | Acceso público |
+| `/login` | - | Redirige a /admin si autenticado |
+| `/register` | - | Redirige a /admin si autenticado |
+| `/*` | `requiresAuth: true` | Requiere login |
+| `/admin/*` | `requiresAuth: true` | Requiere login + rol Admin |
 
 ---
