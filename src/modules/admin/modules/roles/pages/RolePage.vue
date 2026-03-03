@@ -3,32 +3,35 @@
     <!-- Header -->
     <PageHeading
       title="Roles"
-      description="Manage roles and permissions"
+      description="Gestión de roles y permisos"
     >
       <template #actions>
         <router-link
           to="/admin/roles/create"
           class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Add role
+          Añadir rol
         </router-link>
       </template>
     </PageHeading>
 
-    <!-- Filters -->
-    <div class="mt-6">
+    <!-- Filters and Stats -->
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <input
         v-model="filters.search"
         @input="handleSearch"
         type="text"
-        placeholder="Search by role name..."
-        class="block w-full max-w-md rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+        placeholder="Buscar por nombre del rol..."
+        class="block w-full max-w-md rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
       />
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        {{ pagination.total }} roles
+      </p>
     </div>
 
     <!-- Loading state -->
     <div v-if="loading" class="mt-8 text-center text-gray-500 dark:text-gray-400">
-      Loading roles...
+      Cargando roles...
     </div>
 
     <!-- Error state -->
@@ -43,15 +46,22 @@
       :empty="!roles"
     >
       <template #empty>
-        No roles available
+        No hay roles disponibles
       </template>
 
-      <tr v-for="role in roles" :key="role.id">
+      <tr v-for="role in roles" :key="role.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
         <AdminTd first variant="primary">
-          {{ role.name }}
+          <div class="flex items-center gap-3">
+            <div class="h-9 w-9 rounded-full bg-purple-100 text-purple-600 dark:bg-purple-900/30 dark:text-purple-400 flex items-center justify-center">
+              <span class="material-icons text-lg">shield</span>
+            </div>
+            <span class="font-medium">{{ role.name }}</span>
+          </div>
         </AdminTd>
         <AdminTd variant="muted">
-          {{ role.permissions?.length || 0 }}
+          <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400">
+            {{ role.permissions?.length || 0 }} permisos
+          </span>
         </AdminTd>
         <AdminTd variant="muted">
           {{ formatDate(role.created_at) }}
@@ -64,28 +74,28 @@
             <button
               class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
               @click="navigateToDetail(role)"
-              title="View"
+              title="Ver"
             >
               <span class="material-icons text-xl">visibility</span>
-              <span class="sr-only">View, {{ role.name }}</span>
+              <span class="sr-only">Ver, {{ role.name }}</span>
             </button>
             <button
               v-if="role.name.toLowerCase() !== 'admin'"
               class="text-purple-600 hover:text-purple-900 dark:text-purple-400 dark:hover:text-purple-300 transition-colors"
               @click="navigateToEdit(role)"
-              title="Edit"
+              title="Editar"
             >
               <span class="material-icons text-xl">edit</span>
-              <span class="sr-only">Edit, {{ role.name }}</span>
+              <span class="sr-only">Editar, {{ role.name }}</span>
             </button>
             <button
               v-if="role.name.toLowerCase() !== 'admin'"
               class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 transition-colors"
               @click="openDeleteModal(role)"
-              title="Delete"
+              title="Eliminar"
             >
               <span class="material-icons text-xl">delete</span>
-              <span class="sr-only">Delete, {{ role.name }}</span>
+              <span class="sr-only">Eliminar, {{ role.name }}</span>
             </button>
           </div>
         </AdminTd>
@@ -127,11 +137,11 @@ const { roles, loading, error, pagination, getRoles } = useRoles()
 const roleToDelete = ref<Role | null>(null)
 
 const columns = [
-  { key: 'name', label: 'Name' },
-  { key: 'permissions', label: 'Permissions' },
-  { key: 'created_at', label: 'Created at' },
-  { key: 'updated_at', label: 'Updated at' },
-  { key: 'actions', label: 'Actions', srOnly: true },
+  { key: 'name', label: 'Nombre' },
+  { key: 'permissions', label: 'Permisos' },
+  { key: 'created_at', label: 'Creado' },
+  { key: 'updated_at', label: 'Actualizado' },
+  { key: 'actions', label: 'Acciones', srOnly: true },
 ]
 
 const filters = ref<RoleFilters>({

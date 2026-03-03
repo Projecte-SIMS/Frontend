@@ -103,7 +103,7 @@
             <div class="flex flex-col sm:flex-row h-full text-white text-left">
               <!-- Left: Image -->
               <div class="w-full sm:w-[35%] h-24 sm:h-auto bg-gray-800 relative">
-                <img :src="'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'" class="size-full object-cover opacity-80" />
+                <img :src="getVehicleImage(selectedVehicle.brand, selectedVehicle.model)" class="size-full object-cover opacity-80" />
               </div>
 
               <!-- Right: Content -->
@@ -161,6 +161,7 @@ import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
 import ReservationConfirmModal from '@/modules/common/components/ReservationConfirmModal.vue'
 import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import {
   MagnifyingGlassIcon,
   MapPinIcon,
@@ -408,5 +409,22 @@ onUnmounted(() => { destroyMap() })
 :deep(.cluster-icon-parent) {
   background: transparent !important;
   border: none !important;
+}
+
+/* Smooth marker transitions during zoom */
+:deep(.leaflet-marker-icon) {
+  transition: none !important;
+}
+
+:deep(.leaflet-zoom-animated) {
+  will-change: transform;
+}
+
+:deep(.leaflet-marker-pane) {
+  will-change: transform;
+}
+
+:deep(.markercluster-map .leaflet-marker-icon) {
+  transition: none !important;
 }
 </style>

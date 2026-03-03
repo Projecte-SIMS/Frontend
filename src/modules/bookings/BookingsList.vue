@@ -57,8 +57,8 @@
             </div>
 
             <div class="flex items-start gap-6 mb-8 relative z-10">
-              <div class="size-20 rounded-3xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400 group-hover:scale-105 transition-transform duration-500 shadow-inner">
-                <TruckIcon class="size-10" />
+              <div class="size-20 rounded-3xl bg-gray-50 dark:bg-gray-800 overflow-hidden group-hover:scale-105 transition-transform duration-500 shadow-inner">
+                <img :src="getVehicleImage(booking.vehicle?.brand, booking.vehicle?.model)" class="size-full object-cover" alt="Vehículo" />
               </div>
               <div class="text-left flex-1 min-w-0">
                 <h3 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight truncate leading-none mb-2">{{ booking.vehicle?.brand }} {{ booking.vehicle?.model }}</h3>
@@ -135,8 +135,8 @@
                 <tr v-for="booking in pastBookings" :key="booking.id" class="hover:bg-gray-50/50 dark:hover:bg-gray-800/50 transition-colors">
                   <td class="px-8 py-5">
                     <div class="flex items-center gap-4 text-left">
-                      <div class="size-10 rounded-xl bg-gray-50 dark:bg-gray-800 flex items-center justify-center text-gray-400">
-                        <TruckIcon class="size-5" />
+                      <div class="size-10 rounded-xl bg-gray-50 dark:bg-gray-800 overflow-hidden">
+                        <img :src="getVehicleImage(booking.vehicle?.brand, booking.vehicle?.model)" class="size-full object-cover" alt="Vehículo" />
                       </div>
                       <div class="min-w-0">
                         <p class="font-black text-gray-900 dark:text-white truncate">{{ booking.vehicle?.model }}</p>
@@ -175,6 +175,7 @@ import { onMounted, onUnmounted, computed } from 'vue'
 import useBookingsUser from './composables/useBookingsUser'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import {
   MapIcon,
   ArrowPathIcon,

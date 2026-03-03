@@ -32,9 +32,9 @@
       <div class="absolute -right-20 -top-20 size-64 rounded-full bg-indigo-600/20 blur-3xl"></div>
       <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
         <div class="flex items-center gap-6">
-          <div class="size-20 rounded-[1.5rem] bg-white/5 backdrop-blur-xl flex items-center justify-center border border-white/10 shadow-inner group shrink-0">
-            <TruckIcon class="size-10 text-indigo-400 group-hover:scale-110 transition-transform duration-500" />
-          </div>
+          <div class="size-20 rounded-[1.5rem] bg-white/5 backdrop-blur-xl overflow-hidden border border-white/10 shadow-inner group shrink-0">
+                <img :src="getVehicleImage(activeBooking.vehicle?.brand, activeBooking.vehicle?.model)" class="size-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Vehículo" />
+              </div>
           <div class="text-left min-w-0">
             <div class="flex items-center gap-3 mb-1">
               <span class="px-2 py-0.5 rounded-lg bg-green-500 text-white text-[8px] font-black uppercase tracking-widest">Activo</span>
@@ -205,6 +205,7 @@ import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
 import FinishTripConfirmModal from '@/modules/common/components/FinishTripConfirmModal.vue'
 import TripSummaryModal from '@/modules/common/components/TripSummaryModal.vue'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import {
   TruckIcon,
   PlayIcon,

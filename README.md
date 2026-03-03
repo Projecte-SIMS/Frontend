@@ -16,6 +16,7 @@ SIMS es una plataforma avanzada diseñada para la gestión de servicios de movil
 
 | Documento | Descripción |
 |-----------|-------------|
+| [**Manual de Usuario**](docs/MANUAL_USUARIO.md) | Guía completa por rol |
 | [Guía de Despliegue](docs/deployment.md) | Instalación y despliegue |
 | [Arquitectura Técnica](docs/architecture.md) | Stack tecnológico y decisiones |
 | [Catálogo de Componentes](docs/components.md) | Librería de UI personalizada |

@@ -18,19 +18,19 @@
 
     <!-- Filters -->
     <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <div class="flex gap-4 w-full sm:w-auto">
+      <div class="flex flex-wrap items-center gap-3">
         <input
           v-model="filters.search"
           @input="handleSearch"
           type="text"
           placeholder="Buscar por usuario, email o matrícula..."
-          class="block w-full max-w-md rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+          class="block w-full sm:w-72 rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
         />
 
         <select
           v-model="filters.status"
           @change="handleStatusChange"
-          class="block w-full sm:w-48 rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+          class="rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
         >
           <option value="">Todos los estados</option>
           <option value="active">Activo</option>
@@ -41,9 +41,17 @@
         </select>
       </div>
 
-      <p class="text-sm text-gray-500 dark:text-gray-400">
-        {{ pagination.total }} reservas
-      </p>
+      <div class="flex items-center gap-4 text-sm">
+        <span class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-green-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">{{ activeCount }} activas</span>
+        </span>
+        <span class="flex items-center gap-2">
+          <span class="h-2 w-2 rounded-full bg-yellow-500"></span>
+          <span class="text-gray-600 dark:text-gray-400">{{ pendingCount }} pendientes</span>
+        </span>
+        <span class="text-gray-500 dark:text-gray-400">{{ pagination.total }} total</span>
+      </div>
     </div>
 
     <!-- Creation form (modal) -->
@@ -113,10 +121,10 @@
         No hay reservas disponibles
       </template>
 
-      <tr v-for="booking in bookings" :key="booking.id">
+      <tr v-for="booking in bookings" :key="booking.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
         <AdminTd first variant="primary">
           <div class="flex items-center gap-3">
-            <div class="h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-bold">
+            <div class="h-10 w-10 rounded-full bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 flex items-center justify-center text-sm font-bold">
               {{ getInitials(booking.user?.name || `U${booking.user_id ?? ''}`) }}
             </div>
             <div>
@@ -136,12 +144,23 @@
         </AdminTd>
 
         <AdminTd variant="muted">
-          <div v-if="booking.vehicle">
-            <div class="text-sm text-gray-900 dark:text-white">
-              {{ booking.vehicle.brand }} {{ booking.vehicle.model }}
+          <div v-if="booking.vehicle" class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+              <img 
+                v-if="booking.vehicle.image_url" 
+                :src="booking.vehicle.image_url" 
+                :alt="booking.vehicle.brand + ' ' + booking.vehicle.model"
+                class="h-full w-full object-cover"
+              />
+              <span v-else class="material-icons text-gray-400">directions_car</span>
             </div>
-            <div class="text-xs font-mono text-gray-500 dark:text-gray-400">
-              {{ booking.vehicle.license_plate }}
+            <div>
+              <div class="text-sm text-gray-900 dark:text-white">
+                {{ booking.vehicle.brand }} {{ booking.vehicle.model }}
+              </div>
+              <div class="text-xs font-mono text-gray-500 dark:text-gray-400">
+                {{ booking.vehicle.license_plate }}
+              </div>
             </div>
           </div>
           <div v-else>
@@ -168,7 +187,7 @@
         <AdminTd variant="muted">
           <span
             :class="[
-              'inline-flex rounded-full px-2 py-1 text-xs font-semibold uppercase tracking-wider',
+              'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium uppercase tracking-wider',
               getStatusClasses(booking.status),
             ]"
           >
@@ -219,7 +238,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useBookings } from '../composables/useBookings'
 import type { Booking, BookingFilters, BookingCreatePayload } from '../interfaces/booking.interface'
@@ -236,6 +255,9 @@ const router = useRouter()
 const { bookings, loading, error, pagination, getBookings, deleteBooking, createBooking } = useBookings()
 
 const { success: toastSuccess, error: toastError } = useToast()
+
+const activeCount = computed(() => bookings.value.filter(b => b.status === 'active').length)
+const pendingCount = computed(() => bookings.value.filter(b => b.status === 'pending').length)
 
 const columns = [
   { key: 'guest', label: 'Usuario' },

@@ -26,7 +26,7 @@
                 <!-- Vehicle Brief -->
                 <div v-if="vehicle" class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-5 border border-gray-100 dark:border-gray-700/50 mb-8 flex items-center gap-5">
                   <div class="size-20 rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-700 shrink-0">
-                    <img :src="'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=400'" class="size-full object-cover" />
+                    <img :src="getVehicleImage(vehicle.brand, vehicle.model)" class="size-full object-cover" />
                   </div>
                   <div class="min-w-0">
                     <h4 class="text-lg font-bold text-gray-900 dark:text-white truncate">{{ vehicle.brand }} {{ vehicle.model }}</h4>
@@ -100,6 +100,7 @@ import {
   CurrencyEuroIcon,
   ArrowPathIcon
 } from '@heroicons/vue/24/outline'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 
 defineProps<{
   isOpen: boolean

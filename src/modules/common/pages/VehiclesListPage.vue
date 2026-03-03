@@ -125,7 +125,7 @@
         <!-- Vehicle Image & Badges -->
         <div class="relative aspect-[16/10] bg-gray-100 dark:bg-gray-800 overflow-hidden">
           <img 
-            :src="vehicle.image || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'" 
+            :src="getVehicleImage(vehicle.brand, vehicle.model)" 
             class="size-full object-cover group-hover:scale-105 transition-transform duration-500"
             alt="Vehículo"
           />
@@ -206,7 +206,7 @@
         <div class="flex-1 overflow-y-auto">
           <!-- Imagen del vehículo -->
           <div class="relative h-48 bg-gradient-to-br from-gray-800 to-gray-900">
-            <img :src="'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'" class="size-full object-cover opacity-80" />
+            <img :src="getVehicleImage(selectedVehicle?.brand, selectedVehicle?.model)" class="size-full object-cover opacity-80" />
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
             <div class="absolute bottom-4 left-4 right-4">
               <h3 class="text-2xl font-black text-white leading-none">{{ selectedVehicle?.brand }} {{ selectedVehicle?.model }}</h3>
@@ -300,6 +300,7 @@ import {
   MagnifyingGlassIcon,
   EyeIcon
 } from '@heroicons/vue/24/outline'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 
 const router = useRouter()
 const vehicles = ref<any[]>([])

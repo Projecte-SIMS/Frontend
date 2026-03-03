@@ -15,15 +15,29 @@
       </template>
     </PageHeading>
 
-    <!-- Filters -->
-    <div class="mt-6">
-      <input
-        v-model="filters.search"
-        @input="handleSearch"
-        type="text"
-        placeholder="Buscar por matrícula, marca o modelo..."
-        class="block w-full max-w-md rounded-md border-0 px-3 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
-      />
+    <!-- Filters and Stats -->
+    <div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-wrap items-center gap-3">
+        <input
+          v-model="filters.search"
+          @input="handleSearch"
+          type="text"
+          placeholder="Buscar por matrícula, marca o modelo..."
+          class="block w-full sm:w-72 rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+        />
+        <select
+          v-model="filters.status"
+          @change="handleStatusChange"
+          class="rounded-lg border-0 px-4 py-2.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm dark:bg-gray-800 dark:text-white dark:ring-gray-700"
+        >
+          <option value="">Todos los estados</option>
+          <option value="active">En uso</option>
+          <option value="available">Disponible</option>
+        </select>
+      </div>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        {{ pagination.total }} vehículos
+      </p>
     </div>
 
     <!-- Loading state -->
@@ -46,21 +60,49 @@
         No hay vehículos disponibles
       </template>
 
-      <tr v-for="vehicle in vehicles" :key="vehicle.id">
+      <tr v-for="vehicle in vehicles" :key="vehicle.id" class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
         <AdminTd first variant="muted">
           {{ vehicle.id }}
         </AdminTd>
         <AdminTd variant="primary">
-          {{ vehicle.license_plate }}
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+              <img 
+                v-if="vehicle.image_url" 
+                :src="vehicle.image_url" 
+                :alt="vehicle.brand + ' ' + vehicle.model"
+                class="h-full w-full object-cover"
+              />
+              <span v-else class="material-icons text-gray-400">directions_car</span>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900 dark:text-white">{{ vehicle.brand }} {{ vehicle.model }}</div>
+              <div class="text-xs font-mono text-gray-500 dark:text-gray-400">{{ vehicle.license_plate }}</div>
+            </div>
+          </div>
         </AdminTd>
         <AdminTd variant="muted">
-          {{ vehicle.brand || '-' }}
+          <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+            {{ vehicle.type || 'Estándar' }}
+          </span>
         </AdminTd>
         <AdminTd variant="muted">
-          {{ vehicle.model || '-' }}
+          <div class="flex items-center gap-2">
+            <span class="material-icons text-sm" :class="getBatteryColor(vehicle.battery_level)">battery_full</span>
+            <span>{{ vehicle.battery_level ?? '-' }}%</span>
+          </div>
         </AdminTd>
         <AdminTd variant="muted">
-          <StatusBadge :active="vehicle.active" active-text="Activo" inactive-text="Inactivo" />
+          <span
+            :class="[
+              'inline-flex items-center rounded-full px-2.5 py-1 text-xs font-medium',
+              vehicle.active 
+                ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' 
+                : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'
+            ]"
+          >
+            {{ vehicle.active ? 'En uso' : 'Disponible' }}
+          </span>
         </AdminTd>
         <AdminTd variant="actions">
           <div class="flex gap-2">
@@ -121,7 +163,6 @@ import AdminsTable from '@/modules/admin/components/AdminsTable.vue'
 import AdminTd from '@/modules/admin/components/AdminTd.vue'
 import AdminPagination from '@/modules/admin/components/AdminPagination.vue'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
-import StatusBadge from '@/modules/admin/components/StatusBadge.vue'
 import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 
 const { vehicles, loading, error, pagination, getVehicles, deleteVehicle } = useVehicles()
@@ -149,16 +190,24 @@ async function handleDelete() {
 
 const columns = [
   { key: 'id', label: 'ID' },
-  { key: 'license_plate', label: 'Matrícula' },
-  { key: 'brand', label: 'Marca' },
-  { key: 'model', label: 'Modelo' },
-  { key: 'active', label: 'Estado' },
+  { key: 'vehicle', label: 'Vehículo' },
+  { key: 'type', label: 'Tipo' },
+  { key: 'battery', label: 'Batería' },
+  { key: 'status', label: 'Estado' },
   { key: 'actions', label: 'Acciones', srOnly: true }
 ]
 
 const filters = ref<VehicleFilters>({
-  search: ''
+  search: '',
+  status: ''
 })
+
+const getBatteryColor = (level?: number) => {
+  if (!level) return 'text-gray-400'
+  if (level > 60) return 'text-green-500'
+  if (level > 30) return 'text-amber-500'
+  return 'text-red-500'
+}
 
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 
@@ -176,6 +225,11 @@ const handleSearch = () => {
     pagination.value.current_page = 1
     loadVehicles()
   }, 500)
+}
+
+const handleStatusChange = () => {
+  pagination.value.current_page = 1
+  loadVehicles()
 }
 
 const handlePageChange = (page: number) => {

@@ -334,4 +334,17 @@ onUnmounted(() => destroyMap())
   background: transparent !important;
   border: none !important;
 }
+
+/* Smooth marker transitions during zoom */
+:deep(.leaflet-marker-icon) {
+  transition: none !important;
+}
+
+:deep(.leaflet-zoom-animated) {
+  will-change: transform;
+}
+
+:deep(.leaflet-marker-pane) {
+  will-change: transform;
+}
 </style>

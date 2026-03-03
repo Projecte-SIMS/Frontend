@@ -6,13 +6,6 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.markercluster'
 import apiClient from '@/services/api'
 
-// Extend Leaflet Map type for internal properties
-declare module 'leaflet' {
-  interface Map {
-    _animatingZoom?: boolean
-  }
-}
-
 export interface Vehicle {
   id: number
   plate: string
@@ -139,7 +132,10 @@ const initMap = () => {
 
   map.value = L.map(mapContainer.value, {
     zoomControl: false,
-    preferCanvas: true
+    preferCanvas: true,
+    zoomAnimation: false,
+    fadeAnimation: false,
+    markerZoomAnimation: false
   }).setView([41.3851, 2.1734], 13)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -152,8 +148,13 @@ const initMap = () => {
   clusterGroup = L.markerClusterGroup({
     showCoverageOnHover: false,
     maxClusterRadius: 40,
-    animate: true,
-    animateAddingMarkers: true,
+    animate: false,
+    animateAddingMarkers: false,
+    disableClusteringAtZoom: 18,
+    spiderfyOnMaxZoom: true,
+    removeOutsideVisibleBounds: false,
+    chunkedLoading: false,
+    zoomToBoundsOnClick: true,
     iconCreateFunction: function(cluster: any) {
       const childCount = cluster.getChildCount();
       return L.divIcon({ 
@@ -191,7 +192,7 @@ const applyFiltersAndMarkers = () => {
 }
 
 const addVehicleMarkers = () => {
-  if (!map.value || !clusterGroup || map.value._animatingZoom) return
+  if (!map.value || !clusterGroup) return
 
   const visibleIds = new Set<number>()
 
@@ -199,13 +200,18 @@ const addVehicleMarkers = () => {
     if (v.latitude == null || v.longitude == null) return
     visibleIds.add(v.id)
 
-    const icon = createVehicleIcon(v)
-
     if (markers.has(v.id)) {
       const m = markers.get(v.id) as L.Marker
-      m.setLatLng([v.latitude, v.longitude])
+      const currentPos = m.getLatLng()
+      // Only update position if it changed significantly
+      if (Math.abs(currentPos.lat - v.latitude) > 0.00001 || Math.abs(currentPos.lng - v.longitude) > 0.00001) {
+        m.setLatLng([v.latitude, v.longitude])
+      }
+      // Update icon (status might have changed)
+      const icon = createVehicleIcon(v)
       m.setIcon(icon)
     } else {
+      const icon = createVehicleIcon(v)
       const marker = L.marker([v.latitude, v.longitude], { icon })
       marker.on('click', () => {
         selectedVehicle.value = v
@@ -225,7 +231,7 @@ const addVehicleMarkers = () => {
 }
 
 const centerOnVehicle = (vehicle: Vehicle) => {
-  if (map.value && clusterGroup && !map.value._animatingZoom) {
+  if (map.value && clusterGroup) {
     const marker = markers.get(vehicle.id)
     if (marker) {
       try {
@@ -235,7 +241,10 @@ const centerOnVehicle = (vehicle: Vehicle) => {
           }
         })
       } catch (e) {
-        // Ignore errors if map was destroyed during animation
+        // Fallback: just center the map
+        if (map.value) {
+          map.value.setView([vehicle.latitude, vehicle.longitude], 17)
+        }
       }
     }
   }
@@ -243,7 +252,7 @@ const centerOnVehicle = (vehicle: Vehicle) => {
 
 const setUserLocation = (lat: number, lng: number) => {
   userLocation.value = { lat, lng }
-  if (map.value && !map.value._animatingZoom) {
+  if (map.value) {
     if (userMarker) {
       try { userMarker.setLatLng([lat, lng]) } catch { }
     } else {

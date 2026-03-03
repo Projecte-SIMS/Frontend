@@ -18,6 +18,7 @@ export interface VehicleForm {
 export interface VehicleFilters {
   search?: string
   active?: boolean
+  status?: string
 }
 
 export interface VehiclePagination {
