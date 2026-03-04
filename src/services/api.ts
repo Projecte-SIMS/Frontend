@@ -1,29 +1,35 @@
 import axios from 'axios'
 import showToast from '@/modules/common/composables/useToast'
 
-// NOTE: previous comment contained Spanish/Catalan; translated to English
-// This file configures axios to use the API based on cookies.
-// If stronger security is required, httpOnly cookies would be preferable,
-// but then the frontend cannot access the token to add it to requests.
-// For now the token is read from cookies and added to request headers.
-// Improve security later as needed.
-
-// URL Base dinámica para multitenancy
+// Función para obtener la URL base de la API de forma dinámica
 const getBaseUrl = () => {
   const host = window.location.hostname
-  const subdomain = host.split('.')[0]
-  const envApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
-
-  // Si estamos en localhost (sin subdominio) o es el dominio principal, usamos la URL base del .env
-  if (subdomain === 'localhost' || subdomain === 'api' || host.split('.').length < 2) {
-    return envApiUrl
+  const parts = host.split('.')
+  const isLocal = host.includes('localhost') || host.includes('127.0.0.1')
+  
+  // URL base del backend en Render (SIN el /api al final para poder añadir el subdominio)
+  // IMPORTANTE: Cambia esto por tu URL real de Render si es distinta
+  const renderBaseUrl = 'sims-backend-api.onrender.com'
+  
+  // 1. Caso: Desarrollo Local (localhost)
+  if (isLocal) {
+    const subdomain = parts[0]
+    if (subdomain === 'localhost' || parts.length < 2) {
+      return 'http://localhost:8000/api'
+    }
+    return `http://${subdomain}.localhost:8000/api`
   }
 
-  // Si hay un subdominio (ej: 'cliente1'), construimos la URL dinámica:
-  // Ejemplo: http://cliente1.localhost:8000/api
-  const protocol = window.location.protocol
-  const port = '8000' // Puerto por defecto de tu Laravel en Docker
-  return `${protocol}//${subdomain}.localhost:${port}/api`
+  // 2. Caso: Producción (Vercel)
+  // Si la URL tiene más de 2 partes (ej: cliente1.frontend.vercel.app)
+  // El primer elemento es nuestro Tenant ID.
+  if (parts.length > 3 || (parts.length === 3 && !host.includes('vercel.app'))) {
+    const tenantId = parts[0]
+    return `https://${tenantId}.${renderBaseUrl}/api`
+  }
+
+  // 3. Caso: Dominio principal de Vercel (Sin tenant)
+  return `https://${renderBaseUrl}/api`
 }
 
 const apiClient = axios.create({
@@ -33,10 +39,9 @@ const apiClient = axios.create({
   }
 })
 
-// Interceptor to add token to all requests
+// Interceptor para añadir el token (mantenemos tu lógica original)
 apiClient.interceptors.request.use(
   (config) => {
-    // Get token from cookies
     const token = document.cookie
       .split('; ')
       .find((row) => row.startsWith('token='))
@@ -45,17 +50,13 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-
     return config
   },
   (error) => {
-    const msg = error?.message || 'Request error'
-    try {
-      showToast(msg)
-    } catch (e) {
-      console.error(e)
-    }
+    const msg = error?.message || 'Error en la petición'
+    try { showToast(msg) } catch (e) { console.error(e) }
     return Promise.reject(error)
   }
 )
+
 export default apiClient
