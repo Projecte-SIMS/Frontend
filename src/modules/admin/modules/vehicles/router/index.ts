@@ -24,5 +24,11 @@ export const vehicleRoutes: RouteRecordRaw[] = [
     name: 'AdminVehicleEdit',
     component: () => import('../pages/EditVehiclePage.vue'),
     meta: { requiresAuth: true, requiresAdmin: true }
+  },
+  {
+    path: 'vehicles/:id/control',
+    name: 'AdminVehicleControl',
+    component: () => import('../pages/VehicleControlPage.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]

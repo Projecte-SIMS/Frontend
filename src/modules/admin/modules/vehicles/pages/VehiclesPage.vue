@@ -68,12 +68,10 @@
           <div class="flex items-center gap-3">
             <div class="h-10 w-10 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
               <img 
-                v-if="vehicle.image_url" 
-                :src="vehicle.image_url" 
+                :src="getVehicleImage(vehicle.brand, vehicle.model)" 
                 :alt="vehicle.brand + ' ' + vehicle.model"
                 class="h-full w-full object-cover"
               />
-              <span v-else class="material-icons text-gray-400">directions_car</span>
             </div>
             <div>
               <div class="font-medium text-gray-900 dark:text-white">{{ vehicle.brand }} {{ vehicle.model }}</div>
@@ -106,6 +104,14 @@
         </AdminTd>
         <AdminTd variant="actions">
           <div class="flex gap-2">
+            <router-link
+              :to="`/admin/vehicles/${vehicle.id}/control`"
+              class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+              title="Consola de Control"
+            >
+              <span class="material-icons text-xl">settings_remote</span>
+              <span class="sr-only">Control, {{ vehicle.license_plate }}</span>
+            </router-link>
             <router-link
               :to="`/admin/vehicles/${vehicle.id}`"
               class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 transition-colors"
@@ -158,6 +164,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useVehicles } from '../composables/useVehicles'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import type { Vehicle, VehicleFilters } from '../interfaces/vehicle.interface'
 import AdminsTable from '@/modules/admin/components/AdminsTable.vue'
 import AdminTd from '@/modules/admin/components/AdminTd.vue'

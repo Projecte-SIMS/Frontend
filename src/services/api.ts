@@ -8,8 +8,26 @@ import showToast from '@/modules/common/composables/useToast'
 // For now the token is read from cookies and added to request headers.
 // Improve security later as needed.
 
+// URL Base dinámica para multitenancy
+const getBaseUrl = () => {
+  const host = window.location.hostname
+  const subdomain = host.split('.')[0]
+  const envApiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+
+  // Si estamos en localhost (sin subdominio) o es el dominio principal, usamos la URL base del .env
+  if (subdomain === 'localhost' || subdomain === 'api' || host.split('.').length < 2) {
+    return envApiUrl
+  }
+
+  // Si hay un subdominio (ej: 'cliente1'), construimos la URL dinámica:
+  // Ejemplo: http://cliente1.localhost:8000/api
+  const protocol = window.location.protocol
+  const port = '8000' // Puerto por defecto de tu Laravel en Docker
+  return `${protocol}//${subdomain}.localhost:${port}/api`
+}
+
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: getBaseUrl(),
   headers: {
     'Content-Type': 'application/json'
   }
