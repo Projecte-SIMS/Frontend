@@ -1,7 +1,7 @@
 import axios from 'axios'
 import showToast from '@/modules/common/composables/useToast'
 
-// URL Base de la API estándar (Vercel la leerá de VITE_API_URL)
+// Base URL de la API (Vercel la lee de VITE_API_URL en el panel)
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
   headers: {
@@ -9,9 +9,10 @@ const apiClient = axios.create({
   }
 })
 
-// Interceptor para añadir el token de las cookies
+// Interceptor to add token to all requests
 apiClient.interceptors.request.use(
   (config) => {
+    // Get token from cookies
     const token = document.cookie
       .split('; ')
       .find((row) => row.startsWith('token='))
