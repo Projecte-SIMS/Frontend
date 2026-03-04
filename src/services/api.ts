@@ -1,8 +1,7 @@
 import axios from 'axios'
 import showToast from '@/modules/common/composables/useToast'
 
-// URL Base de la API en Producción (Render) o Local
-// Usamos import.meta.env.VITE_API_URL que configuraste en Vercel
+// URL Base de la API estándar (Vercel la leerá de VITE_API_URL)
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
   headers: {
@@ -34,5 +33,4 @@ apiClient.interceptors.request.use(
     return Promise.reject(error)
   }
 )
-
 export default apiClient
