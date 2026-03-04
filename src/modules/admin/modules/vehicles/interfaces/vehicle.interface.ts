@@ -4,6 +4,10 @@ export interface Vehicle {
   brand: string | null
   model: string | null
   active: boolean
+  type?: string
+  battery_level?: number
+  image_url?: string
+  iot_device_id?: string
   created_at: string
   updated_at: string
 }
@@ -13,6 +17,7 @@ export interface VehicleForm {
   brand: string
   model: string
   active: boolean
+  iot_device_id?: string
 }
 
 export interface VehicleFilters {
