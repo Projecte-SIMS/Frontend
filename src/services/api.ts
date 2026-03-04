@@ -4,6 +4,7 @@ import showToast from '@/modules/common/composables/useToast'
 // Base URL de la API (Vercel la lee de VITE_API_URL en el panel)
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
