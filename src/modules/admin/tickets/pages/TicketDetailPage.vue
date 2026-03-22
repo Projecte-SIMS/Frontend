@@ -128,19 +128,17 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
-    <!-- Toast -->
-    <div 
-      v-if="toastMessage" 
-      class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 animate-fade-in"
-      :class="toastType === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'"
-    >
-      {{ toastMessage }}
-    </div>
-  </div>
-</template>
+<!-- Toast -->
+<div 
+  v-if="toastMessage" 
+  class="fixed bottom-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 animate-fade-in"
+  :class="toastType === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'"
+>
+  {{ toastMessage }}
+</div>
+
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
