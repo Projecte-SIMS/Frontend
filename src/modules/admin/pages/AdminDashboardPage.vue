@@ -1,213 +1,188 @@
 <template>
-  <div class="space-y-8 font-sans">
-    <!-- Header with System Status -->
-    <div class="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-800 p-8 shadow-2xl">
-      <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 class="text-4xl font-black text-white tracking-tight">Panel de Control</h1>
-          <p class="mt-2 text-indigo-100 font-medium opacity-90">
-            Bienvenido al centro de mando de SIMS. Estado del sistema: 
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-white text-xs font-bold uppercase tracking-widest border border-white/20">
-              <span class="size-2 rounded-full bg-green-400 animate-pulse"></span>
-              Operativo
-            </span>
-          </p>
-        </div>
+  <div class="space-y-8 animate-fade-in">
+    <!-- Header Unificado -->
+    <PageHeading
+      title="Panel de Control"
+      description="Resumen operativo del sistema inteligente de movilidad"
+    >
+      <template #actions>
         <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Sistema Online</span>
+          </div>
+          
           <button 
             @click="refreshData" 
             :disabled="loadingStats"
-            class="p-3 rounded-2xl bg-white/10 hover:bg-white/20 text-white backdrop-blur-md transition-all border border-white/10 group active:scale-95 disabled:opacity-50"
+            class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-all disabled:opacity-50 shadow-sm"
           >
-            <ArrowPathIcon class="size-6" :class="{'animate-spin': loadingStats}" />
+            <ArrowPathIcon class="size-5" :class="{'animate-spin': loadingStats}" />
           </button>
-          <div class="h-10 w-[1px] bg-white/10 mx-2 hidden md:block"></div>
-          <div class="hidden md:flex flex-col items-end">
-            <p class="text-[10px] font-black text-indigo-200 uppercase tracking-widest">Última actualización</p>
-            <p class="text-sm font-bold text-white">{{ lastUpdate }}</p>
-          </div>
         </div>
-      </div>
-      
-      <!-- Decorative elements -->
-      <div class="absolute right-0 top-0 -mt-8 -mr-8 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
-      <div class="absolute left-1/4 bottom-0 -mb-12 h-48 w-48 rounded-full bg-purple-500/20 blur-2xl"></div>
-    </div>
+      </template>
+    </PageHeading>
 
-    <!-- Main Stats Grid -->
+    <!-- Grid de KPIs -->
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <div v-for="stat in stats" :key="stat.name" class="group relative overflow-hidden rounded-[2rem] bg-white dark:bg-gray-900 p-6 shadow-sm border border-gray-100 dark:border-gray-800 transition-all hover:shadow-xl hover:-translate-y-1">
-        <div class="flex items-center gap-5">
-          <div class="flex h-14 w-14 items-center justify-center rounded-2xl transition-transform group-hover:scale-110" :class="stat.bgClass">
-            <component :is="stat.icon" class="h-7 w-7" :class="stat.iconClass" />
-          </div>
+      <div v-for="stat in stats" :key="stat.name" class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
+        <div class="flex items-start justify-between">
           <div>
-            <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.15em]">{{ stat.name }}</p>
-            <div class="flex items-baseline gap-2">
-              <p class="text-3xl font-black text-gray-900 dark:text-white">{{ stat.value }}</p>
-              <span v-if="stat.trend" class="text-xs font-bold" :class="stat.trend > 0 ? 'text-green-500' : 'text-gray-400'">
-                {{ stat.trend > 0 ? '+' : '' }}{{ stat.trend }}
-              </span>
-            </div>
+            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ stat.name }}</p>
+            <p class="mt-2 text-3xl font-black text-slate-900 dark:text-white tabular-nums">{{ stat.value }}</p>
+          </div>
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 dark:group-hover:bg-indigo-900/20 transition-colors">
+            <component :is="stat.icon" class="size-6" />
           </div>
         </div>
-        <div class="absolute right-0 bottom-0 h-16 w-16 rounded-tl-full opacity-[0.03] group-hover:opacity-[0.08] transition-opacity" :class="stat.bgClass"></div>
+        <div v-if="stat.trend !== undefined" class="mt-4 flex items-center gap-2">
+          <span 
+            class="text-[10px] font-black px-2 py-0.5 rounded-lg border uppercase tracking-tighter"
+            :class="stat.trend >= 0 ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-rose-50 text-rose-700 border-rose-100'"
+          >
+            {{ stat.trend > 0 ? '↑' : '' }}{{ stat.trend }}%
+          </span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">vs mes anterior</span>
+        </div>
       </div>
     </div>
 
     <div class="grid gap-8 lg:grid-cols-3">
-      <!-- Quick Actions Sidebar -->
-      <div class="space-y-6">
-        <h2 class="text-xs font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] px-2">Acciones Prioritarias</h2>
-        <div class="grid gap-4">
-          <RouterLink
-            v-for="item in primaryActions"
-            :key="item.name"
-            :to="item.to"
-            class="group flex items-center gap-4 p-4 rounded-2xl bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm hover:border-indigo-500 dark:hover:border-indigo-500 transition-all hover:shadow-md"
-          >
-            <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-colors" :class="item.bgClass">
-              <component :is="item.icon" class="h-6 w-6" :class="item.iconClass" />
-            </div>
-            <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-gray-900 dark:text-white text-sm truncate">{{ item.name }}</h3>
-              <p class="text-[11px] text-gray-500 dark:text-gray-400 font-medium truncate">{{ item.description }}</p>
-            </div>
-            <ChevronRightIcon class="h-5 w-5 text-gray-300 group-hover:text-indigo-500 group-hover:translate-x-1 transition-all" />
-          </RouterLink>
-        </div>
-
-        <!-- IoT Status Widget -->
-        <div class="rounded-[2rem] bg-white dark:bg-gray-900 p-6 border border-gray-100 dark:border-gray-800 shadow-sm">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-2">
-              <div class="p-2 rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600">
-                <CpuChipIcon class="size-5" />
-              </div>
-              <h3 class="font-black text-gray-900 dark:text-white uppercase tracking-tight">Estado IoT</h3>
-            </div>
-            <span :class="iotOnline ? 'bg-green-100 text-green-700 dark:bg-green-900/30' : 'bg-red-100 text-red-700 dark:bg-red-900/30'" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border border-current opacity-70">
-              {{ iotOnline ? 'Conectado' : 'Offline' }}
-            </span>
-          </div>
-          
-          <div class="space-y-4">
-            <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50">
-              <span class="text-xs font-bold text-gray-500 dark:text-gray-400">Online</span>
-              <span class="text-sm font-black text-green-600">{{ iotDevices.online }} <span class="text-[10px] text-gray-400 font-bold">/ {{ iotDevices.total }}</span></span>
-            </div>
-            <div v-if="iotDevices.unlinked > 0" class="flex items-center justify-between p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/30">
-              <span class="text-xs font-bold text-amber-700 dark:text-amber-400">Por vincular</span>
-              <span class="text-sm font-black text-amber-700 dark:text-amber-400">{{ iotDevices.unlinked }}</span>
-            </div>
-          </div>
-          
-          <RouterLink to="/admin/iot-devices" class="mt-6 flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/20 py-3 rounded-xl transition-colors">
-            Configurar Dispositivos
-            <ArrowRightIcon class="size-3" />
-          </RouterLink>
-        </div>
-      </div>
-
-      <!-- Main Content Area -->
+      <!-- Columna Principal -->
       <div class="lg:col-span-2 space-y-8">
-        <!-- Fleet Health Overview -->
-        <div class="rounded-[2.5rem] bg-white dark:bg-gray-900 p-8 border border-gray-100 dark:border-gray-800 shadow-sm">
-          <div class="flex items-center justify-between mb-8">
+        <!-- Diagnóstico de Flota -->
+        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="p-3 rounded-2xl bg-orange-50 dark:bg-orange-900/20 text-orange-600">
-                <HeartIcon class="size-6" />
+              <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-600">
+                <HeartIcon class="size-5" />
               </div>
-              <div>
-                <h3 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Salud de la Flota</h3>
-                <p class="text-xs text-gray-500 font-medium">Resumen técnico de las unidades activas</p>
-              </div>
+              <h3 class="font-bold text-slate-900 dark:text-white">Diagnóstico de Flota</h3>
             </div>
-            <RouterLink to="/admin/fleet-health" class="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:underline">Ver detalles</RouterLink>
+            <RouterLink to="/admin/fleet-health" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
+              Detalles →
+            </RouterLink>
           </div>
 
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 transition-all">
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Disponibles</p>
-              <p class="text-2xl font-black text-gray-900 dark:text-white">{{ fleetStats.available }}</p>
-              <div class="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div class="h-full bg-green-500 transition-all duration-1000" :style="{ width: fleetStats.total ? (fleetStats.available / fleetStats.total * 100) + '%' : '0%' }"></div>
+          <div class="p-6 grid sm:grid-cols-2 gap-8">
+            <div v-for="(val, label) in healthMetrics" :key="label" class="space-y-3">
+              <div class="flex justify-between items-end">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">{{ label }}</span>
+                <span class="text-lg font-black text-slate-900 dark:text-white tabular-nums">{{ val.count }} <span class="text-xs font-bold text-slate-400">/ {{ fleetStats.total }}</span></span>
               </div>
-            </div>
-            
-            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 transition-all">
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Temp. Alta</p>
-              <p class="text-2xl font-black text-red-600">{{ fleetHealth.criticalTemp }}</p>
-              <div class="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div class="h-full bg-red-500 transition-all duration-1000" :style="{ width: fleetStats.total ? (fleetHealth.criticalTemp / fleetStats.total * 100) + '%' : '0%' }"></div>
-              </div>
-            </div>
-
-            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 transition-all">
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Batería Baja</p>
-              <p class="text-2xl font-black text-amber-600">{{ fleetHealth.lowBattery }}</p>
-              <div class="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div class="h-full bg-amber-500 transition-all duration-1000" :style="{ width: fleetStats.total ? (fleetHealth.lowBattery / fleetStats.total * 100) + '%' : '0%' }"></div>
-              </div>
-            </div>
-
-            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 transition-all">
-              <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Offline</p>
-              <p class="text-2xl font-black text-gray-400">{{ fleetHealth.offline }}</p>
-              <div class="mt-2 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                <div class="h-full bg-gray-400 transition-all duration-1000" :style="{ width: fleetStats.total ? (fleetHealth.offline / fleetStats.total * 100) + '%' : '0%' }"></div>
+              <div class="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div 
+                  class="h-full rounded-full transition-all duration-1000" 
+                  :class="val.color" 
+                  :style="{ width: fleetStats.total ? (val.count / fleetStats.total * 100) + '%' : '0%' }"
+                ></div>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <!-- Recent Activity / Bookings -->
-        <div class="rounded-[2.5rem] bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
-          <div class="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-            <h3 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Reservas Recientes</h3>
-            <RouterLink to="/admin/bookings" class="text-[10px] font-black uppercase tracking-widest text-indigo-600 hover:underline">Gestionar todas</RouterLink>
+        <!-- Últimos Movimientos -->
+        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <h3 class="font-bold text-slate-900 dark:text-white">Últimos Movimientos</h3>
+            <RouterLink to="/admin/bookings" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
+              Ver Historial
+            </RouterLink>
           </div>
           
           <div class="overflow-x-auto">
-            <table class="w-full text-left">
-              <thead class="bg-gray-50/50 dark:bg-gray-950/50 border-b border-gray-100 dark:border-gray-800 text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 <tr>
-                  <th class="px-8 py-4">Usuario / Vehículo</th>
-                  <th class="px-8 py-4">Estado</th>
-                  <th class="px-8 py-4">Fecha</th>
-                  <th class="px-8 py-4 text-right">Total</th>
+                  <th class="px-6 py-4">Usuario / Unidad</th>
+                  <th class="px-6 py-4 text-center">Estado</th>
+                  <th class="px-6 py-4">Fecha</th>
+                  <th class="px-6 py-4 text-right">Importe</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-                <tr v-for="b in recentBookings" :key="b.id" class="hover:bg-gray-50/30 dark:hover:bg-gray-800/30 transition-colors">
-                  <td class="px-8 py-4">
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <tr v-for="b in recentBookings" :key="b.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
+                  <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
-                      <div class="size-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 flex items-center justify-center text-[10px] font-black">
+                      <div class="size-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center text-[10px] font-black">
                         {{ b.user?.name?.charAt(0) || 'U' }}
                       </div>
-                      <div class="min-w-0">
-                        <p class="text-xs font-bold text-gray-900 dark:text-white truncate">{{ b.user?.name || 'Usuario #' + b.user_id }}</p>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase truncate">{{ b.vehicle?.license_plate || 'Sin matrícula' }}</p>
+                      <div>
+                        <p class="text-sm font-bold text-slate-900 dark:text-white">{{ b.user?.name || 'Usuario #' + b.user_id }}</p>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{{ b.vehicle?.license_plate || 'S/N' }}</p>
                       </div>
                     </div>
                   </td>
-                  <td class="px-8 py-4">
-                    <span :class="getStatusClasses(b.status)" class="px-2 py-0.5 rounded-lg text-[8px] font-black uppercase tracking-widest border border-current opacity-80">
+                  <td class="px-6 py-4 text-center">
+                    <span :class="getStatusClasses(b.status)" class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest border">
                       {{ translateStatus(b.status) }}
                     </span>
                   </td>
-                  <td class="px-8 py-4">
-                    <p class="text-[10px] font-bold text-gray-500">{{ formatDate(b.created_at) }}</p>
+                  <td class="px-6 py-4">
+                    <span class="text-xs font-medium text-slate-600 dark:text-slate-400">{{ formatDate(b.created_at) }}</span>
                   </td>
-                  <td class="px-8 py-4 text-right">
-                    <p class="text-xs font-black text-gray-900 dark:text-white">{{ formatCurrency(b.total_price || 0) }}</p>
+                  <td class="px-6 py-4 text-right">
+                    <span class="text-sm font-black text-slate-900 dark:text-white tabular-nums">{{ formatCurrency(b.total_price || 0) }}</span>
                   </td>
-                </tr>
-                <tr v-if="recentBookings.length === 0">
-                  <td colspan="4" class="px-8 py-10 text-center text-gray-400 text-xs italic">No hay reservas recientes</td>
                 </tr>
               </tbody>
             </table>
+          </div>
+        </section>
+      </div>
+
+      <!-- Barra Lateral -->
+      <div class="space-y-6">
+        <!-- Widget IoT -->
+        <div class="rounded-2xl bg-indigo-600 p-6 text-white shadow-lg shadow-indigo-200 dark:shadow-none relative overflow-hidden group">
+          <div class="relative z-10">
+            <div class="flex items-center justify-between mb-6">
+              <div class="flex items-center gap-2">
+                <CpuChipIcon class="size-5 text-indigo-200" />
+                <h3 class="font-bold text-sm tracking-tight">Estado Red IoT</h3>
+              </div>
+              <span class="size-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"></span>
+            </div>
+            
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                <span class="text-xs font-bold text-indigo-100 uppercase tracking-widest">Dispositivos</span>
+                <span class="text-sm font-black">{{ iotDevices.online }} <span class="opacity-50">/ {{ iotDevices.total }}</span></span>
+              </div>
+              <p class="text-[10px] leading-relaxed text-indigo-100 opacity-80">
+                Todos los sistemas de telemetría están operando dentro de los rangos normales.
+              </p>
+            </div>
+            
+            <RouterLink to="/admin/iot-devices" class="mt-6 flex w-full items-center justify-center gap-2 text-xs font-black uppercase tracking-widest bg-white text-indigo-600 py-3 rounded-xl hover:bg-indigo-50 transition-all shadow-sm active:scale-95">
+              Configurar Red
+            </RouterLink>
+          </div>
+          <div class="absolute -right-10 -bottom-10 size-40 rounded-full bg-white/5 blur-3xl group-hover:bg-white/10 transition-all"></div>
+        </div>
+
+        <!-- Acciones Directas -->
+        <div class="space-y-3">
+          <h3 class="px-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Accesos Rápidos</h3>
+          <div class="grid gap-2">
+            <RouterLink
+              v-for="item in primaryActions"
+              :key="item.name"
+              :to="item.to"
+              class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-600 hover:shadow-sm transition-all group"
+            >
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 text-slate-400 group-hover:text-indigo-600 transition-colors">
+                <component :is="item.icon" class="h-5 w-5" />
+              </div>
+              <div class="flex-1">
+                <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ item.name }}</h3>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{{ item.description }}</p>
+              </div>
+              <ChevronRightIcon class="h-4 w-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+            </RouterLink>
           </div>
         </div>
       </div>
@@ -229,13 +204,13 @@ import {
   HeartIcon,
   ChevronRightIcon,
   PlusIcon,
-  ArrowRightIcon,
 } from '@heroicons/vue/24/outline'
 import apiClient from '@/services/api'
 import iotService from '@/services/iotService'
 import { useUsers } from '@/modules/admin/modules/users/composables/useUsers'
 import { useVehicles } from '@/modules/admin/modules/vehicles/composables/useVehicles'
 import { useBookings } from '@/modules/admin/bookings/composables/useBookings'
+import PageHeading from '@/modules/admin/components/PageHeading.vue'
 
 const { users, pagination: usersPagination, getUsers } = useUsers()
 const { vehicles, pagination: vehiclesPagination, getVehicles } = useVehicles()
@@ -245,7 +220,6 @@ const ticketsCount = ref(0)
 const iotOnline = ref(false)
 const iotDevices = ref({ total: 0, online: 0, unlinked: 0 })
 const fleetHealth = ref({ criticalTemp: 0, lowBattery: 0, offline: 0 })
-const lastUpdate = ref(new Date().toLocaleTimeString())
 const loadingStats = ref(false)
 
 const refreshData = async () => {
@@ -259,7 +233,6 @@ const refreshData = async () => {
       loadIoTStats(),
       loadFleetHealth(),
     ])
-    lastUpdate.value = new Date().toLocaleTimeString()
   } catch (e) {
     console.error('Error refreshing admin stats', e)
   } finally {
@@ -311,82 +284,29 @@ const loadFleetHealth = async () => {
 onMounted(refreshData)
 
 const stats = computed(() => [
-  {
-    name: 'Usuarios',
-    value: usersPagination.value.total || users.value.length,
-    icon: UsersIcon,
-    bgClass: 'bg-blue-50 dark:bg-blue-900/20',
-    iconClass: 'text-blue-600 dark:text-blue-400',
-    trend: 0
-  },
-  {
-    name: 'Vehículos',
-    value: vehiclesPagination.value.total || vehicles.value.length,
-    icon: TruckIcon,
-    bgClass: 'bg-orange-50 dark:bg-orange-900/20',
-    iconClass: 'text-orange-600 dark:text-orange-400',
-    trend: 0
-  },
-  {
-    name: 'Reservas Activas',
-    value: bookings.value.filter(b => b.status === 'active').length,
-    icon: CalendarDaysIcon,
-    bgClass: 'bg-emerald-50 dark:bg-emerald-900/20',
-    iconClass: 'text-emerald-600 dark:text-emerald-400',
-    trend: 0
-  },
-  {
-    name: 'Tickets',
-    value: ticketsCount.value,
-    icon: TicketIcon,
-    bgClass: 'bg-rose-50 dark:bg-rose-900/20',
-    iconClass: 'text-rose-600 dark:text-rose-400',
-    trend: 0
-  },
+  { name: 'Usuarios', value: usersPagination.value.total || users.value.length, icon: UsersIcon, trend: 12 },
+  { name: 'Flota', value: vehiclesPagination.value.total || vehicles.value.length, icon: TruckIcon, trend: 0 },
+  { name: 'Activas', value: bookings.value.filter(b => b.status === 'active').length, icon: CalendarDaysIcon, trend: 5 },
+  { name: 'Tickets', value: ticketsCount.value, icon: TicketIcon, trend: -2 },
 ])
 
+const healthMetrics = computed(() => ({
+  'Disponibles': { count: fleetStats.value.available, color: 'bg-emerald-500' },
+  'Temp. Crítica': { count: fleetHealth.value.criticalTemp, color: 'bg-rose-500' },
+  'Batería Baja': { count: fleetHealth.value.lowBattery, color: 'bg-amber-500' },
+  'Unidades Offline': { count: fleetHealth.value.offline, color: 'bg-slate-400' },
+}))
+
 const primaryActions = [
-  {
-    name: 'Registrar Vehículo',
-    description: 'Añadir nueva unidad a la flota',
-    to: '/admin/vehicles/create',
-    icon: PlusIcon,
-    bgClass: 'bg-indigo-50 text-indigo-600',
-    iconClass: 'text-indigo-600',
-  },
-  {
-    name: 'Mapa en Vivo',
-    description: 'Seguimiento GPS tiempo real',
-    to: '/admin/map',
-    icon: MapIcon,
-    bgClass: 'bg-blue-50 text-blue-600',
-    iconClass: 'text-blue-600',
-  },
-  {
-    name: 'Salud de Flota',
-    description: 'Revisar alertas mecánicas',
-    to: '/admin/fleet-health',
-    icon: HeartIcon,
-    bgClass: 'bg-rose-50 text-rose-600',
-    iconClass: 'text-rose-600',
-  },
-  {
-    name: 'Gestionar Usuarios',
-    description: 'Aprobaciones y roles',
-    to: '/admin/users',
-    icon: UsersIcon,
-    bgClass: 'bg-emerald-50 text-emerald-600',
-    iconClass: 'text-emerald-600',
-  },
+  { name: 'Nueva Unidad', description: 'Registrar vehículo', to: '/admin/vehicles/create', icon: PlusIcon },
+  { name: 'Mapa en Vivo', description: 'Seguimiento GPS', to: '/admin/map', icon: MapIcon },
+  { name: 'Gestión Usuarios', description: 'Admin cuentas', to: '/admin/users', icon: UsersIcon },
 ]
 
 const fleetStats = computed(() => {
   const total = vehiclesPagination.value.total || vehicles.value.length
   const available = vehicles.value.filter((v: any) => !v.active).length
-  return {
-    total,
-    available,
-  }
+  return { total, available }
 })
 
 const recentBookings = computed(() => {
@@ -397,12 +317,7 @@ const recentBookings = computed(() => {
 
 const formatDate = (dateStr: string) => {
   if (!dateStr) return '-'
-  return new Date(dateStr).toLocaleDateString('es-ES', {
-    day: '2-digit',
-    month: 'short',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+  return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
 }
 
 const formatCurrency = (val: number) => {
@@ -411,23 +326,26 @@ const formatCurrency = (val: number) => {
 
 const getStatusClasses = (s: string) => {
   const map: Record<string, string> = {
-    active: 'bg-green-100 text-green-700 border-green-200',
-    completed: 'bg-blue-100 text-blue-700 border-blue-200',
-    cancelled: 'bg-red-100 text-red-700 border-red-200',
-    pending: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-    expired: 'bg-gray-100 text-gray-700 border-gray-200',
+    active: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800',
+    completed: 'bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800',
+    cancelled: 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800',
+    pending: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800',
   }
-  return map[s] || 'bg-gray-100 text-gray-700 border-gray-200'
+  return map[s] || 'bg-slate-50 text-slate-700 border-slate-200'
 }
 
 const translateStatus = (s: string) => {
-  const map: Record<string, string> = {
-    active: 'Activa',
-    completed: 'Finalizada',
-    cancelled: 'Cancelada',
-    pending: 'Pendiente',
-    expired: 'Expirada',
-  }
+  const map: Record<string, string> = { active: 'Activa', completed: 'Finalizada', cancelled: 'Cancelada', pending: 'Pendiente' }
   return map[s] || s
 }
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>

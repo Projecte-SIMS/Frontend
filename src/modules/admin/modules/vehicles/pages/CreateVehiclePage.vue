@@ -1,76 +1,97 @@
 <template>
-  <div class="px-4 sm:px-6 lg:px-8">
-    <PageHeading
-      title="Crear vehículo"
-      description="Añade un nuevo vehículo a la flota"
-    >
+  <div class="space-y-8 animate-fade-in">
+    <PageHeading title="Create Vehicle" description="Add a new vehicle to the fleet.">
       <template #actions>
         <router-link
           to="/admin/vehicles"
-          class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50
-                 dark:bg-white/10 dark:text-white dark:ring-white/5 dark:hover:bg-white/20"
+          class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
         >
-          Volver
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Back</span>
         </router-link>
       </template>
     </PageHeading>
 
-    <form @submit.prevent="handleSubmit" class="mt-8 max-w-lg space-y-1">
-      <FormInput
-        v-model="form.license_plate"
-        label="Matrícula"
-        placeholder="1234ABC o 1234 ABC"
-        :error="errors.license_plate"
-      />
+    <div
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"
+    >
+      <form @submit.prevent="handleSubmit">
+        <div class="p-8 space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <FormField label="License Plate" :error="errors.license_plate">
+              <FormInput
+                v-model="form.license_plate"
+                placeholder="1234ABC"
+                @input="validateField('license_plate')"
+              />
+            </FormField>
 
-      <FormInput
-        v-model="form.brand"
-        label="Marca"
-        placeholder="Ej: Toyota"
-        :error="errors.brand"
-      />
+            <FormField label="Brand" :error="errors.brand">
+              <FormInput v-model="form.brand" placeholder="e.g., Toyota" @input="validateField('brand')" />
+            </FormField>
 
-      <FormInput
-        v-model="form.model"
-        label="Modelo"
-        placeholder="Ej: Corolla"
-        :error="errors.model"
-      />
+            <FormField label="Model" :error="errors.model">
+              <FormInput v-model="form.model" placeholder="e.g., Corolla" @input="validateField('model')" />
+            </FormField>
 
-      <FormCheckbox
-        v-model="form.active"
-        label="Activo"
-      />
+            <FormField label="Status">
+              <FormCheckbox v-model="form.active" label="Vehicle is active" />
+            </FormField>
+          </div>
+          <p v-if="error" class="mt-4 text-sm text-red-500">{{ error }}</p>
+        </div>
 
-      <div class="flex gap-3 pt-4">
-        <button
-          type="submit"
-          :disabled="loading"
-          class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500
-                 disabled:opacity-50 disabled:cursor-not-allowed"
+        <div
+          class="bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800/50 px-8 py-4 flex items-center justify-end gap-3 rounded-b-2xl"
         >
-          {{ loading ? 'Guardando...' : 'Crear vehículo' }}
-        </button>
-        <router-link
-          to="/admin/vehicles"
-          class="rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50
-                 dark:bg-white/10 dark:text-white dark:ring-white/5 dark:hover:bg-white/20"
-        >
-          Cancelar
-        </router-link>
-      </div>
-
-      <p v-if="error" class="mt-4 text-sm text-red-600">{{ error }}</p>
-    </form>
+          <router-link
+            to="/admin/vehicles"
+            class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
+          >
+            <span>Cancel</span>
+          </router-link>
+          <button
+            type="submit"
+            :disabled="loading"
+            class="flex items-center space-x-2 bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
+          >
+            <svg
+              v-if="loading"
+              class="animate-spin h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            <span>{{ loading ? 'Saving...' : 'Create Vehicle' }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useVehicles } from '../composables/useVehicles'
 import type { VehicleForm } from '../interfaces/vehicle.interface'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
+import FormField from '@/modules/admin/components/FormField.vue'
 import FormInput from '@/modules/admin/components/FormInput.vue'
 import FormCheckbox from '@/modules/admin/components/FormCheckbox.vue'
 
@@ -90,33 +111,36 @@ const errors = reactive<Record<string, string | null>>({
   model: null
 })
 
+const validateField = (field: keyof typeof errors) => {
+  errors[field] = null
+}
+
 function validate(): boolean {
-  let valid = true
+  let isValid = true
   errors.license_plate = null
   errors.brand = null
   errors.model = null
 
   if (!form.license_plate.trim()) {
-    errors.license_plate = 'La matrícula es obligatoria'
-    valid = false
+    errors.license_plate = 'License plate is required.'
+    isValid = false
   } else {
-    // Validar formato: 4 dígitos + 3 letras (con o sin espacio)
     const licensePlatePattern = /^\d{4}\s?[A-Z]{3}$/i
     if (!licensePlatePattern.test(form.license_plate.trim())) {
-      errors.license_plate = 'Formato incorrecto. Usa: 4 dígitos y 3 letras (ej: 1234ABC o 1234 ABC)'
-      valid = false
+      errors.license_plate = 'Invalid format. Use: 1234ABC.'
+      isValid = false
     }
   }
 
   if (!form.brand.trim()) {
-    errors.brand = 'La marca es obligatoria'
-    valid = false
+    errors.brand = 'Brand is required.'
+    isValid = false
   }
   if (!form.model.trim()) {
-    errors.model = 'El modelo es obligatorio'
-    valid = false
+    errors.model = 'Model is required.'
+    isValid = false
   }
-  return valid
+  return isValid
 }
 
 async function handleSubmit() {
@@ -126,9 +150,8 @@ async function handleSubmit() {
     await createVehicle({ ...form })
     router.push('/admin/vehicles')
   } catch (err: any) {
-    // Validation errors from backend
-    if (err.response?.status === 422) {
-      const backendErrors = err.response.data.errors || {}
+    if (err.response?.status === 422 && err.response.data.errors) {
+      const backendErrors = err.response.data.errors
       for (const key of Object.keys(backendErrors)) {
         if (key in errors) {
           errors[key] = backendErrors[key][0]

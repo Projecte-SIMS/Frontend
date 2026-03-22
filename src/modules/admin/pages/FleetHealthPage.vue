@@ -1,122 +1,118 @@
 <template>
-  <div class="px-4 sm:px-6 lg:px-8 font-sans">
-    <PageHeading title="Salud de la Flota" description="Estado técnico y alertas de mantenimiento en tiempo real" />
-
-    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <!-- Summary Cards -->
-      <div class="bg-white dark:bg-gray-900 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="p-3 rounded-2xl bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400">
-            <FireIcon class="size-6" />
+  <div class="space-y-8 animate-fade-in">
+    <!-- Header Profesional y Refinado -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <PageHeading
+        title="Centro de Diagnóstico de Flota"
+        description="Monitoreo de telemetría en tiempo real y salud mecánica del sistema"
+      >
+        <template #actions>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-[10px] font-black uppercase tracking-widest text-slate-500">
+              Última Sincronización: {{ lastCheck }}
+            </div>
+            <button @click="loadData" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-all disabled:opacity-50 shadow-sm">
+              <ArrowPathIcon class="size-5" :class="{'animate-spin': loading}" />
+            </button>
           </div>
-          <div>
-            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Sobrecalentamiento</p>
-            <p class="text-2xl font-black text-gray-900 dark:text-white">{{ criticalTempCount }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-900 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="p-3 rounded-2xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400">
-            <Battery50Icon class="size-6" />
-          </div>
-          <div>
-            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Batería Baja</p>
-            <p class="text-2xl font-black text-gray-900 dark:text-white">{{ lowBatteryCount }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-900 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="p-3 rounded-2xl bg-gray-50 dark:bg-gray-800 text-gray-400">
-            <WifiIcon class="size-6" />
-          </div>
-          <div>
-            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Desconectados</p>
-            <p class="text-2xl font-black text-gray-900 dark:text-white">{{ offlineCount }}</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white dark:bg-gray-900 p-6 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-        <div class="flex items-center gap-4">
-          <div class="p-3 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400">
-            <CheckBadgeIcon class="size-6" />
-          </div>
-          <div>
-            <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Operativos</p>
-            <p class="text-2xl font-black text-gray-900 dark:text-white">{{ onlineCount }}</p>
-          </div>
-        </div>
-      </div>
+        </template>
+      </PageHeading>
     </div>
 
-    <!-- Alert Table -->
-    <div class="mt-8 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
-      <div class="px-8 py-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-        <h3 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-tight">Vehículos con Incidencias</h3>
-        <button @click="loadData" class="p-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all">
-          <ArrowPathIcon class="size-5 text-gray-400" :class="{'animate-spin': loading}" />
-        </button>
-      </div>
-      
-      <div class="overflow-x-auto">
-        <table class="w-full text-left">
-          <thead class="bg-gray-50/50 dark:bg-gray-950/50 border-b border-gray-100 dark:border-gray-800 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">
-            <tr>
-              <th class="px-8 py-4">Vehículo</th>
-              <th class="px-8 py-4">Estado</th>
-              <th class="px-8 py-4">Alertas Activas</th>
-              <th class="px-8 py-4">Telemetría</th>
-              <th class="px-8 py-4 text-right">Acción</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
-            <tr v-for="v in alertVehicles" :key="v.id" class="hover:bg-gray-50/30 dark:hover:bg-gray-800/30 transition-colors">
-              <td class="px-8 py-5">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <!-- Sección de Alertas Críticas (Prioridad Máxima) -->
+      <section>
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-5 mb-8">
+          <div class="flex items-end justify-between">
+            <div>
+              <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Atención Inmediata Requerida</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Listado de unidades que presentan anomalías críticas en su telemetría.</p>
+            </div>
+            <span v-if="alertVehicles.length > 0" class="px-3 py-1.5 rounded-xl bg-rose-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-200">
+              {{ alertVehicles.length }} Alertas Activas
+            </span>
+          </div>
+        </div>
+
+        <div v-if="loading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div v-for="i in 3" :key="i" class="h-48 rounded-2xl bg-slate-50 dark:bg-slate-900/50 animate-pulse border border-slate-100 dark:border-slate-800"></div>
+        </div>
+        <div v-else-if="alertVehicles.length === 0" class="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 mb-4">
+            <CheckBadgeIcon class="size-8" />
+          </div>
+          <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Sistemas Nominales</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">No se detectan anomalías en la flota activa.</p>
+        </div>
+
+        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div v-for="v in alertVehicles" :key="v.id" class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-rose-200 dark:border-rose-800 shadow-xl shadow-rose-500/10 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center gap-4">
-                  <div class="size-10 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-400">
-                    <TruckIcon class="size-5" />
+                  <div class="size-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center font-mono text-sm font-bold text-slate-600 dark:text-slate-400 ring-1 ring-slate-200 dark:ring-slate-700">
+                    {{ v.plate.substring(0,2) }}
                   </div>
                   <div>
-                    <p class="text-sm font-black text-gray-900 dark:text-white">{{ v.plate }}</p>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase">{{ v.brand }} {{ v.model }}</p>
+                    <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ v.plate }}</h3>
+                    <p class="text-[10px] text-slate-400 uppercase font-bold">{{ v.brand }} {{ v.model }}</p>
                   </div>
                 </div>
-              </td>
-              <td class="px-8 py-5">
-                <span :class="v.online ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'" class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest">
-                  {{ v.online ? 'Conectado' : 'Offline' }}
-                </span>
-              </td>
-              <td class="px-8 py-5">
-                <div class="flex flex-wrap gap-2">
-                  <span v-if="(v.engine_temp || 0) > 100" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-red-50 text-red-600 text-[9px] font-black uppercase tracking-widest border border-red-100">
-                    <FireIcon class="size-3" /> Calor
-                  </span>
-                  <span v-if="(v.battery_voltage || 12.6) < 11.8" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-50 text-amber-600 text-[9px] font-black uppercase tracking-widest border border-amber-100">
-                    <Battery50Icon class="size-3" /> Batería
-                  </span>
-                  <span v-if="!v.online" class="inline-flex items-center gap-1.5 px-2 py-1 rounded-lg bg-gray-50 text-gray-500 text-[9px] font-black uppercase tracking-widest border border-gray-100">
-                    <WifiIcon class="size-3" /> Sin Señal
-                  </span>
+              </div>
+              <div class="space-y-2">
+                <div v-if="(v.engine_temp || 0) > 100" class="flex items-center justify-between p-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800">
+                  <div class="flex items-center gap-3"><FireIcon class="size-5 text-rose-500" /><span class="text-[10px] font-black text-rose-700 dark:text-rose-400 uppercase tracking-widest">Motor Crítico</span></div>
+                  <span class="text-sm font-black text-rose-700 dark:text-rose-400 tabular-nums">{{ v.engine_temp.toFixed(1) }}°C</span>
                 </div>
-              </td>
-              <td class="px-8 py-5 text-sm font-mono font-bold text-gray-500">
-                {{ v.engine_temp?.toFixed(1) }}°C / {{ v.battery_voltage?.toFixed(1) || 12.6 }}V
-              </td>
-              <td class="px-8 py-5 text-right">
-                <router-link :to="`/admin/map?select=${v.id}`" class="text-indigo-600 dark:text-indigo-400 font-black text-[10px] uppercase tracking-widest hover:underline">Gestionar</router-link>
-              </td>
-            </tr>
-            <tr v-if="alertVehicles.length === 0">
-              <td colspan="5" class="px-8 py-12 text-center text-gray-400 font-medium italic">No hay alertas activas en la flota</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                <div v-if="(v.battery_voltage || 12.6) < 11.8" class="flex items-center justify-between p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800">
+                  <div class="flex items-center gap-3"><Battery0Icon class="size-5 text-amber-600" /><span class="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest">Voltaje Bajo</span></div>
+                  <span class="text-sm font-black text-amber-700 dark:text-amber-400 tabular-nums">{{ v.battery_voltage.toFixed(1) }}V</span>
+                </div>
+                <div v-if="!v.online" class="flex items-center justify-between p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                  <div class="flex items-center gap-3"><NoSymbolIcon class="size-5 text-slate-400" /><span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sin Conexión</span></div>
+                  <span class="text-[10px] font-black text-slate-400 uppercase">Offline</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex gap-2 mt-6">
+              <router-link :to="`/admin/map?select=${v.id}`" class="flex-1 text-center px-4 py-2.5 rounded-lg text-indigo-600 bg-indigo-50 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-colors">Localizar</router-link>
+              <button class="flex-1 px-4 py-2.5 rounded-lg text-slate-600 bg-slate-100 text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-colors">Diagnosticar</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Telemetría Completa -->
+      <section>
+        <div class="border-b border-slate-200 dark:border-slate-800 pb-5 mb-8">
+          <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Telemetría Completa de la Flota</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Listado con los datos en tiempo real de todas las unidades activas.</p>
+        </div>
+        <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <tr>
+                  <th class="px-6 py-5">Unidad</th>
+                  <th class="px-6 py-5">Temperatura Motor</th>
+                  <th class="px-6 py-5">Voltaje Batería</th>
+                  <th class="px-6 py-5">RPM / Velocidad</th>
+                  <th class="px-6 py-5 text-center">Conexión</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <tr v-for="v in vehicles" :key="v.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+                  <td class="px-6 py-4"><div class="flex items-center gap-3"><TruckIcon class="size-5 text-slate-400" /><span class="text-sm font-bold text-slate-900 dark:text-white font-mono tracking-wider">{{ v.plate }}</span></div></td>
+                  <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="flex-1 h-2 w-16 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full transition-all duration-500 rounded-full" :class="(v.engine_temp || 0) > 100 ? 'bg-rose-500' : 'bg-indigo-500'" :style="{ width: Math.min((v.engine_temp || 0) / 1.5, 100) + '%' }"></div></div><span class="text-sm font-mono font-bold w-12 text-right" :class="(v.engine_temp || 0) > 100 ? 'text-rose-600' : 'text-slate-600 dark:text-slate-400'">{{ v.engine_temp?.toFixed(0) || 0 }}°</span></div></td>
+                  <td class="px-6 py-4"><div class="flex items-center gap-2 text-sm font-mono font-bold" :class="(v.battery_voltage || 12.6) < 11.8 ? 'text-amber-600' : 'text-slate-600 dark:text-slate-400'"><Battery50Icon class="size-5" />{{ v.battery_voltage?.toFixed(1) || '12.6' }}V</div></td>
+                  <td class="px-6 py-4"><div class="text-sm font-medium text-slate-500"><span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.rpm || 0 }}</span> rpm <span class="mx-1 opacity-20">|</span> <span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.speed?.toFixed(0) || 0 }}</span> km/h</div></td>
+                  <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="size-2 rounded-full" :class="v.online ? 'bg-emerald-500' : 'bg-slate-300'"></div><span class="text-[10px] font-black uppercase tracking-widest" :class="v.online ? 'text-emerald-600' : 'text-slate-400'">{{ v.online ? 'Online' : 'Offline' }}</span></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
     </div>
   </div>
 </template>
@@ -126,32 +122,40 @@ import { ref, computed, onMounted } from 'vue'
 import apiClient from '@/services/api'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
 import {
-  FireIcon, Battery50Icon, WifiIcon, CheckBadgeIcon, ArrowPathIcon, TruckIcon
+  FireIcon, Battery0Icon, Battery50Icon, SignalIcon, CheckBadgeIcon, ArrowPathIcon, TruckIcon,
+  MapIcon, NoSymbolIcon, BoltIcon, CircleStackIcon
 } from '@heroicons/vue/24/outline'
 
 const vehicles = ref<any[]>([])
 const loading = ref(false)
+const lastCheck = ref(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }))
 
 const onlineCount = computed(() => vehicles.value.filter(v => v.online).length)
-const offlineCount = computed(() => vehicles.value.filter(v => !v.online).length)
 const criticalTempCount = computed(() => vehicles.value.filter(v => (v.engine_temp || 0) > 100).length)
 const lowBatteryCount = computed(() => vehicles.value.filter(v => (v.battery_voltage || 12.6) < 11.8).length)
+const alertVehicles = computed(() => vehicles.value.filter(v => !v.online || (v.engine_temp || 0) > 100 || (v.battery_voltage || 12.6) < 11.8))
 
-const alertVehicles = computed(() => {
-  return vehicles.value.filter(v => !v.online || (v.engine_temp || 0) > 100 || (v.battery_voltage || 12.6) < 11.8)
-})
+const healthMetrics = computed(() => [
+  { label: 'Unidades con Alerta', value: alertVehicles.value.length, icon: FireIcon, bg: 'bg-rose-50 dark:bg-rose-900/20', color: 'text-rose-600 dark:text-rose-400' },
+  { label: 'Baterías Bajas', value: lowBatteryCount.value, icon: Battery0Icon, bg: 'bg-amber-50 dark:bg-amber-900/20', color: 'text-amber-600 dark:text-amber-400' },
+  { label: 'Conexión IoT', value: `${onlineCount.value}/${vehicles.value.length}`, icon: SignalIcon, bg: 'bg-indigo-50 dark:bg-indigo-900/20', color: 'text-indigo-600 dark:text-indigo-400' },
+  { label: 'Estado General', value: 'Nominal', icon: CheckBadgeIcon, bg: 'bg-emerald-50 dark:bg-emerald-900/20', color: 'text-emerald-600 dark:text-emerald-400' }
+])
 
 const loadData = async () => {
   loading.value = true
   try {
     const res = await apiClient.get('/admin/vehicles/map')
     vehicles.value = res.data
-  } catch (e) {
-    console.error(e)
-  } finally {
-    loading.value = false
-  }
+    lastCheck.value = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+  } catch (e) { console.error(e) } 
+  finally { loading.value = false }
 }
 
 onMounted(loadData)
 </script>
+
+<style scoped>
+.animate-fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>

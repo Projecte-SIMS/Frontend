@@ -1,118 +1,92 @@
 <template>
-  <div v-if="loadingVehicle" class="flex items-center justify-center min-h-[400px]">
-    <div class="text-center">
-      <ArrowPathIcon class="size-12 animate-spin text-indigo-600 mx-auto mb-4" />
-      <p class="text-gray-500 font-medium">Preparando editor...</p>
-    </div>
-  </div>
+  <div class="space-y-8 animate-fade-in">
+    <PageHeading title="Edit Vehicle" description="Update vehicle details.">
+      <template #actions>
+        <router-link
+          to="/admin/vehicles"
+          class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Back</span>
+        </router-link>
+      </template>
+    </PageHeading>
 
-  <div v-else class="max-w-4xl mx-auto space-y-8 animate-fade-in pb-12 font-sans px-4 sm:px-6 lg:px-8">
-    <!-- Header with Breadcrumbs -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-      <div>
-        <nav class="flex mb-2" aria-label="Breadcrumb">
-          <ol class="flex items-center space-x-2 text-xs font-black uppercase tracking-widest text-gray-400">
-            <li><router-link to="/admin/vehicles" class="hover:text-indigo-600">Vehículos</router-link></li>
-            <li><ChevronRightIcon class="size-3" /></li>
-            <li><router-link :to="`/admin/vehicles/${vehicleId}`" class="hover:text-indigo-600">{{ form.license_plate }}</router-link></li>
-            <li><ChevronRightIcon class="size-3" /></li>
-            <li class="text-indigo-600">Edición</li>
-          </ol>
-        </nav>
-        <h1 class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">
-          Editar Vehículo
-        </h1>
-      </div>
-      <router-link
-        to="/admin/vehicles"
-        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 text-xs font-black uppercase tracking-widest border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all shadow-sm"
-      >
-        <ArrowLeftIcon class="size-4" />
-        Volver
-      </router-link>
+    <div
+      v-if="loadingVehicle"
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
+    >
+      <p class="text-slate-500 dark:text-slate-400">Loading vehicle data...</p>
     </div>
 
-    <div class="bg-white dark:bg-gray-900 rounded-[3rem] p-8 md:p-12 border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden">
-      <!-- Decoration -->
-      <div class="absolute top-0 right-0 p-10 opacity-5 pointer-events-none">
-        <PencilIcon class="size-40 text-gray-400" />
-      </div>
-
-      <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-10">Parámetros de la Unidad</h3>
-
-      <form @submit.prevent="handleSubmit" class="space-y-8 relative z-10">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="space-y-6">
-            <FormInput
-              v-model="form.license_plate"
-              label="Matrícula Oficial"
-              placeholder="1234ABC"
-              :error="errors.license_plate"
-              class="custom-form-input"
-            />
-
-            <FormInput
-              v-model="form.brand"
-              label="Marca del Fabricante"
-              placeholder="Ej: Toyota"
-              :error="errors.brand"
-            />
-
-            <FormInput
-              v-model="form.model"
-              label="Modelo del Vehículo"
-              placeholder="Ej: Corolla"
-              :error="errors.model"
-            />
-          </div>
-
-          <div class="space-y-6">
-            <div class="p-6 rounded-[2rem] bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
-              <h4 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6">Estado del Sistema</h4>
-              <FormCheckbox
-                v-model="form.active"
-                label="Vehículo Ocupado / En Uso"
+    <div
+      v-else
+      class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"
+    >
+      <form @submit.prevent="handleSubmit">
+        <div class="p-8 space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <FormField label="License Plate" :error="errors.license_plate">
+              <FormInput
+                v-model="form.license_plate"
+                placeholder="1234ABC"
+                @input="validateField('license_plate')"
               />
-              <p class="mt-2 text-[10px] text-gray-500 italic">
-                * Si se marca como ocupado (True), el vehículo no estará disponible para nuevos clientes.
-              </p>
-            </div>
-            
-            <div class="p-6 rounded-[2rem] bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-800/30">
-               <h4 class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-2">Previsualización</h4>
-               <div class="flex items-center gap-4">
-                 <div class="size-16 rounded-2xl bg-white dark:bg-gray-800 flex items-center justify-center overflow-hidden border border-indigo-100 dark:border-indigo-800">
-                    <img :src="getVehicleImage(form.brand, form.model)" class="size-full object-cover opacity-80" />
-                 </div>
-                 <div>
-                   <p class="text-sm font-black text-indigo-900 dark:text-indigo-200 uppercase tracking-tight">{{ form.brand || '---' }} {{ form.model || '---' }}</p>
-                   <p class="text-[10px] font-bold text-indigo-400 font-mono">{{ form.license_plate || 'SIN MATRÍCULA' }}</p>
-                 </div>
-               </div>
-            </div>
+            </FormField>
+
+            <FormField label="Brand" :error="errors.brand">
+              <FormInput v-model="form.brand" placeholder="e.g., Toyota" @input="validateField('brand')" />
+            </FormField>
+
+            <FormField label="Model" :error="errors.model">
+              <FormInput v-model="form.model" placeholder="e.g., Corolla" @input="validateField('model')" />
+            </FormField>
+
+            <FormField label="Status">
+              <FormCheckbox v-model="form.active" label="Vehicle is active" />
+            </FormField>
           </div>
+          <p v-if="error" class="mt-4 text-sm text-red-500">{{ error }}</p>
         </div>
 
-        <div class="flex items-center justify-end gap-4 pt-8 border-t border-gray-50 dark:border-gray-800">
+        <div
+          class="bg-slate-50 dark:bg-slate-900/50 border-t border-slate-200 dark:border-slate-800/50 px-8 py-4 flex items-center justify-end gap-3 rounded-b-2xl"
+        >
           <router-link
             :to="`/admin/vehicles/${vehicleId}`"
-            class="px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest text-gray-500 hover:text-gray-700 transition-all"
+            class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
           >
-            Cancelar
+            <span>Cancel</span>
           </router-link>
           <button
             type="submit"
             :disabled="loading"
-            class="inline-flex items-center gap-2 px-8 py-3 rounded-2xl bg-indigo-600 text-white text-xs font-black uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50 disabled:grayscale"
+            class="flex items-center space-x-2 bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
           >
-            <span v-if="loading" class="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            {{ loading ? 'Sincronizando...' : 'Actualizar Unidad' }}
+            <svg
+              v-if="loading"
+              class="animate-spin h-4 w-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            <span>{{ loading ? 'Saving...' : 'Save Changes' }}</span>
           </button>
-        </div>
-
-        <div v-if="error" class="p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800/30 flex items-center gap-3">
-          <ExclamationCircleIcon class="size-5 text-red-600" />
-          <p class="text-xs font-bold text-red-700 dark:text-red-400">{{ error }}</p>
         </div>
       </form>
     </div>
@@ -124,16 +98,10 @@ import { reactive, ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useVehicles } from '../composables/useVehicles'
 import type { VehicleForm } from '../interfaces/vehicle.interface'
+import PageHeading from '@/modules/admin/components/PageHeading.vue'
 import FormInput from '@/modules/admin/components/FormInput.vue'
 import FormCheckbox from '@/modules/admin/components/FormCheckbox.vue'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
-import {
-  ChevronRightIcon,
-  ArrowLeftIcon,
-  ArrowPathIcon,
-  PencilIcon,
-  ExclamationCircleIcon
-} from '@heroicons/vue/24/outline'
 
 const route = useRoute()
 const router = useRouter()
@@ -155,6 +123,10 @@ const errors = reactive<Record<string, string | null>>({
   model: null
 })
 
+const validateField = (field: keyof typeof errors) => {
+  errors[field] = null
+}
+
 onMounted(async () => {
   try {
     const vehicle = await getVehicle(vehicleId)
@@ -170,31 +142,31 @@ onMounted(async () => {
 })
 
 function validate(): boolean {
-  let valid = true
+  let isValid = true
   errors.license_plate = null
   errors.brand = null
   errors.model = null
 
   if (!form.license_plate.trim()) {
-    errors.license_plate = 'La matrícula es obligatoria'
-    valid = false
+    errors.license_plate = 'License plate is required.'
+    isValid = false
   } else {
     const licensePlatePattern = /^\d{4}\s?[A-Z]{3}$/i
     if (!licensePlatePattern.test(form.license_plate.trim())) {
-      errors.license_plate = 'Formato incorrecto (Ej: 1234ABC)'
-      valid = false
+      errors.license_plate = 'Invalid format. Use: 1234ABC.'
+      isValid = false
     }
   }
 
   if (!form.brand.trim()) {
-    errors.brand = 'La marca es obligatoria'
-    valid = false
+    errors.brand = 'Brand is required.'
+    isValid = false
   }
   if (!form.model.trim()) {
-    errors.model = 'El modelo es obligatorio'
-    valid = false
+    errors.model = 'Model is required.'
+    isValid = false
   }
-  return valid
+  return isValid
 }
 
 async function handleSubmit() {
@@ -204,8 +176,8 @@ async function handleSubmit() {
     await updateVehicle(vehicleId, { ...form })
     router.push(`/admin/vehicles/${vehicleId}`)
   } catch (err: any) {
-    if (err.response?.status === 422) {
-      const backendErrors = err.response.data.errors || {}
+    if (err.response?.status === 422 && err.response.data.errors) {
+      const backendErrors = err.response.data.errors
       for (const key of Object.keys(backendErrors)) {
         if (key in errors) {
           errors[key] = backendErrors[key][0]
@@ -217,6 +189,16 @@ async function handleSubmit() {
 </script>
 
 <style scoped>
-.animate-fade-in { animation: fadeIn 0.4s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-</style>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
