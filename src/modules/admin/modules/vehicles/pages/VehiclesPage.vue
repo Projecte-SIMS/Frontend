@@ -56,6 +56,33 @@
       </div>
     </div>
 
+    <!-- Leyenda de estados -->
+    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+      <div class="grid gap-3 md:grid-cols-2">
+        <div>
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Estado Operativo (uso del vehículo)</p>
+          <div class="mt-2 flex flex-wrap items-center gap-2">
+            <span :class="getStatusClasses('available')" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">Disponible</span>
+            <span :class="getStatusClasses('reserved')" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">Reservado</span>
+            <span :class="getStatusClasses('running')" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">En Ruta</span>
+          </div>
+        </div>
+        <div>
+          <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Estado Admin (disponibilidad en sistema)</p>
+          <div class="mt-2 flex flex-wrap items-center gap-4">
+            <div class="flex items-center gap-2">
+              <span class="size-1.5 rounded-full bg-emerald-500"></span>
+              <span class="text-[10px] font-black uppercase tracking-widest text-emerald-600">Habilitado</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="size-1.5 rounded-full bg-rose-500"></span>
+              <span class="text-[10px] font-black uppercase tracking-widest text-rose-600">Mantenimiento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Error State -->
     <div v-if="error" class="p-6 text-center rounded-2xl bg-rose-50 border border-rose-100 dark:bg-rose-900/10 dark:border-rose-900/20">
       <p class="text-[10px] font-black text-rose-600 uppercase tracking-widest">{{ error }}</p>
@@ -102,6 +129,9 @@
                 <span :class="getStatusClasses(vehicle.status)" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all">
                   {{ translateStatus(vehicle.status) }}
                 </span>
+                <p class="mt-1 text-[10px] font-semibold text-slate-400">
+                  {{ getOperationalStatusHint(vehicle.status) }}
+                </p>
               </td>
               <td class="px-6 py-4 text-center">
                 <div class="flex items-center justify-center gap-2">
@@ -110,6 +140,9 @@
                     {{ vehicle.active ? 'MANTENIMIENTO' : 'HABILITADO' }}
                   </span>
                 </div>
+                <p class="mt-1 text-[10px] font-semibold text-slate-400">
+                  {{ vehicle.active ? 'No se asigna a nuevos viajes' : 'Puede ser asignado y reservado' }}
+                </p>
               </td>
               <td class="px-6 py-4 text-right">
                 <div class="flex justify-end items-center gap-1">
@@ -273,6 +306,15 @@ const translateStatus = (s?: string) => {
     available: 'Disponible',
   }
   return map[s || ''] || s || 'N/D'
+}
+
+const getOperationalStatusHint = (s?: string) => {
+  const map: Record<string, string> = {
+    running: 'Vehículo actualmente en uso',
+    reserved: 'Apartado para una reserva activa',
+    available: 'Listo para nueva reserva',
+  }
+  return map[s || ''] || 'Sin telemetría de estado'
 }
 </script>
 

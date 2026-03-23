@@ -4,6 +4,7 @@ export interface Vehicle {
   brand: string | null
   model: string | null
   active: boolean
+  status?: 'available' | 'reserved' | 'running'
   type?: string
   battery_level?: number
   image_url?: string
