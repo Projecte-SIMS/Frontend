@@ -249,11 +249,11 @@
         </div>
       </div>
     </div>
-  </div>
 
   <div v-else class="text-center py-8">
     <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Vehicle Not Found</h2>
     <p class="mt-2 text-sm text-gray-500">The requested vehicle could not be loaded.</p>
+  </div>
   </div>
 </template>
 
