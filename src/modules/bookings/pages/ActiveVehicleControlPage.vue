@@ -39,7 +39,7 @@
             <div class="flex items-center gap-3 mb-1">
               <span class="px-2 py-0.5 rounded-lg bg-green-500 text-white text-[8px] font-black uppercase tracking-widest">Activo</span>
               <span v-if="activeBooking.telemetry?.online" class="flex items-center gap-1 text-[8px] font-black uppercase tracking-widest text-blue-400">
-                <span class="size-1 rounded-full bg-blue-400 animate-pulse"></span> Online
+                <span class="size-1 rounded-full bg-blue-400 animate-pulse"></span> En línea
               </span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-none mb-1 truncate">{{ activeBooking.vehicle?.brand }} {{ activeBooking.vehicle?.model }}</h1>

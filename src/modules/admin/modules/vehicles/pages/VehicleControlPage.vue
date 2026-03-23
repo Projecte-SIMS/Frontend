@@ -2,8 +2,8 @@
   <div class="space-y-8 animate-fade-in">
     <PageHeading
       v-if="vehicle"
-      :title="`${vehicle.brand} ${vehicle.model} - Remote Control`"
-      :description="`Manage vehicle ${vehicle.license_plate} via IoT commands.`"
+      :title="`${vehicle.brand} ${vehicle.model} - Control Remoto`"
+      :description="`Gestiona el vehículo ${vehicle.license_plate} mediante comandos IoT.`"
     >
       <template #actions>
         <router-link
@@ -19,7 +19,7 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-          <span>Back to List</span>
+          <span>Volver a la lista</span>
         </router-link>
       </template>
     </PageHeading>
@@ -28,7 +28,7 @@
       v-if="loading"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
     >
-      <p class="text-slate-500 dark:text-slate-400">Establishing remote link...</p>
+      <p class="text-slate-500 dark:text-slate-400">Estableciendo enlace remoto...</p>
     </div>
 
     <div v-else-if="vehicle" class="space-y-8">
@@ -71,7 +71,7 @@
             ></path>
           </svg>
           <p class="text-sm font-bold uppercase tracking-wide">
-            {{ deviceOnline ? 'IoT Link Active' : 'IoT Link Offline' }}
+            {{ deviceOnline ? 'Enlace IoT Activo' : 'Enlace IoT Desconectado' }}
           </p>
         </div>
         <button
@@ -93,14 +93,14 @@
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
             ></path>
           </svg>
-          <span>Refresh</span>
+          <span>Actualizar</span>
         </button>
       </div>
 
       <div
         class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8"
       >
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Remote Commands</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Comandos Remotos</h3>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <button
             @click="sendCommand('start')"
@@ -136,7 +136,7 @@
                 d="M5 13l4 4L19 7"
               ></path>
             </svg>
-            <span class="text-xs font-bold uppercase">Start Engine</span>
+            <span class="text-xs font-bold uppercase">Encender Motor</span>
           </button>
 
           <button
@@ -173,7 +173,7 @@
                 d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
               ></path>
             </svg>
-            <span class="text-xs font-bold uppercase">Stop Engine</span>
+            <span class="text-xs font-bold uppercase">Apagar Motor</span>
           </button>
 
           <button
@@ -210,7 +210,7 @@
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               ></path>
             </svg>
-            <span class="text-xs font-bold uppercase">Reboot System</span>
+            <span class="text-xs font-bold uppercase">Reiniciar Sistema</span>
           </button>
         </div>
       </div>
@@ -219,7 +219,7 @@
         <div
           class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Real-time Metrics</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Métricas en Tiempo Real</h3>
           <div class="grid grid-cols-2 gap-6">
             <div
               v-for="m in displayMetrics"
@@ -241,18 +241,18 @@
         <div
           class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8"
         >
-          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Live Location</h3>
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Ubicación en Vivo</h3>
           <div ref="mapContainer" class="w-full h-80 rounded-xl"></div>
           <p class="text-sm text-gray-700 dark:text-gray-200 mt-4">
-            Lat: {{ telemetry.latitude.toFixed(6) }}, Lng: {{ telemetry.longitude.toFixed(6) }}
+          Latitud: {{ telemetry.latitude.toFixed(6) }}, Longitud: {{ telemetry.longitude.toFixed(6) }}
           </p>
         </div>
       </div>
     </div>
 
   <div v-else class="text-center py-8">
-    <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Vehicle Not Found</h2>
-    <p class="mt-2 text-sm text-gray-500">The requested vehicle could not be loaded.</p>
+    <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Vehículo no encontrado</h2>
+    <p class="mt-2 text-sm text-gray-500">No se pudo cargar el vehículo solicitado.</p>
   </div>
   </div>
 </template>
@@ -288,10 +288,10 @@ const telemetry = reactive({
 })
 
 const displayMetrics = computed(() => [
-  { label: 'Speed', value: telemetry.speed.toFixed(0), unit: 'km/h', alert: false },
+  { label: 'Velocidad', value: telemetry.speed.toFixed(0), unit: 'km/h', alert: false },
   { label: 'RPM', value: telemetry.rpm, unit: 'RPM', alert: false },
-  { label: 'Engine Temp', value: telemetry.engine_temp.toFixed(1), unit: '°C', alert: telemetry.engine_temp > 100 },
-  { label: 'Battery', value: telemetry.battery_voltage.toFixed(1), unit: 'V', alert: telemetry.battery_voltage < 11.8 }
+  { label: 'Temperatura del Motor', value: telemetry.engine_temp.toFixed(1), unit: '°C', alert: telemetry.engine_temp > 100 },
+  { label: 'Batería', value: telemetry.battery_voltage.toFixed(1), unit: 'V', alert: telemetry.battery_voltage < 11.8 }
 ])
 
 const mapContainer = ref<HTMLElement | null>(null)
@@ -312,7 +312,7 @@ const refreshData = async () => {
     }
   } catch (e) {
     console.error('Error refreshing telemetry', e)
-    toastError('Failed to refresh device data.')
+    toastError('Error al actualizar los datos del dispositivo.')
   } finally {
     refreshing.value = false
   }
@@ -345,12 +345,12 @@ const sendCommand = async (action: 'start' | 'stop' | 'reboot') => {
   try {
     const res = await iotService.sendCommand(vehicle.value.iot_device_id, action)
     if (res.success) {
-      success(`Command ${action} sent successfully.`)
+      success('Comando enviado correctamente.')
     } else {
-      toastError(res.error || 'Failed to execute command.')
+      toastError(res.error || 'No se pudo ejecutar el comando.')
     }
   } catch (e) {
-    toastError('Error connecting to command server.')
+    toastError('Error al conectar con el servidor de comandos.')
   } finally {
     commandLoading.value = false
   }
@@ -387,7 +387,7 @@ onMounted(async () => {
     pollInterval = setInterval(refreshData, 5000)
   } catch (e) {
     loading.value = false
-    toastError('Failed to load vehicle details.')
+    toastError('Error al cargar los detalles del vehículo.')
   }
 })
 
@@ -396,3 +396,20 @@ onUnmounted(() => {
   if (map.value) map.value.remove()
 })
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

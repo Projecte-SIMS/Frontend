@@ -138,7 +138,7 @@ onMounted(() => {
               <h2 class="text-base font-black tracking-tight leading-none">Asistente SIMS</h2>
               <div class="flex items-center gap-1.5 mt-1.5">
                 <span class="size-1.5 rounded-full bg-green-400 animate-pulse"></span>
-                <span class="text-[10px] font-bold uppercase tracking-widest opacity-80">AI Online · {{ userRole }}</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest opacity-80">IA en línea · {{ userRole }}</span>
               </div>
             </div>
           </div>

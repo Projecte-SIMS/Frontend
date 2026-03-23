@@ -45,7 +45,7 @@ export const useRoles = () => {
         }
       }
     } catch (err) {
-      error.value = 'Failed to load roles'
+      error.value = 'Error al cargar roles'
       showError('Error al cargar roles')
     } finally {
       loading.value = false
@@ -60,7 +60,7 @@ export const useRoles = () => {
       const response = await api.get(`/admin/roles/${id}`)
       currentRole.value = response.data
     } catch (err) {
-      error.value = 'Failed to load role'
+      error.value = 'Error al cargar el rol'
       showError('Error al cargar rol')
     } finally {
       loading.value = false
@@ -81,7 +81,7 @@ export const useRoles = () => {
       success('Rol creado exitosamente')
       return true
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to create role'
+      error.value = err.response?.data?.message || 'No se pudo crear el rol'
       showError(error.value)
       return false
     } finally {
@@ -109,7 +109,7 @@ export const useRoles = () => {
       success('Rol actualizado exitosamente')
       return true
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to update role'
+      error.value = err.response?.data?.message || 'No se pudo actualizar el rol'
       showError(error.value)
       return false
     } finally {
@@ -132,7 +132,7 @@ export const useRoles = () => {
       success('Rol eliminado exitosamente')
       return true
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Failed to delete role'
+      error.value = err.response?.data?.message || 'No se pudo eliminar el rol'
       showError(error.value)
       return false
     } finally {

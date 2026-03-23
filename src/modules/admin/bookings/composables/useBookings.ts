@@ -34,7 +34,7 @@ export function useBookings() {
       }
     } catch (err: any) {
       console.error(err)
-      error.value = err?.response?.data?.message || 'Error loading bookings'
+      error.value = err?.response?.data?.message || 'Error al cargar las reservas'
     } finally {
       loading.value = false
     }
@@ -51,7 +51,7 @@ export function useBookings() {
       return response.data
     } catch (err: any) {
       console.error(err)
-      error.value = err?.response?.data?.message || 'Error loading booking'
+      error.value = err?.response?.data?.message || 'Error al cargar la reserva'
       throw err
     } finally {
       loading.value = false
@@ -62,7 +62,7 @@ export function useBookings() {
     try {
       await api.post(`/admin/reservations/${id}/force-finish`)
     } catch (err: any) {
-      throw err?.response?.data?.message || 'Error finishing booking'
+      throw err?.response?.data?.message || 'Error al finalizar la reserva'
     }
   }
 
@@ -70,7 +70,7 @@ export function useBookings() {
     try {
       await api.delete(`/admin/reservations/${id}`)
     } catch (err: any) {
-      throw err?.response?.data?.message || 'Error deleting booking'
+      throw err?.response?.data?.message || 'Error al eliminar la reserva'
     }
   }
 
@@ -85,7 +85,7 @@ export function useBookings() {
       return response.data.data
     } catch (err: any) {
       console.error(err)
-      error.value = err?.response?.data?.message || 'Error updating booking'
+      error.value = err?.response?.data?.message || 'Error al actualizar la reserva'
       throw err
     } finally {
       loading.value = false
@@ -99,7 +99,7 @@ export function useBookings() {
       const response = await api.post<{ data: Booking }>('/reservations', payload)
       return response.data.data
     } catch (err: any) {
-      throw err?.response?.data?.message || 'Error creating booking'
+      throw err?.response?.data?.message || 'Error al crear la reserva'
     }
   }
 

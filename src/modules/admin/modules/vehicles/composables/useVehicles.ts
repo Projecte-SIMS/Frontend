@@ -30,7 +30,7 @@ export function useVehicles() {
         total: response.data.total
       }
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error loading vehicles'
+      error.value = err.response?.data?.message || 'Error al cargar vehículos'
       console.error('Error loading vehicles:', err)
     } finally {
       loading.value = false
@@ -44,7 +44,7 @@ export function useVehicles() {
       const response = await api.post<{ data: Vehicle; message: string }>('/admin/vehicles', data)
       return response.data.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error creating vehicle'
+      error.value = err.response?.data?.message || 'Error al crear el vehículo'
       throw err
     } finally {
       loading.value = false
@@ -58,7 +58,7 @@ export function useVehicles() {
       const response = await api.get<{ data: Vehicle }>(`/admin/vehicles/${id}`)
       return response.data.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error loading vehicle'
+      error.value = err.response?.data?.message || 'Error al cargar el vehículo'
       throw err
     } finally {
       loading.value = false
@@ -72,7 +72,7 @@ export function useVehicles() {
       const response = await api.put<{ data: Vehicle; message: string }>(`/admin/vehicles/${id}`, data)
       return response.data.data
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error updating vehicle'
+      error.value = err.response?.data?.message || 'Error al actualizar el vehículo'
       throw err
     } finally {
       loading.value = false
@@ -85,7 +85,7 @@ export function useVehicles() {
     try {
       await api.delete(`/admin/vehicles/${id}`)
     } catch (err: any) {
-      error.value = err.response?.data?.message || 'Error deleting vehicle'
+      error.value = err.response?.data?.message || 'Error al eliminar el vehículo'
       throw err
     } finally {
       loading.value = false

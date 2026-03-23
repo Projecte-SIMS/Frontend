@@ -82,7 +82,7 @@ export const usePermissions = () => {
 
       permissions.value = groupedPermissions.sort((a, b) => a.module.localeCompare(b.module))
     } catch (err) {
-      error.value = 'Failed to load permissions'
+      error.value = 'Error al cargar permisos'
       showError('Error al cargar permisos')
     } finally {
       loading.value = false

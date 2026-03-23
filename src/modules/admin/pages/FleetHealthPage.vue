@@ -70,7 +70,7 @@
                 </div>
                 <div v-if="!v.online" class="flex items-center justify-between p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                   <div class="flex items-center gap-3"><NoSymbolIcon class="size-5 text-slate-400" /><span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sin Conexión</span></div>
-                  <span class="text-[10px] font-black text-slate-400 uppercase">Offline</span>
+                  <span class="text-[10px] font-black text-slate-400 uppercase">Sin conexión</span>
                 </div>
               </div>
             </div>
@@ -106,7 +106,7 @@
                   <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="flex-1 h-2 w-16 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full transition-all duration-500 rounded-full" :class="(v.engine_temp || 0) > 100 ? 'bg-rose-500' : 'bg-indigo-500'" :style="{ width: Math.min((v.engine_temp || 0) / 1.5, 100) + '%' }"></div></div><span class="text-sm font-mono font-bold w-12 text-right" :class="(v.engine_temp || 0) > 100 ? 'text-rose-600' : 'text-slate-600 dark:text-slate-400'">{{ v.engine_temp?.toFixed(0) || 0 }}°</span></div></td>
                   <td class="px-6 py-4"><div class="flex items-center gap-2 text-sm font-mono font-bold" :class="(v.battery_voltage || 12.6) < 11.8 ? 'text-amber-600' : 'text-slate-600 dark:text-slate-400'"><Battery50Icon class="size-5" />{{ v.battery_voltage?.toFixed(1) || '12.6' }}V</div></td>
                   <td class="px-6 py-4"><div class="text-sm font-medium text-slate-500"><span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.rpm || 0 }}</span> rpm <span class="mx-1 opacity-20">|</span> <span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.speed?.toFixed(0) || 0 }}</span> km/h</div></td>
-                  <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="size-2 rounded-full" :class="v.online ? 'bg-emerald-500' : 'bg-slate-300'"></div><span class="text-[10px] font-black uppercase tracking-widest" :class="v.online ? 'text-emerald-600' : 'text-slate-400'">{{ v.online ? 'Online' : 'Offline' }}</span></div></td>
+                  <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="size-2 rounded-full" :class="v.online ? 'bg-emerald-500' : 'bg-slate-300'"></div><span class="text-[10px] font-black uppercase tracking-widest" :class="v.online ? 'text-emerald-600' : 'text-slate-400'">{{ v.online ? 'En línea' : 'Sin conexión' }}</span></div></td>
                 </tr>
               </tbody>
             </table>
