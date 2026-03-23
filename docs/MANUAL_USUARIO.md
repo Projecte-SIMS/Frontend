@@ -99,7 +99,7 @@ Vista de catálogo de todos los vehículos:
 - **Ver detalles**: Abre modal con información completa y mapa de ubicación
 - **Reservar**: Inicia el proceso de reserva (solo si está disponible)
 
-> ⚠️ **Nota**: Solo puedes tener una reserva activa a la vez.
+> Nota: Solo puedes tener una reserva activa a la vez.
 
 ---
 
@@ -116,7 +116,7 @@ Gestión de tus reservas y viajes:
 | **Cancelado** | Reserva cancelada | - |
 
 #### Tiempo de activación:
-- Las reservas pendientes tienen **15 minutos** para ser activadas
+- Las reservas pendientes tienen **10 minutos** para ser activadas
 - Si no se activa a tiempo, la reserva se cancela automáticamente
 
 #### Acciones disponibles:
@@ -132,31 +132,25 @@ Panel de control durante un viaje activo:
 
 #### Información en tiempo real:
 - **Velocidad**: Velocidad actual del vehículo (km/h)
-- **RPM del motor**: Revoluciones por minuto
-- **Temperatura del motor**: Con alerta si se sobrecalienta
-- **Nivel de batería**: Porcentaje restante
-- **Distancia recorrida**: Kilómetros del viaje actual
-- **Tiempo de viaje**: Duración del trayecto
-- **Coste estimado**: Precio aproximado del viaje
+- **Motor RPM**: Revoluciones por minuto
+- **Temp. del motor**: engine_temp en °C (con alerta si supera el umbral crítico)
+- **Batería**: battery_voltage en V (con alerta si es baja)
+- **Tiempo de viaje**: duración desde el inicio del motor (HH:MM:SS)
+- **Coste estimado**: precio aproximado calculado para el trayecto
 
 #### Controles del vehículo:
 | Control | Función |
 |---------|---------|
-| **Motor ON/OFF** | Encender o apagar el motor |
-| **Luces** | Encender/apagar luces |
-| **Claxon** | Activar bocina |
-| **Puertas** | Bloquear/desbloquear puertas |
+| **Arrancar Contacto** | Encender el motor |
+| **Cortar Encendido** | Apagar el motor |
 
 #### Alertas de seguridad:
-- Sobrecalentamiento del motor (>95°C)
-- Batería baja (<20%)
-- Velocidad excesiva
+- Temperatura del motor crítica (>100°C)
+- Batería baja (<11.5V)
 
 #### Finalizar viaje:
-1. Detener el vehículo completamente
-2. Apagar el motor
-3. Hacer clic en "Finalizar Viaje"
-4. Confirmar la acción
+1. Hacer clic en "Terminar Viaje"
+2. Confirmar en el modal de finalización ("¿Finalizar viaje?" / "Confirmar y Finalizar")
 
 ---
 
@@ -269,11 +263,12 @@ Control total de la flota:
 | Eliminar | - | Dar de baja vehículo |
 
 #### Datos del vehículo:
-- Marca y modelo
 - Matrícula
-- Año de fabricación
-- Estado (disponible/mantenimiento/activo)
-- Ubicación GPS actual
+- Marca y Modelo
+- Estado (Activo/Inactivo)
+- Conectividad (En línea/Sin conexión)
+- Creado el
+- Actualizado el
 
 ---
 
@@ -301,7 +296,6 @@ Control de todas las reservas:
 #### Acciones:
 - **Ver detalles** (`/admin/bookings/:id`): Información completa
 - **Editar** (`/admin/bookings/:id/edit`): Modificar reserva
-- **Cambiar estado**: Aprobar, cancelar, completar
 
 ---
 
@@ -367,7 +361,7 @@ El chatbot está disponible en `/chatbot` o mediante el botón flotante en la es
 - "¿Qué hago si el vehículo no arranca?"
 - "¿Cómo cambio mi contraseña?"
 
-> ⚠️ **Nota**: El chatbot requiere conexión con el servicio de IA externo.
+> Nota: El chatbot requiere conexión con el servicio de IA externo.
 
 ---
 
@@ -379,7 +373,7 @@ El chatbot está disponible en `/chatbot` o mediante el botón flotante en la es
 R: Solo una reserva activa (pendiente o en curso) a la vez.
 
 **P: ¿Cuánto tiempo tengo para activar una reserva?**
-R: 15 minutos desde la confirmación. Después se cancela automáticamente.
+R: 10 minutos desde la confirmación. Después se cancela automáticamente.
 
 **P: ¿Puedo cancelar una reserva?**
 R: Sí, mientras esté en estado "Pendiente".
@@ -393,7 +387,7 @@ R: En el mapa de vehículos puedes ver la ubicación exacta con la distancia des
 R: Crea un ticket de soporte con la categoría "Incidencia con vehículo".
 
 **P: ¿Cómo finalizo un viaje?**
-R: Detén el vehículo, apaga el motor y pulsa "Finalizar Viaje" en el panel de control.
+R: Pulsa "Terminar Viaje" en el panel de control y confirma en el modal.
 
 ### Cuenta
 

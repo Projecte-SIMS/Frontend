@@ -11,20 +11,12 @@ Este documento detalla los estándares de calidad, normas de codificación y her
 ### Frontend
 | Herramienta | Estado | Propósito |
 |-------------|--------|-----------|
-| Vue DevTools | ✅ Instalado | Depuración de componentes Vue |
-| Vite HMR | ✅ Activo | Hot Module Replacement |
-| vue-tsc | ✅ Configurado | Type checking TypeScript |
+| Vue DevTools | Sí | Depuración de componentes Vue |
+| Vite HMR | Sí | Hot Module Replacement |
+| vue-tsc | Sí | Type checking TypeScript |
 
-### Backend (referencia)
-| Herramienta | Estado | Propósito |
-|-------------|--------|-----------|
-| Laravel Pail | ✅ Instalado | Logs en tiempo real |
-| Laravel Tinker | ✅ Instalado | REPL interactivo |
-| PHPUnit | ✅ Configurado | Tests automatizados (51+ tests) |
-| Laravel Pint | ✅ Instalado | Linting PSR-12 |
-| Laravel Telescope | ❌ No instalado | Pendiente |
-| Xdebug | ❌ No configurado | Pendiente |
-| Sentry | ❌ No instalado | Pendiente |
+### Backend
+Este repositorio contiene el frontend. Para herramientas y configuración de Laravel (backend), consulta el repositorio del backend correspondiente.
 
 ---
 
@@ -118,36 +110,15 @@ showToast('Error al guardar', 'error')
 ---
 
 ## 4. Tests (Backend)
-
-El backend cuenta con **51+ tests** en 8 archivos:
-
-| Archivo | Tests | Cobertura |
-|---------|-------|-----------|
-| `AuthTest.php` | 7 | Login, logout, registro, perfil |
-| `VehicleTest.php` | 8 | CRUD vehículos |
-| `ReservationTest.php` | 8 | Reservas y conflictos |
-| `TicketTest.php` | 9 | Sistema de soporte |
-| `AdminMiddlewareTest.php` | 7 | Protección de rutas |
-| `IoTControllerTest.php` | 8 | Comandos IoT |
-| `RateLimitingTest.php` | 3 | Rate limiting |
-| `ExampleTest.php` | 1 | Test básico |
-
-### Ejecución
-```bash
-cd project-sims-backend
-php artisan test
-php artisan test --filter=AuthTest
-```
-
----
+No aplica en este repositorio: el backend y sus tests pertenecen a otro proyecto.
 
 ## 5. Tests Frontend (Pendiente)
 
 | Herramienta | Estado | Prioridad |
 |-------------|--------|-----------|
-| Vitest | ❌ No configurado | Baja |
-| Cypress | ❌ No configurado | Baja |
-| Playwright | ❌ No configurado | Baja |
+| Vitest | No configurado | Baja |
+| Cypress | No configurado | Baja |
+| Playwright | No configurado | Baja |
 
 ---
 
