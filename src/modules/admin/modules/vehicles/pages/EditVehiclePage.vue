@@ -203,3 +203,5 @@ async function handleSubmit() {
     transform: translateY(0);
   }
 }
+
+</style>
