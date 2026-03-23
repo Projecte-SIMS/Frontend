@@ -9,8 +9,8 @@
     </div>
 
     <template #footer>
-      <button @click="onCancel" class="mr-2">Cancel</button>
-      <button @click="onConfirm" class="bg-red-600 text-white px-3 py-1 rounded">Confirm</button>
+      <button @click="onCancel" class="mr-2">Cancelar</button>
+      <button @click="onConfirm" class="bg-red-600 text-white px-3 py-1 rounded">Confirmar</button>
     </template>
   </Modal>
 </template>

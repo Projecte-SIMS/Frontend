@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-8 animate-fade-in">
     <PageHeading
-      :title="isEditMode ? 'Edit User' : 'Create User'"
-      :description="isEditMode ? 'Update user details.' : 'Create a new user.'"
+      :title="isEditMode ? 'Editar Usuario' : 'Crear Usuario'"
+      :description="isEditMode ? 'Actualiza los datos del usuario.' : 'Crea un nuevo usuario.'"
     >
       <template #actions>
         <router-link
@@ -18,7 +18,7 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-          <span>Back</span>
+          <span>Volver</span>
         </router-link>
       </template>
     </PageHeading>
@@ -27,7 +27,7 @@
       v-if="loading && isEditMode"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
     >
-      <p class="text-slate-500 dark:text-slate-400">Loading user data...</p>
+      <p class="text-slate-500 dark:text-slate-400">Cargando datos del usuario...</p>
     </div>
 
     <div
@@ -37,32 +37,32 @@
       <form @submit.prevent="handleSubmit">
         <div class="p-8 space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <FormField label="Full name">
-              <FormInput v-model="formData.name" type="text" placeholder="Full name" required />
+            <FormField label="Nombre completo">
+              <FormInput v-model="formData.name" type="text" placeholder="Nombre completo" required />
             </FormField>
-            <FormField label="Username">
-              <FormInput v-model="formData.username" type="text" placeholder="Username" required />
+            <FormField label="Nombre de usuario">
+              <FormInput v-model="formData.username" type="text" placeholder="Nombre de usuario" required />
             </FormField>
-            <FormField label="Email">
-              <FormInput v-model="formData.email" type="email" placeholder="email@example.com" required />
+            <FormField label="Correo electrónico">
+              <FormInput v-model="formData.email" type="email" placeholder="correo@ejemplo.com" required />
             </FormField>
-            <FormField :label="isEditMode ? 'Password (optional)' : 'Password'">
+            <FormField :label="isEditMode ? 'Contraseña (opcional)' : 'Contraseña'">
               <FormInput
                 v-model="formData.password"
                 type="password"
-                :placeholder="isEditMode ? 'Leave blank to keep current' : 'Password'"
+                :placeholder="isEditMode ? 'Deja en blanco para mantener la actual' : 'Contraseña'"
                 :required="!isEditMode"
               />
             </FormField>
 
-            <FormField v-if="isCurrentUserAdmin" label="Role">
-              <FormSelect v-model="formData.role_id" :options="roleOptions" placeholder="Select role" />
+            <FormField v-if="isCurrentUserAdmin" label="Rol">
+              <FormSelect v-model="formData.role_id" :options="roleOptions" placeholder="Seleccionar rol" />
               <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                Admins can assign roles to users.
+                Los administradores pueden asignar roles a los usuarios.
               </p>
             </FormField>
-            <FormField label="Status">
-              <FormCheckbox v-model="formData.active" label="User is active" />
+            <FormField label="Estado">
+              <FormCheckbox v-model="formData.active" label="Usuario está activo" />
             </FormField>
           </div>
         </div>
@@ -74,7 +74,7 @@
             to="/admin/users"
             class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
           >
-            <span>Cancel</span>
+            <span>Cancelar</span>
           </router-link>
           <button
             type="submit"
@@ -95,7 +95,7 @@
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               ></path>
             </svg>
-            <span>{{ isSaving ? 'Saving...' : 'Save' }}</span>
+            <span>{{ isSaving ? 'Guardando...' : 'Guardar' }}</span>
           </button>
         </div>
       </form>
@@ -135,8 +135,8 @@ const formData = reactive<Partial<UserForm>>({
 const isSaving = ref(false)
 
 const roleOptions = [
-  { label: 'Client', value: '1' },
-  { label: 'Admin', value: '2' }
+  { label: 'Cliente', value: '1' },
+  { label: 'Administrador', value: '2' }
 ]
 
 onMounted(async () => {
@@ -153,7 +153,7 @@ onMounted(async () => {
         }
       }
     } catch (err) {
-      toast.error('Error loading user data.')
+      toast.error('Error al cargar los datos del usuario.')
       router.push('/admin/users')
     }
   }
@@ -177,19 +177,36 @@ const handleSubmit = async () => {
 
     if (isEditMode.value && userId.value) {
       await updateUser(userId.value, submitData)
-      toast.success('User updated successfully.')
+      toast.success('Usuario actualizado correctamente.')
     } else {
       await createUser(submitData as UserForm)
-      toast.success('User created successfully.')
+      toast.success('Usuario creado correctamente.')
     }
 
     await new Promise((resolve) => setTimeout(resolve, 1000))
     router.push('/admin/users')
   } catch (err: any) {
-    const errorMessage = err.response?.data?.message || 'An error occurred.'
+    const errorMessage = err.response?.data?.message || 'Ocurrió un error.'
     toast.error(errorMessage)
   } finally {
     isSaving.value = false
   }
 }
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

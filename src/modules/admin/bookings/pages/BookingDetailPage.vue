@@ -2,15 +2,15 @@
   <div class="space-y-8 animate-fade-in">
     <PageHeading
       v-if="booking"
-      :title="`Booking #${booking.id}`"
-      description="Detailed information about the booking."
+      :title="`Reserva #${booking.id}`"
+      description="Información detallada sobre la reserva."
     >
       <template #actions>
         <router-link
           :to="`/admin/bookings/${booking.id}/edit`"
           class="flex items-center space-x-2 bg-indigo-600 text-white hover:bg-indigo-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
         >
-          <span>Edit Booking</span>
+          <span>Editar Reserva</span>
         </router-link>
         <router-link
           to="/admin/bookings"
@@ -25,7 +25,7 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-          <span>Back to List</span>
+          <span>Volver a la lista</span>
         </router-link>
       </template>
     </PageHeading>
@@ -34,7 +34,7 @@
       v-if="loading"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
     >
-      <p class="text-slate-500 dark:text-slate-400">Loading booking details...</p>
+      <p class="text-slate-500 dark:text-slate-400">Cargando detalles de la reserva...</p>
     </div>
 
     <div
@@ -51,7 +51,7 @@
       <div class="p-8">
         <dl class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">User</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Usuario</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               <span v-if="booking.user">{{ booking.user.name }} ({{ booking.user.email }})</span>
               <span v-else class="text-gray-400">-</span>
@@ -59,7 +59,7 @@
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Vehicle</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Vehículo</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               <span v-if="booking.vehicle"
                 >{{ booking.vehicle.brand }} {{ booking.vehicle.model }} ({{
@@ -71,7 +71,7 @@
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Estado</dt>
             <dd class="mt-1">
               <span
                 :class="[
@@ -79,36 +79,36 @@
                   getStatusClasses(booking.status)
                 ]"
               >
-                {{ booking.status }}
+                {{ translateBookingStatus(booking.status) }}
               </span>
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Scheduled Start</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Inicio Programado</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               {{ formatDateTime(booking.scheduled_start) }}
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Scheduled End</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Fin Programado</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               {{ formatDateTime(booking.scheduled_end) }}
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Price</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Precio Total</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               {{ formatCurrency(booking.total_price) }}
             </dd>
           </div>
 
           <div v-if="booking.trip" class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Trip Duration</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Duración del Viaje</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-              {{ booking.trip.minutes_driven }} minutes
+              {{ booking.trip.minutes_driven }} min
             </dd>
           </div>
         </dl>
@@ -141,7 +141,7 @@ onMounted(async () => {
 })
 
 const formatDateTime = (value: string) => {
-  return new Date(value).toLocaleString('en-US', {
+  return new Date(value).toLocaleString('es-ES', {
     day: '2-digit',
     month: 'short',
     year: 'numeric',
@@ -150,10 +150,21 @@ const formatDateTime = (value: string) => {
   })
 }
 
+const translateBookingStatus = (s: string) => {
+  const map: Record<string, string> = {
+    active: 'Activa',
+    completed: 'Completada',
+    cancelled: 'Cancelada',
+    pending: 'Pendiente',
+    expired: 'Expirada'
+  }
+  return map[s] || s
+}
+
 const formatCurrency = (value: number) => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('es-ES', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'EUR'
   }).format(value)
 }
 
@@ -168,3 +179,20 @@ const getStatusClasses = (s: string) => {
   return map[s] || 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
 }
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

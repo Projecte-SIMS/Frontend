@@ -91,7 +91,7 @@
                     </div>
                     <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
                       <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Conexión</p>
-                      <p class="text-xs font-semibold" :class="v.online ? 'text-emerald-600' : 'text-rose-500'">{{ v.online ? 'ONLINE' : 'OFFLINE' }}</p>
+                      <p class="text-xs font-semibold" :class="v.online ? 'text-emerald-600' : 'text-rose-500'">{{ v.online ? 'EN LINEA' : 'SIN CONEXIÓN' }}</p>
                     </div>
                   </div>
 

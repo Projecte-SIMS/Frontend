@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8 animate-fade-in">
-    <PageHeading title="User Details" description="View user details.">
+    <PageHeading title="Detalles del Usuario" description="Ver los detalles del usuario.">
       <template #actions>
         <router-link
           to="/admin/users"
@@ -15,7 +15,7 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-          <span>Back</span>
+          <span>Volver</span>
         </router-link>
       </template>
     </PageHeading>
@@ -24,7 +24,7 @@
       v-if="loading"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
     >
-      <p class="text-slate-500 dark:text-slate-400">Loading user...</p>
+      <p class="text-slate-500 dark:text-slate-400">Cargando usuario...</p>
     </div>
 
     <div
@@ -41,22 +41,22 @@
       <div class="p-8">
         <dl class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Full name</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nombre completo</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ user.name }}</dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Username</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nombre de usuario</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ user.username || '-' }}</dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Correo electrónico</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ user.email }}</dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Role</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Rol</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               <span
                 v-if="user?.roles && user.roles.length > 0"
@@ -67,14 +67,20 @@
                     : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
                 "
               >
-                {{ user.roles[0].name }}
+                  {{
+                    user.roles[0].name === 'Admin'
+                      ? 'Administrador'
+                      : user.roles[0].name === 'Client'
+                        ? 'Cliente'
+                        : user.roles[0].name
+                  }}
               </span>
               <span v-else class="text-gray-400">-</span>
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Status</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Estado</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               <span
                 :class="[
@@ -84,18 +90,18 @@
                     : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200'
                 ]"
               >
-                {{ user.active ? 'Active' : 'Inactive' }}
+                  {{ user.active ? 'Activo' : 'Inactivo' }}
               </span>
             </dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Created at</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Creado el</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ formatDate(user.created_at) }}</dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Updated at</dt>
+              <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Actualizado el</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ formatDate(user.updated_at) }}</dd>
           </div>
         </dl>
@@ -117,7 +123,7 @@
               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
             ></path>
           </svg>
-          <span>Edit</span>
+          <span>Editar</span>
         </router-link>
         <button
           @click="openDeleteModal"
@@ -131,7 +137,7 @@
               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
             ></path>
           </svg>
-          <span>Delete</span>
+          <span>Eliminar</span>
         </button>
       </div>
     </div>
@@ -177,14 +183,14 @@ const loadUser = async () => {
   try {
     user.value = await getUser(userId.value)
   } catch (err: any) {
-    error.value = err.response?.data?.message || 'Error loading user'
+    error.value = err.response?.data?.message || 'Error al cargar el usuario.'
   } finally {
     loading.value = false
   }
 }
 
 const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
+  return new Date(dateString).toLocaleDateString('es-ES', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -202,3 +208,20 @@ const handleDeleteConfirmed = async () => {
   router.push('/admin/users')
 }
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

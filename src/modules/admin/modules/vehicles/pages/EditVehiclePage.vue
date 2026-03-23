@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-8 animate-fade-in">
-    <PageHeading title="Edit Vehicle" description="Update vehicle details.">
+    <PageHeading title="Editar Vehículo" description="Actualiza los detalles del vehículo.">
       <template #actions>
         <router-link
           to="/admin/vehicles"
@@ -15,7 +15,7 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-          <span>Back</span>
+          <span>Volver</span>
         </router-link>
       </template>
     </PageHeading>
@@ -24,7 +24,7 @@
       v-if="loadingVehicle"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
     >
-      <p class="text-slate-500 dark:text-slate-400">Loading vehicle data...</p>
+      <p class="text-slate-500 dark:text-slate-400">Cargando datos del vehículo...</p>
     </div>
 
     <div
@@ -34,7 +34,7 @@
       <form @submit.prevent="handleSubmit">
         <div class="p-8 space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <FormField label="License Plate" :error="errors.license_plate">
+            <FormField label="Matrícula" :error="errors.license_plate">
               <FormInput
                 v-model="form.license_plate"
                 placeholder="1234ABC"
@@ -42,16 +42,16 @@
               />
             </FormField>
 
-            <FormField label="Brand" :error="errors.brand">
-              <FormInput v-model="form.brand" placeholder="e.g., Toyota" @input="validateField('brand')" />
+            <FormField label="Marca" :error="errors.brand">
+              <FormInput v-model="form.brand" placeholder="p. ej., Toyota" @input="validateField('brand')" />
             </FormField>
 
-            <FormField label="Model" :error="errors.model">
-              <FormInput v-model="form.model" placeholder="e.g., Corolla" @input="validateField('model')" />
+            <FormField label="Modelo" :error="errors.model">
+              <FormInput v-model="form.model" placeholder="p. ej., Corolla" @input="validateField('model')" />
             </FormField>
 
-            <FormField label="Status">
-              <FormCheckbox v-model="form.active" label="Vehicle is active" />
+            <FormField label="Estado">
+              <FormCheckbox v-model="form.active" label="Vehículo está activo" />
             </FormField>
           </div>
           <p v-if="error" class="mt-4 text-sm text-red-500">{{ error }}</p>
@@ -64,7 +64,7 @@
             :to="`/admin/vehicles/${vehicleId}`"
             class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
           >
-            <span>Cancel</span>
+            <span>Cancelar</span>
           </router-link>
           <button
             type="submit"
@@ -85,7 +85,7 @@
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               ></path>
             </svg>
-            <span>{{ loading ? 'Saving...' : 'Save Changes' }}</span>
+            <span>{{ loading ? 'Guardando...' : 'Guardar Cambios' }}</span>
           </button>
         </div>
       </form>
@@ -149,22 +149,22 @@ function validate(): boolean {
   errors.model = null
 
   if (!form.license_plate.trim()) {
-    errors.license_plate = 'License plate is required.'
+    errors.license_plate = 'La matrícula es obligatoria.'
     isValid = false
   } else {
     const licensePlatePattern = /^\d{4}\s?[A-Z]{3}$/i
     if (!licensePlatePattern.test(form.license_plate.trim())) {
-      errors.license_plate = 'Invalid format. Use: 1234ABC.'
+      errors.license_plate = 'Formato inválido. Usa: 1234ABC.'
       isValid = false
     }
   }
 
   if (!form.brand.trim()) {
-    errors.brand = 'Brand is required.'
+    errors.brand = 'La marca es obligatoria.'
     isValid = false
   }
   if (!form.model.trim()) {
-    errors.model = 'Model is required.'
+    errors.model = 'El modelo es obligatorio.'
     isValid = false
   }
   return isValid

@@ -2,8 +2,8 @@
   <div class="space-y-8 animate-fade-in">
     <PageHeading
       v-if="currentRole"
-      :title="`${currentRole.name} Role Details`"
-      description="View full information and assigned permissions for this role."
+      :title="`${currentRole.name} - Detalles del Rol`"
+      description="Ver información completa y permisos asignados para este rol."
     >
       <template #actions>
         <router-link
@@ -19,7 +19,7 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-          <span>Back to Roles</span>
+          <span>Volver a Roles</span>
         </router-link>
       </template>
     </PageHeading>
@@ -28,7 +28,7 @@
       v-if="loading"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
     >
-      <p class="text-slate-500 dark:text-slate-400">Loading role details...</p>
+      <p class="text-slate-500 dark:text-slate-400">Cargando detalles del rol...</p>
     </div>
 
     <div
@@ -45,12 +45,12 @@
       <div class="p-8">
         <dl class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6">
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Role Name</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Nombre del rol</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">{{ currentRole.name }}</dd>
           </div>
 
           <div class="sm:col-span-1">
-            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Permissions</dt>
+            <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Permisos totales</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
               {{ currentRole.permissions?.length || 0 }}
             </dd>
@@ -59,7 +59,7 @@
       </div>
 
       <div class="border-t border-slate-200 dark:border-slate-800 p-8">
-        <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Assigned Permissions</h4>
+        <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-6">Permisos Asignados</h4>
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
             <thead class="bg-slate-50 dark:bg-slate-800">
@@ -68,25 +68,25 @@
                   scope="col"
                   class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                 >
-                  Module
+                  Módulo
                 </th>
                 <th
                   scope="col"
                   class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                 >
-                  View
+                  Ver
                 </th>
                 <th
                   scope="col"
                   class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                 >
-                  Manage
+                  Gestionar
                 </th>
                 <th
                   scope="col"
                   class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
                 >
-                  Delete
+                  Eliminar
                 </th>
               </tr>
             </thead>
@@ -138,16 +138,16 @@
           v-if="currentRole.name.toLowerCase() !== 'admin'"
           class="flex items-center space-x-2 bg-indigo-600 text-white hover:bg-indigo-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
         >
-          <span>Edit Role</span>
+          <span>Editar Rol</span>
         </router-link>
         <button
           v-if="currentRole.name.toLowerCase() !== 'admin'"
           @click="openDeleteModal"
           class="flex items-center space-x-2 bg-red-600 text-white hover:bg-red-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
         >
-          <span>Delete Role</span>
+          <span>Eliminar Rol</span>
         </button>
-        <span v-else class="text-slate-500 text-sm italic">System role - cannot be edited or deleted.</span>
+        <span v-else class="text-slate-500 text-sm italic">Rol del sistema: no se puede editar ni eliminar.</span>
       </div>
     </div>
 
@@ -195,3 +195,20 @@ onMounted(async () => {
   await getPermissions()
 })
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

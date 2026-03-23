@@ -12,7 +12,7 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Sistema Online</span>
+            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Sistema En línea</span>
           </div>
           
           <button 
@@ -294,7 +294,7 @@ const healthMetrics = computed(() => ({
   'Disponibles': { count: fleetStats.value.available, color: 'bg-emerald-500' },
   'Temp. Crítica': { count: fleetHealth.value.criticalTemp, color: 'bg-rose-500' },
   'Batería Baja': { count: fleetHealth.value.lowBattery, color: 'bg-amber-500' },
-  'Unidades Offline': { count: fleetHealth.value.offline, color: 'bg-slate-400' },
+  'Unidades Sin conexión': { count: fleetHealth.value.offline, color: 'bg-slate-400' },
 }))
 
 const primaryActions = [

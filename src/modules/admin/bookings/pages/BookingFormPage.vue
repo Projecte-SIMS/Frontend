@@ -1,8 +1,8 @@
 <template>
   <div class="space-y-8 animate-fade-in">
     <PageHeading
-      title="Edit Booking"
-      description="Update booking details."
+      title="Editar Reserva"
+      description="Actualiza los detalles de la reserva."
     >
       <template #actions>
         <router-link
@@ -18,7 +18,7 @@
           >
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
           </svg>
-          <span>Back</span>
+          <span>Volver</span>
         </router-link>
       </template>
     </PageHeading>
@@ -27,7 +27,7 @@
       v-if="loading"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-8 text-center"
     >
-      <p class="text-slate-500 dark:text-slate-400">Loading booking data...</p>
+      <p class="text-slate-500 dark:text-slate-400">Cargando datos de la reserva...</p>
     </div>
 
     <div
@@ -37,15 +37,15 @@
       <form @submit.prevent="handleSubmit">
         <div class="p-8 space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <FormField label="User ID (optional)">
-              <FormInput v-model="form.user_id" type="number" placeholder="e.g., 1" />
+            <FormField label="ID de Usuario (opcional)">
+              <FormInput v-model="form.user_id" type="number" placeholder="p. ej., 1" />
             </FormField>
 
-            <FormField label="Vehicle ID">
+            <FormField label="ID del Vehículo">
               <FormInput v-model="form.vehicle_id" type="number" required />
             </FormField>
 
-            <FormField label="Scheduled Start">
+            <FormField label="Inicio Programado">
               <input
                 v-model="form.scheduled_start"
                 type="datetime-local"
@@ -63,7 +63,7 @@
             to="/admin/bookings"
             class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
           >
-            <span>Cancel</span>
+            <span>Cancelar</span>
           </router-link>
           <button
             type="submit"
@@ -84,7 +84,7 @@
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               ></path>
             </svg>
-            <span>{{ saving ? 'Saving...' : 'Save Changes' }}</span>
+            <span>{{ saving ? 'Guardando...' : 'Guardar Cambios' }}</span>
           </button>
         </div>
       </form>
@@ -134,7 +134,7 @@ onMounted(async () => {
         form.scheduled_start = d.toISOString().slice(0, 16)
       }
     } catch (e) {
-      toastError('Error loading booking')
+      toastError('Error al cargar la reserva')
       router.push('/admin/bookings')
     }
   }
@@ -154,18 +154,35 @@ const handleSubmit = async () => {
     }
 
     if (!bookingId.value) {
-      toastError('Booking ID missing')
+      toastError('Falta el ID de la reserva')
       return
     }
 
     await updateBooking(bookingId.value, payload)
-    toastSuccess('Booking updated successfully')
+    toastSuccess('Reserva actualizada correctamente')
 
     router.push('/admin/bookings')
   } catch (e: any) {
-    toastError(e?.response?.data?.message || 'Error saving booking')
+    toastError(e?.response?.data?.message || 'Error al guardar la reserva')
   } finally {
     saving.value = false
   }
 }
 </script>
+
+<style scoped>
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
