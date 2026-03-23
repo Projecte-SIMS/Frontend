@@ -17,7 +17,7 @@ Este documento detalla la infraestructura tecnológica de SIMS Frontend y las de
 | Axios | 1.13.3 | Cliente HTTP |
 | Vue Router | 4.6.4 | Enrutamiento SPA |
 | Leaflet | 1.9.4 | Mapas interactivos |
-| Leaflet MarkerCluster | 1.5.3 | Agrupación de marcadores |
+| Leaflet MarkerCluster | 1.5.3 | Dependencia para clustering de marcadores (no usada en el código actual) |
 | HeadlessUI | 1.7.23 | Componentes accesibles |
 | HeroIcons | 2.2.0 | Iconos SVG |
 | vue3-toastify | 0.2.8 | Notificaciones toast |
@@ -58,8 +58,6 @@ src/
 │   └── iotService.ts    # Servicio IoT
 ├── router/              # Vue Router
 │   └── index.ts
-├── composables/         # Composables globales (vacío actualmente)
-├── types/               # Tipos globales (vacío actualmente)
 └── STYLE.css            # Estilos globales
 ```
 
@@ -86,9 +84,13 @@ apiClient.interceptors.request.use((config) => {
 })
 ```
 
-### 3.2. Redirección Basada en Roles (Router Guards)
+### 3.2. Redirección Basada en Autenticación (Router Guards)
 
-En `src/router/index.ts`, un guard global detecta si el usuario tiene rol "Admin" para redirigir a `/admin`. Los usuarios normales van a `/`.
+En `src/router/index.ts`, un guard global controla el acceso en función de la autenticación:
+- Si la ruta requiere auth y el usuario no está autenticado, redirige a `/login`.
+- Si el usuario está autenticado y accede a `/login`, redirige a `/admin`.
+
+La comprobación del rol para mostrar el área de administración se realiza en `src/modules/admin/layouts/AdminLayout.vue` mediante `user.roles`.
 
 ```typescript
 router.beforeEach(async (to, from, next) => {
@@ -108,9 +110,9 @@ router.beforeEach(async (to, from, next) => {
 })
 ```
 
-### 3.3. Mapas con Leaflet y Clustering
+### 3.3. Mapas con Leaflet
 
-Se utiliza Leaflet directamente sobre el DOM para máximo rendimiento con múltiples marcadores. Se implementa MarkerCluster para agrupación automática.
+Se utiliza Leaflet directamente sobre el DOM para máximo rendimiento con múltiples marcadores. En el código actual no se utiliza `MarkerCluster`; los mapas se renderizan con la lógica de cada página.
 
 - `MapPage.vue` - Mapa autenticado con distancia Haversine
 - `PublicMapPage.vue` - Mapa público sin login
@@ -118,16 +120,18 @@ Se utiliza Leaflet directamente sobre el DOM para máximo rendimiento con múlti
 
 ### 3.4. Chatbot con Contexto por Rol
 
-`ChatbotPage.vue` conecta con `/api/chatbot/chat`. El backend inyecta automáticamente un prompt según el rol del usuario. El frontend:
-- Muestra el rol actual en la interfaz
-- Envía solo mensajes user/assistant
-- Presenta mensajes de bienvenida personalizados
+`ChatbotPage.vue` conecta con `/api/chatbot/chat`. El frontend:
+- Calcula el rol del usuario (a partir de `user.roles[0].name`)
+- Muestra un mensaje de bienvenida adaptado al rol
+- Envía la conversación al endpoint, omitiendo cualquier mensaje `system`
 
-**Nota:** No es un sistema RAG puro con embeddings, sino un chatbot con contexto inyectado.
+**Nota:** No es un sistema RAG puro con embeddings; es un chatbot que envía el historial de conversación al backend.
 
 ### 3.5. Control de Vehículos IoT
 
-`ActiveVehicleControlPage.vue` permite encender/apagar vehículos desde una reserva activa usando el servicio `iotService.ts`.
+`ActiveVehicleControlPage.vue` permite encender/apagar el vehículo asociado a una reserva activa llamando a la API de reservas mediante `apiClient`:
+- `POST /reservations/{id}/on`
+- `POST /reservations/{id}/off`
 
 ---
 
@@ -136,7 +140,8 @@ Se utiliza Leaflet directamente sobre el DOM para máximo rendimiento con múlti
 ### api.ts
 ```typescript
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  withCredentials: true,
   headers: { 'Content-Type': 'application/json' }
 })
 ```
@@ -144,16 +149,16 @@ const apiClient = axios.create({
 ### iotService.ts
 ```typescript
 export const iotService = {
+  healthCheck(): Promise<{ ok: boolean; microservice: string }>,
   getDevices(): Promise<IoTDevice[]>,
-  getDevice(id: string): Promise<IoTDevice | null>,
-  pingDevice(id: string): Promise<boolean>,
-  turnOn(id: string): Promise<CommandResult>,
-  turnOff(id: string): Promise<CommandResult>,
-  sendCommand(id: string, action: string, relay?: number): Promise<CommandResult>,
+  getDevice(deviceId: string): Promise<IoTDevice | null>,
+  pingDevice(deviceId: string): Promise<boolean>,
+  turnOn(deviceId: string): Promise<CommandResult>,
+  turnOff(deviceId: string): Promise<CommandResult>,
+  sendCommand(deviceId: string, action: 'on' | 'off' | 'reboot', relay?: number): Promise<CommandResult>,
   getUnlinkedDevices(): Promise<IoTDevice[]>,
   getAvailableVehicles(): Promise<Vehicle[]>,
-  linkDeviceToVehicle(deviceId: string, vehicleId: number): Promise<LinkResult>,
-  healthCheck(): Promise<{ ok: boolean }>
+  linkDeviceToVehicle(deviceId: string, vehicleId: number): Promise<LinkResult>
 }
 ```
 

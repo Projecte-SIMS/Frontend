@@ -41,11 +41,7 @@ Interfaz optimizada para la movilidad y la inmediatez:
 
 ### 1.3. Maintenance (Mantenimiento)
 
-Permisos específicos para gestión técnica:
-
-- **Ver vehículos**: Acceso a listado de flota
-- **Gestionar vehículos**: Actualizar estado técnico y disponibilidad
-- **Chatbot**: Contexto especializado en mantenimiento
+En este frontend, el rol `Maintenance` se utiliza principalmente para adaptar el mensaje de bienvenida del chatbot.
 
 ---
 
@@ -70,11 +66,11 @@ Permisos específicos para gestión técnica:
 Desde `ActiveVehicleControlPage.vue`:
 
 ```typescript
-// Encender vehículo de reserva activa
-POST /api/reservations/{id}/on
+// Encender vehículo asociado a una reserva activa
+POST /reservations/{id}/on
 
-// Apagar vehículo de reserva activa
-POST /api/reservations/{id}/off
+// Apagar vehículo asociado a una reserva activa
+POST /reservations/{id}/off
 ```
 
 ### 2.3. Sistema de Tickets
@@ -89,7 +85,7 @@ POST /api/reservations/{id}/off
 
 ### 2.4. Chatbot con IA
 
-`ChatbotPage.vue` envía mensajes a `/api/chatbot/chat`. El backend inyecta contexto según rol:
+`ChatbotPage.vue` envía la conversación al endpoint `/api/chatbot/chat`. El rol del usuario se usa para construir el mensaje de bienvenida inicial:
 
 | Rol | Contexto |
 |-----|----------|
@@ -97,7 +93,7 @@ POST /api/reservations/{id}/off
 | Client | Reservas, uso del servicio, dudas |
 | Maintenance | Procedimientos técnicos, mantenimiento |
 
-**Nota:** No es RAG puro. Es un proxy a LLM con contexto inyectado.
+**Nota:** No es RAG puro; es un chatbot que envía el historial de conversación al backend.
 
 ---
 

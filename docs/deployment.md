@@ -36,15 +36,20 @@ Este documento detalla los pasos para poner en marcha el entorno de desarrollo y
 ```bash
 npm run build
 ```
-Este comando activa el compilador de TypeScript (`vue-tsc`) y genera la carpeta `dist/` con los archivos estáticos optimizados mediante Vite 7.3.1.
+Este comando ejecuta `vite build` y genera la carpeta `dist/` con los archivos estáticos optimizados mediante Vite 7.3.1.
+
+Opcionalmente, puedes ejecutar el chequeo de tipos con:
+```bash
+npm run type-check
+```
 
 ### Configuración del Servidor Web (Nginx)
 Para que el enrutamiento de la SPA funcione correctamente, Nginx debe redirigir todas las peticiones a `index.html`:
 ```nginx
 server {
     listen 80;
-    server_name sims-frontend.example.com;
-    root /var/www/sims-frontend/dist;
+    server_name localhost;
+    root /usr/share/nginx/html;
     index index.html;
 
     location / {

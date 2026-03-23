@@ -121,32 +121,32 @@ src/
 
 ## Estado Actual del Frontend
 
-### ✅ Completado
+### Completado
 
 | Funcionalidad | Estado |
 |---------------|--------|
-| Login y registro de usuarios | ✅ |
-| Dashboard de usuario | ✅ |
-| Edición de perfil | ✅ |
-| Mapa de vehículos (Leaflet) | ✅ |
-| Mapa público sin autenticación | ✅ |
-| Lista de vehículos | ✅ |
-| Sistema de reservas | ✅ |
-| Control de vehículo activo (on/off) | ✅ |
-| Sistema de tickets/soporte | ✅ |
-| Chatbot con contexto por rol | ✅ |
-| Panel Admin completo | ✅ |
-| CRUD Usuarios (Admin) | ✅ |
-| CRUD Vehículos (Admin) | ✅ |
-| CRUD Roles/Permisos (Admin) | ✅ |
-| Gestión de reservas (Admin) | ✅ |
-| Gestión de tickets (Admin) | ✅ |
-| Página IoT Devices (Admin) | ✅ |
-| Fleet Health (Admin) | ✅ |
-| Responsive design | ✅ |
-| Notificaciones (toast) | ✅ |
+| Login y registro de usuarios | Sí |
+| Dashboard de usuario | Sí |
+| Edición de perfil | Sí |
+| Mapa de vehículos (Leaflet) | Sí |
+| Mapa público sin autenticación | Sí |
+| Lista de vehículos | Sí |
+| Sistema de reservas | Sí |
+| Control de vehículo activo (on/off) | Sí |
+| Sistema de tickets/soporte | Sí |
+| Chatbot con mensaje de bienvenida según rol | Sí |
+| Panel Admin completo | Sí |
+| CRUD Usuarios (Admin) | Sí |
+| CRUD Vehículos (Admin) | Sí |
+| CRUD Roles/Permisos (Admin) | Sí |
+| Gestión de reservas (Admin) | Sí |
+| Gestión de tickets (Admin) | Sí |
+| Página IoT Devices (Admin) | Sí |
+| Fleet Health (Admin) | Sí |
+| Diseño responsive | Sí |
+| Notificaciones (toast) | Sí |
 
-### ⚠️ Pendiente / Mejoras
+### Pendiente / Mejoras
 
 | Tarea | Prioridad |
 |-------|-----------|
@@ -224,21 +224,20 @@ npm run dev
 npm run build
 ```
 
-### Docker (Despliegue Unificado)
+### Docker (Despliegue con Docker Compose - Desarrollo)
 
-El frontend está totalmente integrado en el ecosistema Docker del proyecto. Para levantarlo junto con el backend desde la raíz:
+Este repositorio incluye `docker-compose.yml` para levantar el frontend. Si lo usas junto con un backend externo, asegúrate de configurar `VITE_API_URL` para apuntar a la API.
 
 ```bash
-docker compose up -d --build
+docker compose up -d --build frontend-dev
 ```
 
-### Docker (Despliegue Independiente)
+### Docker (Producción - Nginx)
 
-Este repositorio incluye su propio `docker-compose.yml` para levantar el frontend de forma aislada:
+Para desplegar la versión optimizada (Nginx):
 
 ```bash
-# Dentro de la carpeta project-sims-frontend/
-docker compose up -d --build
+docker compose up -d --build frontend-prod
 ```
 
 **Modos de uso:**
