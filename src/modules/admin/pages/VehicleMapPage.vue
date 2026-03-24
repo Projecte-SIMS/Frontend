@@ -51,12 +51,19 @@
       <div class="flex-1 relative mt-4">
         <!-- Panel Lateral de Gestión -->
         <div class="absolute top-0 right-0 bottom-0 w-full max-w-sm pointer-events-auto flex flex-col gap-4">
-          <div class="flex-1 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
-            <div class="px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800">
-              <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Control de Flota en Vivo</h2>
+          <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
+            <div @click="isFleetListCollapsed = !isFleetListCollapsed" class="px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 cursor-pointer group">
+              <div class="flex justify-between items-center">
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Control de Flota en Vivo</h2>
+                <ChevronUpIcon class="size-5 text-slate-400 group-hover:text-indigo-500 transition-transform duration-300" :class="{'rotate-180': isFleetListCollapsed}" />
+              </div>
             </div>
 
-            <div class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar">
+            <div 
+              class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar transition-all duration-300 ease-in-out"
+              :class="isFleetListCollapsed ? 'max-h-0 py-0' : 'max-h-[60vh]'"
+            >
+              <!-- Contenido de la lista -->
               <div 
                 v-for="v in filteredVehicles" 
                 :key="v.id"
@@ -66,40 +73,38 @@
               >
                 <div class="flex items-center justify-between gap-3">
                   <div class="flex items-center gap-3 min-w-0">
-                    <div class="size-10 rounded-lg flex items-center justify-center shrink-0" :class="getStatusClasses(v.status).bg_icon">
-                      <TruckIcon class="size-5" :class="getStatusClasses(v.status).text" />
+                    <div class="size-10 rounded-lg flex items-center justify-center shrink-0" :class="getStatusClasses(v).bg_icon">
+                      <TruckIcon class="size-5" :class="getStatusClasses(v).text" />
                     </div>
                     <div class="min-w-0">
-                      <div class="flex items-center gap-2">
-                        <p class="text-sm font-black text-slate-900 dark:text-white truncate uppercase tracking-tight">{{ v.plate }}</p>
+                      <p class="text-sm font-black text-slate-900 dark:text-white truncate uppercase tracking-tight">{{ v.plate }}</p>
+                      <div class="flex items-center gap-2 mt-1.5">
+                        <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border" :class="getStatusClasses(v).badge">
+                          {{ translateStatus(v) }}
+                        </span>
+                        <span class="flex items-center gap-1.5 text-[9px] font-bold uppercase" :class="v.online !== false ? 'text-emerald-600' : 'text-slate-400'">
+                          <span class="size-1.5 rounded-full" :class="v.online !== false ? 'bg-emerald-500' : 'bg-slate-400'"></span>
+                          {{ v.online !== false ? 'CONECTADO' : 'OFFLINE' }}
+                        </span>
                       </div>
-                      <p class="text-xs text-slate-500 font-medium uppercase truncate">{{ v.brand }} {{ v.model }}</p>
                     </div>
-                  </div>
-                  <div class="text-right shrink-0">
-                    <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border" :class="getStatusClasses(v.status).badge">
-                      {{ translateStatus(v.status) }}
-                    </span>
                   </div>
                 </div>
                 
                 <div v-if="selectedVehicle?.id === v.id" class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-4 animate-fade-in">
-                  <div class="grid grid-cols-2 gap-2">
-                    <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Telemetría</p>
-                      <p class="text-xs font-semibold text-slate-700 dark:text-slate-300">{{ v.speed?.toFixed(0) }} km/h · {{ v.rpm }} rpm</p>
-                    </div>
-                    <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
-                      <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Conexión</p>
-                      <p class="text-xs font-semibold" :class="v.online ? 'text-emerald-600' : 'text-rose-500'">{{ v.online ? 'EN LINEA' : 'SIN CONEXIÓN' }}</p>
+                  <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 col-span-2">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Telemetría en Vivo</p>
+                    <div class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      <span>{{ v.speed?.toFixed(0) }} km/h · {{ v.rpm }} rpm</span>
+                      <span :class="(v.battery_voltage || 12.6) < 11.8 ? 'text-rose-500' : ''">{{ v.battery_voltage?.toFixed(1) || 'N/A' }}V</span>
                     </div>
                   </div>
 
-                  <div class="grid grid-cols-2 gap-2">
-                    <button @click.stop="sendCommand(v, 'on')" :disabled="!v.online || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
+                  <div class="grid grid-cols-2 gap-2 mt-2">
+                    <button @click.stop="sendCommand(v, 'on')" :disabled="v.online === false || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
                       <PlayIcon class="size-3" /> Encender
                     </button>
-                    <button @click.stop="sendCommand(v, 'off')" :disabled="!v.online || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-rose-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-rose-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
+                    <button @click.stop="sendCommand(v, 'off')" :disabled="v.online === false || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-rose-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-rose-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
                       <PowerIcon class="size-3" /> Apagar
                     </button>
                   </div>
@@ -130,11 +135,12 @@ import { useMap } from '@/modules/map/composables/useMap'
 import apiClient from '@/services/api'
 import {
   MagnifyingGlassIcon, ArrowPathIcon, TruckIcon, PlayIcon, PowerIcon,
-  XCircleIcon, CheckCircleIcon
+  XCircleIcon, CheckCircleIcon, ChevronUpIcon
 } from '@heroicons/vue/24/outline'
 
 const { mapContainer, initMap, fetchVehicles, centerOnVehicle, destroyMap, setSearchQuery, selectedVehicle, rawVehicles } = useMap()
 
+const isFleetListCollapsed = ref(false)
 const search = ref('')
 const isRefreshing = ref(false)
 const commandLoading = ref<string | null>(null)
@@ -146,7 +152,7 @@ const showToast = (message: string, type: 'success' | 'error' = 'success') => {
 }
 
 const stats = computed(() => ({
-  available: rawVehicles.value.filter(v => v.status === 'available').length,
+  available: rawVehicles.value.filter(v => v.status === 'available' && v.online !== false).length,
   reserved: rawVehicles.value.filter(v => v.status === 'reserved').length,
   running: rawVehicles.value.filter(v => v.status === 'running').length,
 }))
@@ -158,18 +164,23 @@ const filteredVehicles = computed(() => {
 
 watch(search, (v) => setSearchQuery(v))
 
-const getStatusClasses = (s: string) => {
+const getStatusClasses = (v: any) => {
+  const isOnline = v.online !== false;
+  if (!isOnline) {
+    return { badge: 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:border-slate-700', bg_icon: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-500' }
+  }
   const map: any = { 
     running: { badge: 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400', bg_icon: 'bg-rose-50 dark:bg-rose-900/20', text: 'text-rose-600' },
     reserved: { badge: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400', bg_icon: 'bg-amber-50 dark:bg-amber-900/20', text: 'text-amber-600' },
     available: { badge: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400', bg_icon: 'bg-emerald-50 dark:bg-emerald-900/20', text: 'text-emerald-600' }
   }
-  return map[s] || { badge: 'bg-slate-50 text-slate-600 border-slate-200', bg_icon: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-500' }
+  return map[v.status] || { badge: 'bg-slate-50 text-slate-600 border-slate-200', bg_icon: 'bg-slate-100 dark:bg-slate-800', text: 'text-slate-500' }
 }
 
-const translateStatus = (s: string) => {
+const translateStatus = (v: any) => {
+  if (v.online === false) return 'Desconectado';
   const map: any = { running: 'En ruta', reserved: 'Reservado', available: 'Libre' }
-  return map[s] || s
+  return map[v.status] || v.status
 }
 
 const sendCommand = async (vehicle: any, action: string) => {
@@ -248,6 +259,9 @@ onUnmounted(() => {
 }
 .dark :deep(.leaflet-popup-tip) {
   background: #1e293b;
+}
+:deep(.leaflet-marker-icon) {
+  transition: transform 0.5s ease-out;
 }
 :deep(.marker-pin) {
   width: 40px;

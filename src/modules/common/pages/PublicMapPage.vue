@@ -58,6 +58,7 @@ import 'leaflet/dist/leaflet.css'
 interface Vehicle {
   id: number
   plate: string
+  license_plate?: string
   brand: string
   model: string
   latitude: number

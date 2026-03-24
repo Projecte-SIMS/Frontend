@@ -305,7 +305,7 @@ const primaryActions = [
 
 const fleetStats = computed(() => {
   const total = vehiclesPagination.value.total || vehicles.value.length
-  const available = vehicles.value.filter((v: any) => !v.active).length
+  const available = vehicles.value.filter((v: any) => v.status === 'available' && v.online === true).length
   return { total, available }
 })
 

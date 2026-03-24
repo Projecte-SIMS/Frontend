@@ -367,7 +367,7 @@ const filteredVehicles = computed(() => {
   
   // Filtrar por estado
   if (filterStatus.value === 'available') {
-    result = result.filter(v => !v.mongo_active && !v.is_mine && v.online !== false)
+    result = result.filter(v => !v.mongo_active && !v.is_mine && v.online === true)
   } else if (filterStatus.value === 'in_use') {
     result = result.filter(v => v.mongo_active)
   }

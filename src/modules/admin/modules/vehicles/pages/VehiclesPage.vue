@@ -40,6 +40,7 @@
           <option value="available">DISPONIBLE</option>
           <option value="reserved">RESERVADO</option>
           <option value="running">EN RUTA</option>
+          <option value="offline">FUERA DE SERVICIO (OFFLINE)</option>
         </select>
       </div>
       <div class="flex items-center justify-end gap-3">
@@ -65,6 +66,7 @@
             <span :class="getStatusClasses('available')" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">Disponible</span>
             <span :class="getStatusClasses('reserved')" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">Reservado</span>
             <span :class="getStatusClasses('running')" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">En Ruta</span>
+            <span :class="getStatusClasses('offline')" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">Offline</span>
           </div>
         </div>
         <div>
@@ -295,6 +297,7 @@ const getStatusClasses = (s?: string) => {
     running: 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/30 dark:text-rose-400 dark:border-rose-800',
     reserved: 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800',
     available: 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800',
+    offline: 'bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-500 dark:border-slate-700',
   }
   return map[s || ''] || 'bg-slate-50 text-slate-600 border-slate-200'
 }
@@ -304,6 +307,7 @@ const translateStatus = (s?: string) => {
     running: 'En Ruta',
     reserved: 'Reservado',
     available: 'Disponible',
+    offline: 'Sin Conexión',
   }
   return map[s || ''] || s || 'N/D'
 }
@@ -313,6 +317,7 @@ const getOperationalStatusHint = (s?: string) => {
     running: 'Vehículo actualmente en uso',
     reserved: 'Apartado para una reserva activa',
     available: 'Listo para nueva reserva',
+    offline: 'Dispositivo IoT desconectado o sin señal',
   }
   return map[s || ''] || 'Sin telemetría de estado'
 }
