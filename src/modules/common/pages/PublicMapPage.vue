@@ -33,8 +33,8 @@
             class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition"
           >
             <div class="flex items-center gap-2">
-              <span class="w-3 h-3 rounded-full bg-green-500"></span>
-              <span class="font-medium text-gray-900 dark:text-white">{{ v.plate }}</span>
+              <span :class="v.online !== false ? 'bg-green-500' : 'bg-gray-400'" class="w-3 h-3 rounded-full"></span>
+              <span class="font-medium text-gray-900 dark:text-white">{{ v.plate || v.license_plate }}</span>
             </div>
             <div class="text-sm text-gray-500">{{ v.brand }} {{ v.model }}</div>
           </li>
@@ -58,11 +58,13 @@ import 'leaflet/dist/leaflet.css'
 interface Vehicle {
   id: number
   plate: string
+  license_plate?: string
   brand: string
   model: string
   latitude: number
   longitude: number
   available: boolean
+  online?: boolean
 }
 
 const mapContainer = ref<HTMLElement | null>(null)
@@ -107,12 +109,13 @@ function addMarkers() {
 
   vehicles.value.forEach(v => {
     if (v.latitude && v.longitude) {
+      const isOnline = v.online !== false;
       const icon = L.divIcon({
         className: 'vehicle-marker',
         html: `<div style="
           width: 30px; 
           height: 30px; 
-          background: #22c55e; 
+          background: ${isOnline ? '#22c55e' : '#94a3b8'}; 
           border: 3px solid white; 
           border-radius: 50%; 
           box-shadow: 0 2px 8px rgba(0,0,0,0.3);
@@ -131,7 +134,9 @@ function addMarkers() {
           <div style="text-align: center; padding: 8px;">
             <strong>${v.plate}</strong><br>
             <span style="color: #666;">${v.brand} ${v.model}</span><br>
-            <span style="color: #22c55e; font-weight: bold;">✓ Disponible</span><br>
+            ${isOnline 
+              ? '<span style="color: #22c55e; font-weight: bold;">✓ Disponible</span><br>' 
+              : '<span style="color: #94a3b8; font-weight: bold;">✕ Sin conexión</span><br>'}
             <a href="/login" style="color: #6366f1; text-decoration: underline;">Inicia sesión para reservar</a>
           </div>
         `)

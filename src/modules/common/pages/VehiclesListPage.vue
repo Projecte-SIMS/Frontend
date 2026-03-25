@@ -132,6 +132,13 @@
           <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
           <div class="absolute top-3 left-3 flex gap-2">
             <span 
+              v-if="vehicle.online === false"
+              class="bg-gray-500 px-2.5 py-1 rounded-lg text-white text-[10px] font-black uppercase tracking-widest shadow-lg"
+            >
+              Desconectado
+            </span>
+            <span 
+              v-else
               :class="vehicle.mongo_active ? 'bg-red-500' : (vehicle.is_mine ? 'bg-amber-500' : 'bg-green-500')"
               class="px-2.5 py-1 rounded-lg text-white text-[10px] font-black uppercase tracking-widest shadow-lg"
             >
@@ -174,10 +181,10 @@
             </button>
             <button 
               @click="openConfirm(vehicle)"
-              :disabled="vehicle.is_mine || vehicle.mongo_active || hasActiveBooking"
+              :disabled="vehicle.is_mine || vehicle.mongo_active || hasActiveBooking || vehicle.online === false"
               class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
             >
-              {{ vehicle.mongo_active ? 'En uso' : (vehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite' : 'Reservar')) }}
+              {{ vehicle.online === false ? 'No disponible' : (vehicle.mongo_active ? 'En uso' : (vehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite' : 'Reservar'))) }}
             </button>
           </div>
         </div>
@@ -214,7 +221,8 @@
             </div>
             <!-- Badge de estado -->
             <div class="absolute top-4 right-4">
-              <span v-if="selectedVehicle?.mongo_active" class="px-3 py-1 rounded-full bg-red-500/90 text-white text-xs font-bold">En uso</span>
+              <span v-if="selectedVehicle?.online === false" class="px-3 py-1 rounded-full bg-gray-500/90 text-white text-xs font-bold">Desconectado</span>
+              <span v-else-if="selectedVehicle?.mongo_active" class="px-3 py-1 rounded-full bg-red-500/90 text-white text-xs font-bold">En uso</span>
               <span v-else-if="selectedVehicle?.is_mine" class="px-3 py-1 rounded-full bg-amber-500/90 text-white text-xs font-bold">Tu reserva</span>
               <span v-else class="px-3 py-1 rounded-full bg-emerald-500/90 text-white text-xs font-bold">Disponible</span>
             </div>
@@ -267,10 +275,10 @@
         <div class="p-5 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50">
           <button 
             @click="openConfirm(selectedVehicle)"
-            :disabled="selectedVehicle?.is_mine || selectedVehicle?.mongo_active || hasActiveBooking"
+            :disabled="selectedVehicle?.is_mine || selectedVehicle?.mongo_active || hasActiveBooking || selectedVehicle?.online === false"
             class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black text-sm uppercase tracking-widest hover:from-indigo-700 hover:to-purple-700 shadow-xl shadow-indigo-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
           >
-            {{ selectedVehicle?.mongo_active ? 'Vehículo en uso' : (selectedVehicle?.is_mine ? 'Ya tienes este vehículo' : (hasActiveBooking ? 'Finaliza tu reserva actual' : 'Reservar ahora')) }}
+            {{ selectedVehicle?.online === false ? 'No disponible' : (selectedVehicle?.mongo_active ? 'Vehículo en uso' : (selectedVehicle?.is_mine ? 'Ya tienes este vehículo' : (hasActiveBooking ? 'Finaliza tu reserva actual' : 'Reservar ahora'))) }}
           </button>
         </div>
       </div>
@@ -359,7 +367,7 @@ const filteredVehicles = computed(() => {
   
   // Filtrar por estado
   if (filterStatus.value === 'available') {
-    result = result.filter(v => !v.mongo_active && !v.is_mine)
+    result = result.filter(v => !v.mongo_active && !v.is_mine && v.online === true)
   } else if (filterStatus.value === 'in_use') {
     result = result.filter(v => v.mongo_active)
   }

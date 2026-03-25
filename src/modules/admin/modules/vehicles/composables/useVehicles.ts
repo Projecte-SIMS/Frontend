@@ -20,6 +20,7 @@ export function useVehicles() {
       const params: Record<string, any> = { page, per_page: pagination.value.per_page }
       if (filters.search) params.search = filters.search
       if (filters.active !== undefined) params.active = filters.active
+      if (filters.status) params.status = filters.status
 
       const response = await api.get<VehiclePagination>('/admin/vehicles', { params })
       vehicles.value = response.data.data

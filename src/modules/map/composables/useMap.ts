@@ -133,9 +133,9 @@ const initMap = () => {
   map.value = L.map(mapContainer.value, {
     zoomControl: false,
     preferCanvas: true,
-    zoomAnimation: false,
-    fadeAnimation: false,
-    markerZoomAnimation: false
+    zoomAnimation: true, // Habilitado
+    fadeAnimation: true, // Habilitado
+    markerZoomAnimation: true // Habilitado
   }).setView([41.3851, 2.1734], 13)
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -148,12 +148,12 @@ const initMap = () => {
   clusterGroup = L.markerClusterGroup({
     showCoverageOnHover: false,
     maxClusterRadius: 40,
-    animate: false,
-    animateAddingMarkers: false,
+    animate: true, // Habilitado
+    animateAddingMarkers: true, // Habilitado
     disableClusteringAtZoom: 18,
     spiderfyOnMaxZoom: true,
-    removeOutsideVisibleBounds: false,
-    chunkedLoading: false,
+    removeOutsideVisibleBounds: true, // Optimización: quitar marcadores fuera de vista
+    chunkedLoading: true, // Optimización: cargar en lotes
     zoomToBoundsOnClick: true,
     iconCreateFunction: function(cluster: any) {
       const childCount = cluster.getChildCount();

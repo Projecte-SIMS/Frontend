@@ -6,6 +6,10 @@ export interface IoTDevice {
   name: string
   hardware_id?: string
   online: boolean
+  vehicle_exists?: boolean
+  is_orphan?: boolean
+  vehicle_id?: number
+  vehicle_name?: string
   telemetry: {
     latitude: number
     longitude: number
@@ -57,7 +61,7 @@ export const iotService = {
    * Obtener todos los dispositivos IoT
    */
   async getDevices(): Promise<IoTDevice[]> {
-    const response = await api.get('/iot/devices')
+    const response = await api.get('/admin/iot/devices')
     return response.data
   },
 
@@ -175,6 +179,53 @@ export const iotService = {
       return { 
         success: false, 
         error: error.response?.data?.error || 'Error al vincular dispositivo' 
+      }
+    }
+  },
+
+  /**
+   * Desvincular dispositivo IoT (solo admin)
+   */
+  async unlinkDevice(deviceId: string): Promise<CommandResult> {
+    try {
+      const response = await api.post(`/admin/iot/devices/${deviceId}/unlink`)
+      return { success: true, result: response.data.result }
+    } catch (error: any) {
+      return { 
+        success: false, 
+        error: error.response?.data?.error || 'Error al desvincular dispositivo' 
+      }
+    }
+  },
+
+  /**
+   * Eliminar dispositivo IoT (solo admin)
+   */
+  async deleteDevice(deviceId: string): Promise<boolean> {
+    try {
+      await api.delete(`/admin/iot/devices/${deviceId}`)
+      return true
+    } catch {
+      return false
+    }
+  },
+
+  /**
+   * Crear vehículo y vincular dispositivo automáticamente (solo admin)
+   */
+  async createVehicleAndLink(deviceId: string, data: { license_plate: string; brand: string; model: string; active?: boolean }): Promise<LinkResult> {
+    try {
+      const response = await api.post(`/admin/iot/devices/${deviceId}/create-vehicle`, data)
+      return { 
+        success: true, 
+        device_id: deviceId,
+        vehicle_id: response.data.vehicle.id,
+        license_plate: response.data.vehicle.license_plate
+      }
+    } catch (error: any) {
+      return { 
+        success: false, 
+        error: error.response?.data?.error || error.response?.data?.message || 'Error al crear vehículo y vincular' 
       }
     }
   }

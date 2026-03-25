@@ -130,10 +130,10 @@
 
                 <button 
                   @click="openConfirm" 
-                  :disabled="selectedVehicle.is_mine || hasActiveBooking" 
+                  :disabled="selectedVehicle.is_mine || hasActiveBooking || selectedVehicle.online === false" 
                   class="w-full py-2 rounded-xl bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale"
                 >
-                  {{ selectedVehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite alcanzado' : 'Reservar ahora') }}
+                  {{ selectedVehicle.online === false ? 'No disponible' : (selectedVehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite alcanzado' : 'Reservar ahora')) }}
                 </button>
               </div>
             </div>
@@ -215,7 +215,7 @@ const formatDistance = (meters?: number) => {
 }
 
 const filteredNearby = computed(() => {
-  return nearbyAvailable.value.filter(v => !v.mongo_active)
+  return nearbyAvailable.value.filter(v => !v.mongo_active && v.online !== false)
 })
 
 const refresh = async () => {
