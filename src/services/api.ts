@@ -1,7 +1,22 @@
 import axios from 'axios'
 import showToast from '@/modules/common/composables/useToast'
 
-// Base URL de la API (Vercel la lee de VITE_API_URL en el panel)
+// Get tenant from URL query param or localStorage
+function getCurrentTenant(): string | null {
+  // Check URL first
+  const urlParams = new URLSearchParams(window.location.search)
+  const tenantFromUrl = urlParams.get('tenant')
+  
+  if (tenantFromUrl) {
+    localStorage.setItem('current_tenant', tenantFromUrl)
+    return tenantFromUrl
+  }
+  
+  // Fallback to localStorage
+  return localStorage.getItem('current_tenant')
+}
+
+// Base URL de la API
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
   withCredentials: true,
@@ -10,7 +25,7 @@ const apiClient = axios.create({
   }
 })
 
-// Interceptor to add token to all requests
+// Interceptor to add token and tenant to all requests
 apiClient.interceptors.request.use(
   (config) => {
     // Get token from cookies
@@ -21,6 +36,12 @@ apiClient.interceptors.request.use(
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
+    }
+
+    // Add tenant header
+    const tenant = getCurrentTenant()
+    if (tenant) {
+      config.headers['X-Tenant'] = tenant
     }
 
     return config
@@ -35,4 +56,6 @@ apiClient.interceptors.request.use(
     return Promise.reject(error)
   }
 )
+
+export { getCurrentTenant }
 export default apiClient
