@@ -8,6 +8,8 @@ import NotFoundPage from '@/modules/common/pages/NotFoundPage.vue'
 import { userRoutes } from '@/modules/admin/modules/users/router'
 import { vehicleRoutes } from '@/modules/admin/modules/vehicles/router'
 import { rolesRoutes } from '@/modules/admin/modules/roles/router'
+import { superAdminRoutes } from '@/modules/superadmin/router'
+import { centralApi } from '@/services/centralApi'
 
 const routes: RouteRecordRaw[] = [
   // Ruta PÚBLICA para ver el mapa de vehículos disponibles (sin login)
@@ -96,6 +98,7 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   ...authRoutes,
+  ...superAdminRoutes,
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFoundPage }
 ]
@@ -109,6 +112,13 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const { isAuthenticated, fetchUser, getToken } = useAuth()
   const requiresAuth = to.meta.requiresAuth
+  const requiresCentralAuth = to.meta.requiresCentralAuth
+
+  // Check central auth for superadmin routes
+  if (requiresCentralAuth && !centralApi.isAuthenticated()) {
+    next('/superadmin/login')
+    return
+  }
 
   // If there's a token but no user data, try to fetch user
   if (getToken() && !isAuthenticated.value) {
