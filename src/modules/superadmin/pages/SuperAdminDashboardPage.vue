@@ -25,12 +25,12 @@
           <div class="text-3xl font-bold text-white mt-1">{{ tenants.length }}</div>
         </div>
         <div class="bg-gray-800 rounded-xl p-6">
-          <div class="text-gray-400 text-sm">Dominios Activos</div>
-          <div class="text-3xl font-bold text-white mt-1">{{ totalDomains }}</div>
+          <div class="text-gray-400 text-sm">Estado Sistema</div>
+          <div class="text-3xl font-bold text-green-400 mt-1">Activo</div>
         </div>
         <div class="bg-gray-800 rounded-xl p-6">
-          <div class="text-gray-400 text-sm">Estado</div>
-          <div class="text-3xl font-bold text-green-400 mt-1">Activo</div>
+          <div class="text-gray-400 text-sm">Versión</div>
+          <div class="text-3xl font-bold text-white mt-1">1.0</div>
         </div>
       </div>
 
@@ -96,6 +96,12 @@
               </div>
               <div class="flex items-center gap-2">
                 <button
+                  @click="showResetPassword(tenant.id)"
+                  class="px-3 py-1 text-sm bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-400 rounded transition-colors"
+                >
+                  🔑 Reset Pass
+                </button>
+                <button
                   @click="confirmDelete(tenant.id)"
                   class="px-3 py-1 text-sm bg-red-600/20 hover:bg-red-600/40 text-red-400 rounded transition-colors"
                 >
@@ -103,34 +109,90 @@
                 </button>
               </div>
             </div>
+            
+            <!-- Admin Info -->
+            <div class="mt-3 p-3 bg-gray-900 rounded-lg">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <div class="text-xs text-gray-500 mb-1">👤 Admin Usuario:</div>
+                  <div class="text-white font-mono text-sm">{{ tenant.admin_email || 'admin@sims.com' }}</div>
+                </div>
+                <div>
+                  <div class="text-xs text-gray-500 mb-1">🔐 Password por defecto:</div>
+                  <div class="text-yellow-400 font-mono text-sm">password</div>
+                </div>
+              </div>
+            </div>
+
             <!-- Access URL -->
             <div class="mt-3 p-3 bg-gray-900 rounded-lg">
               <div class="text-xs text-gray-500 mb-1">🔗 URL de Acceso:</div>
-              <a
-                :href="getTenantUrl(tenant.id)"
-                target="_blank"
-                class="text-blue-400 hover:underline font-mono text-sm break-all"
-              >
-                {{ getTenantUrl(tenant.id) }}
-              </a>
-              <button
-                @click="copyToClipboard(getTenantUrl(tenant.id))"
-                class="ml-2 px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 rounded"
-              >
-                Copiar
-              </button>
+              <div class="flex items-center gap-2 flex-wrap">
+                <a
+                  :href="getTenantUrl(tenant.id)"
+                  target="_blank"
+                  class="text-blue-400 hover:underline font-mono text-sm break-all"
+                >
+                  {{ getTenantUrl(tenant.id) }}
+                </a>
+                <button
+                  @click="copyToClipboard(getTenantUrl(tenant.id))"
+                  class="px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 rounded"
+                >
+                  Copiar
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
 
+    <!-- Reset Password Modal -->
+    <div v-if="passwordModal.show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <div class="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
+        <h3 class="text-lg font-semibold text-white mb-4">🔑 Resetear Contraseña Admin</h3>
+        <p class="text-gray-400 text-sm mb-4">Empresa: <strong class="text-white">{{ passwordModal.tenantId }}</strong></p>
+        
+        <div class="mb-4">
+          <label class="block text-gray-400 text-sm mb-1">Nueva Contraseña (dejar vacío para generar)</label>
+          <input
+            v-model="passwordModal.newPassword"
+            type="text"
+            placeholder="Generar automáticamente..."
+            class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
+          />
+        </div>
+
+        <div v-if="passwordModal.result" class="mb-4 p-3 bg-green-900/30 border border-green-600 rounded-lg">
+          <div class="text-green-400 text-sm">✅ Nueva contraseña:</div>
+          <div class="text-white font-mono text-lg mt-1">{{ passwordModal.result }}</div>
+        </div>
+
+        <div class="flex gap-3 justify-end">
+          <button
+            @click="passwordModal.show = false"
+            class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          >
+            Cerrar
+          </button>
+          <button
+            @click="handleResetPassword"
+            :disabled="resetting"
+            class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors disabled:opacity-50"
+          >
+            {{ resetting ? 'Reseteando...' : 'Resetear' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Delete Confirmation Modal -->
     <div v-if="deleteModal.show" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div class="bg-gray-800 rounded-xl p-6 w-full max-w-md mx-4">
         <h3 class="text-lg font-semibold text-white mb-4">⚠️ Confirmar Eliminación</h3>
         <p class="text-gray-400 mb-4">
-          ¿Estás seguro de eliminar el tenant <strong class="text-white">{{ deleteModal.tenantId }}</strong>?
+          ¿Estás seguro de eliminar la empresa <strong class="text-white">{{ deleteModal.tenantId }}</strong>?
           Esta acción eliminará todos los datos asociados.
         </p>
         <div class="flex gap-3 justify-end">
@@ -160,9 +222,10 @@ import { useTenants } from '../composables/useTenants'
 
 const router = useRouter()
 const { logout } = useCentralAuth()
-const { tenants, loading, fetchTenants, createTenant, deleteTenant } = useTenants()
+const { tenants, loading, fetchTenants, createTenant, deleteTenant, resetAdminPassword } = useTenants()
 
 const creating = ref(false)
+const resetting = ref(false)
 const newTenantId = ref('')
 
 // Base URL del frontend
@@ -173,7 +236,12 @@ const deleteModal = reactive({
   tenantId: ''
 })
 
-const totalDomains = computed(() => tenants.value.length)
+const passwordModal = reactive({
+  show: false,
+  tenantId: '',
+  newPassword: '',
+  result: ''
+})
 
 // Genera la URL automáticamente basada en el ID
 const generatedUrl = computed(() => {
@@ -218,16 +286,38 @@ const handleCreateTenant = async () => {
   
   creating.value = true
   try {
-    await createTenant({
+    const response = await createTenant({
       id: cleanId,
-      domain: `${cleanId}.tenant.local` // Dominio interno, no se usa realmente
+      domain: `${cleanId}.tenant.local`
     })
     newTenantId.value = ''
-    alert(`✅ Empresa "${cleanId}" creada!\n\nURL: ${getTenantUrl(cleanId)}`)
+    alert(`✅ Empresa "${cleanId}" creada!\n\n📧 Admin: admin@sims.com\n🔑 Password: password\n\n🔗 URL: ${getTenantUrl(cleanId)}`)
   } catch (e: any) {
     alert('Error al crear: ' + (e.response?.data?.message || e.message))
   } finally {
     creating.value = false
+  }
+}
+
+const showResetPassword = (tenantId: string) => {
+  passwordModal.tenantId = tenantId
+  passwordModal.newPassword = ''
+  passwordModal.result = ''
+  passwordModal.show = true
+}
+
+const handleResetPassword = async () => {
+  resetting.value = true
+  try {
+    const response = await resetAdminPassword(
+      passwordModal.tenantId,
+      passwordModal.newPassword || undefined
+    )
+    passwordModal.result = response.data.new_password
+  } catch (e: any) {
+    alert('Error: ' + (e.response?.data?.message || e.message))
+  } finally {
+    resetting.value = false
   }
 }
 

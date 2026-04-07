@@ -24,7 +24,7 @@ export function useTenants() {
     error.value = null
     try {
       const response = await centralApi.createTenant(data)
-      await fetchTenants() // Refresh list
+      await fetchTenants()
       return response
     } catch (e: any) {
       error.value = e.response?.data?.message || 'Error al crear tenant'
@@ -39,7 +39,7 @@ export function useTenants() {
     error.value = null
     try {
       await centralApi.deleteTenant(id)
-      await fetchTenants() // Refresh list
+      await fetchTenants()
     } catch (e: any) {
       error.value = e.response?.data?.message || 'Error al eliminar tenant'
       throw e
@@ -48,14 +48,14 @@ export function useTenants() {
     }
   }
 
-  const addDomain = async (tenantId: string, domain: string) => {
+  const resetAdminPassword = async (tenantId: string, newPassword?: string) => {
     loading.value = true
     error.value = null
     try {
-      await centralApi.addDomain(tenantId, domain)
-      await fetchTenants() // Refresh list
+      const response = await centralApi.resetAdminPassword(tenantId, newPassword)
+      return response
     } catch (e: any) {
-      error.value = e.response?.data?.message || 'Error al añadir dominio'
+      error.value = e.response?.data?.message || 'Error al resetear contraseña'
       throw e
     } finally {
       loading.value = false
@@ -69,6 +69,6 @@ export function useTenants() {
     fetchTenants,
     createTenant,
     deleteTenant,
-    addDomain
+    resetAdminPassword
   }
 }

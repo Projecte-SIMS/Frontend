@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 // API client para la central (gestión de tenants)
-// Usa la misma base URL pero sin tenant-específico
 const centralApiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
   headers: {
@@ -24,6 +23,8 @@ centralApiClient.interceptors.request.use(
 export interface Tenant {
   id: string
   domains: string[]
+  admin_email: string
+  admin_username: string
   created_at: string
   updated_at: string
 }
@@ -74,6 +75,14 @@ export const centralApi = {
   // Añadir dominio a tenant
   async addDomain(tenantId: string, domain: string) {
     const response = await centralApiClient.post(`/tenants/${tenantId}/domains`, { domain })
+    return response.data
+  },
+
+  // Resetear contraseña del admin de un tenant
+  async resetAdminPassword(tenantId: string, newPassword?: string) {
+    const response = await centralApiClient.post(`/tenants/${tenantId}/reset-password`, {
+      password: newPassword
+    })
     return response.data
   },
 
