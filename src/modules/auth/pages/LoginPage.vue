@@ -16,6 +16,25 @@
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
       <div class="bg-white dark:bg-gray-900 py-10 px-8 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-none border border-gray-100 dark:border-gray-800 rounded-[2.5rem]">
         <form class="space-y-6" @submit.prevent="handleSubmit">
+          <!-- Tenant/Empresa -->
+          <div>
+            <label for="tenant" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Empresa</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors">
+                <BuildingOfficeIcon class="size-5" />
+              </div>
+              <input
+                id="tenant"
+                v-model="tenant"
+                type="text"
+                required
+                :disabled="isLoading"
+                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
+                placeholder="nombre-empresa"
+              />
+            </div>
+          </div>
+
           <!-- Email -->
           <div>
             <label for="email" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Correo Electrónico</label>
@@ -85,23 +104,39 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
+import { getCurrentTenant } from '@/services/api'
 import {
   EnvelopeIcon,
   LockClosedIcon,
   ArrowPathIcon,
-  ExclamationCircleIcon
+  ExclamationCircleIcon,
+  BuildingOfficeIcon
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 const { login, isLoading, error, user } = useAuth()
 
+const tenant = ref('')
 const email = ref('')
 const password = ref('')
 
+onMounted(() => {
+  // Pre-fill tenant from URL or localStorage
+  const currentTenant = getCurrentTenant()
+  if (currentTenant) {
+    tenant.value = currentTenant
+  }
+})
+
 const handleSubmit = async () => {
+  // Save tenant to localStorage before login
+  if (tenant.value) {
+    localStorage.setItem('current_tenant', tenant.value.toLowerCase().trim())
+  }
+  
   const success = await login(email.value, password.value)
   if (success) {
     const isAdmin = user.value?.roles?.some((r: any) => (r.name || '').toLowerCase() === 'admin')
