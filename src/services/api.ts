@@ -16,6 +16,11 @@ function getCurrentTenant(): string | null {
   return localStorage.getItem('current_tenant')
 }
 
+// Check if we're in superadmin routes (don't need tenant)
+function isSuperAdminRoute(): boolean {
+  return window.location.pathname.startsWith('/superadmin')
+}
+
 // Base URL de la API
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
@@ -38,10 +43,15 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`
     }
 
-    // Add tenant header
-    const tenant = getCurrentTenant()
-    if (tenant) {
-      config.headers['X-Tenant'] = tenant
+    // Add tenant header (skip for superadmin/central routes)
+    if (!isSuperAdminRoute() && !config.url?.includes('/central/')) {
+      const tenant = getCurrentTenant()
+      if (tenant) {
+        config.headers['X-Tenant'] = tenant
+      } else {
+        // No tenant specified - show warning
+        console.warn('No tenant specified. Add ?tenant=yourcompany to the URL')
+      }
     }
 
     return config
@@ -57,5 +67,5 @@ apiClient.interceptors.request.use(
   }
 )
 
-export { getCurrentTenant }
+export { getCurrentTenant, isSuperAdminRoute }
 export default apiClient
