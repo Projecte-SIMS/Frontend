@@ -841,9 +841,15 @@ const handleDeleteMultiple = async () => {
   deletingMultiple.value = true
   try {
     const tenantIds = Array.from(selectedTenants.value)
-    for (const tenantId of tenantIds) {
-      await deleteTenant(tenantId)
+    const results = await Promise.allSettled(
+      tenantIds.map(tenantId => deleteTenant(tenantId))
+    )
+    
+    const failed = results.filter(r => r.status === 'rejected')
+    if (failed.length > 0) {
+      alert(`Error al eliminar ${failed.length} de ${tenantIds.length} tenants. Por favor, intenta de nuevo.`)
     }
+    
     deleteMultipleModal.show = false
     selectedTenants.value.clear()
     selectAll.value = false
