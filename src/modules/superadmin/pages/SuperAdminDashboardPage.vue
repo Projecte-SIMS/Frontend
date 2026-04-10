@@ -5,7 +5,9 @@
       <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
         <div class="flex items-center gap-4">
           <div class="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
-            <span class="text-2xl">🏢</span>
+            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V7M10.5 1.5v4.5h4.5M10.5 1.5L14 5"/>
+            </svg>
           </div>
           <div>
             <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-300 to-indigo-300 bg-clip-text text-transparent">
@@ -16,9 +18,12 @@
         </div>
         <button
           @click="handleLogout"
-          class="px-4 py-2 text-gray-300 hover:text-white hover:bg-red-500/20 transition-all rounded-lg border border-red-500/20 hover:border-red-500/50"
+          class="px-4 py-2 text-gray-300 hover:text-white hover:bg-red-500/20 transition-all rounded-lg border border-red-500/20 hover:border-red-500/50 flex items-center gap-2"
         >
-          🚪 Cerrar Sesión
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M3 4.75A2.75 2.75 0 015.75 2h8.5A2.75 2.75 0 0117 4.75v10.5A2.75 2.75 0 0114.25 18h-8.5A2.75 2.75 0 013 15.25V4.75zm9.25 10a.75.75 0 00-1.5 0v2.5a.75.75 0 001.5 0v-2.5zm2-4a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" clip-rule="evenodd"/>
+          </svg>
+          Cerrar Sesión
         </button>
       </div>
     </header>
@@ -35,7 +40,9 @@
               <div class="text-3xl font-bold text-white mt-2">{{ tenants.length }}</div>
               <div class="text-xs text-blue-300/50 mt-1">Total registradas</div>
             </div>
-            <div class="text-4xl opacity-20">🏢</div>
+            <svg class="w-10 h-10 text-blue-500/20" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V7M10.5 1.5v4.5h4.5M10.5 1.5L14 5"/>
+            </svg>
           </div>
         </div>
 
@@ -50,7 +57,9 @@
               </div>
               <div class="text-xs text-green-300/50 mt-1">Todos servicios OK</div>
             </div>
-            <div class="text-4xl opacity-20">✅</div>
+            <svg class="w-10 h-10 text-green-500/20" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/>
+            </svg>
           </div>
         </div>
 
@@ -62,7 +71,9 @@
               <div class="text-3xl font-bold text-white mt-2">{{ totalUsers }}</div>
               <div class="text-xs text-purple-300/50 mt-1">Across all tenants</div>
             </div>
-            <div class="text-4xl opacity-20">👥</div>
+            <svg class="w-10 h-10 text-purple-500/20" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
+            </svg>
           </div>
         </div>
 
@@ -74,7 +85,9 @@
               <div class="text-3xl font-bold text-white mt-2">v1.0</div>
               <div class="text-xs text-indigo-300/50 mt-1">Multi-Tenant</div>
             </div>
-            <div class="text-4xl opacity-20">⚙️</div>
+            <svg class="w-10 h-10 text-indigo-500/20" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.533 1.533 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.533 1.533 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+            </svg>
           </div>
         </div>
       </div>
@@ -82,9 +95,12 @@
       <!-- Create Tenant Section -->
       <div class="bg-gradient-to-br from-gray-800/50 to-gray-800/30 backdrop-blur rounded-xl p-6 mb-8 border border-gray-700/50">
         <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <span class="text-xl">➕</span> Crear Nueva Empresa
+          <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
+          </svg>
+          Crear Nueva Empresa
         </h2>
-        <form @submit.prevent="handleCreateTenant" class="space-y-4">
+        <form @submit.prevent="showCreateModal" class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-gray-300 text-sm font-medium mb-2">Identificador (lowercase)</label>
@@ -100,7 +116,9 @@
             <div>
               <label class="block text-gray-300 text-sm font-medium mb-2">URL de Acceso</label>
               <div class="w-full px-4 py-2.5 bg-gray-600/30 border border-gray-600/50 rounded-lg text-blue-300 font-mono text-sm flex items-center">
-                <span class="text-gray-500">🔗</span>
+                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M12.586 4.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM9.172 9.172a2 2 0 012.828 0l.793-.793a4 4 0 00-5.656 0l.793.793zm6.364-1.414a2 2 0 012.828 2.828l-.793.793 2.828 2.828-.793.793a4 4 0 01-5.656-5.656l.793-.793z"/>
+                </svg>
                 <span class="ml-2 truncate">{{ generatedUrl || 'Se generará automáticamente...' }}</span>
               </div>
             </div>
@@ -108,10 +126,16 @@
           <button
             type="submit"
             :disabled="creating || !newTenantId"
-            class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl"
+            class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
           >
-            <span v-if="!creating">✨ Crear Empresa</span>
-            <span v-else>⏳ Creando...</span>
+            <svg v-if="!creating" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
+            </svg>
+            <svg v-else class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ creating ? 'Creando...' : 'Crear Empresa' }}
           </button>
         </form>
       </div>
@@ -120,7 +144,10 @@
       <div class="bg-gradient-to-br from-gray-800/50 to-gray-800/30 backdrop-blur rounded-xl overflow-hidden border border-gray-700/50">
         <div class="px-6 py-4 border-b border-gray-700/50 flex items-center justify-between">
           <h2 class="text-lg font-semibold text-white flex items-center gap-2">
-            <span class="text-xl">📋</span> Empresas Registradas ({{ tenants.length }})
+            <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+            </svg>
+            Empresas Registradas ({{ tenants.length }})
           </h2>
           <div class="relative">
             <input
@@ -133,7 +160,7 @@
         </div>
 
         <div v-if="loading" class="p-12 text-center text-gray-400">
-          ⏳ Cargando empresas...
+          Cargando empresas...
         </div>
 
         <div v-else-if="filteredTenants.length === 0" class="p-12 text-center text-gray-400">
@@ -145,17 +172,26 @@
           <div
             v-for="tenant in filteredTenants"
             :key="tenant.id"
-            class="px-6 py-5 hover:bg-gray-700/20 transition-colors group"
+            class="px-6 py-4 hover:bg-gray-700/20 transition-colors group"
           >
-            <!-- Tenant Header -->
-            <div class="flex items-center justify-between mb-4">
+            <!-- Tenant Header with Info -->
+            <div class="flex items-center justify-between mb-3">
               <div class="flex-1">
                 <div class="flex items-center gap-3">
-                  <div class="p-2 bg-blue-500/20 rounded-lg text-blue-300">🏢</div>
+                  <div class="p-2 bg-blue-500/20 rounded-lg">
+                    <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V7M10.5 1.5v4.5h4.5M10.5 1.5L14 5"/>
+                    </svg>
+                  </div>
                   <div>
-                    <div class="font-semibold text-white text-lg">{{ tenant.id }}</div>
-                    <div class="text-xs text-gray-400">
-                      📅 {{ formatDate(tenant.created_at) }}
+                    <div class="flex items-center gap-2">
+                      <div class="font-semibold text-white text-base">{{ tenant.id }}</div>
+                      <span class="inline-block px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded">
+                        {{ tenant.admin_email || 'admin@sims.com' }}
+                      </span>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-1">
+                      {{ formatDate(tenant.created_at) }}
                     </div>
                   </div>
                 </div>
@@ -163,84 +199,178 @@
               <div class="flex items-center gap-2">
                 <button
                   @click="showInfo(tenant.id)"
-                  class="p-2 text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-lg transition-all"
+                  class="p-2 text-gray-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-all"
                   title="Ver detalles"
                 >
-                  ℹ️
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 100 2v3a1 1 0 100-2V9z" clip-rule="evenodd"/>
+                  </svg>
                 </button>
                 <button
                   @click="showResetPassword(tenant.id)"
-                  class="px-3 py-1.5 text-sm bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-300 rounded-lg transition-all"
+                  class="px-3 py-1.5 text-sm bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-300 rounded-lg transition-all flex items-center gap-1.5"
+                  title="Resetear contraseña"
                 >
-                  🔑 Reset
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+                  </svg>
+                  Reset
                 </button>
                 <button
                   @click="confirmDelete(tenant.id)"
-                  class="px-3 py-1.5 text-sm bg-red-600/20 hover:bg-red-600/40 text-red-300 rounded-lg transition-all"
+                  class="px-3 py-1.5 text-sm bg-red-600/20 hover:bg-red-600/40 text-red-300 rounded-lg transition-all flex items-center gap-1.5"
+                  title="Eliminar empresa"
                 >
-                  🗑️ Eliminar
+                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                  </svg>
+                  Eliminar
                 </button>
               </div>
             </div>
 
-            <!-- Tenant Details Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 ml-11">
-              <!-- Admin Info -->
-              <div class="bg-gray-900/40 rounded-lg p-3 border border-gray-700/50">
-                <div class="flex items-center gap-2 mb-1">
-                  <span>👤</span>
-                  <span class="text-xs text-gray-400">Admin</span>
-                </div>
-                <div class="text-white font-mono text-sm">{{ tenant.admin_email || 'admin@sims.com' }}</div>
-              </div>
-
-              <!-- Password -->
-              <div class="bg-gray-900/40 rounded-lg p-3 border border-gray-700/50">
-                <div class="flex items-center gap-2 mb-1">
-                  <span>🔐</span>
-                  <span class="text-xs text-gray-400">Contraseña</span>
-                </div>
-                <div class="text-yellow-300 font-mono text-sm">password</div>
-              </div>
-
-              <!-- Access URL -->
-              <div class="bg-gray-900/40 rounded-lg p-3 border border-gray-700/50">
-                <div class="flex items-center gap-2 mb-1">
-                  <span>🔗</span>
-                  <span class="text-xs text-gray-400">URL</span>
-                </div>
-                <div class="flex items-center gap-2">
-                  <a
-                    :href="getTenantUrl(tenant.id)"
-                    target="_blank"
-                    class="text-blue-300 hover:text-blue-200 font-mono text-sm truncate"
-                  >
-                    {{ getTenantUrl(tenant.id).split('?')[0] }}?tenant=...
-                  </a>
-                  <button
-                    @click="copyToClipboard(getTenantUrl(tenant.id))"
-                    class="p-1 text-gray-400 hover:text-white text-xs"
-                    title="Copiar URL"
-                  >
-                    📋
-                  </button>
-                </div>
-              </div>
+            <!-- Compact Info Line -->
+            <div class="ml-11 text-sm text-gray-400">
+              🔗 
+              <a
+                :href="getTenantUrl(tenant.id)"
+                target="_blank"
+                class="text-blue-300 hover:text-blue-200 font-mono truncate inline-block max-w-xs"
+              >
+                {{ getTenantUrl(tenant.id) }}
+              </a>
+              <button
+                @click="copyToClipboard(getTenantUrl(tenant.id))"
+                class="ml-2 text-gray-500 hover:text-gray-300 transition-colors"
+                title="Copiar URL"
+              >
+                <svg class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M7 9a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                  <path fill-rule="evenodd" d="M7.846 11.04a9 9 0 1-11.668-11.87m5.25 5.958a3 3 0 11-6 0 3 3 0 016 0z" clip-rule="evenodd"/>
+                </svg>
+              </button>
             </div>
           </div>
         </div>
       </div>
     </main>
 
+    <!-- Create Tenant Modal -->
+    <div v-if="createModal.show" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 w-full max-w-md border border-gray-700/50 shadow-xl">
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
+          </svg>
+          Confirmar Creación
+        </h3>
+        
+        <p class="text-gray-400 text-sm mb-6">
+          La empresa <strong class="text-white">{{ newTenantId }}</strong> se creará con los siguientes datos:
+        </p>
+
+        <div class="space-y-3 mb-6 bg-gray-700/30 p-4 rounded-lg">
+          <div class="flex items-center justify-between">
+            <span class="text-gray-400">Admin Email:</span>
+            <span class="text-white font-mono text-sm">admin@sims.com</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-400">Contraseña:</span>
+            <span class="text-gray-400 font-mono text-sm">(defecto del sistema)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-400">URL:</span>
+            <span class="text-blue-300 font-mono text-xs truncate max-w-xs">{{ getTenantUrl(newTenantId) }}</span>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-500 mb-4">Los detalles de acceso se mostrarán una vez creada.</p>
+
+        <div class="flex gap-3 justify-end">
+          <button
+            @click="createModal.show = false"
+            class="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            @click="handleCreateTenant"
+            :disabled="creating"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+          >
+            <svg v-if="!creating" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
+            </svg>
+            <svg v-else class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ creating ? 'Creando...' : 'Crear Empresa' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div v-if="successModal.show" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div class="bg-gradient-to-br from-green-900/20 to-green-800/10 rounded-xl p-6 w-full max-w-md border border-green-500/30 shadow-xl">
+        <h3 class="text-lg font-semibold text-green-300 mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+          </svg>
+          ¡Éxito!
+        </h3>
+        
+        <p class="text-gray-300 text-sm mb-4">
+          La empresa <strong class="text-white">{{ successModal.tenantId }}</strong> ha sido creada.
+        </p>
+
+        <div class="space-y-3 mb-6 bg-gray-900/40 p-4 rounded-lg">
+          <div>
+            <div class="text-xs text-gray-400 mb-1">URL de Acceso:</div>
+            <div class="flex items-center gap-2">
+              <input
+                type="text"
+                :value="getTenantUrl(successModal.tenantId)"
+                readonly
+                class="flex-1 px-3 py-2 bg-gray-700/50 border border-gray-600/50 rounded text-white text-sm font-mono"
+              />
+              <button
+                @click="copyToClipboard(getTenantUrl(successModal.tenantId))"
+                class="px-3 py-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-300 rounded transition-colors"
+                title="Copiar URL"
+              >
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button
+          @click="successModal.show = false; newTenantId = ''"
+          class="w-full px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
+        >
+          Entendido
+        </button>
+      </div>
+    </div>
+
     <!-- Info Modal -->
     <div v-if="infoModal.show" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 w-full max-w-md border border-gray-700/50 shadow-xl">
-        <h3 class="text-lg font-semibold text-white mb-4">📊 Detalles - {{ infoModal.tenantId }}</h3>
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 100 2v3a1 1 0 100-2V9z" clip-rule="evenodd"/>
+          </svg>
+          Detalles - {{ infoModal.tenantId }}
+        </h3>
         
-        <div class="space-y-4 mb-6">
+        <div class="space-y-3 mb-6">
           <div class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
             <span class="text-gray-300">ID Empresa:</span>
-            <span class="text-white font-mono">{{ infoModal.tenantId }}</span>
+            <span class="text-white font-mono text-sm">{{ infoModal.tenantId }}</span>
           </div>
           <div class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
             <span class="text-gray-300">Admin Email:</span>
@@ -252,7 +382,12 @@
           </div>
           <div class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
             <span class="text-gray-300">Estado:</span>
-            <span class="text-green-300 font-semibold">✅ Activo</span>
+            <span class="text-green-300 font-semibold flex items-center gap-1">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              Activo
+            </span>
           </div>
         </div>
 
@@ -268,7 +403,12 @@
     <!-- Reset Password Modal -->
     <div v-if="passwordModal.show" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 w-full max-w-md border border-gray-700/50 shadow-xl">
-        <h3 class="text-lg font-semibold text-white mb-4">🔑 Resetear Contraseña</h3>
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+          </svg>
+          Resetear Contraseña
+        </h3>
         <p class="text-gray-400 text-sm mb-4">Empresa: <strong class="text-white">{{ passwordModal.tenantId }}</strong></p>
         
         <div class="mb-4">
@@ -282,13 +422,21 @@
         </div>
 
         <div v-if="passwordModal.result" class="mb-4 p-3 bg-green-900/30 border border-green-600 rounded-lg">
-          <div class="text-green-300 text-sm font-medium">✅ Nueva contraseña:</div>
+          <div class="text-green-300 text-sm font-medium flex items-center gap-2">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+            </svg>
+            Nueva contraseña:
+          </div>
           <div class="text-white font-mono text-lg mt-2 bg-gray-900/50 p-2 rounded text-center">{{ passwordModal.result }}</div>
           <button
             @click="copyToClipboard(passwordModal.result)"
-            class="mt-2 w-full text-sm text-gray-300 hover:text-white py-1"
+            class="mt-2 w-full text-sm text-gray-300 hover:text-white py-1 flex items-center justify-center gap-1"
           >
-            📋 Copiar
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+            </svg>
+            Copiar
           </button>
         </div>
 
@@ -302,9 +450,16 @@
           <button
             @click="handleResetPassword"
             :disabled="resetting"
-            class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors disabled:opacity-50"
+            class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
           >
-            {{ resetting ? '⏳ Reseteando...' : '🔄 Resetear' }}
+            <svg v-if="!resetting" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+            </svg>
+            <svg v-else class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ resetting ? 'Reseteando...' : 'Resetear' }}
           </button>
         </div>
       </div>
@@ -313,7 +468,12 @@
     <!-- Delete Confirmation Modal -->
     <div v-if="deleteModal.show" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 w-full max-w-md border border-red-600/30 shadow-xl">
-        <h3 class="text-lg font-semibold text-white mb-4">⚠️ Confirmar Eliminación</h3>
+        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+          <svg class="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+          Confirmar Eliminación
+        </h3>
         <p class="text-gray-400 mb-4">
           ¿Estás seguro de eliminar la empresa <strong class="text-red-300">{{ deleteModal.tenantId }}</strong>?
         </p>
@@ -327,8 +487,11 @@
           </button>
           <button
             @click="handleDelete"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors flex items-center gap-2"
           >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
             Eliminar
           </button>
         </div>
@@ -376,6 +539,15 @@ const infoModal = reactive({
   tenantId: ''
 })
 
+const createModal = reactive({
+  show: false
+})
+
+const successModal = reactive({
+  show: false,
+  tenantId: ''
+})
+
 const generatedUrl = computed(() => {
   if (!newTenantId.value) return ''
   const cleanId = newTenantId.value.toLowerCase().replace(/[^a-z0-9-]/g, '')
@@ -401,7 +573,7 @@ const getTenantUrl = (tenantId: string) => {
 const copyToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text)
-    alert('✅ Copiado al portapapeles')
+    // Show toast notification (optional)
   } catch (e) {
     console.error('Error al copiar:', e)
   }
@@ -422,6 +594,14 @@ const handleLogout = () => {
   router.push('/superadmin/login')
 }
 
+const showCreateModal = () => {
+  if (!newTenantId.value) {
+    alert('Por favor ingresa un ID para la empresa')
+    return
+  }
+  createModal.show = true
+}
+
 const handleCreateTenant = async () => {
   const cleanId = newTenantId.value.toLowerCase().replace(/[^a-z0-9-]/g, '')
   if (!cleanId) {
@@ -435,10 +615,13 @@ const handleCreateTenant = async () => {
       id: cleanId,
       domain: `${cleanId}.tenant.local`
     })
-    newTenantId.value = ''
-    alert(`✅ ¡Empresa "${cleanId}" creada exitosamente!\n\n📧 Admin: admin@sims.com\n🔑 Contraseña: password\n\n🔗 URL: ${getTenantUrl(cleanId)}`)
+    successModal.tenantId = cleanId
+    createModal.show = false
+    successModal.show = true
+    await fetchTenants()
   } catch (e: any) {
     alert('❌ Error al crear: ' + (e.response?.data?.message || e.message))
+    createModal.show = false
   } finally {
     creating.value = false
   }
@@ -480,6 +663,7 @@ const handleDelete = async () => {
   try {
     await deleteTenant(deleteModal.tenantId)
     deleteModal.show = false
+    await fetchTenants()
   } catch (e) {
     alert('Error al eliminar tenant')
   }
