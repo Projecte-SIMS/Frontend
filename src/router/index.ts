@@ -126,8 +126,8 @@ router.beforeEach(async (to, from, next) => {
   }
 
   if (requiresAuth && !isAuthenticated.value) {
-    // Protected route and not authenticated -> go to login
-    next('/login')
+    // Protected route and not authenticated -> go to login, preserve query params
+    next({ path: '/login', query: to.query })
   } else if (to.path === '/login' && isAuthenticated.value) {
     // Already authenticated attempting to go to login -> go to admin dashboard
     next('/admin')
