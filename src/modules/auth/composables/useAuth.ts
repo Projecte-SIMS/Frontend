@@ -99,17 +99,30 @@ export function useAuth() {
     isLoading.value = true
     error.value = null
     try {
+      // Check if this is a central token (not a tenant token)
+      const centralToken = localStorage.getItem('central_token')
+      const token = getToken()
+      
+      // If we only have a central token, don't try to fetch tenant user
+      if (centralToken && !token) {
+        return false
+      }
+      
       const response = await apiClient.get<UserResponse>('/users/me')
       user.value = response.data.user
       
       // Update saved accounts info if currently logged in
-      const token = getToken()
       if (token && user.value) {
         saveAccount(user.value, token)
       }
       
       return true
     } catch (err: any) {
+      // If it's a 400 (tenant not specified), this is likely a central token being used
+      if (err.response?.status === 400) {
+        return false
+      }
+      
       if (err.response?.status === 401) {
         // Token is invalid or expired
         deleteCookie(TOKEN_COOKIE_NAME)
