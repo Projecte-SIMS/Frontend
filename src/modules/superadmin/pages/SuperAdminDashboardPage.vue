@@ -234,7 +234,7 @@ const frontendBaseUrl = computed(() => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return `http://${window.location.hostname}:5173`
   }
-  // En producción, usar el origin actual (Vercel)
+  // En producción, usar el origin actual (Vercel o cualquier otro host)
   return window.location.origin
 })
 
@@ -254,12 +254,12 @@ const passwordModal = reactive({
 const generatedUrl = computed(() => {
   if (!newTenantId.value) return ''
   const cleanId = newTenantId.value.toLowerCase().replace(/[^a-z0-9-]/g, '')
-  return `${frontendBaseUrl}/?tenant=${cleanId}`
+  return `${frontendBaseUrl.value}/?tenant=${cleanId}`
 })
 
 // Obtiene la URL de acceso para un tenant
 const getTenantUrl = (tenantId: string) => {
-  return `${frontendBaseUrl}/?tenant=${tenantId}`
+  return `${frontendBaseUrl.value}/?tenant=${tenantId}`
 }
 
 const copyToClipboard = async (text: string) => {
