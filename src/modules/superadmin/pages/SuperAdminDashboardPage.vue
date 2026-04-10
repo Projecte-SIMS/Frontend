@@ -228,8 +228,15 @@ const creating = ref(false)
 const resetting = ref(false)
 const newTenantId = ref('')
 
-// Base URL del frontend
-const frontendBaseUrl = 'https://frontend-nine-orcin-waqisje40z.vercel.app'
+// Base URL del frontend - usar el origen actual para flexibilidad
+const frontendBaseUrl = computed(() => {
+  // En desarrollo local
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return `http://${window.location.hostname}:5173`
+  }
+  // En producción, usar el origin actual (Vercel)
+  return window.location.origin
+})
 
 const deleteModal = reactive({
   show: false,
