@@ -94,13 +94,12 @@
 
       <!-- Default Credentials -->
       <div class="bg-gradient-to-r from-amber-900/40 to-orange-900/40 backdrop-blur rounded-lg p-3 mb-6 border border-amber-500/20">
-        <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-2 flex-wrap">
           <svg class="w-3.5 h-3.5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
           </svg>
-          <span class="text-xs font-medium text-amber-300">Credenciales por defecto:</span>
+          <span class="text-xs text-amber-300">Credenciales por defecto:</span>
           <span class="text-xs text-white font-mono">admin@sims.com</span>
-          <span class="text-xs text-gray-400">/</span>
           <span class="text-xs text-white font-mono">password</span>
           <button
             @click="copyToClipboard('admin@sims.com')"
@@ -183,7 +182,6 @@
                 class="w-4 h-4 rounded"
                 title="Seleccionar todas"
               />
-              <span class="text-xs text-gray-400">Todas</span>
             </div>
             <h2 class="text-lg font-semibold text-white flex items-center gap-2">
               <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
@@ -258,18 +256,19 @@
                   title="Ver detalles"
                 >
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 100 2v3a1 1 0 100-2V9z" clip-rule="evenodd"/>
+                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
                   </svg>
                 </button>
                 <button
                   @click="showResetPassword(tenant.id)"
                   class="px-3 py-1.5 text-sm bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-300 rounded-lg transition-all flex items-center gap-1.5"
-                  title="Resetear contraseña"
+                  title="Cambiar contraseña"
                 >
                   <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
                   </svg>
-                  Reset
+                  Cambiar Contraseña
                 </button>
                 <button
                   @click="confirmDelete(tenant.id)"
@@ -484,38 +483,41 @@
       <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 w-full max-w-md border border-gray-700/50 shadow-xl">
         <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
           <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 100 2v3a1 1 0 100-2V9z" clip-rule="evenodd"/>
+            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
           </svg>
-          Detalles - {{ infoModal.tenantId }}
+          Detalles de {{ infoModal.tenantId }}
         </h3>
         
         <div class="space-y-3 mb-6">
-          <div class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-            <span class="text-gray-300">ID Empresa:</span>
-            <span class="text-white font-mono text-sm">{{ infoModal.tenantId }}</span>
+          <div class="bg-gradient-to-r from-blue-900/30 to-blue-800/20 rounded-lg p-4 border border-blue-500/20">
+            <div class="text-xs text-blue-300/70 mb-1">ID de Empresa</div>
+            <div class="text-white font-mono text-sm font-semibold">{{ infoModal.tenantId }}</div>
           </div>
-          <div class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-            <span class="text-gray-300">Admin Email:</span>
-            <span class="text-white font-mono text-sm">admin@sims.com</span>
+          <div class="bg-gradient-to-r from-purple-900/30 to-purple-800/20 rounded-lg p-4 border border-purple-500/20">
+            <div class="text-xs text-purple-300/70 mb-1">Email Administrador</div>
+            <div class="text-white font-mono text-sm">admin@sims.com</div>
           </div>
-          <div class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-            <span class="text-gray-300">Usuarios:</span>
-            <span class="text-white font-mono">3</span>
-          </div>
-          <div class="flex items-center justify-between p-3 bg-gray-700/30 rounded-lg">
-            <span class="text-gray-300">Estado:</span>
-            <span class="text-green-300 font-semibold flex items-center gap-1">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-              </svg>
-              Activo
-            </span>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="bg-gradient-to-r from-green-900/30 to-green-800/20 rounded-lg p-4 border border-green-500/20">
+              <div class="text-xs text-green-300/70 mb-1">Usuarios</div>
+              <div class="text-white font-semibold text-lg">3</div>
+            </div>
+            <div class="bg-gradient-to-r from-emerald-900/30 to-emerald-800/20 rounded-lg p-4 border border-emerald-500/20">
+              <div class="text-xs text-emerald-300/70 mb-1">Estado</div>
+              <div class="text-emerald-300 font-semibold flex items-center gap-1">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                Activo
+              </div>
+            </div>
           </div>
         </div>
 
         <button
           @click="infoModal.show = false"
-          class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          class="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium"
         >
           Cerrar
         </button>
@@ -527,9 +529,9 @@
       <div class="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 w-full max-w-md border border-gray-700/50 shadow-xl">
         <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
           <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-            <path d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.3A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z"/>
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
           </svg>
-          Resetear Contraseña
+          Cambiar Contraseña
         </h3>
         <p class="text-gray-400 text-sm mb-4">Empresa: <strong class="text-white">{{ passwordModal.tenantId }}</strong></p>
         
