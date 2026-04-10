@@ -1,8 +1,26 @@
 import axios from 'axios'
 
+// Determine API URL - supports multiple environments
+function getApiUrl(): string {
+  // Try environment variable first
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL
+  }
+  
+  // Fallback based on current hostname
+  const hostname = window.location.hostname
+  
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://localhost:8000/api'
+  }
+  
+  // Production - use Render backend
+  return 'https://sims-backend-api-0b2w.onrender.com/api'
+}
+
 // API client para la central (gestión de tenants)
 const centralApiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  baseURL: getApiUrl(),
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
