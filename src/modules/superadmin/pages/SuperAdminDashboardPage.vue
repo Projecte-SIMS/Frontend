@@ -93,33 +93,33 @@
       </div>
 
       <!-- Default Credentials -->
-      <div class="bg-gradient-to-r from-amber-900/40 to-orange-900/40 backdrop-blur rounded-xl p-6 mb-8 border border-amber-500/20">
-        <h2 class="text-sm font-semibold text-amber-300 mb-3 flex items-center gap-2">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+      <div class="bg-gradient-to-r from-amber-900/40 to-orange-900/40 backdrop-blur rounded-lg p-3 mb-6 border border-amber-500/20">
+        <div class="flex items-center gap-3 flex-wrap">
+          <svg class="w-3.5 h-3.5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
           </svg>
-          Credenciales por Defecto para Nuevas Empresas
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-          <div class="bg-gray-900/30 rounded-lg p-3 border border-amber-500/10">
-            <div class="text-amber-300/70 text-xs mb-1">Usuario Admin</div>
-            <div class="text-white font-mono">admin@sims.com</div>
-          </div>
-          <div class="bg-gray-900/30 rounded-lg p-3 border border-amber-500/10">
-            <div class="text-amber-300/70 text-xs mb-1">Contraseña</div>
-            <div class="flex items-center gap-2">
-              <span class="text-white font-mono">password</span>
-              <button
-                @click="copyToClipboard('password')"
-                class="text-amber-300/50 hover:text-amber-300 transition-colors"
-                title="Copiar"
-              >
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
-                </svg>
-              </button>
-            </div>
-          </div>
+          <span class="text-xs font-medium text-amber-300">Credenciales por defecto:</span>
+          <span class="text-xs text-white font-mono">admin@sims.com</span>
+          <span class="text-xs text-gray-400">/</span>
+          <span class="text-xs text-white font-mono">password</span>
+          <button
+            @click="copyToClipboard('admin@sims.com')"
+            class="text-amber-300/50 hover:text-amber-300 transition-colors"
+            title="Copiar email"
+          >
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+            </svg>
+          </button>
+          <button
+            @click="copyToClipboard('password')"
+            class="text-amber-300/50 hover:text-amber-300 transition-colors"
+            title="Copiar password"
+          >
+            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -173,8 +173,18 @@
 
       <!-- Tenants List - Enhanced Table -->
       <div class="bg-gradient-to-br from-gray-800/50 to-gray-800/30 backdrop-blur rounded-xl overflow-hidden border border-gray-700/50">
-        <div class="px-6 py-4 border-b border-gray-700/50 flex items-center justify-between">
-          <div class="flex items-center gap-4">
+        <div class="px-6 py-4 border-b border-gray-700/50 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div v-if="filteredTenants.length > 0" class="flex items-center gap-2">
+              <input
+                type="checkbox"
+                v-model="selectAll"
+                @change="toggleSelectAll"
+                class="w-4 h-4 rounded"
+                title="Seleccionar todas"
+              />
+              <span class="text-xs text-gray-400">Todas</span>
+            </div>
             <h2 class="text-lg font-semibold text-white flex items-center gap-2">
               <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
@@ -193,16 +203,6 @@
                 placeholder="Buscar empresa..."
                 class="px-3 py-1.5 bg-gray-700/50 border border-gray-600/50 rounded-lg text-sm text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
               />
-            </div>
-            <div v-if="filteredTenants.length > 0" class="flex items-center gap-2">
-              <input
-                type="checkbox"
-                v-model="selectAll"
-                @change="toggleSelectAll"
-                class="w-4 h-4 rounded"
-                title="Seleccionar todas"
-              />
-              <span class="text-xs text-gray-400">Todas</span>
             </div>
           </div>
         </div>
