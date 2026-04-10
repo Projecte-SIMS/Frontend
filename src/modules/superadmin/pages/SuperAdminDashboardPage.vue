@@ -106,8 +106,9 @@
             class="text-amber-300/50 hover:text-amber-300 transition-colors"
             title="Copiar email"
           >
-            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
+              <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
             </svg>
           </button>
           <button
@@ -115,8 +116,9 @@
             class="text-amber-300/50 hover:text-amber-300 transition-colors"
             title="Copiar password"
           >
-            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
+              <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
             </svg>
           </button>
         </div>
@@ -298,7 +300,8 @@
                 title="Copiar URL"
               >
                 <svg class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+                  <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
+                  <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
                 </svg>
               </button>
             </div>
@@ -462,7 +465,8 @@
                 title="Copiar URL"
               >
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+                  <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
+                  <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
                 </svg>
               </button>
             </div>
@@ -558,7 +562,8 @@
             class="mt-2 w-full text-sm text-gray-300 hover:text-white py-1 flex items-center justify-center gap-1"
           >
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M8 16.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM15 7a.5.5 0 01.5-.5h2a.5.5 0 010 1h-2a.5.5 0 01-.5-.5zM4.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/>
+              <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
+              <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
             </svg>
             Copiar
           </button>
