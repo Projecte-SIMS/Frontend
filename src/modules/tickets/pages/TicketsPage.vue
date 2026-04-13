@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-6xl mx-auto space-y-6">
+  <div class="max-w-6xl mx-auto space-y-6 fleetly-fade-up">
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="tickets.length === 0" class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm text-center px-6">
+    <div v-else-if="tickets.length === 0" class="fleetly-empty-state flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm text-center px-6">
       <div class="size-20 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mb-6">
         <TicketIcon class="size-10 text-indigo-500" />
       </div>
@@ -45,7 +45,7 @@
           <div 
             v-for="t in activeTickets" 
             :key="t.id"
-            class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 flex flex-col"
+            class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 flex flex-col fleetly-card-hover"
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex items-center gap-3">
@@ -91,7 +91,7 @@
       <!-- Completed Tickets Section -->
       <section v-if="completedTickets.length > 0">
         <h2 class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 ml-2">Historial / Completados</h2>
-        <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm">
+        <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm fleetly-card-hover">
           <table class="w-full text-left">
             <thead class="bg-gray-50/50 dark:bg-gray-950/50 border-b border-gray-100 dark:border-gray-800 text-xs font-bold text-gray-400 uppercase tracking-widest">
               <tr>

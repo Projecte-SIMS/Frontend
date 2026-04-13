@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-8">
+  <div class="max-w-4xl mx-auto space-y-8 fleetly-fade-up">
     <!-- Header Section -->
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-700 px-8 py-6 text-white shadow-xl shadow-indigo-500/10">
       <div class="relative z-10 flex flex-col md:flex-row items-center gap-5">
@@ -38,7 +38,7 @@
       <!-- Info Col -->
       <div class="lg:col-span-2 space-y-8">
         <!-- Account Details -->
-        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm">
+        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <IdentificationIcon class="size-6 text-indigo-500" />
             Detalles de la cuenta
@@ -67,7 +67,7 @@
         </section>
 
         <!-- Permissions Section -->
-        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm">
+        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <KeyIcon class="size-6 text-indigo-500" />
             Permisos Activos
@@ -90,7 +90,7 @@
       <!-- Sidebar Col -->
       <div class="space-y-8">
         <!-- Stats/Actions -->
-        <section class="bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl p-8 border border-indigo-100 dark:border-indigo-900/30">
+        <section class="bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl p-8 border border-indigo-100 dark:border-indigo-900/30 fleetly-card-hover">
           <h3 class="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-4">Seguridad</h3>
           <p class="text-sm text-indigo-700/70 dark:text-indigo-400/70 mb-6">
             Mantén tu cuenta protegida cambiando tu contraseña regularmente.
@@ -115,7 +115,7 @@
         </section>
 
         <!-- Quick Info -->
-        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm">
+        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
           <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Token de Acceso</h3>
           <div class="bg-gray-50 dark:bg-gray-950 rounded-xl p-4 font-mono text-[10px] break-all text-gray-500 dark:text-gray-400 max-h-32 overflow-y-auto border border-gray-100 dark:border-gray-800 custom-scrollbar">
             {{ token }}

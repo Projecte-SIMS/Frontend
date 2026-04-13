@@ -39,6 +39,26 @@ centralApiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
+centralApiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error?.response?.status
+    const requestUrl = String(error?.config?.url || '')
+    const isLoginRequest = requestUrl.includes('/central/login')
+    const inSuperAdminArea = window.location.pathname.startsWith('/superadmin')
+
+    if (inSuperAdminArea && status === 401 && !isLoginRequest) {
+      localStorage.removeItem('central_token')
+      localStorage.removeItem('central_user')
+      if (window.location.pathname !== '/superadmin/login') {
+        window.location.replace('/superadmin/login?expired=1')
+      }
+    }
+
+    return Promise.reject(error)
+  }
+)
+
 export interface Tenant {
   id: string
   domains: string[]
@@ -66,6 +86,7 @@ export const centralApi = {
   // Logout
   logout() {
     localStorage.removeItem('central_token')
+    localStorage.removeItem('central_user')
   },
 
   // Check if logged in

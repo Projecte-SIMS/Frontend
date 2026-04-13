@@ -2,7 +2,17 @@ import { ref, computed } from 'vue'
 import { centralApi } from '@/services/centralApi'
 
 const isAuthenticated = ref(centralApi.isAuthenticated())
-const user = ref<{ name: string; email: string; role: string } | null>(null)
+const user = ref<{ name: string; email: string; role: string } | null>(
+  (() => {
+    const raw = localStorage.getItem('central_user')
+    if (!raw) return null
+    try {
+      return JSON.parse(raw)
+    } catch {
+      return null
+    }
+  })()
+)
 
 export function useCentralAuth() {
   const loading = ref(false)
@@ -14,6 +24,7 @@ export function useCentralAuth() {
     try {
       const response = await centralApi.login(email, password)
       user.value = response.user
+      localStorage.setItem('central_user', JSON.stringify(response.user))
       isAuthenticated.value = true
       return response
     } catch (e: any) {
@@ -28,6 +39,7 @@ export function useCentralAuth() {
     centralApi.logout()
     isAuthenticated.value = false
     user.value = null
+    localStorage.removeItem('central_user')
   }
 
   const checkAuth = () => {

@@ -3,7 +3,7 @@
     <div class="sm:mx-auto sm:w-full sm:max-w-md shrink-0">
       <!-- Logo -->
       <div class="flex justify-center mb-4">
-        <div class="h-10 w-10 rounded-2xl bg-white p-1 shadow-xl shadow-indigo-500/30">
+        <div class="h-14 w-14 rounded-2xl bg-white p-0.5 ring-1 ring-gray-100 shadow-xl shadow-indigo-500/30">
           <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
         </div>
       </div>

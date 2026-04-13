@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8 animate-fade-in">
+  <div class="space-y-8 fleetly-fade-up">
     <!-- Header Unificado -->
     <PageHeading
       title="Panel de Control"
@@ -22,13 +22,14 @@
           >
             <ArrowPathIcon class="size-5" :class="{'animate-spin': loadingStats}" />
           </button>
+          <span v-if="loadingStats" class="text-[10px] font-black uppercase tracking-widest text-indigo-500">Actualizando...</span>
         </div>
       </template>
     </PageHeading>
 
     <!-- Grid de KPIs -->
     <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-      <div v-for="stat in stats" :key="stat.name" class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group">
+      <div v-for="stat in stats" :key="stat.name" class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group fleetly-card-hover">
         <div class="flex items-start justify-between">
           <div>
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ stat.name }}</p>
@@ -54,7 +55,7 @@
       <!-- Columna Principal -->
       <div class="lg:col-span-2 space-y-8">
         <!-- Diagnóstico de Flota -->
-        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
           <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-600">
@@ -85,7 +86,7 @@
         </section>
 
         <!-- Últimos Movimientos -->
-        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
           <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <h3 class="font-bold text-slate-900 dark:text-white">Últimos Movimientos</h3>
             <RouterLink to="/admin/bookings" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
@@ -137,7 +138,7 @@
       <!-- Barra Lateral -->
       <div class="space-y-6">
         <!-- Widget IoT -->
-        <div class="rounded-2xl bg-indigo-600 p-6 text-white shadow-lg shadow-indigo-200 dark:shadow-none relative overflow-hidden group">
+        <div class="rounded-2xl bg-indigo-600 p-6 text-white shadow-lg shadow-indigo-200 dark:shadow-none relative overflow-hidden group fleetly-card-hover">
           <div class="relative z-10">
             <div class="flex items-center justify-between mb-6">
               <div class="flex items-center gap-2">
@@ -172,7 +173,7 @@
               v-for="item in primaryActions"
               :key="item.name"
               :to="item.to"
-              class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-600 hover:shadow-sm transition-all group"
+              class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-600 hover:shadow-sm transition-all group fleetly-card-hover"
             >
               <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 text-slate-400 group-hover:text-indigo-600 transition-colors">
                 <component :is="item.icon" class="h-5 w-5" />
@@ -339,13 +340,3 @@ const translateStatus = (s: string) => {
   return map[s] || s
 }
 </script>
-
-<style scoped>
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-</style>

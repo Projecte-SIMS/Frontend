@@ -4,3 +4,41 @@
   --font-sans: InterVariable, sans-serif;
   --font-sans--font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
 }
+
+@keyframes fleetly-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fleetly-fade-up {
+  animation: fleetly-fade-up 220ms ease-out;
+}
+
+.fleetly-card-hover {
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+}
+
+.fleetly-card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px -18px rgb(79 70 229 / 0.35);
+}
+
+.fleetly-empty-state {
+  position: relative;
+  overflow: hidden;
+}
+
+.fleetly-empty-state::after {
+  content: "";
+  position: absolute;
+  inset: auto -25% -60%;
+  height: 120px;
+  background: radial-gradient(ellipse at center, rgb(99 102 241 / 0.12), transparent 65%);
+  pointer-events: none;
+}

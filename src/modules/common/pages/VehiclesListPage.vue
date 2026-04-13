@@ -89,7 +89,7 @@
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="filteredVehicles.length === 0" class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm text-center px-6">
+    <div v-else-if="filteredVehicles.length === 0" class="fleetly-empty-state flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm text-center px-6">
       <div class="size-20 rounded-full bg-amber-50 dark:bg-indigo-900/20 flex items-center justify-center mb-6">
         <TruckIcon class="size-10 text-amber-500" />
       </div>
@@ -102,9 +102,10 @@
       <button
         v-if="vehicles.length === 0"
         @click="fetchVehicles"
-        class="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20"
+        :disabled="loading"
+        class="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-60"
       >
-        Actualizar lista
+        {{ loading ? 'Actualizando...' : 'Actualizar lista' }}
       </button>
       <button
         v-else
@@ -120,7 +121,7 @@
       <div 
         v-for="vehicle in filteredVehicles" 
         :key="vehicle.id"
-        class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col"
+        class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col fleetly-card-hover"
       >
         <!-- Vehicle Image & Badges -->
         <div class="relative aspect-[16/10] bg-gray-100 dark:bg-gray-800 overflow-hidden">

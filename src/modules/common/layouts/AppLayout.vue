@@ -3,28 +3,32 @@
     <!-- Topbar principal -->
     <header class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/80 transition-colors duration-300 shadow-sm">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex h-16 items-center justify-between gap-4">
+        <div class="flex h-[68px] items-center justify-between gap-3">
           
           <!-- Logo y Navegación Desktop -->
-          <div class="flex items-center gap-8">
+          <div class="flex items-center gap-6">
             <router-link to="/" class="flex items-center gap-2.5 group transition-transform active:scale-95">
-              <div class="h-9 w-9 rounded-xl bg-white p-1 shadow-lg shadow-indigo-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+              <div class="h-11 w-11 rounded-xl bg-white p-0.5 ring-1 ring-gray-100 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-all duration-300">
                 <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
               </div>
-              <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Fleetly</span>
+              <span class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Fleetly</span>
             </router-link>
+            <div class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/25 border border-indigo-100 dark:border-indigo-800/50 max-w-56">
+              <BuildingOffice2Icon class="size-4 text-gray-500 dark:text-gray-400 shrink-0" />
+              <span class="text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-300 truncate">{{ currentTenantLabel }}</span>
+            </div>
 
             <!-- Nav Links Desktop -->
-            <nav class="hidden md:flex items-center gap-1">
+            <nav class="hidden md:flex items-center gap-1.5">
               <router-link 
                 v-for="item in navigation" 
                 :key="item.name" 
                 :to="item.to"
                 :class="[
                   isActive(item.to) 
-                    ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 shadow-sm scale-105' 
+                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-indigo-200/70 dark:border-indigo-800/70 shadow-sm' 
                     : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white',
-                  'px-4 py-2 rounded-xl text-sm font-bold transition-all duration-300 ease-out active:scale-90 hover:-translate-y-0.5'
+                  'px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-200 ease-out active:scale-95 border border-transparent'
                 ]"
               >
                 {{ item.name }}
@@ -33,7 +37,7 @@
           </div>
 
           <!-- Acciones Derecha -->
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2">
             <!-- BOTÓN DESTACADO: CONTROL DE VEHÍCULO (Solo si hay viaje activo) -->
             <Transition
               enter-active-class="transition ease-out duration-300"
@@ -48,7 +52,7 @@
                     ? 'bg-green-600 text-white shadow-green-500/40' 
                     : 'bg-green-500 text-white hover:bg-green-600 shadow-green-500/20'
                 ]"
-                class="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.15em] transition-all active:scale-95 shadow-xl animate-pulse-gentle"
+                class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all active:scale-95 shadow-xl animate-pulse-gentle"
               >
                 <div class="size-2 rounded-full bg-white animate-ping"></div>
                 En viaje
@@ -59,13 +63,17 @@
             <router-link 
               v-if="isAdmin" 
               to="/admin" 
-              class="hidden sm:flex items-center gap-2 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-amber-600 bg-amber-50 hover:bg-amber-100 dark:text-amber-400 dark:bg-amber-900/20 dark:hover:bg-amber-900/30 rounded-xl transition-all hover:-translate-y-0.5 active:scale-90 shadow-sm border border-amber-200/50 dark:border-amber-900/50"
+              class="group hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.14em] text-amber-700 dark:text-amber-300 bg-gradient-to-r from-amber-50 to-orange-50 hover:from-amber-100 hover:to-orange-100 dark:from-amber-900/20 dark:to-orange-900/20 dark:hover:from-amber-900/35 dark:hover:to-orange-900/35 transition-all duration-200 active:scale-95 shadow-sm hover:shadow-md border border-amber-200/60 dark:border-amber-900/60 hover:-translate-y-0.5"
             >
-              <ShieldCheckIcon class="size-3.5" />
-              Admin
+              <span class="relative flex size-2">
+                <span class="absolute inline-flex h-full w-full rounded-full bg-amber-500/70 animate-ping"></span>
+                <span class="relative inline-flex size-2 rounded-full bg-amber-500"></span>
+              </span>
+              <ShieldCheckIcon class="size-3.5 group-hover:scale-110 transition-transform" />
+              Panel Admin
             </router-link>
 
-            <div class="transition-all hover:scale-105 active:scale-95 duration-200">
+            <div class="transition-all active:scale-95 duration-200">
               <UserMenu />
             </div>
 
@@ -90,6 +98,11 @@
         leave-to-class="opacity-0 -translate-y-4"
       >
         <div v-if="mobileMenuOpen" class="md:hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-4 space-y-2 shadow-2xl">
+          <div class="mb-2 px-4 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/25 border border-indigo-100 dark:border-indigo-800/50">
+            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400">Empresa actual</p>
+            <p class="text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300 truncate mt-1">{{ currentTenantLabel }}</p>
+          </div>
+
           <!-- Link destacado en móvil -->
           <router-link 
             v-if="hasActiveBooking"
@@ -132,7 +145,7 @@
     <main class="relative">
       <router-view v-slot="{ Component }">
         <transition name="page" mode="out-in" appear>
-          <div :key="route.path" :class="[isFullPage ? '' : 'py-6 sm:py-8 lg:py-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8']">
+          <div :key="route.path" :class="[isFullPage ? 'fleetly-fade-up' : 'fleetly-fade-up py-6 sm:py-8 lg:py-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8']">
             <component :is="Component" />
           </div>
         </transition>
@@ -154,12 +167,14 @@ import {
   TicketIcon, 
   CalendarDaysIcon, 
   UserIcon,
-  ShieldCheckIcon
+  ShieldCheckIcon,
+  BuildingOffice2Icon
 } from '@heroicons/vue/24/outline'
 import { useAuth } from '@/modules/auth/composables/useAuth'
 import UserMenu from '@/modules/common/components/UserMenu.vue'
 import ChatbotPage from '@/modules/common/pages/ChatbotPage.vue'
 import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
+import { getCurrentTenant } from '@/services/api'
 
 const route = useRoute()
 const { user } = useAuth()
@@ -177,6 +192,12 @@ const isActive = (path: string) => {
 const isAdmin = computed(() => 
   user.value?.roles?.some((r: any) => (r.name || '').toLowerCase() === 'admin')
 )
+
+const currentTenantLabel = computed(() => {
+  route.fullPath
+  const tenant = getCurrentTenant()?.trim()
+  return tenant || 'sin-tenant'
+})
 
 const navigation = [
   { name: 'Mapa', to: '/vehicles/map', icon: MapIcon },

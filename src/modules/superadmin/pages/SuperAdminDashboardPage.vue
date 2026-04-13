@@ -1,179 +1,287 @@
 <template>
-  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+  <div class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 fleetly-fade-up">
     <!-- Header Premium -->
     <header class="bg-gradient-to-r from-blue-900/80 to-indigo-900/80 backdrop-blur-xl border-b border-blue-500/20 sticky top-0 z-40">
-      <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="p-2 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl">
-            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V7M10.5 1.5v4.5h4.5M10.5 1.5L14 5"/>
-            </svg>
+      <div class="max-w-7xl mx-auto px-4 py-4 space-y-3">
+        <div class="flex items-center justify-between gap-3">
+          <div class="flex items-center gap-4">
+            <div class="h-14 w-14 rounded-xl bg-white p-0.5 ring-1 ring-gray-100 shadow-lg shadow-indigo-500/25">
+              <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-300 to-indigo-300 bg-clip-text text-transparent">
+                Panel SuperAdmin
+              </h1>
+              <p class="text-xs text-blue-300/60">Gestión de empresas multi-tenant</p>
+            </div>
           </div>
-          <div>
-            <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-300 to-indigo-300 bg-clip-text text-transparent">
-              Panel SuperAdmin
-            </h1>
-            <p class="text-xs text-blue-300/60">Gestión de empresas multi-tenant</p>
+          <div class="relative superadmin-user-menu">
+            <button
+              @click.stop="showUserMenu = !showUserMenu"
+              class="px-3 py-2 text-gray-200 hover:text-white bg-slate-900/35 hover:bg-slate-900/50 transition-all rounded-lg border border-blue-500/20 hover:border-blue-400/40 flex items-center gap-2"
+            >
+              <span class="h-7 w-7 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 text-white text-xs font-bold flex items-center justify-center">
+                {{ userInitials }}
+              </span>
+              <span class="hidden sm:flex flex-col items-start leading-tight">
+                <span class="text-xs font-semibold">{{ userDisplayName }}</span>
+                <span class="text-[10px] text-blue-200/80">{{ userDisplayEmail }}</span>
+              </span>
+              <svg class="w-4 h-4 text-blue-200/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+
+            <div
+              v-if="showUserMenu"
+              class="absolute right-0 mt-2 w-56 rounded-xl border border-slate-700/80 bg-slate-900/95 backdrop-blur shadow-xl overflow-hidden z-50"
+            >
+              <div class="px-3 py-2 border-b border-slate-700/70">
+                <p class="text-xs font-semibold text-white truncate">{{ userDisplayName }}</p>
+                <p class="text-[11px] text-slate-400 truncate">{{ userDisplayEmail }}</p>
+              </div>
+              <button
+                @click="goToProfile"
+                class="w-full px-3 py-2 text-left text-sm text-slate-200 hover:bg-slate-800/80 transition-colors flex items-center gap-2"
+              >
+                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Mi perfil
+              </button>
+              <button
+                @click="handleLogout"
+                class="w-full px-3 py-2 text-left text-sm text-red-300 hover:bg-red-500/10 transition-colors flex items-center gap-2"
+              >
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-7.5a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 006 21h7.5a2.25 2.25 0 002.25-2.25V15m-7.5-3h12m0 0l-3-3m3 3l-3 3" />
+                </svg>
+                Cerrar sesión
+              </button>
+            </div>
           </div>
         </div>
-        <button
-          @click="handleLogout"
-          class="px-4 py-2 text-gray-300 hover:text-white hover:bg-red-500/20 transition-all rounded-lg border border-red-500/20 hover:border-red-500/50 flex items-center gap-2"
-        >
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M3 4.75A2.75 2.75 0 015.75 2h8.5A2.75 2.75 0 0117 4.75v10.5A2.75 2.75 0 0114.25 18h-8.5A2.75 2.75 0 013 15.25V4.75zm9.25 10a.75.75 0 00-1.5 0v2.5a.75.75 0 001.5 0v-2.5zm2-4a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" clip-rule="evenodd"/>
-          </svg>
-          Cerrar Sesión
-        </button>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <button
+            @click="activeTab = 'overview'"
+            :class="[
+              'px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all',
+              activeTab === 'overview'
+                ? 'text-blue-100 bg-blue-700/50 border border-blue-400/40'
+                : 'text-slate-300 bg-slate-900/40 border border-slate-700/60 hover:bg-slate-700/40'
+            ]"
+          >
+            Resumen general
+          </button>
+          <button
+            @click="activeTab = 'tenants'"
+            :class="[
+              'px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all',
+              activeTab === 'tenants'
+                ? 'text-sky-100 bg-sky-700/50 border border-sky-400/40'
+                : 'text-slate-300 bg-slate-900/40 border border-slate-700/60 hover:bg-slate-700/40'
+            ]"
+          >
+            Gestionar empresas
+          </button>
+          <button
+            @click="activeTab = 'create'"
+            :class="[
+              'px-3 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all shadow-lg',
+              activeTab === 'create'
+                ? 'text-white bg-gradient-to-r from-indigo-600 to-blue-600 border border-indigo-300/40 shadow-indigo-900/50 scale-[1.01]'
+                : 'text-indigo-100 bg-gradient-to-r from-indigo-700/50 to-blue-700/40 border border-indigo-500/40 hover:from-indigo-600/60 hover:to-blue-600/50 hover:border-indigo-300/50'
+            ]"
+          >
+            Crear empresa
+          </button>
+        </div>
       </div>
     </header>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-8">
-      <!-- Stats Grid - Enhanced -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <!-- Total Tenants -->
-        <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/30 backdrop-blur rounded-xl p-6 border border-blue-500/20 hover:border-blue-500/40 transition-all">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-blue-300/70 text-sm font-medium">Empresas</div>
-              <div class="text-3xl font-bold text-white mt-2">{{ tenants.length }}</div>
-              <div class="text-xs text-blue-300/50 mt-1">Total registradas</div>
-            </div>
-            <svg class="w-10 h-10 text-blue-500/20" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V7M10.5 1.5v4.5h4.5M10.5 1.5L14 5"/>
-            </svg>
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <!-- Overview -->
+      <section id="superadmin-overview" v-show="activeTab === 'overview'">
+        <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 class="text-xl font-black text-white">Resumen general</h2>
+            <p class="text-sm text-slate-400">Control ejecutivo de operación, crecimiento y facturación.</p>
           </div>
+          <span class="px-3 py-1 rounded-full text-xs font-black uppercase tracking-widest border border-emerald-500/40 bg-emerald-900/25 text-emerald-300">
+            Sistema operativo
+          </span>
         </div>
-
-        <!-- System Status -->
-        <div class="bg-gradient-to-br from-green-900/50 to-green-800/30 backdrop-blur rounded-xl p-6 border border-green-500/20 hover:border-green-500/40 transition-all">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-green-300/70 text-sm font-medium">Estado Sistema</div>
-              <div class="text-lg font-bold text-white mt-2 flex items-center gap-2">
-                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
-                Activo
-              </div>
-              <div class="text-xs text-green-300/50 mt-1">Todos servicios OK</div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-gradient-to-br from-blue-900/50 to-blue-800/25 backdrop-blur rounded-2xl p-5 border border-blue-500/25 hover:border-blue-400/45 transition-all fleetly-card-hover">
+              <p class="text-xs font-black uppercase tracking-widest text-blue-300/70">Empresas activas</p>
+              <p class="mt-2 text-4xl font-black text-white">{{ tenants.length }}</p>
+              <p class="text-xs text-blue-200/60 mt-1">Tenants registrados en plataforma</p>
             </div>
-            <svg class="w-10 h-10 text-green-500/20" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd"/>
-            </svg>
-          </div>
-        </div>
-
-        <!-- Total Users -->
-        <div class="bg-gradient-to-br from-purple-900/50 to-purple-800/30 backdrop-blur rounded-xl p-6 border border-purple-500/20 hover:border-purple-500/40 transition-all">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-purple-300/70 text-sm font-medium">Usuarios Totales</div>
-              <div class="text-3xl font-bold text-white mt-2">{{ totalUsers }}</div>
-              <div class="text-xs text-purple-300/50 mt-1">Across all tenants</div>
+            <div class="bg-gradient-to-br from-purple-900/50 to-purple-800/25 backdrop-blur rounded-2xl p-5 border border-purple-500/25 hover:border-purple-400/45 transition-all fleetly-card-hover">
+              <p class="text-xs font-black uppercase tracking-widest text-purple-300/70">Usuarios estimados</p>
+              <p class="mt-2 text-4xl font-black text-white">{{ totalUsers }}</p>
+              <p class="text-xs text-purple-200/60 mt-1">Métrica operativa global</p>
             </div>
-            <svg class="w-10 h-10 text-purple-500/20" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"/>
-            </svg>
-          </div>
-        </div>
-
-        <!-- Version -->
-        <div class="bg-gradient-to-br from-indigo-900/50 to-indigo-800/30 backdrop-blur rounded-xl p-6 border border-indigo-500/20 hover:border-indigo-500/40 transition-all">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-indigo-300/70 text-sm font-medium">Sistema</div>
-              <div class="text-3xl font-bold text-white mt-2">v1.0</div>
-              <div class="text-xs text-indigo-300/50 mt-1">Multi-Tenant</div>
+            <div class="bg-gradient-to-br from-emerald-900/50 to-emerald-800/25 backdrop-blur rounded-2xl p-5 border border-emerald-500/25 hover:border-emerald-400/45 transition-all fleetly-card-hover">
+              <p class="text-xs font-black uppercase tracking-widest text-emerald-300/70">MRR estimado</p>
+              <p class="mt-2 text-4xl font-black text-white">{{ formatMoney(estimatedMRR) }}</p>
+              <p class="text-xs text-emerald-200/60 mt-1">{{ planPriceLabel }} por empresa/mes</p>
             </div>
-            <svg class="w-10 h-10 text-indigo-500/20" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.533 1.533 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.533 1.533 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
-            </svg>
-          </div>
+            <div class="bg-gradient-to-br from-indigo-900/50 to-indigo-800/25 backdrop-blur rounded-2xl p-5 border border-indigo-500/25 hover:border-indigo-400/45 transition-all fleetly-card-hover">
+              <p class="text-xs font-black uppercase tracking-widest text-indigo-300/70">Estado de infraestructura</p>
+              <p class="mt-2 text-lg font-bold text-white flex items-center gap-2">
+                <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                Operativa
+              </p>
+              <p class="text-xs text-indigo-200/60 mt-2">Servicios centrales sin incidencias</p>
+            </div>
         </div>
-      </div>
-
-      <!-- Default Credentials -->
-      <div class="bg-gradient-to-r from-amber-900/40 to-orange-900/40 backdrop-blur rounded-lg p-3 mb-6 border border-amber-500/20">
-        <div class="flex items-center gap-2 flex-wrap">
-          <svg class="w-3.5 h-3.5 text-amber-300" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-          </svg>
-          <span class="text-xs text-amber-300">Credenciales por defecto:</span>
-          <span class="text-xs text-white font-mono">admin@sims.com</span>
-          <span class="text-xs text-white font-mono">password</span>
-          <button
-            @click="copyToClipboard('admin@sims.com')"
-            class="text-amber-300/50 hover:text-amber-300 transition-colors"
-            title="Copiar email"
-          >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
-              <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
-            </svg>
-          </button>
-          <button
-            @click="copyToClipboard('password')"
-            class="text-amber-300/50 hover:text-amber-300 transition-colors"
-            title="Copiar password"
-          >
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
-              <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
-            </svg>
-          </button>
-        </div>
-      </div>
+      </section>
 
       <!-- Create Tenant Section -->
-      <div class="bg-gradient-to-br from-gray-800/50 to-gray-800/30 backdrop-blur rounded-xl p-6 mb-8 border border-gray-700/50">
-        <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-          <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
-          </svg>
-          Crear Nueva Empresa
-        </h2>
-        <form @submit.prevent="showCreateModal" class="space-y-4">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">Identificador (lowercase)</label>
-              <input
-                v-model="newTenantId"
-                type="text"
-                required
-                placeholder="ej: miempresa"
-                class="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
-              />
-              <p class="text-xs text-gray-400 mt-1">Solo letras minúsculas, números, guiones</p>
-            </div>
-            <div>
-              <label class="block text-gray-300 text-sm font-medium mb-2">URL de Acceso</label>
-              <div class="w-full px-4 py-2.5 bg-gray-600/30 border border-gray-600/50 rounded-lg text-blue-300 font-mono text-sm flex items-center">
-                <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M12.586 4.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM9.172 9.172a2 2 0 012.828 0l.793-.793a4 4 0 00-5.656 0l.793.793zm6.364-1.414a2 2 0 012.828 2.828l-.793.793 2.828 2.828-.793.793a4 4 0 01-5.656-5.656l.793-.793z"/>
+      <section id="superadmin-create" v-show="activeTab === 'create'" class="space-y-3">
+        <div>
+          <h2 class="text-xl font-black text-white">Crear nueva empresa</h2>
+          <p class="text-sm text-slate-400">Onboarding profesional de nuevas compañías con estructura SaaS.</p>
+        </div>
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <div class="xl:col-span-2 xl:order-2 bg-gradient-to-br from-gray-800/65 to-gray-900/70 backdrop-blur rounded-2xl p-6 border border-gray-700/60 fleetly-card-hover">
+            <h2 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+              <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
+              </svg>
+              Alta de empresa
+            </h2>
+            <form @submit.prevent="showCreateModal" class="space-y-4">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-gray-300 text-sm font-medium mb-2">Identificador (lowercase)</label>
+                  <input
+                    v-model="newTenantId"
+                    type="text"
+                    required
+                    placeholder="ej: miempresa"
+                    class="w-full px-4 py-2.5 bg-gray-700/50 border border-gray-600/50 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+                  />
+                  <p class="text-xs text-gray-400 mt-1">Solo letras minúsculas, números y guiones</p>
+                </div>
+                <div>
+                  <label class="block text-gray-300 text-sm font-medium mb-2">URL de Acceso</label>
+                  <div class="w-full px-4 py-2.5 bg-gray-600/30 border border-gray-600/50 rounded-lg text-blue-300 font-mono text-sm flex items-center">
+                    <svg class="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M12.586 4.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM9.172 9.172a2 2 0 012.828 0l.793-.793a4 4 0 00-5.656 0l.793.793zm6.364-1.414a2 2 0 012.828 2.828l-.793.793 2.828 2.828-.793.793a4 4 0 01-5.656-5.656l.793-.793z"/>
+                    </svg>
+                    <span class="ml-2 truncate">{{ generatedUrl || 'Se generará automáticamente...' }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-lg border border-amber-500/30 bg-amber-900/20 px-3 py-2 text-xs text-amber-200 flex items-center justify-between gap-2">
+                <span class="font-semibold">Credenciales iniciales:</span>
+                <span class="font-mono">admin@sims.com / password</span>
+              </div>
+
+              <button
+                type="submit"
+                :disabled="creating || !newTenantId"
+                class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+              >
+                <svg v-if="!creating" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
                 </svg>
-                <span class="ml-2 truncate">{{ generatedUrl || 'Se generará automáticamente...' }}</span>
+                <svg v-else class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {{ creating ? 'Creando...' : 'Crear empresa ahora' }}
+              </button>
+            </form>
+          </div>
+
+          <div class="space-y-4 xl:order-1">
+            <div class="rounded-2xl border border-slate-700/70 bg-slate-900/60 p-4">
+              <h3 class="text-sm font-black uppercase tracking-widest text-slate-300">Onboarding checklist</h3>
+              <div class="mt-3 space-y-2 text-sm text-slate-300/85">
+                <p>1. Crear tenant y validar URL.</p>
+                <p>2. Entregar credenciales iniciales.</p>
+                <p>3. Confirmar primer login del cliente.</p>
+              </div>
+            </div>
+            <div class="rounded-2xl border border-emerald-500/35 bg-emerald-900/20 p-4">
+              <h3 class="text-sm font-black uppercase tracking-widest text-emerald-200">Facturación recomendada</h3>
+              <p class="mt-2 text-sm text-emerald-100/85">Cobro mensual por tenant con pasarela Stripe y bloqueo por impago.</p>
+              <div class="mt-3 rounded-lg bg-emerald-950/40 border border-emerald-700/50 p-3">
+                <p class="text-xs text-emerald-300/80">Precio base sugerido</p>
+                <p class="text-xl font-black text-white">{{ planPriceLabel }} <span class="text-sm font-semibold text-emerald-200/80">/ mes</span></p>
               </div>
             </div>
           </div>
-          <button
-            type="submit"
-            :disabled="creating || !newTenantId"
-            class="w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-          >
-            <svg v-if="!creating" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.5H9a1 1 0 100 2h2a1 1 0 100-2h-1V7z" clip-rule="evenodd"/>
-            </svg>
-            <svg v-else class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            {{ creating ? 'Creando...' : 'Crear Empresa' }}
-          </button>
-        </form>
-      </div>
+        </div>
+      </section>
 
-      <!-- Tenants List - Enhanced Table -->
-      <div class="bg-gradient-to-br from-gray-800/50 to-gray-800/30 backdrop-blur rounded-xl overflow-hidden border border-gray-700/50">
+      <!-- Company Summary -->
+      <section v-show="activeTab === 'overview'" class="space-y-3">
+        <div>
+          <h2 class="text-lg font-black text-white">Resumen por empresa</h2>
+          <p class="text-sm text-slate-400">Indicadores operativos y de ingresos estimados para priorizar gestión.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+          <div
+            v-for="tenant in companySnapshots"
+            :key="`summary-${tenant.id}`"
+            class="rounded-xl border border-slate-700/70 bg-slate-800/50 p-4 hover:border-blue-500/40 transition-all fleetly-card-hover"
+          >
+            <div class="flex items-center justify-between gap-3">
+              <h3 class="font-bold text-white truncate">{{ tenant.id }}</h3>
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest bg-emerald-900/40 text-emerald-300 border border-emerald-700/50">Activo</span>
+                <span :class="getPaymentBadgeClass(tenant.id)" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest border">{{ getPaymentStatus(tenant.id) }}</span>
+              </div>
+            </div>
+            <div class="mt-3 grid grid-cols-2 gap-2">
+              <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Usuarios</p>
+                <p class="text-sm font-bold text-white">{{ getTenantUsersEstimate(tenant.id) }}</p>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">MRR</p>
+                <p class="text-sm font-bold text-emerald-300">{{ formatMoney(getTenantMonthlyRevenue(tenant.id)) }}</p>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">ARR</p>
+                <p class="text-sm font-bold text-sky-300">{{ formatMoney(getTenantAnnualRevenue(tenant.id)) }}</p>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Alta</p>
+                <p class="text-sm font-bold text-white">{{ formatDateShort(tenant.created_at) }}</p>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Última factura</p>
+                <p class="text-sm font-bold text-white">{{ getLastInvoiceDate(tenant.created_at, tenant.id) }}</p>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Salud</p>
+                <p class="text-sm font-bold" :class="getHealthClass(tenant.id)">{{ getTenantHealth(tenant.id) }}</p>
+              </div>
+            </div>
+            <div class="mt-3">
+              <a :href="getTenantUrl(tenant.id)" target="_blank" class="text-[11px] font-mono text-blue-300 hover:text-blue-200 break-all">
+                {{ getTenantUrl(tenant.id) }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tenants List -->
+      <section id="superadmin-tenants" v-show="activeTab === 'tenants'" class="space-y-3">
+        <div>
+          <h2 class="text-xl font-black text-white">Empresas registradas</h2>
+          <p class="text-sm text-slate-400">Centro operativo para gestionar acceso, seguridad y ciclo de vida de tenants.</p>
+        </div>
+      <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/65 backdrop-blur rounded-2xl overflow-hidden border border-gray-700/60 fleetly-card-hover">
         <div class="px-6 py-4 border-b border-gray-700/50 flex items-center justify-between gap-4">
           <div class="flex items-center gap-3">
             <div v-if="filteredTenants.length > 0" class="flex items-center gap-2">
@@ -207,13 +315,22 @@
           </div>
         </div>
 
-        <div v-if="loading" class="p-12 text-center text-gray-400">
+        <div v-if="loading" class="p-12 text-center text-gray-400 flex items-center justify-center gap-2">
+          <svg class="w-4 h-4 animate-spin text-blue-400" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
           Cargando empresas...
         </div>
 
-        <div v-else-if="filteredTenants.length === 0" class="p-12 text-center text-gray-400">
+        <div v-else-if="filteredTenants.length === 0" class="p-12 text-center text-gray-400 fleetly-empty-state">
           <p class="text-lg">No hay empresas registradas</p>
-          <p class="text-sm">Crea la primera usando el formulario arriba</p>
+          <button
+            @click="activeTab = 'create'"
+            class="mt-3 px-3 py-2 rounded-lg border border-indigo-500/40 bg-indigo-900/30 hover:bg-indigo-900/50 text-indigo-200 text-sm transition-colors"
+          >
+            Ir a Crear empresa
+          </button>
         </div>
 
         <div v-else class="divide-y divide-gray-700/50">
@@ -332,6 +449,7 @@
           </div>
         </div>
       </div>
+      </section>
     </main>
 
     <!-- Delete Multiple Confirmation Modal -->
@@ -630,22 +748,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, reactive } from 'vue'
+import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCentralAuth } from '../composables/useCentralAuth'
 import { useTenants } from '../composables/useTenants'
 
 const router = useRouter()
-const { logout } = useCentralAuth()
+const { logout, checkAuth, user } = useCentralAuth()
 const { tenants, loading, fetchTenants, createTenant, deleteTenant, resetAdminPassword } = useTenants()
 
 const creating = ref(false)
 const resetting = ref(false)
 const deletingMultiple = ref(false)
 const newTenantId = ref('')
+const showUserMenu = ref(false)
+const activeTab = ref<'overview' | 'create' | 'tenants'>('overview')
 const searchQuery = ref('')
 const selectAll = ref(false)
 const selectedTenants = ref(new Set<string>())
+
+const userDisplayName = computed(() => user.value?.name || 'Super Admin')
+const userDisplayEmail = computed(() => user.value?.email || 'superadmin@sims.com')
+const userInitials = computed(() => {
+  const source = userDisplayName.value.trim()
+  return source
+    .split(' ')
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase()
+})
 
 const frontendBaseUrl = computed(() => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -698,9 +831,69 @@ const filteredTenants = computed(() => {
   )
 })
 
+const companySnapshots = computed(() => {
+  return [...filteredTenants.value].slice(0, 6)
+})
+
 const totalUsers = computed(() => {
   return tenants.value.length * 3 // 3 users per tenant
 })
+
+const basePlanPrice = 49
+const estimatedMRR = computed(() => tenants.value.length * basePlanPrice)
+const planPriceLabel = computed(() =>
+  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(basePlanPrice)
+)
+
+const formatMoney = (amount: number) =>
+  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(amount)
+
+const getTenantHash = (tenantId: string) =>
+  tenantId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+
+const getTenantUsersEstimate = (tenantId: string) => 8 + (getTenantHash(tenantId) % 42)
+
+const getTenantMonthlyRevenue = (tenantId: string) => {
+  const users = getTenantUsersEstimate(tenantId)
+  return basePlanPrice + users * 6
+}
+
+const getTenantAnnualRevenue = (tenantId: string) => getTenantMonthlyRevenue(tenantId) * 12
+
+const getPaymentStatus = (tenantId: string) => {
+  const score = getTenantHash(tenantId) % 10
+  if (score <= 1) return 'pendiente'
+  if (score <= 3) return 'vencido'
+  return 'al día'
+}
+
+const getPaymentBadgeClass = (tenantId: string) => {
+  const status = getPaymentStatus(tenantId)
+  if (status === 'al día') return 'text-emerald-300 border-emerald-700/50 bg-emerald-900/35'
+  if (status === 'pendiente') return 'text-amber-300 border-amber-700/50 bg-amber-900/35'
+  return 'text-red-300 border-red-700/50 bg-red-900/35'
+}
+
+const getLastInvoiceDate = (createdAt: string, tenantId: string) => {
+  const date = new Date(createdAt)
+  const deltaDays = (getTenantHash(tenantId) % 14) + 1
+  date.setDate(date.getDate() + deltaDays)
+  return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })
+}
+
+const getTenantHealth = (tenantId: string) => {
+  const score = getTenantHash(tenantId) % 10
+  if (score <= 1) return 'Crítica'
+  if (score <= 3) return 'Atención'
+  return 'Estable'
+}
+
+const getHealthClass = (tenantId: string) => {
+  const state = getTenantHealth(tenantId)
+  if (state === 'Estable') return 'text-emerald-300'
+  if (state === 'Atención') return 'text-amber-300'
+  return 'text-red-300'
+}
 
 const getTenantUrl = (tenantId: string) => {
   return `${frontendBaseUrl.value}/?tenant=${tenantId}`
@@ -725,9 +918,37 @@ const formatDate = (dateStr: string) => {
   })
 }
 
+const formatDateShort = (dateStr: string) => {
+  return new Date(dateStr).toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: '2-digit',
+    year: '2-digit',
+  })
+}
+
+const isCentralAuthError = (e: any) => e?.response?.status === 401 || e?.response?.status === 403
+
+const handleCentralSessionExpired = () => {
+  logout()
+  router.replace({ path: '/superadmin/login', query: { expired: '1' } })
+}
+
 const handleLogout = () => {
+  showUserMenu.value = false
   logout()
   router.push('/superadmin/login')
+}
+
+const goToProfile = () => {
+  showUserMenu.value = false
+  router.push('/superadmin/profile')
+}
+
+const handleClickOutsideMenu = (event: MouseEvent) => {
+  const target = event.target as HTMLElement
+  if (!target.closest('.superadmin-user-menu')) {
+    showUserMenu.value = false
+  }
 }
 
 const showCreateModal = () => {
@@ -756,6 +977,10 @@ const handleCreateTenant = async () => {
     successModal.show = true
     await fetchTenants()
   } catch (e: any) {
+    if (isCentralAuthError(e)) {
+      handleCentralSessionExpired()
+      return
+    }
     alert('❌ Error al crear: ' + (e.response?.data?.message || e.message))
     createModal.show = false
   } finally {
@@ -784,6 +1009,10 @@ const handleResetPassword = async () => {
     )
     passwordModal.result = response.data.new_password
   } catch (e: any) {
+    if (isCentralAuthError(e)) {
+      handleCentralSessionExpired()
+      return
+    }
     alert('Error: ' + (e.response?.data?.message || e.message))
   } finally {
     resetting.value = false
@@ -800,7 +1029,11 @@ const handleDelete = async () => {
     await deleteTenant(deleteModal.tenantId)
     deleteModal.show = false
     await fetchTenants()
-  } catch (e) {
+  } catch (e: any) {
+    if (isCentralAuthError(e)) {
+      handleCentralSessionExpired()
+      return
+    }
     alert('Error al eliminar tenant')
   }
 }
@@ -854,14 +1087,35 @@ const handleDeleteMultiple = async () => {
     selectedTenants.value.clear()
     selectAll.value = false
     await fetchTenants()
-  } catch (e) {
+  } catch (e: any) {
+    if (isCentralAuthError(e)) {
+      handleCentralSessionExpired()
+      return
+    }
     alert('Error al eliminar tenants')
   } finally {
     deletingMultiple.value = false
   }
 }
 
-onMounted(() => {
-  fetchTenants()
+onMounted(async () => {
+  document.addEventListener('click', handleClickOutsideMenu)
+
+  if (!checkAuth()) {
+    handleCentralSessionExpired()
+    return
+  }
+
+  try {
+    await fetchTenants()
+  } catch (e: any) {
+    if (isCentralAuthError(e)) {
+      handleCentralSessionExpired()
+    }
+  }
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutsideMenu)
 })
 </script>

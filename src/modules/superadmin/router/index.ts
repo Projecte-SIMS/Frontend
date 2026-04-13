@@ -14,6 +14,12 @@ export const superAdminRoutes: RouteRecordRaw[] = [
     meta: { requiresAuth: false, requiresCentralAuth: true }
   },
   {
+    path: '/superadmin/profile',
+    name: 'SuperAdminProfile',
+    component: () => import('../pages/SuperAdminProfilePage.vue'),
+    meta: { requiresAuth: false, requiresCentralAuth: true }
+  },
+  {
     path: '/superadmin',
     redirect: '/superadmin/login'
   }
