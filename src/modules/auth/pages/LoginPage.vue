@@ -92,11 +92,15 @@
             </form>
 
             <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
-              <p class="text-center text-sm font-medium text-gray-500 dark:text-gray-400">
-                ¿No tienes una cuenta?
-                <RouterLink to="/register" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Regístrate gratis</RouterLink>
-              </p>
-            </div>
+                <p class="text-center text-sm font-medium text-gray-500 dark:text-gray-400">
+                  ¿No tienes una cuenta?
+                  <RouterLink to="/register" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">Regístrate gratis</RouterLink>
+                </p>
+                <p class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400">
+                  ¿Aún no tienes empresa?
+                  <RouterLink to="/empresa/alta" class="font-bold text-emerald-600 dark:text-emerald-400 hover:underline">Crear tenant con pago demo</RouterLink>
+                </p>
+              </div>
           </div>
         </div>
       </section>
@@ -128,7 +132,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
+import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { getCurrentTenant } from '@/services/api'
 import {
@@ -140,6 +144,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
+const route = useRoute()
 const { login, isLoading, error, user } = useAuth()
 
 const tenant = ref('')
@@ -151,6 +156,10 @@ onMounted(() => {
   const currentTenant = getCurrentTenant()
   if (currentTenant) {
     tenant.value = currentTenant
+  }
+
+  if (typeof route.query.email === 'string' && route.query.email) {
+    email.value = route.query.email
   }
 })
 

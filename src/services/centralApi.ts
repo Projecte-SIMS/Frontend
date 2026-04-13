@@ -115,6 +115,20 @@ export interface CreateTenantRequest {
   domain: string
 }
 
+export interface DemoTenantOnboardingRequest {
+  company_name: string
+  company_slug?: string
+  admin_name: string
+  admin_email: string
+  admin_password: string
+  plan: 'base' | 'pro'
+  payment_demo_confirmed: true
+  billing_name?: string
+  billing_email?: string
+  payment_method?: 'card' | 'sepa' | 'transfer' | 'wallet'
+  country?: string
+}
+
 export const centralApi = {
   // Login como super admin
   async login(email: string, password: string) {
@@ -209,6 +223,11 @@ export const centralApi = {
     vat_number?: string
   }) {
     const response = await centralApiClient.post(`/tenants/${tenantId}/billing/demo-profile`, payload)
+    return response.data
+  },
+
+  async completeDemoTenantOnboarding(payload: DemoTenantOnboardingRequest) {
+    const response = await centralApiClient.post('/public/tenant-onboarding/demo-complete', payload)
     return response.data
   }
 }

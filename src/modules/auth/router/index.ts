@@ -14,6 +14,12 @@ export const authRoutes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/empresa/alta',
+    name: 'TenantOnboarding',
+    component: () => import('../pages/TenantOnboardingPage.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../pages/DashboardPage.vue'),
