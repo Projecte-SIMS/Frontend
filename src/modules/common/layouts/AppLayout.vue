@@ -9,9 +9,9 @@
           <div class="flex items-center gap-8">
             <router-link to="/" class="flex items-center gap-2.5 group transition-transform active:scale-95">
               <div class="h-9 w-9 rounded-xl bg-white p-1 shadow-lg shadow-indigo-500/20 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
+                <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
               </div>
-              <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">SIMS</span>
+              <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Fleetly</span>
             </router-link>
 
             <!-- Nav Links Desktop -->

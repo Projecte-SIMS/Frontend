@@ -22,9 +22,9 @@
               <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4 dark:bg-gray-900">
                 <div class="flex h-16 shrink-0 items-center gap-3">
                   <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-md">
-                    <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
+                    <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
                   </div>
-                  <span class="text-xl font-bold text-gray-900 dark:text-white">SIMS Admin</span>
+                  <span class="text-xl font-bold text-gray-900 dark:text-white">Fleetly Admin</span>
                 </div>
                 <nav class="flex flex-1 flex-col">
                   <ul role="list" class="flex flex-1 flex-col gap-y-7">
@@ -55,9 +55,9 @@
       <div class="flex grow flex-col gap-y-5 border-r border-gray-200 bg-white px-6 pb-4 dark:border-gray-800 dark:bg-gray-900 overflow-visible">
         <div class="flex h-16 shrink-0 items-center gap-3">
           <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-md">
-            <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
+            <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
           </div>
-          <span class="text-xl font-bold text-gray-900 dark:text-white">SIMS Admin</span>
+          <span class="text-xl font-bold text-gray-900 dark:text-white">Fleetly Admin</span>
         </div>
         <nav class="flex flex-1 flex-col overflow-visible">
           <ul role="list" class="flex flex-1 flex-col gap-y-7 overflow-visible">
@@ -95,9 +95,9 @@
       </button>
       <div class="flex-1 flex items-center gap-2 text-left">
         <div class="h-8 w-8 rounded-lg bg-white p-0.5 shadow-sm">
-          <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
+          <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
         </div>
-        <span class="text-sm font-semibold text-gray-900 dark:text-white text-left">SIMS Admin</span>
+        <span class="text-sm font-semibold text-gray-900 dark:text-white text-left">Fleetly Admin</span>
       </div>
     </div>
 

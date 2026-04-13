@@ -1,0 +1,24 @@
+FLEETLY — Referència de tipografies
+
+1. Tipografia principal
+Switzer
+Pesos utilitzats:
+- Switzer Regular
+- Switzer Semibold
+
+Font de descàrrega:
+https://fontshare.com/fonts/switzer
+
+2. Tipografia secundària
+ITC Avant Garde Gothic Pro
+Pes utilitzat:
+- Medium
+
+Font d’accés utilitzada en el projecte:
+https://fonts.adobe.com/fonts/itc-avant-garde-gothic
+
+Compra / llicència comercial alternativa:
+https://www.myfonts.com/collections/avant-garde-gothic-font-itc
+
+Nota:
+Les tipografies no s’inclouen dins de l’entrega final. Cal obtenir-les a través de les seves fonts oficials corresponents i segons les condicions de llicència de cada servei.

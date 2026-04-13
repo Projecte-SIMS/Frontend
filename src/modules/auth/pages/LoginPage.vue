@@ -4,13 +4,13 @@
       <!-- Logo -->
       <div class="flex justify-center mb-6">
         <div class="h-12 w-12 rounded-2xl bg-white p-1.5 shadow-xl shadow-indigo-500/30">
-          <img src="/logo.png" alt="SIMS Logo" class="h-full w-full object-contain" />
+          <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
         </div>
       </div>
       <h2 class="text-center text-3xl font-black tracking-tight text-gray-900 dark:text-white">Bienvenido</h2>
-      <p class="mt-2 text-center text-sm text-gray-500 dark:text-gray-400 font-medium">
-        Accede a tu cuenta de SIMS.
-      </p>
+        <p class="mt-2 text-center text-sm text-gray-500 dark:text-gray-400 font-medium">
+          Accede a tu cuenta de Fleetly.
+        </p>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">

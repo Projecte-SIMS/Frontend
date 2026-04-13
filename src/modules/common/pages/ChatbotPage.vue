@@ -28,11 +28,11 @@ const getWelcomeMessage = () => {
   const role = userRole.value
   switch (role) {
     case 'Admin':
-      return '¡Hola Admin! Soy el asistente AI de SIMS. Puedo ayudarte con la gestión de usuarios, vehículos, reservas y configuración del sistema. ¿Qué necesitas?'
+      return '¡Hola Admin! Soy el asistente AI de Fleetly. Puedo ayudarte con la gestión de usuarios, vehículos, reservas y configuración del sistema. ¿Qué necesitas?'
     case 'Maintenance':
-      return '¡Hola! Soy el asistente de SIMS para el equipo de mantenimiento. Puedo ayudarte con información técnica de vehículos y procedimientos. ¿En qué puedo asistirte?'
+      return '¡Hola! Soy el asistente de Fleetly para el equipo de mantenimiento. Puedo ayudarte con información técnica de vehículos y procedimientos. ¿En qué puedo asistirte?'
     default:
-      return '¡Hola! Soy el asistente AI de SIMS. Puedo ayudarte a reservar vehículos, resolver dudas sobre el servicio y gestionar tus reservas. ¿En qué puedo ayudarte hoy?'
+      return '¡Hola! Soy el asistente AI de Fleetly. Puedo ayudarte a reservar vehículos, resolver dudas sobre el servicio y gestionar tus reservas. ¿En qué puedo ayudarte hoy?'
   }
 }
 
@@ -135,7 +135,7 @@ onMounted(() => {
               <SparklesIcon class="size-6" />
             </div>
             <div>
-              <h2 class="text-base font-black tracking-tight leading-none">Asistente SIMS</h2>
+              <h2 class="text-base font-black tracking-tight leading-none">Asistente Fleetly</h2>
               <div class="flex items-center gap-1.5 mt-1.5">
                 <span class="size-1.5 rounded-full bg-green-400 animate-pulse"></span>
                 <span class="text-[10px] font-bold uppercase tracking-widest opacity-80">IA en línea · {{ userRole }}</span>
@@ -195,7 +195,7 @@ onMounted(() => {
               <ArrowPathIcon v-else class="size-5 animate-spin" />
             </button>
           </form>
-          <p class="text-[9px] text-center text-gray-400 mt-2 font-bold uppercase tracking-widest">Powered by Project SIMS AI</p>
+          <p class="text-[9px] text-center text-gray-400 mt-2 font-bold uppercase tracking-widest">Powered by Fleetly AI</p>
         </div>
       </div>
     </Transition>

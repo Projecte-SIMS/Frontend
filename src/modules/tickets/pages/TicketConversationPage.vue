@@ -40,7 +40,7 @@
         >
           <div class="flex items-center gap-3 mb-2">
             <span class="text-[10px] font-black uppercase tracking-widest opacity-60">
-              {{ m.is_support ? 'Soporte SIMS' : 'Tú' }}
+              {{ m.is_support ? 'Soporte Fleetly' : 'Tú' }}
             </span>
             <span class="text-[9px] font-bold opacity-40 uppercase">{{ formatTime(m.created_at) }}</span>
           </div>

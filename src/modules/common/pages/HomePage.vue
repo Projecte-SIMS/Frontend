@@ -81,7 +81,7 @@
 
     <!-- Features Section -->
     <div>
-      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">¿Por qué elegir SIMS?</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">¿Por qué elegir Fleetly?</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 hover:border-indigo-500/50 transition-colors">
           <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20 mb-4">
