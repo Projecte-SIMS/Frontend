@@ -66,6 +66,48 @@ export interface Tenant {
   admin_username: string
   created_at: string
   updated_at: string
+  billing?: BillingSnapshot
+}
+
+export interface BillingSnapshot {
+  provider: string | null
+  status: string
+  customer_id: string | null
+  subscription_id: string | null
+  price_id: string | null
+  currency: string
+  monthly_amount_cents: number
+  mrr_amount_cents: number
+  arr_amount_cents: number
+  current_period_end: string | null
+  last_invoice_at: string | null
+  last_invoice_status: string | null
+  demo_profile?: DemoBillingProfile | null
+  access?: BillingAccessStatus
+}
+
+export interface BillingAccessStatus {
+  is_suspended: boolean
+  overdue_days: number
+  grace_days: number
+  reference_date: string | null
+  status_trigger: string
+  reason: string | null
+}
+
+export interface DemoBillingProfile {
+  billing_name: string
+  billing_email: string
+  payment_method: 'card' | 'sepa' | 'transfer' | 'wallet'
+  card_last4?: string
+  expiry_month?: number
+  expiry_year?: number
+  country: string
+  city?: string
+  postal_code?: string
+  address_line?: string
+  vat_number?: string
+  updated_at?: string
 }
 
 export interface CreateTenantRequest {
@@ -129,6 +171,44 @@ export const centralApi = {
   // Eliminar tenant
   async deleteTenant(id: string) {
     const response = await centralApiClient.delete(`/tenants/${id}`)
+    return response.data
+  },
+
+  async getTenantBillingStatus(tenantId: string): Promise<BillingSnapshot> {
+    const response = await centralApiClient.get(`/tenants/${tenantId}/billing/status`)
+    return response.data.data
+  },
+
+  async createTenantCheckoutSession(tenantId: string, payload: {
+    success_url: string
+    cancel_url: string
+    price_id?: string
+  }) {
+    const response = await centralApiClient.post(`/tenants/${tenantId}/billing/checkout-session`, payload)
+    return response.data
+  },
+
+  async createTenantPortalSession(tenantId: string, payload: {
+    return_url: string
+  }) {
+    const response = await centralApiClient.post(`/tenants/${tenantId}/billing/portal-session`, payload)
+    return response.data
+  },
+
+  async updateTenantDemoBillingProfile(tenantId: string, payload: {
+    billing_name: string
+    billing_email: string
+    payment_method: 'card' | 'sepa' | 'transfer' | 'wallet'
+    card_last4?: string
+    expiry_month?: number
+    expiry_year?: number
+    country: string
+    city?: string
+    postal_code?: string
+    address_line?: string
+    vat_number?: string
+  }) {
+    const response = await centralApiClient.post(`/tenants/${tenantId}/billing/demo-profile`, payload)
     return response.data
   }
 }

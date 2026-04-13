@@ -102,6 +102,25 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+      <div
+        v-if="billingNotice"
+        class="rounded-xl border border-emerald-500/40 bg-emerald-900/20 px-4 py-3 flex items-start justify-between gap-3"
+      >
+        <div>
+          <p class="text-sm font-semibold text-emerald-200">{{ billingNotice }}</p>
+          <p class="text-xs text-emerald-300/80 mt-1">La información de facturación se ha actualizado en el panel.</p>
+        </div>
+        <button
+          @click="billingNotice = ''"
+          class="text-emerald-300/80 hover:text-emerald-100 transition-colors"
+          title="Cerrar aviso"
+        >
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
       <!-- Overview -->
       <section id="superadmin-overview" v-show="activeTab === 'overview'">
         <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
@@ -126,7 +145,7 @@
             </div>
             <div class="bg-gradient-to-br from-emerald-900/50 to-emerald-800/25 backdrop-blur rounded-2xl p-5 border border-emerald-500/25 hover:border-emerald-400/45 transition-all fleetly-card-hover">
               <p class="text-xs font-black uppercase tracking-widest text-emerald-300/70">MRR estimado</p>
-              <p class="mt-2 text-4xl font-black text-white">{{ formatMoney(estimatedMRR) }}</p>
+              <p class="mt-2 text-4xl font-black text-white">{{ formatCents(estimatedMRR) }}</p>
               <p class="text-xs text-emerald-200/60 mt-1">{{ planPriceLabel }} por empresa/mes</p>
             </div>
             <div class="bg-gradient-to-br from-indigo-900/50 to-indigo-800/25 backdrop-blur rounded-2xl p-5 border border-indigo-500/25 hover:border-indigo-400/45 transition-all fleetly-card-hover">
@@ -237,7 +256,7 @@
               <h3 class="font-bold text-white truncate">{{ tenant.id }}</h3>
               <div class="flex items-center gap-1.5">
                 <span class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest bg-emerald-900/40 text-emerald-300 border border-emerald-700/50">Activo</span>
-                <span :class="getPaymentBadgeClass(tenant.id)" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest border">{{ getPaymentStatus(tenant.id) }}</span>
+                <span :class="getPaymentBadgeClass(tenant)" class="px-2 py-0.5 rounded-md text-[10px] font-black uppercase tracking-widest border">{{ getPaymentStatus(tenant) }}</span>
               </div>
             </div>
             <div class="mt-3 grid grid-cols-2 gap-2">
@@ -247,11 +266,11 @@
               </div>
               <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">MRR</p>
-                <p class="text-sm font-bold text-emerald-300">{{ formatMoney(getTenantMonthlyRevenue(tenant.id)) }}</p>
+                <p class="text-sm font-bold text-emerald-300">{{ formatCents(getTenantMonthlyRevenueCents(tenant)) }}</p>
               </div>
               <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">ARR</p>
-                <p class="text-sm font-bold text-sky-300">{{ formatMoney(getTenantAnnualRevenue(tenant.id)) }}</p>
+                <p class="text-sm font-bold text-sky-300">{{ formatCents(getTenantAnnualRevenueCents(tenant)) }}</p>
               </div>
               <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Alta</p>
@@ -259,17 +278,20 @@
               </div>
               <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Última factura</p>
-                <p class="text-sm font-bold text-white">{{ getLastInvoiceDate(tenant.created_at, tenant.id) }}</p>
+                <p class="text-sm font-bold text-white">{{ getLastInvoiceDate(tenant) }}</p>
               </div>
               <div class="rounded-lg bg-slate-900/50 p-2 border border-slate-700/50">
                 <p class="text-[10px] font-black uppercase tracking-widest text-slate-500">Salud</p>
-                <p class="text-sm font-bold" :class="getHealthClass(tenant.id)">{{ getTenantHealth(tenant.id) }}</p>
+                <p class="text-sm font-bold" :class="getHealthClass(tenant)">{{ getTenantHealth(tenant) }}</p>
               </div>
             </div>
             <div class="mt-3">
               <a :href="getTenantUrl(tenant.id)" target="_blank" class="text-[11px] font-mono text-blue-300 hover:text-blue-200 break-all">
                 {{ getTenantUrl(tenant.id) }}
               </a>
+              <p class="mt-1 text-[11px] text-slate-400">
+                {{ getTenantDemoPaymentSummary(tenant) }}
+              </p>
             </div>
           </div>
         </div>
@@ -278,7 +300,7 @@
       <!-- Tenants List -->
       <section id="superadmin-tenants" v-show="activeTab === 'tenants'" class="space-y-3">
         <div>
-          <h2 class="text-xl font-black text-white">Empresas registradas</h2>
+          <h2 class="text-xl font-black text-white">Gestionar empresas</h2>
           <p class="text-sm text-slate-400">Centro operativo para gestionar acceso, seguridad y ciclo de vida de tenants.</p>
         </div>
       <div class="bg-gradient-to-br from-gray-800/60 to-gray-900/65 backdrop-blur rounded-2xl overflow-hidden border border-gray-700/60 fleetly-card-hover">
@@ -333,96 +355,116 @@
           </button>
         </div>
 
-        <div v-else class="divide-y divide-gray-700/50">
-          <div
+        <div v-else class="p-6 grid grid-cols-1 xl:grid-cols-2 gap-4">
+          <article
             v-for="tenant in filteredTenants"
             :key="tenant.id"
-            class="px-6 py-4 hover:bg-gray-700/20 transition-colors group"
-            :class="{ 'bg-blue-900/10': selectedTenants.has(tenant.id) }"
+            @click="toggleTenantExpanded(tenant.id)"
+            class="rounded-xl border border-gray-700/70 bg-slate-800/50 p-4 transition-all cursor-pointer hover:border-blue-500/40"
+            :class="{ 'ring-1 ring-blue-500/40 border-blue-500/60': isTenantExpanded(tenant.id) }"
           >
-            <!-- Tenant Header with Info -->
-            <div class="flex items-center justify-between mb-3">
-              <div class="flex-1 flex items-center gap-4">
+            <div class="flex items-start justify-between gap-3">
+              <div class="flex items-start gap-3 min-w-0">
                 <input
                   type="checkbox"
                   :checked="selectedTenants.has(tenant.id)"
+                  @click.stop
                   @change="toggleTenantSelect(tenant.id)"
-                  class="w-4 h-4 rounded"
+                  class="mt-1 w-4 h-4 rounded"
                 />
-                <div class="flex items-center gap-3 flex-1">
-                  <div class="p-2 bg-blue-500/20 rounded-lg">
-                    <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.5 1.5H5.75A2.25 2.25 0 003.5 3.75v12.5A2.25 2.25 0 005.75 18.5h8.5a2.25 2.25 0 002.25-2.25V7M10.5 1.5v4.5h4.5M10.5 1.5L14 5"/>
-                    </svg>
+                <div>
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <h3 class="font-bold text-white text-base">{{ tenant.id }}</h3>
+                    <span :class="getPaymentBadgeClass(tenant)" class="inline-block px-2 py-0.5 text-[10px] font-black uppercase tracking-widest rounded border">
+                      {{ getPaymentStatus(tenant) }}
+                    </span>
+                    <span :class="getAccessBadgeClass(tenant)" class="inline-block px-2 py-0.5 text-[10px] font-black uppercase tracking-widest rounded border">
+                      {{ getTenantAccessLabel(tenant) }}
+                    </span>
                   </div>
-                  <div>
-                    <div class="flex items-center gap-2">
-                      <div class="font-semibold text-white text-base">{{ tenant.id }}</div>
-                      <span class="inline-block px-2 py-0.5 bg-blue-500/20 text-blue-300 text-xs rounded">
-                        admin@sims.com
-                      </span>
-                    </div>
-                    <div class="text-xs text-gray-400 mt-1">
-                      {{ formatDate(tenant.created_at) }}
-                    </div>
-                  </div>
+                  <p class="text-xs text-gray-400 mt-1">{{ formatDate(tenant.created_at) }}</p>
+                  <p class="text-xs text-indigo-300/90 mt-1">{{ getTenantDemoPaymentSummary(tenant) }}</p>
                 </div>
               </div>
-              <div class="flex items-center gap-2">
-                <button
-                  @click="showInfo(tenant.id)"
-                  class="p-2 text-gray-400 hover:text-blue-300 hover:bg-blue-500/10 rounded-lg transition-all"
-                  title="Ver detalles"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                  </svg>
-                </button>
-                <button
-                  @click="showResetPassword(tenant.id)"
-                  class="px-3 py-1.5 text-sm bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-300 rounded-lg transition-all flex items-center gap-1.5"
-                  title="Cambiar contraseña"
-                >
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                  </svg>
-                  Cambiar Contraseña
-                </button>
-                <button
-                  @click="confirmDelete(tenant.id)"
-                  class="px-3 py-1.5 text-sm bg-red-600/20 hover:bg-red-600/40 text-red-300 rounded-lg transition-all flex items-center gap-1.5"
-                  title="Eliminar empresa"
-                >
-                  <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                  </svg>
-                  Eliminar
-                </button>
-              </div>
-            </div>
-
-            <!-- Compact Info Line -->
-            <div class="ml-11 text-sm text-gray-400">
-              <a
-                :href="getTenantUrl(tenant.id)"
-                target="_blank"
-                class="text-blue-300 hover:text-blue-200 font-mono break-all"
-              >
-                {{ getTenantUrl(tenant.id) }}
-              </a>
               <button
-                @click="copyToClipboard(getTenantUrl(tenant.id))"
-                class="ml-2 text-gray-500 hover:text-gray-300 transition-colors"
-                title="Copiar URL"
+                @click.stop="toggleTenantExpanded(tenant.id)"
+                class="text-xs px-2 py-1 rounded-md border border-slate-600/70 text-slate-300 hover:text-white hover:border-slate-500 transition-colors"
               >
-                <svg class="w-4 h-4 inline" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M3 4a2 2 0 012-2h6a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4z"/>
-                  <path d="M9 2H7a1 1 0 00-1 1v1h4V3a1 1 0 00-1-1z" fill="white" opacity="0.3"/>
-                </svg>
+                {{ isTenantExpanded(tenant.id) ? 'Ocultar' : 'Ver más' }}
               </button>
             </div>
-          </div>
+
+            <div class="mt-3 flex flex-wrap items-center gap-2">
+              <button
+                @click.stop="openCheckoutForTenant(tenant.id)"
+                :disabled="billingLoadingByTenant[tenant.id] === 'checkout'"
+                class="px-3 py-1.5 text-sm bg-emerald-600/20 hover:bg-emerald-600/40 disabled:opacity-60 text-emerald-300 rounded-lg transition-all flex items-center gap-1.5"
+                title="Cobrar suscripción"
+              >
+                Cobrar
+              </button>
+              <button
+                @click.stop="simulateBillingUpdateForTenant(tenant)"
+                :disabled="billingLoadingByTenant[tenant.id] === 'demo_update'"
+                class="px-3 py-1.5 text-sm bg-indigo-600/20 hover:bg-indigo-600/40 disabled:opacity-60 text-indigo-300 rounded-lg transition-all flex items-center gap-1.5"
+                title="Simular actualización desde billing"
+              >
+                {{ billingLoadingByTenant[tenant.id] === 'demo_update' ? 'Actualizando…' : 'Actualizar pago (demo)' }}
+              </button>
+              <button
+                @click.stop="showResetPassword(tenant.id)"
+                class="px-3 py-1.5 text-sm bg-yellow-600/20 hover:bg-yellow-600/40 text-yellow-300 rounded-lg transition-all"
+                title="Cambiar contraseña"
+              >
+                Password
+              </button>
+              <button
+                @click.stop="confirmDelete(tenant.id)"
+                class="px-3 py-1.5 text-sm bg-red-600/20 hover:bg-red-600/40 text-red-300 rounded-lg transition-all"
+                title="Eliminar empresa"
+              >
+                Eliminar
+              </button>
+            </div>
+
+            <div v-if="isTenantExpanded(tenant.id)" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+              <div class="rounded-lg bg-slate-900/50 border border-slate-700/60 p-3">
+                <p class="text-[11px] uppercase tracking-widest text-slate-500 font-black mb-1">URL tenant</p>
+                <a
+                  :href="getTenantUrl(tenant.id)"
+                  target="_blank"
+                  class="text-blue-300 hover:text-blue-200 font-mono break-all"
+                  @click.stop
+                >
+                  {{ getTenantUrl(tenant.id) }}
+                </a>
+                <button
+                  @click.stop="copyToClipboard(getTenantUrl(tenant.id))"
+                  class="mt-2 text-xs text-gray-400 hover:text-white"
+                >
+                  Copiar URL
+                </button>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 border border-slate-700/60 p-3">
+                <p class="text-[11px] uppercase tracking-widest text-slate-500 font-black mb-1">Facturación</p>
+                <p class="text-slate-200">Proveedor: {{ tenant.billing?.provider || '—' }}</p>
+                <p class="text-slate-200">Estado: {{ tenant.billing?.status || 'inactive' }}</p>
+                <p class="text-slate-200">MRR: {{ formatCents(getTenantMonthlyRevenueCents(tenant)) }}</p>
+                <p class="text-slate-200">Acceso: <span :class="getAccessTextClass(tenant)">{{ getTenantAccessLabel(tenant) }}</span></p>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 border border-slate-700/60 p-3">
+                <p class="text-[11px] uppercase tracking-widest text-slate-500 font-black mb-1">Referencias billing</p>
+                <p class="text-slate-300 break-all">Customer: {{ tenant.billing?.customer_id || '—' }}</p>
+                <p class="text-slate-300 break-all">Subscription: {{ tenant.billing?.subscription_id || '—' }}</p>
+              </div>
+              <div class="rounded-lg bg-slate-900/50 border border-slate-700/60 p-3">
+                <p class="text-[11px] uppercase tracking-widest text-slate-500 font-black mb-1">Ciclo de cobro</p>
+                <p class="text-slate-200">Última factura: {{ getLastInvoiceDate(tenant) }}</p>
+                <p class="text-slate-200">Resultado: {{ tenant.billing?.last_invoice_status || '—' }}</p>
+                <p class="text-slate-200">Salud: <span :class="getHealthClass(tenant)">{{ getTenantHealth(tenant) }}</span></p>
+              </div>
+            </div>
+          </article>
         </div>
 
         <!-- Delete Selected Button -->
@@ -748,14 +790,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, onMounted, onUnmounted, reactive, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useCentralAuth } from '../composables/useCentralAuth'
 import { useTenants } from '../composables/useTenants'
+import type { Tenant } from '@/services/centralApi'
 
+const route = useRoute()
 const router = useRouter()
 const { logout, checkAuth, user } = useCentralAuth()
-const { tenants, loading, fetchTenants, createTenant, deleteTenant, resetAdminPassword } = useTenants()
+const { tenants, loading, fetchTenants, createTenant, deleteTenant, resetAdminPassword, createCheckoutSession, updateDemoBillingProfile } = useTenants()
 
 const creating = ref(false)
 const resetting = ref(false)
@@ -766,6 +810,9 @@ const activeTab = ref<'overview' | 'create' | 'tenants'>('overview')
 const searchQuery = ref('')
 const selectAll = ref(false)
 const selectedTenants = ref(new Set<string>())
+const expandedTenants = ref(new Set<string>())
+const billingLoadingByTenant = ref<Record<string, 'checkout' | 'portal' | 'demo_update' | undefined>>({})
+const billingNotice = ref('')
 
 const userDisplayName = computed(() => user.value?.name || 'Super Admin')
 const userDisplayEmail = computed(() => user.value?.email || 'superadmin@sims.com')
@@ -836,63 +883,169 @@ const companySnapshots = computed(() => {
 })
 
 const totalUsers = computed(() => {
-  return tenants.value.length * 3 // 3 users per tenant
+  return tenants.value.reduce((acc, tenant) => acc + getTenantUsersEstimate(tenant.id), 0)
 })
 
 const basePlanPrice = 49
-const estimatedMRR = computed(() => tenants.value.length * basePlanPrice)
+const estimatedMRR = computed(() => {
+  return tenants.value.reduce((acc, tenant) => acc + getTenantMonthlyRevenueCents(tenant), 0)
+})
 const planPriceLabel = computed(() =>
   new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(basePlanPrice)
 )
 
-const formatMoney = (amount: number) =>
-  new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(amount)
+const formatCents = (amountCents: number, currency: string = 'EUR') =>
+  new Intl.NumberFormat('es-ES', { style: 'currency', currency, maximumFractionDigits: 0 }).format((amountCents || 0) / 100)
+
+const getTenantUsersEstimate = (tenantId: string) => 8 + (getTenantHash(tenantId) % 42)
 
 const getTenantHash = (tenantId: string) =>
   tenantId.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
 
-const getTenantUsersEstimate = (tenantId: string) => 8 + (getTenantHash(tenantId) % 42)
-
-const getTenantMonthlyRevenue = (tenantId: string) => {
-  const users = getTenantUsersEstimate(tenantId)
-  return basePlanPrice + users * 6
+const getTenantMonthlyRevenueCents = (tenant: Tenant) => {
+  const fromBilling = tenant.billing?.mrr_amount_cents || tenant.billing?.monthly_amount_cents || 0
+  if (fromBilling > 0) return fromBilling
+  return basePlanPrice * 100
 }
 
-const getTenantAnnualRevenue = (tenantId: string) => getTenantMonthlyRevenue(tenantId) * 12
-
-const getPaymentStatus = (tenantId: string) => {
-  const score = getTenantHash(tenantId) % 10
-  if (score <= 1) return 'pendiente'
-  if (score <= 3) return 'vencido'
-  return 'al día'
+const getTenantAnnualRevenueCents = (tenant: Tenant) => {
+  const fromBilling = tenant.billing?.arr_amount_cents || 0
+  if (fromBilling > 0) return fromBilling
+  return getTenantMonthlyRevenueCents(tenant) * 12
 }
 
-const getPaymentBadgeClass = (tenantId: string) => {
-  const status = getPaymentStatus(tenantId)
-  if (status === 'al día') return 'text-emerald-300 border-emerald-700/50 bg-emerald-900/35'
-  if (status === 'pendiente') return 'text-amber-300 border-amber-700/50 bg-amber-900/35'
-  return 'text-red-300 border-red-700/50 bg-red-900/35'
+const hasConfiguredPaymentMethod = (tenant: Tenant) =>
+  Boolean(tenant.billing?.demo_profile?.payment_method || tenant.billing?.customer_id)
+
+const getPaymentStatus = (tenant: Tenant) =>
+  hasConfiguredPaymentMethod(tenant) ? 'método configurado' : 'sin método'
+
+const getPaymentBadgeClass = (tenant: Tenant) => {
+  const status = getPaymentStatus(tenant)
+  if (status === 'método configurado') return 'text-emerald-300 border-emerald-700/50 bg-emerald-900/35'
+  if (status === 'sin método') return 'text-red-300 border-red-700/50 bg-red-900/35'
+  return 'text-slate-300 border-slate-600/60 bg-slate-800/60'
 }
 
-const getLastInvoiceDate = (createdAt: string, tenantId: string) => {
-  const date = new Date(createdAt)
-  const deltaDays = (getTenantHash(tenantId) % 14) + 1
-  date.setDate(date.getDate() + deltaDays)
-  return date.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })
+const getLastInvoiceDate = (tenant: Tenant) => {
+  const date = tenant.billing?.last_invoice_at
+  if (!date) return '—'
+  return new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: '2-digit' })
 }
 
-const getTenantHealth = (tenantId: string) => {
-  const score = getTenantHash(tenantId) % 10
-  if (score <= 1) return 'Crítica'
-  if (score <= 3) return 'Atención'
+const getTenantHealth = (tenant: Tenant) => {
+  if (tenant.billing?.access?.is_suspended) return 'Crítica'
+  if (!hasConfiguredPaymentMethod(tenant)) return 'Atención'
+  const invoiceStatus = tenant.billing?.last_invoice_status
+  if (['open', 'uncollectible', 'void'].includes(String(invoiceStatus || '').toLowerCase())) return 'Atención'
   return 'Estable'
 }
 
-const getHealthClass = (tenantId: string) => {
-  const state = getTenantHealth(tenantId)
+const getHealthClass = (tenant: Tenant) => {
+  const state = getTenantHealth(tenant)
   if (state === 'Estable') return 'text-emerald-300'
   if (state === 'Atención') return 'text-amber-300'
   return 'text-red-300'
+}
+
+const getTenantAccessLabel = (tenant: Tenant) =>
+  tenant.billing?.access?.is_suspended ? 'suspendido temporalmente' : 'acceso habilitado'
+
+const getAccessBadgeClass = (tenant: Tenant) =>
+  tenant.billing?.access?.is_suspended
+    ? 'text-red-300 border-red-700/50 bg-red-900/35'
+    : 'text-emerald-300 border-emerald-700/50 bg-emerald-900/35'
+
+const getAccessTextClass = (tenant: Tenant) =>
+  tenant.billing?.access?.is_suspended ? 'text-red-300' : 'text-emerald-300'
+
+const paymentMethodLabel = (method?: string) => {
+  if (method === 'card') return 'Tarjeta'
+  if (method === 'sepa') return 'SEPA'
+  if (method === 'transfer') return 'Transferencia'
+  if (method === 'wallet') return 'Wallet'
+  return 'Sin método'
+}
+
+const getTenantDemoPaymentSummary = (tenant: Tenant) => {
+  const profile = tenant.billing?.demo_profile
+  if (!profile) {
+    if (tenant.billing?.customer_id) return 'Método gestionado en billing (sin detalle local)'
+    return 'Sin método de pago configurado'
+  }
+  const method = paymentMethodLabel(profile.payment_method)
+  const suffix = profile.card_last4 ? ` · ****${profile.card_last4}` : ''
+  const owner = profile.billing_name ? ` · ${profile.billing_name}` : ''
+  return `${method}${suffix}${owner}`
+}
+
+const isTenantExpanded = (tenantId: string) => expandedTenants.value.has(tenantId)
+
+const toggleTenantExpanded = (tenantId: string) => {
+  if (expandedTenants.value.has(tenantId)) {
+    expandedTenants.value.delete(tenantId)
+  } else {
+    expandedTenants.value.add(tenantId)
+  }
+}
+
+const openCheckoutForTenant = async (tenantId: string) => {
+  billingLoadingByTenant.value[tenantId] = 'checkout'
+  try {
+    const response = await createCheckoutSession(tenantId, {
+      success_url: `${window.location.origin}/superadmin/dashboard?billing=success`,
+      cancel_url: `${window.location.origin}/superadmin/dashboard?billing=cancel`,
+    })
+    const checkoutUrl = response?.data?.url
+    if (!checkoutUrl) {
+      throw new Error('No se recibió URL de checkout')
+    }
+    window.location.href = checkoutUrl
+  } catch (e: any) {
+    if (isCentralAuthError(e)) {
+      handleCentralSessionExpired()
+      return
+    }
+    alert('Error al iniciar checkout: ' + (e.response?.data?.message || e.message))
+  } finally {
+    delete billingLoadingByTenant.value[tenantId]
+  }
+}
+
+const simulateBillingUpdateForTenant = async (tenant: Tenant) => {
+  billingLoadingByTenant.value[tenant.id] = 'demo_update'
+  try {
+    const currentYear = new Date().getFullYear() + 2
+    const hash = getTenantHash(tenant.id)
+    const generatedLast4 = String(1000 + (hash % 9000))
+    const generatedMonth = (hash % 12) + 1
+    const generatedMethod = ['card', 'sepa', 'wallet', 'transfer'][hash % 4] as 'card' | 'sepa' | 'wallet' | 'transfer'
+
+    await updateDemoBillingProfile(tenant.id, {
+      billing_name: tenant.billing?.demo_profile?.billing_name || `${tenant.id.toUpperCase()} Fleet`,
+      billing_email: tenant.billing?.demo_profile?.billing_email || `billing+${tenant.id}@fleetly.demo`,
+      payment_method: generatedMethod,
+      card_last4: generatedMethod === 'card' ? generatedLast4 : undefined,
+      expiry_month: generatedMethod === 'card' ? generatedMonth : undefined,
+      expiry_year: generatedMethod === 'card' ? currentYear : undefined,
+      country: tenant.billing?.demo_profile?.country || 'ES',
+      city: tenant.billing?.demo_profile?.city || 'Madrid',
+      postal_code: tenant.billing?.demo_profile?.postal_code || '28001',
+      address_line: tenant.billing?.demo_profile?.address_line || 'Calle Demo 123',
+      vat_number: tenant.billing?.demo_profile?.vat_number || `ESB${generatedLast4}Z`,
+    })
+
+    await fetchTenants()
+    billingNotice.value = `Pago simulado como actualizado desde billing para ${tenant.id}.`
+  } catch (e: any) {
+    if (isCentralAuthError(e)) {
+      handleCentralSessionExpired()
+      return
+    }
+    alert('No se pudo simular la actualización de pago: ' + (e.response?.data?.message || e.message))
+  } finally {
+    delete billingLoadingByTenant.value[tenant.id]
+  }
 }
 
 const getTenantUrl = (tenantId: string) => {
@@ -949,6 +1102,33 @@ const handleClickOutsideMenu = (event: MouseEvent) => {
   if (!target.closest('.superadmin-user-menu')) {
     showUserMenu.value = false
   }
+}
+
+const consumeBillingQuery = async () => {
+  const billingDemo = String(route.query.billing_demo || '')
+  const billing = String(route.query.billing || '')
+  if (!billingDemo && !billing) return
+
+  if (billingDemo === 'payment_info_updated') {
+    billingNotice.value = 'Pago actualizado correctamente (modo demo).'
+    activeTab.value = 'tenants'
+  } else if (billingDemo === 'checkout_success' || billing === 'success') {
+    billingNotice.value = 'Suscripción/cobro actualizado correctamente.'
+    activeTab.value = 'tenants'
+  } else if (billing === 'cancel') {
+    billingNotice.value = 'Proceso de cobro cancelado.'
+  }
+
+  try {
+    await fetchTenants()
+  } catch {
+    // handled elsewhere
+  }
+
+  const nextQuery = { ...route.query } as Record<string, any>
+  delete nextQuery.billing_demo
+  delete nextQuery.billing
+  router.replace({ path: route.path, query: nextQuery })
 }
 
 const showCreateModal = () => {
@@ -1108,12 +1288,20 @@ onMounted(async () => {
 
   try {
     await fetchTenants()
+    await consumeBillingQuery()
   } catch (e: any) {
     if (isCentralAuthError(e)) {
       handleCentralSessionExpired()
     }
   }
 })
+
+watch(
+  () => route.query,
+  async () => {
+    await consumeBillingQuery()
+  }
+)
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutsideMenu)
