@@ -120,8 +120,8 @@ router.beforeEach(async (to, from, next) => {
     return
   }
 
-  // If there's a token but no user data, try to fetch user
-  if (getToken() && !isAuthenticated.value) {
+  // Tenant auth fetch should not run on superadmin (central) routes
+  if (!requiresCentralAuth && getToken() && !isAuthenticated.value) {
     await fetchUser()
   }
 
