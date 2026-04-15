@@ -103,12 +103,34 @@ apiClient.interceptors.request.use(
     return config
   },
   (error) => {
-    const msg = error?.message || 'Error en la petición'
-    try {
-      showToast(msg)
-    } catch (e) {
-      console.error(e)
+    return Promise.reject(error)
+  }
+)
+
+// Interceptor to handle responses and global errors
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response ? error.response.status : null
+    let msg = 'Error de conexión con el servidor'
+
+    if (status === 502) {
+      msg = 'El servidor está reiniciando o temporalmente fuera de servicio. Reintentando...'
+    } else if (status === 401) {
+      msg = 'Sesión expirada. Por favor, inicia sesión de nuevo.'
+    } else if (error.response?.data?.message) {
+      msg = error.response.data.message
     }
+
+    // Only show toast for critical or unexpected errors
+    if (status !== 404 && status !== 422) {
+      try {
+        showToast(msg, 'error')
+      } catch (e) {
+        console.error('Toast error:', e)
+      }
+    }
+
     return Promise.reject(error)
   }
 )
