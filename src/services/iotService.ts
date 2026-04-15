@@ -95,7 +95,7 @@ export const iotService = {
   async turnOn(deviceId: string): Promise<CommandResult> {
     try {
       const response = await api.post(`/admin/iot/devices/${deviceId}/on`)
-      return { success: true, result: response.data.result }
+      return { success: true, result: response.data?.result }
     } catch (error: any) {
       return { 
         success: false, 
@@ -110,7 +110,7 @@ export const iotService = {
   async turnOff(deviceId: string): Promise<CommandResult> {
     try {
       const response = await api.post(`/admin/iot/devices/${deviceId}/off`)
-      return { success: true, result: response.data.result }
+      return { success: true, result: response.data?.result }
     } catch (error: any) {
       return { 
         success: false, 
@@ -128,7 +128,7 @@ export const iotService = {
         action,
         relay
       })
-      return { success: true, result: response.data.result }
+      return { success: true, result: response.data?.result }
     } catch (error: any) {
       return { 
         success: false, 
@@ -143,7 +143,7 @@ export const iotService = {
   async getUnlinkedDevices(): Promise<IoTDevice[]> {
     try {
       const response = await api.get('/admin/iot/devices/unlinked')
-      return response.data
+      return response.data || []
     } catch {
       return []
     }
@@ -155,7 +155,7 @@ export const iotService = {
   async getAvailableVehicles(): Promise<Vehicle[]> {
     try {
       const response = await api.get('/admin/iot/vehicles/available')
-      return response.data
+      return response.data || []
     } catch {
       return []
     }
@@ -171,9 +171,9 @@ export const iotService = {
       })
       return { 
         success: true, 
-        device_id: response.data.device_id,
-        vehicle_id: response.data.vehicle_id,
-        license_plate: response.data.license_plate
+        device_id: response.data?.device_id,
+        vehicle_id: response.data?.vehicle_id,
+        license_plate: response.data?.license_plate
       }
     } catch (error: any) {
       return { 
@@ -189,7 +189,7 @@ export const iotService = {
   async unlinkDevice(deviceId: string): Promise<CommandResult> {
     try {
       const response = await api.post(`/admin/iot/devices/${deviceId}/unlink`)
-      return { success: true, result: response.data.result }
+      return { success: true, result: response.data?.result }
     } catch (error: any) {
       return { 
         success: false, 

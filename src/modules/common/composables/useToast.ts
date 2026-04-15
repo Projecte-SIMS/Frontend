@@ -2,13 +2,19 @@ import { toast, type ToastType } from 'vue3-toastify'
 import 'vue3-toastify/dist/index.css'
 
 function formatMessage(payload: string | Error | unknown) {
+  if (!payload) return 'Error desconocido'
   if (typeof payload === 'string') return payload
   if (payload instanceof Error) return payload.message
+  
   try {
-    return JSON.stringify(payload)
-  } catch {
-    return String(payload)
+    if (typeof payload === 'object') {
+      return JSON.stringify(payload)
+    }
+  } catch (e) {
+    return 'Error no serializable'
   }
+  
+  return String(payload)
 }
 
 /**
