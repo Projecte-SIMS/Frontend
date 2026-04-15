@@ -194,17 +194,23 @@
                 <span class="material-icons text-indigo-500 text-lg">info</span>
                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Información General</h4>
               </div>
-              <div class="grid grid-cols-2 gap-6">
+              <div class="grid grid-cols-1 gap-6">
                 <div>
-                  <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Dominio Principal</p>
-                  <a :href="`https://${selectedDetail.domains?.[0]}`" target="_blank" class="text-sm font-bold text-indigo-600 hover:underline flex items-center gap-1.5">
-                    {{ selectedDetail.domains?.[0] || 'Sin dominio' }}
+                  <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">URL de Acceso Directo</p>
+                  <a :href="getTenantLoginUrl(selectedDetail.id)" target="_blank" class="text-sm font-bold text-indigo-600 hover:underline flex items-center gap-1.5 break-all">
+                    {{ getTenantLoginUrl(selectedDetail.id) }}
                     <span class="material-icons text-xs">open_in_new</span>
                   </a>
                 </div>
-                <div>
-                  <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Fecha de Registro</p>
-                  <p class="text-sm font-bold text-slate-900 dark:text-white">{{ formatDateFull(selectedDetail.created_at) }}</p>
+                <div class="grid grid-cols-2 gap-6">
+                  <div>
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Dominio Técnico</p>
+                    <p class="text-xs font-mono text-slate-500">{{ selectedDetail.domains?.[0] || 'Sin dominio' }}</p>
+                  </div>
+                  <div>
+                    <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">Fecha de Registro</p>
+                    <p class="text-sm font-bold text-slate-900 dark:text-white">{{ formatDateFull(selectedDetail.created_at) }}</p>
+                  </div>
                 </div>
               </div>
             </section>
@@ -310,9 +316,10 @@
               Eliminar Permanentemente
             </button>
             <div class="flex gap-3">
-              <a :href="`${frontendBaseUrl}/?tenant=${selectedDetail.id}`" target="_blank" class="px-6 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-all">
+              <a :href="getTenantLoginUrl(selectedDetail.id)" target="_blank" class="px-6 py-3 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-all">
                 Ir al Dashboard
               </a>
+
             </div>
           </div>
         </div>
@@ -380,8 +387,8 @@ const newTenant = reactive({
 import { watch } from 'vue'
 watch(() => newTenant.id, (newId) => {
   if (newId) {
-    const hostname = window.location.hostname
-    const suffix = (hostname === 'localhost' || hostname === '127.0.0.1') ? 'localhost' : hostname
+    // Para la base de datos usamos el dominio de Render (backend)
+    const suffix = 'sims-backend-api-0b2w.onrender.com'
     newTenant.domain = `${newId.toLowerCase()}.${suffix}`
   } else {
     newTenant.domain = ''
@@ -389,11 +396,16 @@ watch(() => newTenant.id, (newId) => {
 })
 
 const frontendBaseUrl = computed(() => {
+  // URL de Vercel en producción o localhost en desarrollo
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return `http://${window.location.hostname}:5173`
   }
-  return window.location.origin
+  return 'https://frontend-phi-seven-21.vercel.app'
 })
+
+const getTenantLoginUrl = (tenantId: string) => {
+  return `${frontendBaseUrl.value}/login?tenant=${tenantId}`
+}
 
 const filteredTenants = computed(() => {
   if (!searchQuery.value.trim()) return tenants.value
