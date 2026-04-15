@@ -368,7 +368,7 @@ const unlinkDevice = async (deviceId: string) => {
       showToast('Dispositivo desvinculado correctamente', 'success')
       await refresh()
     } else {
-      showToast('Error al desvincular', 'error')
+      showToast(result.error || 'Error al desvincular', 'error')
     }
   } catch (error) {
     showToast('Fallo en el servidor', 'error')
