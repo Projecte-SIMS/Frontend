@@ -8,19 +8,29 @@ export const superAdminRoutes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
-    path: '/superadmin/dashboard',
-    name: 'SuperAdminDashboard',
-    component: () => import('../pages/SuperAdminDashboardPage.vue'),
-    meta: { requiresAuth: false, requiresCentralAuth: true }
-  },
-  {
-    path: '/superadmin/profile',
-    name: 'SuperAdminProfile',
-    component: () => import('../pages/SuperAdminProfilePage.vue'),
-    meta: { requiresAuth: false, requiresCentralAuth: true }
-  },
-  {
     path: '/superadmin',
-    redirect: '/superadmin/login'
+    component: () => import('../layouts/SuperAdminLayout.vue'),
+    meta: { requiresAuth: false, requiresCentralAuth: true },
+    children: [
+      {
+        path: 'dashboard',
+        name: 'SuperAdminDashboard',
+        component: () => import('../pages/SuperAdminOverviewPage.vue'),
+      },
+      {
+        path: 'tenants',
+        name: 'SuperAdminTenants',
+        component: () => import('../pages/TenantsPage.vue'),
+      },
+      {
+        path: 'profile',
+        name: 'SuperAdminProfile',
+        component: () => import('../pages/SuperAdminProfilePage.vue'),
+      },
+      {
+        path: '',
+        redirect: '/superadmin/dashboard'
+      }
+    ]
   }
 ]
