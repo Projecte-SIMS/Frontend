@@ -119,6 +119,11 @@
                 </div>
               </div>
 
+              <!-- Honeypot (Anti-bot) -->
+              <div class="hidden" aria-hidden="true">
+                <input v-model="website" type="text" name="website" tabindex="-1" autocomplete="off" />
+              </div>
+
               <div class="pt-2">
                 <button
                   type="submit"
@@ -188,6 +193,7 @@ const { register, isLoading } = useAuth()
 
 const tenant = ref('')
 const isAutoTenant = ref(false)
+const website = ref('') // Honeypot field
 const name = ref('')
 const username = ref('')
 const email = ref('')
@@ -202,6 +208,12 @@ onMounted(() => {
 })
 
 const handleSubmit = async () => {
+  // Honeypot check: if 'website' is filled, it's likely a bot
+  if (website.value) {
+    console.warn('Bot detected via honeypot')
+    return
+  }
+
   if (!tenant.value.trim()) return showToast('Especifica tu empresa', 'error')
   if (!name.value.trim()) return showToast('El nombre es obligatorio', 'error')
   if (!username.value.trim()) return showToast('El usuario es obligatorio', 'error')

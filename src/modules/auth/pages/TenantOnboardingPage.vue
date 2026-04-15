@@ -101,6 +101,11 @@
                 </div>
               </div>
 
+              <!-- Honeypot (Anti-bot) -->
+              <div class="hidden" aria-hidden="true">
+                <input v-model="form.website" type="text" name="website" tabindex="-1" autocomplete="off" />
+              </div>
+
               <div class="pt-2">
                 <button
                   type="submit"
@@ -249,11 +254,18 @@ const form = reactive({
   admin_name: '',
   admin_email: '',
   admin_password: '',
+  website: '', // Honeypot
   plan: 'base' as 'base' | 'pro',
   payment_method: 'card' as 'card' | 'sepa' | 'transfer' | 'wallet',
 })
 
 const goToPaymentStep = () => {
+  // Honeypot check
+  if (form.website) {
+    console.warn('Bot detected via onboarding honeypot')
+    return
+  }
+
   error.value = ''
   
   // TypeScript validations
