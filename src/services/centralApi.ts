@@ -67,6 +67,11 @@ export interface Tenant {
   created_at: string
   updated_at: string
   billing?: BillingSnapshot
+  stats?: {
+    vehicles_count: number
+    reservations_count: number
+    tickets_count: number
+  }
 }
 
 export interface BillingSnapshot {

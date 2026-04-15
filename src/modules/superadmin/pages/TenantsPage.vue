@@ -296,15 +296,15 @@
               <div class="grid grid-cols-3 gap-4">
                 <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 text-center">
                   <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Vehículos</p>
-                  <p class="text-lg font-black text-slate-900 dark:text-white">--</p>
+                  <p class="text-lg font-black text-slate-900 dark:text-white">{{ selectedDetail.stats?.vehicles_count ?? '--' }}</p>
                 </div>
                 <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 text-center">
                   <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Reservas</p>
-                  <p class="text-lg font-black text-slate-900 dark:text-white">--</p>
+                  <p class="text-lg font-black text-slate-900 dark:text-white">{{ selectedDetail.stats?.reservations_count ?? '--' }}</p>
                 </div>
                 <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 text-center">
                   <p class="text-[9px] font-black text-slate-400 uppercase mb-1">Soporte</p>
-                  <p class="text-lg font-black text-slate-900 dark:text-white">--</p>
+                  <p class="text-lg font-black text-slate-900 dark:text-white">{{ selectedDetail.stats?.tickets_count ?? '--' }}</p>
                 </div>
               </div>
             </section>
