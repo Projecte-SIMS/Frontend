@@ -243,7 +243,7 @@ const refreshData = async () => {
 
 const loadTicketsCount = async () => {
   try {
-    const res = await apiClient.get('/tickets')
+    const res = await apiClient.get('/admin/tickets')
     const arr = (res.data && (res.data.data ?? res.data)) || []
     ticketsCount.value = Array.isArray(arr) ? arr.filter((t: any) => t.active).length : 0
   } catch (err) {

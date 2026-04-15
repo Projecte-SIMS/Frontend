@@ -23,7 +23,7 @@ export function useBookings() {
       if (filters.search) params.search = filters.search
       if (filters.status) params.status = filters.status
       // Laravel admin reservations index
-      const response = await api.get<BookingPagination>('/admin/reservations', { params })
+      const response = await api.get<BookingPagination>('/admin/bookings', { params })
 
       bookings.value = response.data.data
       pagination.value = {
@@ -46,7 +46,7 @@ export function useBookings() {
 
     try {
       // AdminReservationController@show returns the booking directly, not wrapped in { data: ... }
-      const response = await api.get<Booking>(`/admin/reservations/${id}`)
+      const response = await api.get<Booking>(`/admin/bookings/${id}`)
       currentBooking.value = response.data
       return response.data
     } catch (err: any) {
@@ -60,7 +60,7 @@ export function useBookings() {
 
   const forceFinishBooking = async (id: number) => {
     try {
-      await api.post(`/admin/reservations/${id}/force-finish`)
+      await api.post(`/admin/bookings/${id}/force-finish`)
     } catch (err: any) {
       throw err?.response?.data?.message || 'Error al finalizar la reserva'
     }
@@ -68,7 +68,7 @@ export function useBookings() {
 
   const deleteBooking = async (id: number) => {
     try {
-      await api.delete(`/admin/reservations/${id}`)
+      await api.delete(`/admin/bookings/${id}`)
     } catch (err: any) {
       throw err?.response?.data?.message || 'Error al eliminar la reserva'
     }
@@ -80,7 +80,7 @@ export function useBookings() {
 
     try {
       // AdminReservationController@update devuelve { message, data: reservation }
-      const response = await api.put<{ message: string; data: Booking }>(`/admin/reservations/${id}`, payload)
+      const response = await api.put<{ message: string; data: Booking }>(`/admin/bookings/${id}`, payload)
       currentBooking.value = response.data.data
       return response.data.data
     } catch (err: any) {

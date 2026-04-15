@@ -34,8 +34,11 @@ function getCurrentTenant(): string | null {
   const hostname = window.location.hostname
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
 
-  if (!isLocalhost) {
-    // Basic subdomain extraction for production
+  // Do NOT extract subdomain from Vercel or Render domains
+  const isCloudProvider = hostname.includes('vercel.app') || hostname.includes('onrender.com')
+
+  if (!isLocalhost && !isCloudProvider) {
+    // Basic subdomain extraction for production custom domains
     // e.g. "tenant.sims.com" -> "tenant"
     const parts = hostname.split('.')
     if (parts.length > 2) {
@@ -48,7 +51,12 @@ function getCurrentTenant(): string | null {
   }
 
   // Fallback to localStorage
-  return localStorage.getItem('current_tenant')
+  const storedTenant = localStorage.getItem('current_tenant')
+  if (storedTenant && (storedTenant.includes('vercel') || storedTenant.includes('onrender'))) {
+    localStorage.removeItem('current_tenant')
+    return null
+  }
+  return storedTenant
 }
 // Check if we're in superadmin routes (don't need tenant)
 function isSuperAdminRoute(): boolean {
@@ -82,6 +90,10 @@ apiClient.interceptors.request.use(
       const tenant = getCurrentTenant()
       if (tenant) {
         config.headers['X-Tenant'] = tenant
+        // Debug: Log the tenant being used in production
+        if (import.meta.env.PROD) {
+          console.log(`[API] Using tenant: ${tenant}`)
+        }
       } else {
         // No tenant specified - show warning
         console.warn('No tenant specified. Add ?tenant=yourcompany to the URL')
