@@ -376,6 +376,18 @@ const newTenant = reactive({
   domain: ''
 })
 
+// Auto-generate domain based on ID and current hostname
+import { watch } from 'vue'
+watch(() => newTenant.id, (newId) => {
+  if (newId) {
+    const hostname = window.location.hostname
+    const suffix = (hostname === 'localhost' || hostname === '127.0.0.1') ? 'localhost' : hostname
+    newTenant.domain = `${newId.toLowerCase()}.${suffix}`
+  } else {
+    newTenant.domain = ''
+  }
+})
+
 const frontendBaseUrl = computed(() => {
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return `http://${window.location.hostname}:5173`
@@ -455,7 +467,9 @@ const handleCreateTenant = async () => {
   if (!newTenant.id) return
   creating.value = true
   try {
-    const domain = newTenant.domain || `${newTenant.id.toLowerCase()}.tenant.local`
+    const hostname = window.location.hostname
+    const suffix = (hostname === 'localhost' || hostname === '127.0.0.1') ? 'localhost' : hostname
+    const domain = newTenant.domain || `${newTenant.id.toLowerCase()}.${suffix}`
     await createTenant({ id: newTenant.id.toLowerCase(), domain })
     toast.success('Empresa creada correctamente')
     newTenant.id = ''
