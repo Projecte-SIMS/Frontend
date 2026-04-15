@@ -59,6 +59,16 @@
               </router-link>
             </Transition>
 
+            <!-- Selector de Tema -->
+            <button 
+              @click="toggleTheme" 
+              class="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all active:scale-75"
+              title="Cambiar tema"
+            >
+              <SunIcon v-if="isDark" class="size-5" />
+              <MoonIcon v-else class="size-5" />
+            </button>
+
             <!-- Botón Admin -->
             <router-link 
               v-if="isAdmin" 
@@ -150,7 +160,6 @@
           </div>
         </transition>
       </router-view>
-      
       <ChatbotPage />
     </main>
   </div>
@@ -168,17 +177,21 @@ import {
   CalendarDaysIcon, 
   UserIcon,
   ShieldCheckIcon,
-  BuildingOffice2Icon
+  BuildingOffice2Icon,
+  SunIcon,
+  MoonIcon
 } from '@heroicons/vue/24/outline'
 import { useAuth } from '@/modules/auth/composables/useAuth'
 import UserMenu from '@/modules/common/components/UserMenu.vue'
 import ChatbotPage from '@/modules/common/pages/ChatbotPage.vue'
 import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
 import { getCurrentTenant } from '@/services/api'
+import { useTheme } from '@/modules/common/composables/useTheme'
 
 const route = useRoute()
 const { user } = useAuth()
 const { getBookings, hasActiveBooking } = useBookingsUser()
+const { isDark, toggleTheme, initTheme } = useTheme()
 const mobileMenuOpen = ref(false)
 
 const isFullPage = computed(() => route.path === '/vehicles/map')
@@ -208,6 +221,7 @@ const navigation = [
 // Polling global para detectar si el usuario inicia un viaje
 let pollInterval: any = null
 onMounted(() => {
+  initTheme()
   getBookings()
   pollInterval = setInterval(getBookings, 10000) // Cada 10s verificamos estado de viaje
 })

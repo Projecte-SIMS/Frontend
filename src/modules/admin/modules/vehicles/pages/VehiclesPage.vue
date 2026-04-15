@@ -98,6 +98,7 @@
             <tr>
               <th class="px-6 py-5">Vehículo / ID</th>
               <th class="px-6 py-5">Identificación</th>
+              <th class="px-6 py-5 text-center">Tarifa</th>
               <th class="px-6 py-5 text-center">Estado Operativo</th>
               <th class="px-6 py-5 text-center">Estado Admin</th>
               <th class="px-6 py-5 text-right">Acciones</th>
@@ -126,6 +127,10 @@
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800">
                   <span class="text-xs font-black text-slate-700 dark:text-slate-300 font-mono tracking-wider">{{ vehicle.license_plate }}</span>
                 </div>
+              </td>
+              <td class="px-6 py-4 text-center">
+                <div class="text-xs font-black text-slate-900 dark:text-white">{{ formatCurrency(vehicle.price_per_minute) }}</div>
+                <div class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">/ minuto</div>
               </td>
               <td class="px-6 py-4 text-center">
                 <span :class="getStatusClasses(vehicle.status)" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all">
@@ -224,6 +229,7 @@
 import { ref, onMounted } from 'vue'
 import { useVehicles } from '../composables/useVehicles'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
+import { useToast } from '@/modules/common/composables/useToast'
 import type { Vehicle, VehicleFilters } from '../interfaces/vehicle.interface'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
 import AdminPagination from '@/modules/admin/components/AdminPagination.vue'
@@ -238,6 +244,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const { vehicles, loading, error, pagination, getVehicles, deleteVehicle } = useVehicles()
+const toast = useToast()
 
 const showDeleteDialog = ref(false)
 const vehicleToDelete = ref<Vehicle | null>(null)
@@ -251,6 +258,7 @@ async function handleDelete() {
   if (!vehicleToDelete.value) return
   try {
     await deleteVehicle(vehicleToDelete.value.id)
+    toast.success('Vehículo eliminado correctamente')
     showDeleteDialog.value = false
     vehicleToDelete.value = null
     loadVehicles()
@@ -290,6 +298,10 @@ const handleStatusChange = () => {
 const handlePageChange = (page: number) => {
   pagination.value.current_page = page
   loadVehicles()
+}
+
+const formatCurrency = (value?: number) => {
+  return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(value ?? 0)
 }
 
 const getStatusClasses = (s?: string) => {

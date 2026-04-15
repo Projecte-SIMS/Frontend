@@ -37,9 +37,28 @@
 
       <!-- Tabla de Permisos -->
       <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
-        <div class="p-8 border-b border-slate-100 dark:border-slate-800">
-          <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Matriz de Permisos</h3>
-          <p class="text-sm text-slate-500 mt-1 font-medium">Asigna qué acciones puede realizar este rol en cada módulo.</p>
+        <div class="p-8 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-widest">Matriz de Permisos</h3>
+            <p class="text-sm text-slate-500 mt-1 font-medium">Asigna qué acciones puede realizar este rol en cada módulo.</p>
+          </div>
+          
+          <div v-if="!isAdminRole && permissionModules.length > 0" class="flex items-center gap-2">
+            <button 
+              type="button"
+              @click="selectAllPermissions"
+              class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition-all"
+            >
+              Seleccionar Todos
+            </button>
+            <button 
+              type="button"
+              @click="clearAllPermissions"
+              class="px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:bg-slate-100 transition-all"
+            >
+              Limpiar Todos
+            </button>
+          </div>
         </div>
 
         <div v-if="permissionModules.length === 0" class="py-20 text-center">
@@ -125,10 +144,12 @@ import FormInput from '@/modules/admin/components/FormInput.vue'
 import PermissionCheckbox from '../components/PermissionCheckbox.vue'
 import { useRoles } from '../composables/useRoles'
 import { usePermissions } from '../composables/usePermissions'
+import { useToast } from '@/modules/common/composables/useToast'
 import type { RoleForm } from '../interfaces/role.interface'
 
 const router = useRouter()
 const route = useRoute()
+const toast = useToast()
 const { currentRole, loading, getRole, createRole, updateRole, isAdminRole } = useRoles()
 const { permissionModules, getPermissions } = usePermissions()
 
@@ -142,6 +163,20 @@ const form = reactive<RoleForm>({
 const validationErrors = reactive({ name: '' })
 const isSaving = ref(false)
 
+const selectAllPermissions = () => {
+  const allIds: number[] = []
+  permissionModules.value.forEach(m => {
+    if (m.view) allIds.push(m.view.id)
+    if (m.manage) allIds.push(m.manage.id)
+    if (m.delete) allIds.push(m.delete.id)
+  })
+  form.permissions = allIds
+}
+
+const clearAllPermissions = () => {
+  form.permissions = []
+}
+
 const handleSubmit = async () => {
   if (!form.name.trim()) {
     validationErrors.name = 'El nombre del rol es obligatorio.'
@@ -154,6 +189,7 @@ const handleSubmit = async () => {
   
   isSaving.value = false
   if (success) {
+    toast.success(isEditMode.value ? 'Rol actualizado correctamente' : 'Rol creado correctamente')
     router.push('/admin/roles')
   }
 }

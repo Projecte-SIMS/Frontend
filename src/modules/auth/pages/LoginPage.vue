@@ -10,7 +10,12 @@
               </div>
               <div>
                 <p class="text-xs font-black uppercase tracking-[0.16em] text-indigo-500">Welcome back</p>
-                <h1 class="text-2xl font-black tracking-tight text-gray-900 dark:text-white">Inicia sesión en Fleetly</h1>
+                <h1 class="text-2xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
+                  Inicia sesión
+                  <span v-if="isAutoTenant" class="inline-flex items-center rounded-lg bg-indigo-50 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-indigo-600 ring-1 ring-inset ring-indigo-500/20 dark:bg-indigo-500/10 dark:text-indigo-400">
+                    {{ tenant }}
+                  </span>
+                </h1>
               </div>
             </div>
             <p class="text-sm text-gray-500 dark:text-gray-400">
@@ -19,8 +24,8 @@
           </div>
 
           <div class="bg-white dark:bg-gray-900 py-8 px-7 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-none border border-gray-100 dark:border-gray-800 rounded-[2rem]">
-            <form class="space-y-5" @submit.prevent="handleSubmit">
-              <div>
+            <form class="space-y-5" @submit.prevent="handleSubmit" novalidate>
+              <div v-if="!isAutoTenant">
                 <label for="tenant" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Empresa</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors">
@@ -30,7 +35,6 @@
                     id="tenant"
                     v-model="tenant"
                     type="text"
-                    required
                     :disabled="isLoading"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
                     placeholder="nombre-empresa"
@@ -47,9 +51,8 @@
                   <input
                     id="email"
                     v-model="email"
-                    type="email"
+                    type="text"
                     autocomplete="email"
-                    required
                     :disabled="isLoading"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
                     placeholder="tu@email.com"
@@ -68,7 +71,6 @@
                     v-model="password"
                     type="password"
                     autocomplete="current-password"
-                    required
                     :disabled="isLoading"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 transition-all outline-none"
                     placeholder="••••••••"
@@ -148,6 +150,7 @@ const route = useRoute()
 const { login, isLoading, error, user } = useAuth()
 
 const tenant = ref('')
+const isAutoTenant = ref(false)
 const email = ref('')
 const password = ref('')
 
@@ -156,6 +159,7 @@ onMounted(() => {
   const currentTenant = getCurrentTenant()
   if (currentTenant) {
     tenant.value = currentTenant
+    isAutoTenant.value = true
   }
 
   if (typeof route.query.email === 'string' && route.query.email) {
@@ -164,10 +168,31 @@ onMounted(() => {
 })
 
 const handleSubmit = async () => {
-  // Save tenant to localStorage before login
-  if (tenant.value) {
-    localStorage.setItem('current_tenant', tenant.value.toLowerCase().trim())
+  error.value = ''
+  
+  if (!tenant.value.trim()) {
+    error.value = 'Especifica tu empresa'
+    return
   }
+  
+  if (!email.value.trim()) {
+    error.value = 'El email es obligatorio'
+    return
+  }
+  
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(email.value)) {
+    error.value = 'El formato del email no es válido'
+    return
+  }
+  
+  if (!password.value) {
+    error.value = 'La contraseña es obligatoria'
+    return
+  }
+
+  // Save tenant to localStorage before login
+  localStorage.setItem('current_tenant', tenant.value.toLowerCase().trim())
   
   const success = await login(email.value, password.value)
   if (success) {

@@ -110,7 +110,7 @@ export function useUsers() {
     loading.value = true
     error.value = null
     try {
-      const response = await api.get<{ data: User }>(`/admin/users/${id}`)
+      const response = await api.get<User>(`/admin/users/${id}`)
       return response.data
     } catch (err: any) {
       error.value = err.response?.data?.message || 'Error al obtener el usuario'

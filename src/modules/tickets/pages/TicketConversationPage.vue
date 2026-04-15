@@ -21,30 +21,50 @@
     </div>
 
     <!-- Messages -->
-    <div class="flex-1 space-y-6 mb-8">
+    <div class="flex-1 space-y-8 mb-8">
       <!-- Original Message -->
-      <div class="bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30 rounded-[2rem] p-6">
-        <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-3">Descripción inicial</p>
-        <p class="text-gray-800 dark:text-gray-200 font-medium leading-relaxed">{{ ticket.description || ticket.message }}</p>
+      <div class="bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30 rounded-[2rem] p-6 shadow-sm">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="size-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-[10px] font-black text-indigo-600">
+            {{ getInitials(ticket.user?.name) }}
+          </div>
+          <div>
+            <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-none">Descripción inicial</p>
+            <p class="text-[9px] font-bold text-gray-400 uppercase mt-1">{{ formatDate(ticket.created_at) }}</p>
+          </div>
+        </div>
+        <p class="text-gray-800 dark:text-gray-200 font-medium leading-relaxed italic">"{{ ticket.description || ticket.message }}"</p>
       </div>
 
       <!-- Chat Thread -->
-      <div v-for="m in messages" :key="m.id" :class="['flex w-full', m.is_support ? 'justify-start' : 'justify-end']">
-        <div 
-          :class="[
-            m.is_support 
-              ? 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-700 shadow-sm' 
-              : 'bg-indigo-600 text-white rounded-2xl rounded-tr-none shadow-lg shadow-indigo-500/10'
-          ]"
-          class="max-w-[85%] p-4"
-        >
-          <div class="flex items-center gap-3 mb-2">
-            <span class="text-[10px] font-black uppercase tracking-widest opacity-60">
-              {{ m.is_support ? 'Soporte Fleetly' : 'Tú' }}
-            </span>
-            <span class="text-[9px] font-bold opacity-40 uppercase">{{ formatTime(m.created_at) }}</span>
+      <div v-for="m in messages" :key="m.id" class="flex flex-col" :class="[m.user_id === currentUserId ? 'items-end' : 'items-start']">
+        <div class="flex items-end gap-3 max-w-[85%]">
+          <!-- Avatar (otros) -->
+          <div v-if="m.user_id !== currentUserId" class="size-9 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-500 shrink-0 border border-white dark:border-slate-700">
+            {{ getInitials(m.user?.name) }}
           </div>
-          <p class="text-sm font-medium leading-relaxed">{{ m.content || m.message || m.body || '' }}</p>
+
+          <div 
+            :class="[
+              m.user_id === currentUserId
+                ? 'bg-indigo-600 text-white rounded-2xl rounded-tr-none shadow-lg shadow-indigo-500/10' 
+                : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-700 shadow-sm'
+            ]"
+            class="p-4"
+          >
+            <div class="flex items-center justify-between gap-6 mb-1.5">
+              <span class="text-[10px] font-black uppercase tracking-widest" :class="m.user_id === currentUserId ? 'text-indigo-100' : 'text-indigo-600 dark:text-indigo-400'">
+                {{ m.user_id === currentUserId ? 'Tú' : (m.user?.name || 'Soporte') }}
+              </span>
+              <span class="text-[9px] font-bold uppercase opacity-50">{{ formatTime(m.created_at) }}</span>
+            </div>
+            <p class="text-sm font-medium leading-relaxed">{{ m.content || m.message || m.body || '' }}</p>
+          </div>
+
+          <!-- Avatar (mí) -->
+          <div v-if="m.user_id === currentUserId" class="size-9 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-[10px] font-black text-indigo-600 shrink-0 border border-white dark:border-slate-700">
+            {{ getInitials(m.user?.name || 'Tú') }}
+          </div>
         </div>
       </div>
     </div>
@@ -68,16 +88,22 @@
         </button>
       </form>
     </div>
-    <div v-else class="bg-gray-100 dark:bg-gray-800 p-6 rounded-3xl text-center">
+    <div v-else class="bg-gray-100 dark:bg-gray-800 p-6 rounded-3xl text-center space-y-4 shadow-inner">
       <p class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest flex items-center justify-center gap-2">
         <LockClosedIcon class="size-4" /> Este ticket está cerrado
       </p>
+      <button 
+        @click="reopenTicket"
+        class="px-6 py-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 transition-all shadow-sm active:scale-95"
+      >
+        Solicitar reapertura
+      </button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
@@ -96,6 +122,21 @@ const messages = ref<any[]>([])
 const loading = ref(false)
 const sending = ref(false)
 const form = ref({ message: '' })
+
+const currentUserId = computed(() => {
+  const authData = localStorage.getItem('auth_user')
+  if (!authData) return null
+  try {
+    return JSON.parse(authData).id
+  } catch {
+    return null
+  }
+})
+
+const getInitials = (name?: string) => {
+  if (!name) return '?'
+  return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+}
 
 const load = async () => {
   loading.value = true
@@ -126,6 +167,16 @@ const sendMessage = async () => {
     showToast('Error al enviar mensaje', 'error')
   } finally {
     sending.value = false
+  }
+}
+
+const reopenTicket = async () => {
+  try {
+    await apiClient.put(`/tickets/${id}`, { active: true })
+    ticket.value.active = true
+    showToast('Ticket reabierto', 'success')
+  } catch (e) {
+    showToast('Error al reabrir ticket', 'error')
   }
 }
 

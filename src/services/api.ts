@@ -21,19 +21,35 @@ function getApiUrl(): string {
 
 // Get tenant from URL query param or localStorage
 function getCurrentTenant(): string | null {
-  // Check URL first
+  // Check URL query first
   const urlParams = new URLSearchParams(window.location.search)
   const tenantFromUrl = urlParams.get('tenant')
-  
+
   if (tenantFromUrl) {
     localStorage.setItem('current_tenant', tenantFromUrl)
     return tenantFromUrl
   }
-  
+
+  // Fallback to subdomain (e.g. ibm.fleetly.com -> ibm)
+  const hostname = window.location.hostname
+  const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
+
+  if (!isLocalhost) {
+    // Basic subdomain extraction for production
+    // e.g. "tenant.sims.com" -> "tenant"
+    const parts = hostname.split('.')
+    if (parts.length > 2) {
+      const subdomain = parts[0]
+      if (subdomain && subdomain !== 'www' && subdomain !== 'app' && subdomain !== 'admin') {
+        localStorage.setItem('current_tenant', subdomain)
+        return subdomain
+      }
+    }
+  }
+
   // Fallback to localStorage
   return localStorage.getItem('current_tenant')
 }
-
 // Check if we're in superadmin routes (don't need tenant)
 function isSuperAdminRoute(): boolean {
   return window.location.pathname.startsWith('/superadmin')

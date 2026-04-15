@@ -62,4 +62,6 @@ export interface BookingCreatePayload {
   vehicle_id: number
   scheduled_start: string
   user_id?: number
+  status?: BookingStatus
+  notes?: string
 }

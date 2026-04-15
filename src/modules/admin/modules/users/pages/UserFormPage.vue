@@ -38,25 +38,26 @@
         <div class="p-8 space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <FormField label="Nombre completo">
-              <FormInput v-model="formData.name" type="text" placeholder="Nombre completo" required />
+              <FormInput v-model="formData.name" type="text" placeholder="Nombre completo" />
             </FormField>
             <FormField label="Nombre de usuario">
-              <FormInput v-model="formData.username" type="text" placeholder="Nombre de usuario" required />
+              <FormInput v-model="formData.username" type="text" placeholder="Nombre de usuario" />
             </FormField>
             <FormField label="Correo electrónico">
-              <FormInput v-model="formData.email" type="email" placeholder="correo@ejemplo.com" required />
+              <FormInput v-model="formData.email" type="email" placeholder="correo@ejemplo.com" />
             </FormField>
             <FormField :label="isEditMode ? 'Contraseña (opcional)' : 'Contraseña'">
               <FormInput
                 v-model="formData.password"
                 type="password"
                 :placeholder="isEditMode ? 'Deja en blanco para mantener la actual' : 'Contraseña'"
-                :required="!isEditMode"
               />
             </FormField>
 
             <FormField v-if="isCurrentUserAdmin" label="Rol">
-              <FormSelect v-model="formData.role_id" :options="roleOptions" placeholder="Seleccionar rol" />
+              <FormSelect v-model="formData.role_id" placeholder="Seleccionar rol">
+                <option v-for="role in roleOptions" :key="role.value" :value="role.value">{{ role.label }}</option>
+              </FormSelect>
               <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
                 Los administradores pueden asignar roles a los usuarios.
               </p>
@@ -107,6 +108,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUsers } from '../composables/useUsers'
+import { useRoles } from '../../roles/composables/useRoles'
 import { useToast } from '@/modules/common/composables/useToast'
 import type { User, UserForm } from '../interfaces/user.interface'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
@@ -117,11 +119,13 @@ import FormCheckbox from '@/modules/admin/components/FormCheckbox.vue'
 
 const router = useRouter()
 const route = useRoute()
-const { getUser, createUser, updateUser, isCurrentUserAdmin, loading } = useUsers()
+const { getUser, createUser, updateUser, isCurrentUserAdmin, loading: userLoading } = useUsers()
+const { roles, getRoles, loading: rolesLoading } = useRoles()
 const toast = useToast()
 
 const userId = computed(() => (route.params.id ? Number(route.params.id) : null))
 const isEditMode = computed(() => !!userId.value)
+const loading = computed(() => userLoading.value || rolesLoading.value)
 
 const formData = reactive<Partial<UserForm>>({
   name: '',
@@ -134,12 +138,14 @@ const formData = reactive<Partial<UserForm>>({
 
 const isSaving = ref(false)
 
-const roleOptions = [
-  { label: 'Cliente', value: '1' },
-  { label: 'Administrador', value: '2' }
-]
+const roleOptions = computed(() => 
+  roles.value.map(r => ({ label: r.name, value: r.id.toString() }))
+)
 
 onMounted(async () => {
+  // Cargar roles reales
+  await getRoles()
+
   if (isEditMode.value && userId.value) {
     try {
       const user = await getUser(userId.value)
@@ -149,7 +155,10 @@ onMounted(async () => {
         formData.email = user.email || ''
         formData.active = user.active ?? true
         if (user.roles && user.roles.length > 0) {
-          formData.role_id = user.roles[0].id
+          const adminRole = user.roles.find((r: any) => r.name === 'Admin')
+          const maintenanceRole = user.roles.find((r: any) => r.name === 'Maintenance')
+          const primaryRole = adminRole || maintenanceRole || user.roles[0]
+          if (primaryRole) formData.role_id = primaryRole.id.toString()
         }
       }
     } catch (err) {
@@ -160,15 +169,22 @@ onMounted(async () => {
 })
 
 const handleSubmit = async () => {
+  // Validaciones manuales
+  if (!formData.name?.trim()) return toast.error('El nombre es obligatorio')
+  if (!formData.username?.trim()) return toast.error('El nombre de usuario es obligatorio')
+  if (!formData.email?.trim()) return toast.error('El email es obligatorio')
+  if (!isEditMode.value && !formData.password?.trim()) return toast.error('La contraseña es obligatoria')
+  if (formData.password && formData.password.length < 6) return toast.error('La contraseña debe tener 6+ caracteres')
+
   try {
     isSaving.value = true
 
-    const submitData: Partial<UserForm> = {
+    const submitData: any = {
       name: formData.name,
       username: formData.username,
       email: formData.email,
       active: formData.active,
-      role_id: formData.role_id
+      role_id: formData.role_id ? Number(formData.role_id) : null
     }
 
     if (formData.password) {
@@ -183,7 +199,6 @@ const handleSubmit = async () => {
       toast.success('Usuario creado correctamente.')
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000))
     router.push('/admin/users')
   } catch (err: any) {
     const errorMessage = err.response?.data?.message || 'Ocurrió un error.'

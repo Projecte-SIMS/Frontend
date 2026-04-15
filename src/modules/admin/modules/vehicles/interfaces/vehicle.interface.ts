@@ -4,6 +4,7 @@ export interface Vehicle {
   brand: string | null
   model: string | null
   active: boolean
+  price_per_minute?: number
   online?: boolean
   latitude?: number | null
   longitude?: number | null
@@ -21,6 +22,7 @@ export interface VehicleForm {
   brand: string
   model: string
   active: boolean
+  price_per_minute: number
   iot_device_id?: string
 }
 

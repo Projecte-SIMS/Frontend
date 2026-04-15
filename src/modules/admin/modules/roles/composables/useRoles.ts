@@ -78,7 +78,6 @@ export const useRoles = () => {
       }
 
       await api.post('/admin/roles', payload)
-      success('Rol creado exitosamente')
       return true
     } catch (err: any) {
       error.value = err.response?.data?.message || 'No se pudo crear el rol'
@@ -106,7 +105,6 @@ export const useRoles = () => {
       }
 
       await api.put(`/admin/roles/${id}`, payload)
-      success('Rol actualizado exitosamente')
       return true
     } catch (err: any) {
       error.value = err.response?.data?.message || 'No se pudo actualizar el rol'
@@ -129,7 +127,6 @@ export const useRoles = () => {
       }
 
       await api.delete(`/admin/roles/${id}`)
-      success('Rol eliminado exitosamente')
       return true
     } catch (err: any) {
       error.value = err.response?.data?.message || 'No se pudo eliminar el rol'

@@ -94,13 +94,23 @@
             </li>
 
             <li class="mt-auto space-y-3">
-              <router-link to="/" class="group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 border border-indigo-200/70 dark:border-indigo-900/70 bg-indigo-50/70 dark:bg-indigo-900/15 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-all">
-                <span class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-indigo-500/80 opacity-70"></span>
-                <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300">
-                  <HomeIcon class="size-[18px]" />
-                </span>
-                Volver a la App
-              </router-link>
+              <div class="flex items-center gap-2">
+                <router-link to="/" class="flex-1 group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 border border-indigo-200/70 dark:border-indigo-900/70 bg-indigo-50/70 dark:bg-indigo-900/15 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-all">
+                  <span class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-indigo-500/80 opacity-70"></span>
+                  <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300">
+                    <HomeIcon class="size-[18px]" />
+                  </span>
+                  Volver a la App
+                </router-link>
+                <button 
+                  @click="toggleTheme" 
+                  class="p-2.5 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all active:scale-75 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900"
+                  title="Cambiar tema"
+                >
+                  <SunIcon v-if="isDark" class="size-5" />
+                  <MoonIcon v-else class="size-5" />
+                </button>
+              </div>
               <UserMenu placement="right" />
             </li>
           </ul>
@@ -109,7 +119,7 @@
     </div>
 
     <!-- Mobile header -->
-    <div class="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden dark:bg-gray-900 dark:shadow-none dark:border-b dark:border-gray-800">
+    <div class="sticky top-0 z-40 flex items-center gap-x-4 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden dark:bg-gray-900 dark:shadow-none dark:border-b dark:border-gray-800">
       <button type="button" class="-m-2.5 p-2.5 text-gray-700 hover:text-gray-900 lg:hidden dark:text-gray-400 dark:hover:text-white" @click="sidebarOpen = true">
         <span class="sr-only">Open sidebar</span>
         <Bars3Icon class="size-6" aria-hidden="true" />
@@ -123,6 +133,14 @@
           <p class="text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-300 truncate">{{ currentTenantLabel }}</p>
         </div>
       </div>
+      <button 
+        @click="toggleTheme" 
+        class="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all active:scale-75"
+        title="Cambiar tema"
+      >
+        <SunIcon v-if="isDark" class="size-5" />
+        <MoonIcon v-else class="size-5" />
+      </button>
     </div>
 
     <main class="py-8 lg:pl-72 relative">
@@ -147,10 +165,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useAuth } from '@/modules/auth/composables/useAuth'
 import { getCurrentTenant } from '@/services/api'
+import { useTheme } from '@/modules/common/composables/useTheme'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import {
   Bars3Icon,
@@ -164,12 +183,19 @@ import {
   XMarkIcon,
   CpuChipIcon,
   HeartIcon,
+  SunIcon,
+  MoonIcon
 } from '@heroicons/vue/24/outline'
 import UserMenu from '@/modules/common/components/UserMenu.vue'
 
 const route = useRoute()
 const { user, isLoading } = useAuth()
+const { isDark, toggleTheme, initTheme } = useTheme()
 const sidebarOpen = ref(false)
+
+onMounted(() => {
+  initTheme()
+})
 
 const isFullPage = computed(() => ['/admin/map', '/admin/iot-devices'].includes(route.path))
 

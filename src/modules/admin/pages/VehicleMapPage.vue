@@ -73,11 +73,14 @@
               >
                 <div class="flex items-center justify-between gap-3">
                   <div class="flex items-center gap-3 min-w-0">
-                    <div class="size-10 rounded-lg flex items-center justify-center shrink-0" :class="getStatusClasses(v).bg_icon">
-                      <TruckIcon class="size-5" :class="getStatusClasses(v).text" />
+                    <div class="size-12 rounded-lg overflow-hidden shrink-0 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
+                      <img :src="getVehicleImage(v.brand, v.model)" alt="Vehículo" class="w-full h-full object-cover object-center opacity-90" />
                     </div>
                     <div class="min-w-0">
-                      <p class="text-sm font-black text-slate-900 dark:text-white truncate uppercase tracking-tight">{{ v.plate }}</p>
+                      <div class="flex items-center gap-2">
+                        <p class="text-sm font-black text-slate-900 dark:text-white truncate uppercase tracking-tight">{{ v.plate }}</p>
+                        <p class="text-[10px] text-slate-400 font-bold uppercase truncate">{{ v.brand }} {{ v.model }}</p>
+                      </div>
                       <div class="flex items-center gap-2 mt-1.5">
                         <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest border" :class="getStatusClasses(v).badge">
                           {{ translateStatus(v) }}
@@ -131,7 +134,9 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, computed, reactive, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { useMap } from '@/modules/map/composables/useMap'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import apiClient from '@/services/api'
 import {
   MagnifyingGlassIcon, ArrowPathIcon, TruckIcon, PlayIcon, PowerIcon,
@@ -139,6 +144,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const { mapContainer, initMap, fetchVehicles, centerOnVehicle, destroyMap, setSearchQuery, selectedVehicle, rawVehicles } = useMap()
+const route = useRoute()
 
 const isFleetListCollapsed = ref(false)
 const search = ref('')
@@ -206,9 +212,27 @@ const refresh = async () => {
   } finally { isRefreshing.value = false }
 }
 
+watch(() => route.query.select, (newSelectId) => {
+  if (newSelectId && rawVehicles.value.length > 0) {
+    const vehicle = rawVehicles.value.find(v => v.id === Number(newSelectId))
+    if (vehicle) {
+      onVehicleClick(vehicle)
+    }
+  }
+})
+
 onMounted(async () => {
   initMap()
   await refresh()
+  
+  // Auto-select and center if 'select' param is present
+  const selectId = route.query.select
+  if (selectId && rawVehicles.value.length > 0) {
+    const vehicle = rawVehicles.value.find(v => v.id === Number(selectId))
+    if (vehicle) {
+      onVehicleClick(vehicle)
+    }
+  }
 })
 
 onUnmounted(() => { 

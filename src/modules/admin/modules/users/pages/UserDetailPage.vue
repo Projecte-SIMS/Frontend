@@ -61,19 +61,9 @@
               <span
                 v-if="user?.roles && user.roles.length > 0"
                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                :class="
-                  user.roles[0].name === 'Admin'
-                    ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-                    : 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
-                "
+                :class="getRoleClass(user)"
               >
-                  {{
-                    user.roles[0].name === 'Admin'
-                      ? 'Administrador'
-                      : user.roles[0].name === 'Client'
-                        ? 'Cliente'
-                        : user.roles[0].name
-                  }}
+                  {{ getRoleLabel(user) }}
               </span>
               <span v-else class="text-gray-400">-</span>
             </dd>
@@ -197,6 +187,26 @@ const formatDate = (dateString: string) => {
     hour: '2-digit',
     minute: '2-digit'
   })
+}
+
+const getPrimaryRole = (u: User | null) => {
+  if (!u?.roles || u.roles.length === 0) return 'Sin Rol'
+  if (u.roles.some(r => r.name === 'Admin')) return 'Admin'
+  if (u.roles.some(r => r.name === 'Maintenance')) return 'Maintenance'
+  return u.roles[0]?.name || 'Sin Rol'
+}
+
+const getRoleClass = (u: User | null) => {
+  const role = getPrimaryRole(u)
+  if (role === 'Admin') return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
+  return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200'
+}
+
+const getRoleLabel = (u: User | null) => {
+  const role = getPrimaryRole(u)
+  if (role === 'Admin') return 'Administrador'
+  if (role === 'Client') return 'Cliente'
+  return role
 }
 
 const openDeleteModal = () => {

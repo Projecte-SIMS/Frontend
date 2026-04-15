@@ -79,6 +79,25 @@
                     </button>
                   </div>
                 </section>
+
+                <section>
+                  <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">Fuera de la zona <span>{{ filteredFar.length }}</span></h3>
+                  <div v-if="filteredFar.length === 0" class="py-6 text-center bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
+                    <p class="text-[9px] text-gray-400 italic font-medium">No hay vehículos fuera de la zona</p>
+                  </div>
+                  <div v-else class="space-y-2">
+                    <button v-for="v in filteredFar" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-indigo-500/30 hover:shadow-lg transition-all group opacity-75 hover:opacity-100">
+                      <div class="flex items-center gap-2.5 min-w-0">
+                        <TruckIcon class="size-4 text-gray-400 shrink-0" />
+                        <div class="min-w-0">
+                          <p class="text-[11px] font-bold text-gray-900 dark:text-white truncate">{{ v.plate }}</p>
+                          <p class="text-[9px] text-gray-400 font-bold uppercase truncate">{{ v.brand }} {{ v.model }}</p>
+                        </div>
+                      </div>
+                      <p class="text-[10px] font-black text-gray-500 dark:text-gray-400">{{ formatDistance(v.distanceMeters) }}</p>
+                    </button>
+                  </div>
+                </section>
               </div>
             </div>
           </div>
@@ -186,8 +205,9 @@ const isRefreshing = ref(false)
 const isReserving = ref(false)
 const isConfirmOpen = ref(false)
 const panelOpen = ref(false)
-const nearbyRadiusKm = ref(5)
+const nearbyRadiusKm = ref(2)
 const nearbyAvailable = ref<any[]>([])
+const farVehicles = ref<any[]>([])
 const myLocation = ref<{ lat: number; lng: number } | null>(null)
 
 watch(search, (newVal) => {
@@ -218,6 +238,10 @@ const filteredNearby = computed(() => {
   return nearbyAvailable.value.filter(v => !v.mongo_active && v.online !== false)
 })
 
+const filteredFar = computed(() => {
+  return farVehicles.value.filter(v => !v.mongo_active && v.online !== false)
+})
+
 const refresh = async () => {
   isRefreshing.value = true
   try {
@@ -242,7 +266,7 @@ const locateMe = () => {
 function computeNearbyAvailable() {
   if (!myLocation.value) return
   const R = 6371
-  nearbyAvailable.value = rawVehicles.value
+  const allWithDistance = rawVehicles.value
     .map(v => {
       if (v.latitude == null || v.longitude == null) return null
       const dLat = (v.latitude - myLocation.value!.lat) * Math.PI / 180
@@ -255,9 +279,14 @@ function computeNearbyAvailable() {
       return { ...v, distanceMeters: d }
     })
     .filter(Boolean)
-    .filter(v => v.distanceMeters <= nearbyRadiusKm.value * 1000)
-    .sort((a, b) => a.distanceMeters - b.distanceMeters)
+    .sort((a: any, b: any) => a.distanceMeters - b.distanceMeters)
+
+  nearbyAvailable.value = allWithDistance
+    .filter((v: any) => v.distanceMeters <= nearbyRadiusKm.value * 1000)
     .slice(0, 10)
+
+  farVehicles.value = allWithDistance
+    .filter((v: any) => v.distanceMeters > nearbyRadiusKm.value * 1000)
 }
 
 const onNearbyClick = (v: any) => {

@@ -167,15 +167,24 @@
         </div>
       </section>
     </div>
+    <!-- Confirm Cancel Modal -->
+    <ConfirmDialog 
+      :visible="isCancelDialogOpen"
+      title="¿Cancelar Reserva?"
+      message="Al cancelar, este vehículo volverá a estar disponible para otros usuarios. Esta acción no se puede deshacer."
+      @confirm="confirmCancel"
+      @cancel="isCancelDialogOpen = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, computed } from 'vue'
+import { onMounted, onUnmounted, computed, ref } from 'vue'
 import useBookingsUser from './composables/useBookingsUser'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
+import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 import {
   MapIcon,
   ArrowPathIcon,
@@ -187,6 +196,9 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const { bookings, loading, getBookings } = useBookingsUser()
+
+const isCancelDialogOpen = ref(false)
+const bookingToCancel = ref<number | null>(null)
 
 const activeBookings = computed(() => 
   bookings.value.filter(b => ['pending', 'active'].includes(b.status))
@@ -248,14 +260,23 @@ const handleActivate = async (id: number) => {
   }
 }
 
-const handleCancel = async (id: number) => {
-  if (!confirm('¿Estás seguro de que quieres cancelar esta reserva?')) return
+const handleCancel = (id: number) => {
+  bookingToCancel.value = id
+  isCancelDialogOpen.value = true
+}
+
+const confirmCancel = async () => {
+  if (!bookingToCancel.value) return
+  isCancelDialogOpen.value = false
+  
   try {
-    await apiClient.post(`/reservations/${id}/cancel`)
+    await apiClient.post(`/reservations/${bookingToCancel.value}/cancel`)
     showToast('Reserva cancelada correctamente', 'success')
     getBookings()
   } catch (e: any) {
     showToast(e.response?.data?.message || 'Error al cancelar', 'error')
+  } finally {
+    bookingToCancel.value = null
   }
 }
 

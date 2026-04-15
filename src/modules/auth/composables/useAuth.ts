@@ -184,10 +184,13 @@ export function useAuth() {
     }
   }
 
-  const register = async (name: string, username: string, email: string, password: string) => {
+  const register = async (name: string, username: string, email: string, password: string, tenant: string) => {
     isLoading.value = true
     error.value = null
     try {
+      // Save tenant to localStorage so the apiClient can pick it up
+      localStorage.setItem('current_tenant', tenant)
+      
       const registerData: RegisterRequest = {
         name,
         username,

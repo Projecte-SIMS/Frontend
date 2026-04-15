@@ -42,6 +42,16 @@
               <FormInput v-model="form.model" placeholder="p. ej., Corolla" @input="validateField('model')" />
             </FormField>
 
+            <FormField label="Precio por minuto (€)" :error="errors.price_per_minute">
+              <FormInput
+                v-model.number="form.price_per_minute"
+                type="number"
+                step="0.01"
+                placeholder="0.15"
+                @input="validateField('price_per_minute')"
+              />
+            </FormField>
+
             <FormField label="Estado">
               <FormCheckbox v-model="form.active" label="Vehículo está activo" />
             </FormField>
@@ -102,13 +112,15 @@ const form = reactive<VehicleForm>({
   license_plate: '',
   brand: '',
   model: '',
-  active: true
+  active: true,
+  price_per_minute: 0.15
 })
 
 const errors = reactive<Record<string, string | null>>({
   license_plate: null,
   brand: null,
-  model: null
+  model: null,
+  price_per_minute: null
 })
 
 const validateField = (field: keyof typeof errors) => {
@@ -120,14 +132,15 @@ function validate(): boolean {
   errors.license_plate = null
   errors.brand = null
   errors.model = null
+  errors.price_per_minute = null
 
   if (!form.license_plate.trim()) {
     errors.license_plate = 'La matrícula es obligatoria.'
     isValid = false
   } else {
-    const licensePlatePattern = /^\d{4}\s?[A-Z]{3}$/i
+    const licensePlatePattern = /^[A-Z0-9-\s]+$/i
     if (!licensePlatePattern.test(form.license_plate.trim())) {
-      errors.license_plate = 'Formato inválido. Usa: 1234ABC.'
+      errors.license_plate = 'Formato inválido.'
       isValid = false
     }
   }
@@ -138,6 +151,10 @@ function validate(): boolean {
   }
   if (!form.model.trim()) {
     errors.model = 'El modelo es obligatorio.'
+    isValid = false
+  }
+  if (form.price_per_minute === null || form.price_per_minute === undefined || form.price_per_minute < 0) {
+    errors.price_per_minute = 'El precio debe ser un número positivo.'
     isValid = false
   }
   return isValid

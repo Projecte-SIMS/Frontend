@@ -118,8 +118,8 @@
 
               <td class="px-6 py-4">
                 <div class="text-[10px] font-black uppercase tracking-tight">
-                  <p class="text-slate-900 dark:text-white">{{ formatDate(ticket.created_at) }}</p>
-                  <p class="text-slate-400 mt-0.5">{{ formatTime(ticket.created_at) }}</p>
+                  <p class="text-slate-900 dark:text-white">{{ formatDate(ticket.updated_at) }}</p>
+                  <p class="text-slate-400 mt-0.5">{{ formatTime(ticket.updated_at) }}</p>
                 </div>
               </td>
 
@@ -135,8 +135,17 @@
                     v-if="ticket.active"
                     @click="closeTicket(ticket.id)"
                     class="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all"
+                    title="Cerrar Ticket"
                   >
                     <span class="material-icons text-xl">block</span>
+                  </button>
+                  <button
+                    v-else
+                    @click="reopenTicket(ticket.id)"
+                    class="p-2 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all"
+                    title="Reabrir Ticket"
+                  >
+                    <span class="material-icons text-xl">history</span>
                   </button>
                 </div>
               </td>
@@ -173,54 +182,89 @@
         </div>
       </template>
 
-      <div class="space-y-6">
-        <div class="rounded-2xl bg-slate-50 p-5 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-          <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-3">Asunto Original</p>
-          <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-            {{ selectedTicket?.message || selectedTicket?.description || '-' }}
+      <div class="flex flex-col h-[60vh]">
+        <!-- Cabecera de descripción original -->
+        <div class="p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 shrink-0">
+          <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1">Descripción Inicial</p>
+          <p class="text-sm text-slate-700 dark:text-slate-300 font-medium leading-relaxed italic">
+            "{{ selectedTicket?.message || selectedTicket?.description || '-' }}"
           </p>
         </div>
 
-        <div class="space-y-4">
-          <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] px-2">Conversación</h4>
-          
-          <div v-if="loadingMessages" class="flex justify-center py-6">
-            <div class="animate-pulse flex gap-2">
-              <div class="h-1.5 w-1.5 rounded-full bg-slate-300"></div>
-              <div class="h-1.5 w-1.5 rounded-full bg-slate-300"></div>
-              <div class="h-1.5 w-1.5 rounded-full bg-slate-300"></div>
-            </div>
+        <!-- Conversación estilo Chat -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/30 dark:bg-slate-950/20 custom-scrollbar">
+          <div v-if="loadingMessages" class="flex justify-center py-10">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
           </div>
 
-          <div v-else class="space-y-4 max-h-[40vh] overflow-y-auto px-2 custom-scrollbar">
+          <template v-else>
             <div
               v-for="msg in ticketMessages"
               :key="msg.id"
-              :class="[
-                'rounded-2xl p-4 border transition-all',
-                msg.is_support 
-                  ? 'bg-indigo-50/50 border-indigo-100 dark:bg-indigo-900/10 dark:border-indigo-800 ml-8' 
-                  : 'bg-white border-slate-100 dark:bg-slate-900 dark:border-slate-800 mr-8 shadow-sm'
-              ]"
+              class="flex flex-col"
+              :class="[msg.user_id === currentUserId ? 'items-end' : 'items-start']"
             >
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-black uppercase tracking-widest" :class="msg.is_support ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500'">
-                  {{ msg.is_support ? 'Soporte' : (msg.user?.name || 'Cliente') }}
-                </span>
-                <span class="text-[10px] font-bold text-slate-400 uppercase">{{ formatDateTime(msg.created_at) }}</span>
+              <div class="flex items-end gap-2 max-w-[85%]">
+                <!-- Avatar (solo para otros) -->
+                <div v-if="msg.user_id !== currentUserId" class="size-8 rounded-full bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-[10px] font-black text-slate-500 shrink-0 border border-white dark:border-slate-700">
+                  {{ getInitials(msg.user?.name) }}
+                </div>
+
+                <div
+                  :class="[
+                    'rounded-2xl px-4 py-3 shadow-sm border transition-all',
+                    msg.user_id === currentUserId
+                      ? 'bg-indigo-600 border-indigo-500 text-white rounded-tr-none' 
+                      : 'bg-white border-slate-100 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-tl-none shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)]'
+                  ]"
+                >
+                  <div class="flex items-center justify-between gap-4 mb-1">
+                    <span class="text-[10px] font-black uppercase tracking-widest" :class="msg.user_id === currentUserId ? 'text-indigo-100' : 'text-indigo-600 dark:text-indigo-400'">
+                      {{ msg.user?.name || (msg.user_id === currentUserId ? 'Tú' : 'Soporte') }}
+                    </span>
+                    <span class="text-[9px] font-bold uppercase opacity-60" :class="msg.user_id === currentUserId ? 'text-white' : 'text-slate-400'">
+                      {{ formatTime(msg.created_at) }}
+                    </span>
+                  </div>
+                  <p class="text-sm font-medium leading-relaxed">{{ msg.content || msg.message || msg.body }}</p>
+                </div>
+
+                <!-- Avatar (solo para mí) -->
+                <div v-if="msg.user_id === currentUserId" class="size-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-[10px] font-black text-indigo-600 shrink-0 border border-white dark:border-slate-700">
+                  {{ getInitials(msg.user?.name || 'Tú') }}
+                </div>
               </div>
-              <p class="text-sm text-slate-700 dark:text-slate-200 font-medium leading-relaxed">{{ msg.content || msg.message || msg.body }}</p>
             </div>
-          </div>
+          </template>
         </div>
 
-        <div v-if="selectedTicket?.active" class="border-t border-slate-100 dark:border-slate-800 pt-6">
-          <textarea
-            v-model="replyMessage"
-            rows="4"
-            class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-950 p-4 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 transition-all"
-            placeholder="Escribe tu respuesta..."
-          ></textarea>
+        <!-- Área de Respuesta -->
+        <div v-if="selectedTicket?.active" class="p-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 shrink-0">
+          <div class="relative">
+            <textarea
+              v-model="replyMessage"
+              rows="2"
+              class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-950 pl-4 pr-14 py-3 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 transition-all resize-none"
+              placeholder="Escribe un mensaje..."
+              @keydown.enter.prevent="sendReplyFromModal"
+            ></textarea>
+            <button
+              @click="sendReplyFromModal"
+              :disabled="!replyMessage.trim() || sendingReply"
+              class="absolute right-2 bottom-2 size-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 active:scale-90 transition-all disabled:opacity-50 disabled:grayscale"
+            >
+              <span class="material-icons text-xl">{{ sendingReply ? 'autorenew' : 'send' }}</span>
+            </button>
+          </div>
+        </div>
+        <div v-else class="p-6 bg-slate-100 dark:bg-slate-800/50 text-center border-t border-slate-200 dark:border-slate-800 shrink-0">
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Esta conversación ha finalizado</p>
+          <button 
+            @click="reopenTicketFromModal"
+            class="px-6 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[10px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-slate-50 transition-all shadow-sm"
+          >
+            Reabrir Incidencia
+          </button>
         </div>
       </div>
 
@@ -229,30 +273,20 @@
           <button
             v-if="selectedTicket?.active"
             @click="closeTicketFromModal"
-            class="text-[10px] font-black text-slate-400 hover:text-rose-600 uppercase tracking-widest"
+            class="text-[10px] font-black text-slate-400 hover:text-rose-600 uppercase tracking-widest transition-colors flex items-center gap-2"
           >
-            Cerrar Ticket
+            <span class="material-icons text-sm">lock</span>
+            Finalizar Caso
           </button>
           <div v-else></div>
 
-          <div class="flex gap-3">
-            <button
-              type="button"
-              class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all"
-              @click="closeDetailModal"
-            >
-              Cerrar
-            </button>
-            <button
-              v-if="selectedTicket?.active"
-              type="button"
-              :disabled="!replyMessage.trim() || sendingReply"
-              class="px-8 py-2.5 rounded-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 shadow-lg shadow-indigo-200 transition-all active:scale-95"
-              @click="sendReplyFromModal"
-            >
-              {{ sendingReply ? 'ENVIANDO...' : 'ENVIAR RESPUESTA' }}
-            </button>
-          </div>
+          <button
+            type="button"
+            class="px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all"
+            @click="closeDetailModal"
+          >
+            Cerrar Ventana
+          </button>
         </div>
       </template>
     </Modal>
@@ -301,6 +335,16 @@ const showToast = (message: string, type: 'success' | 'error' = 'success') => {
 }
 
 // Computed
+const currentUserId = computed(() => {
+  const authData = localStorage.getItem('auth_user')
+  if (!authData) return null
+  try {
+    return JSON.parse(authData).id
+  } catch {
+    return null
+  }
+})
+
 const filteredTickets = computed(() => {
   let result = tickets.value
   if (statusFilter.value === 'active') result = result.filter(t => t.active)
@@ -391,7 +435,29 @@ const closeTicketFromModal = async () => {
   selectedTicket.value.active = false
 }
 
+const reopenTicket = async (ticketId: number) => {
+  try {
+    await apiClient.put(`/admin/tickets/${ticketId}`, { active: true })
+    const ticket = tickets.value.find(t => t.id === ticketId)
+    if (ticket) ticket.active = true
+    showToast('Ticket reabierto', 'success')
+  } catch (e) {
+    showToast('Error al reabrir', 'error')
+  }
+}
+
+const reopenTicketFromModal = async () => {
+  if (!selectedTicket.value) return
+  await reopenTicket(selectedTicket.value.id)
+  selectedTicket.value.active = true
+}
+
 // Formatters
+const getInitials = (name?: string) => {
+  if (!name) return '?'
+  return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
+}
+
 const formatDate = (date: string) => {
   if (!date) return '-'
   return new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })

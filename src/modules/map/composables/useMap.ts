@@ -5,6 +5,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.css'
 import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.markercluster'
 import apiClient from '@/services/api'
+import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 
 export interface Vehicle {
   id: number
@@ -23,6 +24,7 @@ export interface Vehicle {
   engine_temp?: number
   battery_voltage?: number
   device_id?: string
+  price_per_minute?: number
 }
 
 const vehicles = ref<Vehicle[]>([])
@@ -213,6 +215,26 @@ const addVehicleMarkers = () => {
     } else {
       const icon = createVehicleIcon(v)
       const marker = L.marker([v.latitude, v.longitude], { icon })
+      
+      const imageUrl = getVehicleImage(v.brand, v.model)
+      const popupContent = `
+        <div class="fleetly-map-popup" style="min-width: 200px; padding: 10px;">
+          <div style="width: 100%; height: 100px; background: #f3f4f6; border-radius: 8px; overflow: hidden; margin-bottom: 10px;">
+            <img src="${imageUrl}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='/logo.png'">
+          </div>
+          <div style="font-weight: 900; text-transform: uppercase; font-size: 14px; margin-bottom: 2px;">${v.brand} ${v.model}</div>
+          <div style="color: #6366f1; font-family: monospace; font-weight: 700; font-size: 12px; margin-bottom: 8px;">${v.plate}</div>
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; pt: 8px; margin-top: 8px;">
+            <span style="font-size: 11px; font-weight: 700; color: #6b7280;">Tarifa</span>
+            <span style="font-size: 13px; font-weight: 900;">${v.price_per_minute || '0.15'}€<span style="font-size: 9px; color: #9ca3af;">/min</span></span>
+          </div>
+        </div>
+      `
+      marker.bindPopup(popupContent, {
+        className: 'fleetly-popup-custom',
+        maxWidth: 250
+      })
+
       marker.on('click', () => {
         selectedVehicle.value = v
         centerOnVehicle(v)
@@ -231,23 +253,28 @@ const addVehicleMarkers = () => {
 }
 
 const centerOnVehicle = (vehicle: Vehicle) => {
-  if (map.value && clusterGroup) {
-    const marker = markers.get(vehicle.id)
-    if (marker) {
-      try {
-        clusterGroup.zoomToShowLayer(marker, () => {
-          if (map.value) {
-            map.value.setView([vehicle.latitude, vehicle.longitude], 17)
-          }
-        })
-      } catch (e) {
-        // Fallback: just center the map
+  if (!map.value) return
+  if (vehicle.latitude == null || vehicle.longitude == null || (vehicle.latitude === 0 && vehicle.longitude === 0)) {
+    console.warn('Vehicle has no valid coordinates to center on')
+    return
+  }
+
+  const marker = markers.get(vehicle.id)
+  if (marker && clusterGroup) {
+    try {
+      clusterGroup.zoomToShowLayer(marker, () => {
         if (map.value) {
-          map.value.setView([vehicle.latitude, vehicle.longitude], 17)
+          map.value.setView([vehicle.latitude, vehicle.longitude], 17, { animate: true })
         }
-      }
+      })
+      return
+    } catch (e) {
+      console.warn('Error using zoomToShowLayer, falling back to direct setView', e)
     }
   }
+
+  // Fallback or if marker not found: center directly
+  map.value.setView([vehicle.latitude, vehicle.longitude], 17, { animate: true })
 }
 
 const setUserLocation = (lat: number, lng: number) => {

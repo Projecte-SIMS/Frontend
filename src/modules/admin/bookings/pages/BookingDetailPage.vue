@@ -101,7 +101,7 @@
           <div class="sm:col-span-1">
             <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Precio Total</dt>
             <dd class="mt-1 text-sm text-gray-900 dark:text-white">
-              {{ formatCurrency(booking.total_price) }}
+              {{ formatCurrency(booking.total_price ?? booking.trip?.total_amount ?? 0) }}
             </dd>
           </div>
 
@@ -161,11 +161,12 @@ const translateBookingStatus = (s: string) => {
   return map[s] || s
 }
 
-const formatCurrency = (value: number) => {
+const formatCurrency = (value: number | null | undefined) => {
+  const amount = value ?? 0
   return new Intl.NumberFormat('es-ES', {
     style: 'currency',
     currency: 'EUR'
-  }).format(value)
+  }).format(amount)
 }
 
 const getStatusClasses = (s: string) => {

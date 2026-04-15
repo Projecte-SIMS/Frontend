@@ -78,11 +78,11 @@
                 <div class="text-xs font-medium text-slate-600 dark:text-slate-400">{{ user.email }}</div>
               </td>
               <td class="px-6 py-4 text-center">
-                <span 
-                  v-if="user?.roles && user.roles.length > 0" 
+                <span
+                  v-if="user?.roles && user.roles.length > 0"
                   class="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-widest bg-indigo-50 text-indigo-700 border border-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800"
                 >
-                  {{ user?.roles?.[0]?.name }}
+                  {{ getPrimaryRole(user) }}
                 </span>
                 <span v-else class="text-[10px] font-black text-slate-300 uppercase">Sin Rol</span>
               </td>
@@ -175,6 +175,13 @@ const getInitials = (name?: string) =>
   name
     ? name.split(' ').map((x) => x[0]).join('').substring(0, 2).toUpperCase()
     : '??'
+
+const getPrimaryRole = (user: User) => {
+  if (!user?.roles || user.roles.length === 0) return 'Sin Rol'
+  if (user.roles.some(r => r.name === 'Admin')) return 'Admin'
+  if (user.roles.some(r => r.name === 'Maintenance')) return 'Maintenance'
+  return user.roles[0]?.name || 'Sin Rol'
+}
 
 const filters = ref<UserFilters>({ search: '' })
 const userToDelete = ref<User | null>(null)
