@@ -2,7 +2,7 @@
 
 **Última actualización:** 2026-03-03
 
-Este documento detalla la infraestructura tecnológica de SIMS Frontend y las decisiones de diseño que aseguran la mantenibilidad y el rendimiento del sistema.
+Este documento detalla la infraestructura tecnológica de SIMS Frontend y las decisiones de diseño que aseguran la mantenibilidad y el rendimiento del sistema en un entorno multitenant.
 
 ---
 
@@ -17,7 +17,6 @@ Este documento detalla la infraestructura tecnológica de SIMS Frontend y las de
 | Axios | 1.13.3 | Cliente HTTP |
 | Vue Router | 4.6.4 | Enrutamiento SPA |
 | Leaflet | 1.9.4 | Mapas interactivos |
-| Leaflet MarkerCluster | 1.5.3 | Dependencia para clustering de marcadores (no usada en el código actual) |
 | HeadlessUI | 1.7.23 | Componentes accesibles |
 | HeroIcons | 2.2.0 | Iconos SVG |
 | vue3-toastify | 0.2.8 | Notificaciones toast |
@@ -31,15 +30,19 @@ El proyecto se organiza bajo el patrón **Modular por Dominios**:
 ```
 src/
 ├── modules/
-│   ├── admin/           # Panel de administración central
+│   ├── admin/           # Panel de administración de tenant
 │   │   ├── bookings/    # Gestión de reservas administrativas
-│   │   ├── components/  # 12 componentes reutilizables admin
+│   │   ├── components/  # Componentes reutilizables admin
 │   │   ├── layouts/     # AdminLayout.vue
 │   │   ├── modules/     # Submódulos (users, vehicles, roles)
 │   │   ├── pages/       # Dashboard, Map, FleetHealth, IoTDevices
 │   │   └── tickets/     # Gestión tickets admin
-│   ├── auth/            # Login, registro, perfil
-│   │   ├── composables/ # useAuth.ts
+│   ├── superadmin/      # Panel de control central (Landlord)
+│   │   ├── components/  # Componentes de gestión de tenants
+│   │   ├── layouts/     # SuperAdminLayout.vue
+│   │   └── pages/       # TenantsPage, BillingPage, SuperAdminLogin
+│   ├── auth/            # Login, registro, perfil (Tenant-aware)
+│   │   ├── composables/ # useAuth.ts, useCentralAuth.ts
 │   │   ├── interfaces/  # Tipos de auth
 │   │   └── pages/       # LoginPage, RegisterPage, etc.
 │   ├── bookings/        # Reservas de usuario final
@@ -54,7 +57,8 @@ src/
 │   └── tickets/         # Sistema de soporte usuario
 │       └── pages/       # TicketsPage, CreateTicketPage, etc.
 ├── services/            # Clientes API
-│   ├── api.ts           # Axios configurado
+│   ├── api.ts           # Axios configurado para Tenants (apiClient)
+│   ├── centralApi.ts    # Axios configurado para Landlord (centralApiClient)
 │   └── iotService.ts    # Servicio IoT
 ├── router/              # Vue Router
 │   └── index.ts
@@ -65,9 +69,25 @@ src/
 
 ## 3. Decisiones Técnicas Clave
 
-### 3.1. Gestión de Sesión (Cookies + Token)
+### 3.1. Arquitectura Multitenant (Landlord vs Tenant)
 
-El token JWT se almacena en **Cookies** (`token`). El archivo `src/services/api.ts` incluye un interceptor de Axios que extrae automáticamente el token para añadirlo a la cabecera `Authorization: Bearer <token>`.
+El sistema opera bajo un modelo multitenant donde un único frontend sirve a múltiples organizaciones. Se distinguen dos contextos de ejecución:
+
+1.  **Contexto Landlord (Superadmin):** Gestionado a través de `centralApi.ts`. Se utiliza para la creación de tenants, gestión de dominios y facturación global. No requiere la cabecera `X-Tenant`. El token se almacena en `localStorage` como `central_token`.
+2.  **Contexto Tenant:** Gestionado a través de `api.ts`. Requiere la identificación del tenant mediante la cabecera `X-Tenant`. El token JWT de sesión se almacena en **Cookies** (`token`).
+
+### 3.2. Identificación del Tenant (Lógica de X-Tenant)
+
+La identificación del tenant se realiza dinámicamente en `src/services/api.ts` mediante la función `getCurrentTenant()` siguiendo este orden de prioridad:
+1.  Parámetro de URL: `?tenant=slug` (se persiste inmediatamente en `localStorage`).
+2.  Subdominio de la URL actual (ej. `acme.sims.com` -> `acme`).
+3.  Valor persistido en `localStorage` bajo la clave `current_tenant`.
+
+El `apiClient` inyecta automáticamente el valor obtenido en la cabecera `X-Tenant` para todas las peticiones que no sean hacia rutas de la central.
+
+### 3.3. Gestión de Sesión (Cookies + Token)
+
+El token JWT para tenants se almacena en **Cookies** (`token`). El archivo `src/services/api.ts` incluye un interceptor de Axios que extrae automáticamente el token para añadirlo a la cabecera `Authorization: Bearer <token>`.
 
 ```typescript
 // src/services/api.ts
@@ -80,22 +100,37 @@ apiClient.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+  
+  // Inyección de X-Tenant
+  const tenant = getCurrentTenant()
+  if (tenant && !isSuperAdminRoute()) {
+    config.headers['X-Tenant'] = tenant
+  }
+  
   return config
 })
 ```
 
-### 3.2. Redirección Basada en Autenticación (Router Guards)
+### 3.4. Redirección Basada en Autenticación (Router Guards)
 
-En `src/router/index.ts`, un guard global controla el acceso en función de la autenticación:
-- Si la ruta requiere auth y el usuario no está autenticado, redirige a `/login`.
-- Si el usuario está autenticado y accede a `/login`, redirige a `/admin`.
-
-La comprobación del rol para mostrar el área de administración se realiza en `src/modules/admin/layouts/AdminLayout.vue` mediante `user.roles`.
+En `src/router/index.ts`, los guards controlan el acceso según el contexto:
+-   **Rutas Tenant:** Requieren `isAuthenticated`.
+-   **Rutas Superadmin:** Requieren validación contra `centralApi.isAuthenticated()`.
 
 ```typescript
 router.beforeEach(async (to, from, next) => {
   const { isAuthenticated, fetchUser, getToken } = useAuth()
   
+  // Lógica para rutas de superadmin
+  if (to.path.startsWith('/superadmin')) {
+    const requiresCentralAuth = to.meta.requiresAuth !== false
+    if (requiresCentralAuth && !centralApi.isAuthenticated()) {
+      return next('/superadmin/login')
+    }
+    return next()
+  }
+
+  // Lógica para rutas de tenant
   if (getToken() && !isAuthenticated.value) {
     await fetchUser()
   }
@@ -110,75 +145,56 @@ router.beforeEach(async (to, from, next) => {
 })
 ```
 
-### 3.3. Mapas con Leaflet
+### 3.5. Mapas con Leaflet
 
-Se utiliza Leaflet directamente sobre el DOM para máximo rendimiento con múltiples marcadores. En el código actual no se utiliza `MarkerCluster`; los mapas se renderizan con la lógica de cada página.
+Se utiliza Leaflet directamente sobre el DOM para máximo rendimiento con múltiples marcadores.
 
 - `MapPage.vue` - Mapa autenticado con distancia Haversine
-- `PublicMapPage.vue` - Mapa público sin login
+- `PublicMapPage.vue` - Mapa público sin login (requiere identificación de tenant vía URL)
 - `VehicleMapPage.vue` - Mapa admin con telemetría IoT
 
-### 3.4. Chatbot con Contexto por Rol
+### 3.6. Chatbot con Contexto por Rol
 
-`ChatbotPage.vue` conecta con `/api/chatbot/chat`. El frontend:
-- Calcula el rol del usuario (a partir de `user.roles[0].name`)
-- Muestra un mensaje de bienvenida adaptado al rol
-- Envía la conversación al endpoint, omitiendo cualquier mensaje `system`
+`ChatbotPage.vue` conecta con `/api/chatbot/chat`. El frontend calcula el rol del usuario y adapta el mensaje de bienvenida. La petición viaja con la cabecera `X-Tenant` para que el backend use el modelo configurado para el tenant específico.
 
-**Nota:** No es un sistema RAG puro con embeddings; es un chatbot que envía el historial de conversación al backend.
+### 3.7. Control de Vehículos IoT
 
-### 3.5. Control de Vehículos IoT
-
-`ActiveVehicleControlPage.vue` permite encender/apagar el vehículo asociado a una reserva activa llamando a la API de reservas mediante `apiClient`:
-- `POST /reservations/{id}/on`
-- `POST /reservations/{id}/off`
+`ActiveVehicleControlPage.vue` permite el control remoto de activos. Las peticiones POST a `/reservations/{id}/on` y `/reservations/{id}/off` incluyen el `X-Tenant` para asegurar que el comando se envía al microservicio correspondiente a la base de datos del tenant.
 
 ---
 
 ## 4. Servicios API
 
-### api.ts
+### api.ts (Tenant Client)
 ```typescript
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://sims-backend-api-0b2w.onrender.com/api',
   withCredentials: true,
-  headers: { 'Content-Type': 'application/json' }
+  headers: { 
+    'Content-Type': 'application/json',
+    'X-Tenant': getCurrentTenant()
+  }
 })
 ```
 
-### iotService.ts
+### centralApi.ts (Landlord Client)
 ```typescript
-export const iotService = {
-  healthCheck(): Promise<{ ok: boolean; microservice: string }>,
-  getDevices(): Promise<IoTDevice[]>,
-  getDevice(deviceId: string): Promise<IoTDevice | null>,
-  pingDevice(deviceId: string): Promise<boolean>,
-  turnOn(deviceId: string): Promise<CommandResult>,
-  turnOff(deviceId: string): Promise<CommandResult>,
-  sendCommand(deviceId: string, action: 'on' | 'off' | 'reboot', relay?: number): Promise<CommandResult>,
-  getUnlinkedDevices(): Promise<IoTDevice[]>,
-  getAvailableVehicles(): Promise<Vehicle[]>,
-  linkDeviceToVehicle(deviceId: string, vehicleId: number): Promise<LinkResult>
-}
+const centralApiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'https://sims-backend-api-0b2w.onrender.com/api',
+  withCredentials: true
+})
 ```
 
 ---
 
-## 5. Componentes Admin Principales
+## 5. Componentes Admin y Superadmin
 
-| Componente | Función |
-|------------|---------|
-| `AdminsTable.vue` | Tabla reactiva con paginación |
-| `AdminPagination.vue` | Controles de paginación |
-| `Modal.vue` | Contenedor para modales |
-| `ConfirmDialog.vue` | Diálogo de confirmación |
-| `FormField.vue` | Wrapper de campos de formulario |
-| `FormInput.vue` | Input estilizado |
-| `FormSelect.vue` | Select estilizado |
-| `FormCheckbox.vue` | Checkbox estilizado |
-| `StatusBadge.vue` | Badge de estado con colores |
-| `PageHeading.vue` | Encabezado de página |
-| `AdminTd.vue` | Celda de tabla estilizada |
+| Módulo | Componente | Función |
+|------------|---------|-----------|
+| Admin | `AdminsTable.vue` | Gestión de flota y usuarios del tenant |
+| Superadmin | `TenantsPage.vue` | CRUD de organizaciones y dominios |
+| Superadmin | `BillingPage.vue` | Control de suscripciones y facturación |
+| Common | `StatusBadge.vue` | Indicadores de estado visuales |
 
 ---
 
@@ -186,7 +202,8 @@ export const iotService = {
 
 | Layout | Ubicación | Uso |
 |--------|-----------|-----|
-| `AppLayout.vue` | `common/layouts/` | Usuarios normales - navbar, sidebar, chatbot |
-| `AdminLayout.vue` | `admin/layouts/` | Administradores - sidebar fijo con menú admin |
+| `AppLayout.vue` | `common/layouts/` | Usuarios finales del tenant |
+| `AdminLayout.vue` | `admin/layouts/` | Administradores de la organización |
+| `SuperAdminLayout.vue` | `superadmin/layouts/` | Administradores del sistema global |
 
 ---

@@ -1,269 +1,99 @@
-# SIMS – Frontend Vue (Sistema de Movilidad Sostenible)
+# SIMS Frontend - Interfaz de Usuario Multitenant SaaS
 
 **Versión:** Sprint 5 – Producción  
-**Fecha:** 2026-03-03  
-**Última actualización:** 2026-03-03
+**Última actualización:** Abril 2026
 
 ---
 
-## Descripción General
+## Descripción General del Proyecto
 
-SIMS es una plataforma avanzada diseñada para la gestión de servicios de movilidad sostenible (carsharing eléctrico). Este repositorio contiene el frontend desarrollado en **Vue 3**, enfocado en la eficiencia operativa y una experiencia de usuario intuitiva apoyada por Inteligencia Artificial.
+SIMS Frontend es una plataforma avanzada diseñada para la gestión de servicios de movilidad sostenible (carsharing eléctrico). El sistema está construido con **Vue 3** y **TypeScript**, funcionando como una aplicación de marca blanca (White Label) que adapta dinámicamente su contexto operativo al inquilino (tenant) que accede al sistema.
 
 ---
 
-## Índice de Documentación
+## Índice de Documentación Técnica
+
+Para una comprensión profunda de la implementación, consulte los siguientes manuales técnicos y operativos:
 
 | Documento | Descripción |
-|-----------|-------------|
-| [**Manual de Usuario**](docs/MANUAL_USUARIO.md) | Guía completa por rol |
-| [Guía de Despliegue](docs/deployment.md) | Instalación y despliegue |
-| [Arquitectura Técnica](docs/architecture.md) | Stack tecnológico y decisiones |
-| [Catálogo de Componentes](docs/components.md) | Librería de UI personalizada |
-| [Especificaciones Funcionales](docs/functionality.md) | Roles y flujos de negocio |
-| [Calidad y QA](docs/qa.md) | Herramientas de depuración |
+| :--- | :--- |
+| [**Manual de Usuario**](docs/MANUAL_USUARIO.md) | Guía operativa segmentada por roles (Admin, Client, Maintenance). |
+| [**Arquitectura Técnica**](docs/architecture.md) | Detalle del stack tecnológico, patrones de diseño y estructura modular. |
+| [**Flujo Multitenant**](docs/MULTITENANT_FRONTEND_FLOW.md) | Especificación del ciclo de vida de identificación y aislamiento de inquilinos. |
+| [**Guía de Despliegue**](docs/deployment.md) | Instrucciones para Vercel, Docker (Nginx) y configuración de variables VITE. |
+| [**Especificaciones Funcionales**](docs/functionality.md) | Definición de roles, permisos y flujos de negocio del frontend. |
+| [**Catálogo de Componentes**](docs/components.md) | Documentación de la librería de UI personalizada y diseño atómico. |
+| [**Calidad y QA**](docs/qa.md) | Herramientas de depuración, linting y estándares de código. |
 
 ---
 
-## Stack Tecnológico (Verificado)
+## Arquitectura de Módulos (Domain-Driven Design)
 
-| Componente | Versión |
-|------------|---------|
-| Vue | 3.5.26 |
-| TypeScript | 5.9.3 |
-| Vite | 7.3.1 |
-| TailwindCSS | 4.1.18 |
-| Axios | 1.13.3 |
-| Vue Router | 4.6.4 |
-| Leaflet | 1.9.4 |
-| Leaflet MarkerCluster | 1.5.3 |
-| HeadlessUI | 1.7.23 |
-| HeroIcons | 2.2.0 |
-| vue3-toastify | 0.2.8 |
-
----
-
-## Estructura del Proyecto
+El proyecto se organiza bajo una estructura modular que separa claramente las responsabilidades operativas y administrativas:
 
 ```
 src/
 ├── modules/
-│   ├── admin/                      # Panel administrativo
-│   │   ├── bookings/               # Gestión reservas admin
-│   │   │   └── pages/              # BookingsPage, BookingDetailPage, BookingFormPage
-│   │   ├── components/             # 12 componentes reutilizables
-│   │   ├── layouts/
-│   │   │   └── AdminLayout.vue
-│   │   ├── modules/
-│   │   │   ├── users/              # CRUD usuarios
-│   │   │   ├── vehicles/           # CRUD vehículos
-│   │   │   ├── roles/              # CRUD roles
-│   │   │   └── tickets/            # (vacío - usa tickets/)
-│   │   ├── pages/
-│   │   │   ├── AdminDashboardPage.vue
-│   │   │   ├── VehicleMapPage.vue
-│   │   │   ├── FleetHealthPage.vue
-│   │   │   └── IoTDevicesPage.vue
-│   │   └── tickets/
-│   │       └── pages/              # TicketsPage, TicketDetailPage
-│   │
-│   ├── auth/                       # Autenticación
-│   │   ├── composables/
-│   │   │   └── useAuth.ts
-│   │   └── pages/
-│   │       ├── LoginPage.vue
-│   │       ├── RegisterPage.vue
-│   │       ├── DashboardPage.vue
-│   │       └── EditProfilePage.vue
-│   │
-│   ├── bookings/                   # Reservas usuario
-│   │   ├── BookingsList.vue
-│   │   └── pages/
-│   │       └── ActiveVehicleControlPage.vue
-│   │
-│   ├── common/                     # Componentes compartidos
-│   │   ├── components/
-│   │   │   ├── FinishTripConfirmModal.vue
-│   │   │   ├── ReservationConfirmModal.vue
-│   │   │   ├── TripSummaryModal.vue
-│   │   │   └── UserMenu.vue
-│   │   ├── layouts/
-│   │   │   └── AppLayout.vue
-│   │   └── pages/
-│   │       ├── HomePage.vue
-│   │       ├── MapPage.vue
-│   │       ├── PublicMapPage.vue
-│   │       ├── VehiclesListPage.vue
-│   │       ├── ChatbotPage.vue
-│   │       └── NotFoundPage.vue
-│   │
-│   ├── map/                        # Composables de mapas
-│   │   └── composables/
-│   │
-│   └── tickets/                    # Sistema de soporte
-│       └── pages/
-│           ├── TicketsPage.vue
-│           ├── CreateTicketPage.vue
-│           ├── TicketConversationPage.vue
-│           └── ...
-│
+│   ├── superadmin/                 # Gestión global (Landlord)
+│   │   ├── pages/                  # TenantsPage, BillingPage, SuperAdminOverview
+│   │   ├── layouts/                # SuperAdminLayout.vue (Sidebar global)
+│   │   └── composables/            # useTenants.ts (Peticiones a centralApi)
+│   ├── admin/                      # Gestión de Inquilino (Tenant Admin)
+│   │   ├── modules/                # CRUD Users, Vehicles, Roles/Permissions
+│   │   ├── pages/                  # FleetHealth, IoTDevices, VehicleMap (Admin)
+│   │   └── layouts/                # AdminLayout.vue (Menú operativo local)
+│   ├── auth/                       # Autenticación Aislada por Tenant
+│   │   ├── pages/                  # LoginPage, RegisterPage (Tenant-aware)
+│   │   └── composables/            # useAuth.ts (Manejo de tokens por esquema)
+│   ├── bookings/                   # Reservas y Control Activo
+│   │   └── pages/                  # ActiveVehicleControlPage (Comandos IoT)
+│   ├── common/                     # Componentes Transversales y Mapas
+│   │   ├── pages/                  # HomePage, MapPage, PublicMapPage, ChatbotPage
+│   │   └── layouts/                # AppLayout.vue (Vista de usuario final)
+│   └── tickets/                    # Sistema de Soporte Técnico (Tickets)
 ├── services/
-│   ├── api.ts                      # Cliente Axios configurado
-│   └── iotService.ts               # Servicio IoT
-│
-├── router/
-│   └── index.ts                    # Configuración de rutas
-│
-└── STYLE.css                       # Estilos globales
+│   ├── api.ts                      # Cliente Axios para Tenant (Header X-Tenant)
+│   ├── centralApi.ts               # Cliente Axios para SuperAdmin (Auth Landlord)
+│   └── iotService.ts               # Comunicación con microservicio FastAPI
+└── router/
+    └── index.ts                    # Guardias de navegación y control de contexto
 ```
 
 ---
 
-## Estado Actual del Frontend
+## Identificación de Inquilinos (Tenant Identification)
 
-### Completado
+El frontend utiliza una estrategia de identificación dinámica para determinar el esquema de datos al que debe conectarse el usuario.
 
-| Funcionalidad | Estado |
-|---------------|--------|
-| Login y registro de usuarios | Sí |
-| Dashboard de usuario | Sí |
-| Edición de perfil | Sí |
-| Mapa de vehículos (Leaflet) | Sí |
-| Mapa público sin autenticación | Sí |
-| Lista de vehículos | Sí |
-| Sistema de reservas | Sí |
-| Control de vehículo activo (on/off) | Sí |
-| Sistema de tickets/soporte | Sí |
-| Chatbot con mensaje de bienvenida según rol | Sí |
-| Panel Admin completo | Sí |
-| CRUD Usuarios (Admin) | Sí |
-| CRUD Vehículos (Admin) | Sí |
-| CRUD Roles/Permisos (Admin) | Sí |
-| Gestión de reservas (Admin) | Sí |
-| Gestión de tickets (Admin) | Sí |
-| Página IoT Devices (Admin) | Sí |
-| Fleet Health (Admin) | Sí |
-| Diseño responsive | Sí |
-| Notificaciones (toast) | Sí |
-
-### Pendiente / Mejoras
-
-| Tarea | Prioridad |
-|-------|-----------|
-| Tests E2E (Cypress/Playwright) | Baja |
-| Modo oscuro | Opcional |
-| PWA / Service Worker | Opcional |
+### Ciclo de Vida de Identificación
+1.  **Detección de URL**: El router extrae el parámetro `?tenant=` o el subdominio de `window.location`.
+2.  **Persistencia**: El identificador se almacena en `localStorage` (`current_tenant`) para mantener la sesión.
+3.  **Interceptor de Red**: Todas las peticiones salientes mediante `api.ts` inyectan automáticamente la cabecera `X-Tenant`.
+4.  **Aislamiento**: El backend de Laravel recibe esta cabecera y activa el esquema PostgreSQL correspondiente antes de procesar la petición.
 
 ---
 
-## Páginas y Rutas
+## Stack Tecnológico Verificado (package.json)
 
-### Rutas Públicas
-| Ruta | Componente | Descripción |
-|------|------------|-------------|
-| `/map` | PublicMapPage | Mapa público de vehículos |
-| `/login` | LoginPage | Formulario de login |
-| `/register` | RegisterPage | Formulario de registro |
-
-### Rutas Usuario (requiere auth)
-| Ruta | Componente | Descripción |
-|------|------------|-------------|
-| `/` | HomePage | Página principal |
-| `/vehicles` | VehiclesListPage | Lista de vehículos |
-| `/vehicles/map` | MapPage | Mapa interactivo |
-| `/bookings` | BookingsList | Mis reservas |
-| `/active-vehicle` | ActiveVehicleControlPage | Control vehículo activo |
-| `/tickets` | TicketsPage | Mis tickets |
-| `/tickets/create` | CreateTicketPage | Crear ticket |
-| `/tickets/:id` | TicketConversationPage | Conversación ticket |
-| `/chatbot` | ChatbotPage | Asistente IA |
-| `/perfil` | DashboardPage | Mi perfil |
-| `/perfil/editar` | EditProfilePage | Editar perfil |
-
-### Rutas Admin (requiere auth + rol Admin)
-| Ruta | Componente | Descripción |
-|------|------------|-------------|
-| `/admin` | AdminDashboardPage | Dashboard admin |
-| `/admin/map` | VehicleMapPage | Mapa admin |
-| `/admin/fleet-health` | FleetHealthPage | Salud de flota |
-| `/admin/iot-devices` | IoTDevicesPage | Dispositivos IoT |
-| `/admin/users` | UserPage | Gestión usuarios |
-| `/admin/users/:id` | UserDetailPage | Detalle usuario |
-| `/admin/vehicles` | VehiclesPage | Gestión vehículos |
-| `/admin/roles` | RolePage | Gestión roles |
-| `/admin/bookings` | BookingsPage | Gestión reservas |
-| `/admin/tickets` | TicketsPage | Gestión tickets |
+| Componente | Versión | Propósito |
+| :--- | :--- | :--- |
+| Vue | 3.5.26 | Core del Framework (Composition API). |
+| TypeScript | 5.9.3 | Tipado estricto y seguridad en tiempo de compilación. |
+| Vite | 7.3.1 | Motor de construcción y servidor de desarrollo. |
+| TailwindCSS | 4.1.18 | Diseño visual utilitario y responsive. |
+| Axios | 1.13.3 | Gestión de peticiones asíncronas HTTP. |
+| Vue Router | 4.6.4 | Enrutamiento SPA con guardias de seguridad. |
+| Leaflet | 1.9.4 | Renderización de mapas e integración geoespacial. |
 
 ---
 
-## Instalación y Desarrollo
+## Integración con el Ecosistema SIMS
 
-### Requisitos
-- Node.js v20.19.0+ (recomendado v22.12.0+)
-- npm o pnpm
+### Comunicación con el Backend (Render)
+El frontend se conecta a la API de Laravel mediante la variable `VITE_API_URL`. Las peticiones se segregan por el header `X-Tenant`, permitiendo que una sola instancia del frontend sirva a múltiples organizaciones.
 
-### Instalación
-```bash
-# Clonar repositorio
-git clone https://github.com/Projecte-SIMS/Frontend.git
-cd project-sims-frontend
-
-# Instalar dependencias
-npm install
-
-# Configurar variables de entorno
-cp .env.example .env
-# Editar .env con VITE_API_URL
-
-# Ejecutar en desarrollo
-npm run dev
-```
-
-### Build para producción
-```bash
-npm run build
-```
-
-### Docker (Despliegue con Docker Compose - Desarrollo)
-
-Este repositorio incluye `docker-compose.yml` para levantar el frontend. Si lo usas junto con un backend externo, asegúrate de configurar `VITE_API_URL` para apuntar a la API.
-
-```bash
-docker compose up -d --build frontend-dev
-```
-
-### Docker (Producción - Nginx)
-
-Para desplegar la versión optimizada (Nginx):
-
-```bash
-docker compose up -d --build frontend-prod
-```
-
-**Modos de uso:**
-- **Desarrollo:** Acceso en [http://localhost:5173](http://localhost:5173). Incluye HMR (recarga en tiempo real al editar código).
-- **Producción:** Imagen optimizada con Nginx disponible en el puerto **8080** ([http://localhost:8080](http://localhost:8080)).
+### Microservicio IoT (FastAPI)
+La telemetría en tiempo real y los comandos de control de vehículos (encendido/apagado) se gestionan mediante `iotService.ts`, que interactúa con el microservicio global de telemetría, filtrando los datos por el identificador de hardware vinculado al vehículo del tenant.
 
 ---
-
-## Servicios API
-
-### api.ts
-Cliente Axios configurado con interceptor para token Bearer automático.
-
-### iotService.ts
-Servicio para operaciones IoT:
-- `getDevices()` - Lista dispositivos
-- `pingDevice(id)` - Verificar online
-- `turnOn(id)` / `turnOff(id)` - Control vehículos
-- `linkDeviceToVehicle(deviceId, vehicleId)` - Vincular
-
----
-
-## Licencia
-
-Este software se distribuye bajo la licencia **EUPL v1.2** (European Union Public Licence).
-
----
-
-**Equipo de Desarrollo SIMS**
+**Ingeniería de Frontend SIMS – Abril 2026**
