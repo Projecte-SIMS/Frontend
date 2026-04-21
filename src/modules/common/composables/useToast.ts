@@ -18,19 +18,20 @@ function formatMessage(payload: string | Error | unknown) {
 }
 
 /**
- * Muestra una notificación toast.
- * @param payload El mensaje o error a mostrar.
- * @param type El tipo de toast (success, error, info, warning). Por defecto es 'success'.
+ * Muestra una notificación toast rediseñada.
  */
 export function showToast(payload: string | Error | unknown, type: ToastType = 'success') {
   const message = formatMessage(payload)
   toast(message, { 
-    theme: 'dark', 
+    theme: 'colored', // Usamos el modo coloreado para máximo contraste
     type: type,
-    pauseOnHover: false, 
+    pauseOnHover: true, 
     pauseOnFocusLoss: false,
-    autoClose: 3000,
-    position: 'bottom-right'
+    autoClose: 3000, // Se cierra a los 3 segundos
+    position: 'top-center',
+    transition: 'bounce', // Animación nativa optimizada
+    hideProgressBar: true,
+    closeOnClick: true,
   })
 }
 
