@@ -57,7 +57,8 @@ export function useTheme() {
     try {
       const response = await centralApi.getTenantSettings(tenantId)
       if (response.success && response.data.theme) {
-        // Si el tema del servidor es distinto al que tenemos en caché, actualizamos
+        // Solo actualizamos si el valor es realmente distinto para evitar parpadeos
+        // y guardamos en localStorage para que la próxima carga sea rápida
         if (brandTheme.value !== response.data.theme) {
             brandTheme.value = response.data.theme
             localStorage.setItem('brand_theme', response.data.theme)

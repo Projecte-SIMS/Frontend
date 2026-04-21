@@ -148,19 +148,20 @@ const loadSettings = async () => {
 
 const handleUpdateTheme = async (themeId: string) => {
   updating.value = true
-  // Optimistic UI
+  // 1. Guardamos el estado anterior por si falla la API
   const prevTheme = brandTheme.value
-  setBrandTheme(themeId)
   
   try {
+    // 2. Aplicación instantánea en UI y Cache Local
+    setBrandTheme(themeId)
+    
+    // 3. Guardado permanente en base de datos
     const res = await api.updateSettings({ company_theme: themeId })
     if (res.success) {
       toast.success('Marca actualizada correctamente')
-      // Note: we use updateCentralTheme logic but for tenant. 
-      // Actually we just call our specific tenant update API.
     }
   } catch (e) {
-    // Revert on error
+    // Revertir en local si el servidor da error
     setBrandTheme(prevTheme)
     toast.error('No se pudo guardar la configuración')
   } finally {

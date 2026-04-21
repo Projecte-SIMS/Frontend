@@ -277,22 +277,46 @@
                   </p>
                 </div>
                 <div class="col-span-2">
-                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Cambiar Identidad Visual</p>
-                  <div class="grid grid-cols-5 gap-3">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4">Identidad Visual de Marca</p>
+                  <div class="flex items-center gap-5">
                     <button
                       v-for="t in themes"
                       :key="t.id"
                       type="button"
                       @click="handleUpdateTheme(t.id)"
                       :disabled="updatingTheme"
-                      :class="[
-                        selectedDetail.company_theme === t.id ? 'ring-2 ring-brand-primary-500 ring-offset-2 scale-110' : 'hover:scale-105 opacity-70 hover:opacity-100'
-                      ]"
-                      class="group relative flex flex-col items-center transition-all disabled:opacity-50"
+                      class="group relative flex flex-col items-center transition-all duration-300 disabled:opacity-50"
                       :title="t.name"
                     >
-                      <div :class="t.color" class="size-8 rounded-lg shadow-sm mb-1"></div>
-                      <span class="text-[7px] font-black uppercase tracking-tighter text-slate-400 group-hover:text-slate-600 transition-colors">{{ t.name }}</span>
+                      <!-- Color Circle -->
+                      <div 
+                        :class="[
+                          t.color,
+                          (selectedDetail.company_theme || 'indigo') === t.id 
+                            ? 'scale-125 ring-4 ring-white dark:ring-slate-900 shadow-[0_0_20px_rgba(0,0,0,0.15)] z-10' 
+                            : 'hover:scale-110 opacity-60 hover:opacity-100'
+                        ]"
+                        class="size-9 rounded-full transition-all duration-300 flex items-center justify-center relative"
+                      >
+                        <!-- Active Checkmark -->
+                        <span v-if="(selectedDetail.company_theme || 'indigo') === t.id" class="material-icons text-white text-base animate-scale-in">check</span>
+                      </div>
+                      
+                      <!-- Label -->
+                      <span 
+                        :class="[
+                          (selectedDetail.company_theme || 'indigo') === t.id ? 'text-slate-900 dark:text-white font-black' : 'text-slate-400 font-bold'
+                        ]"
+                        class="text-[7px] uppercase tracking-tighter mt-3 transition-colors duration-300"
+                      >
+                        {{ t.name }}
+                      </span>
+
+                      <!-- Underline Indicator -->
+                      <div 
+                        v-if="(selectedDetail.company_theme || 'indigo') === t.id" 
+                        class="absolute -bottom-1 w-4 h-0.5 bg-brand-primary-500 rounded-full"
+                      ></div>
                     </button>
                   </div>
                 </div>
@@ -623,6 +647,12 @@ onMounted(fetchTenants)
 <style scoped>
 .animate-fade-in { animation: fadeIn 0.4s ease-out; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in { animation: scaleIn 0.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
 
 /* Slide-over animations */
 .slide-enter-active, .slide-leave-active { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
