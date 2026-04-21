@@ -135,5 +135,11 @@ apiClient.interceptors.response.use(
   }
 )
 
-export { getCurrentTenant, isSuperAdminRoute }
+const api = {
+  // Configuración del servidor (Tenant)
+  getSettings: () => apiClient.get('/admin/settings').then(res => res.data),
+  updateSettings: (data: any) => apiClient.patch('/admin/settings', data).then(res => res.data),
+}
+
+export { getCurrentTenant, isSuperAdminRoute, api }
 export default apiClient

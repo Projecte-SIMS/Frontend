@@ -218,6 +218,7 @@ const navigationItems = [
   { name: 'Reservas', href: '/admin/bookings', icon: CalendarDaysIcon },
   { name: 'Vehículos', href: '/admin/vehicles', icon: TruckIcon },
   { name: 'Tickets', href: '/admin/tickets', icon: TicketIcon },
+  { name: 'Configuración', href: '/admin/settings', icon: CpuChipIcon },
 ]
 
 const navigation = computed(() => 

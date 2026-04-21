@@ -94,6 +94,12 @@ const routes: RouteRecordRaw[] = [
         name: 'AdminBookingEdit',
         component: () => import('@/modules/admin/bookings/pages/BookingFormPage.vue'),
         meta: { requiresAuth: true, requiresAdmin: true }
+      },
+      {
+        path: 'settings',
+        name: 'AdminSettings',
+        component: () => import('@/modules/admin/pages/TenantSettingsPage.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
       }
     ]
   },
