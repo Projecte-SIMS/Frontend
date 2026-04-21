@@ -407,11 +407,12 @@ const form = reactive({
 })
 
 const themes = [
-  { id: 'indigo', name: 'Indigo', color: 'bg-[#4f46e5]' },
+  { id: 'indigo', name: 'Crimson', color: 'bg-[#ef4444]' },
   { id: 'ocean', name: 'Ocean', color: 'bg-blue-600' },
   { id: 'sunset', name: 'Sunset', color: 'bg-amber-500' },
   { id: 'nature', name: 'Nature', color: 'bg-emerald-600' },
   { id: 'royal', name: 'Royal', color: 'bg-purple-600' },
+  { id: 'baltic', name: 'Baltic', color: 'bg-[#26619C]' },
 ]
 
 // Instant theme preview

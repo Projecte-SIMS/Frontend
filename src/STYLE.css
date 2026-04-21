@@ -3,36 +3,36 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  /* Nuevo Tema Indigo -> "Electric Violet" */
-  --brand-primary-50: #f5f3ff;
-  --brand-primary-100: #ede9fe;
-  --brand-primary-200: #ddd6fe;
-  --brand-primary-300: #c4b5fd;
-  --brand-primary-400: #a78bfa;
-  --brand-primary-500: #8b5cf6; /* Base Violeta */
-  --brand-primary-600: #7c3aed;
-  --brand-primary-700: #6d28d9;
-  --brand-primary-800: #5b21b6;
-  --brand-primary-900: #4c1d95;
-  --brand-primary-950: #2e1065;
+  /* Nuevo Tema Base -> "Crimson Red" (Sustituye al antiguo Indigo) */
+  --brand-primary-50: #fef2f2;
+  --brand-primary-100: #fee2e2;
+  --brand-primary-200: #fecaca;
+  --brand-primary-300: #fca5a5;
+  --brand-primary-400: #f87171;
+  --brand-primary-500: #ef4444; /* Rojo Base */
+  --brand-primary-600: #dc2626;
+  --brand-primary-700: #b91c1c;
+  --brand-primary-800: #991b1b;
+  --brand-primary-900: #7f1d1d;
+  --brand-primary-950: #450a0a;
 
-  --brand-secondary-50: #ecfeff;
-  --brand-secondary-100: #cffafe;
-  --brand-secondary-200: #a5f3fc;
-  --brand-secondary-300: #67e8f9;
-  --brand-secondary-400: #22d3ee;
-  --brand-secondary-500: #06b6d4; /* Base Cian */
-  --brand-secondary-600: #0891b2;
-  --brand-secondary-700: #0e7490;
-  --brand-secondary-800: #155e75;
-  --brand-secondary-900: #164e63;
-  --brand-secondary-950: #083344;
+  --brand-secondary-50: #f8fafc;
+  --brand-secondary-100: #f1f5f9;
+  --brand-secondary-200: #e2e8f0;
+  --brand-secondary-300: #cbd5e1;
+  --brand-secondary-400: #94a3b8;
+  --brand-secondary-500: #64748b; /* Gris Pizarra para combinar con Rojo */
+  --brand-secondary-600: #475569;
+  --brand-secondary-700: #334155;
+  --brand-secondary-800: #1e293b;
+  --brand-secondary-900: #0f172a;
+  --brand-secondary-950: #020617;
 
-  --brand-accent-500: #f472b6;
-  --brand-accent-600: #db2777;
-  --brand-highlight-200: #fbcfe8;
-  --brand-highlight-700: #be185d;
-  --brand-highlight-900: #831843;
+  --brand-accent-500: #f97316; /* Naranja para acentos de fuego */
+  --brand-accent-600: #ea580c;
+  --brand-highlight-200: #ffedd5;
+  --brand-highlight-700: #c2410c;
+  --brand-highlight-900: #7c2d12;
 }
 
 .theme-ocean {
@@ -219,9 +219,9 @@
   --color-brand-secondary-200: var(--brand-secondary-200);
   --color-brand-secondary-300: var(--brand-secondary-300);
   --color-brand-secondary-400: var(--brand-secondary-400);
-  --color-brand-secondary-500: var(--brand-secondary-500);
+  --color-brand-secondary-500: var(--color-brand-secondary-500);
   --color-brand-secondary-600: var(--brand-secondary-600);
-  --color-brand-secondary-700: var(--color-brand-secondary-700); /* Fixed self-ref */
+  --color-brand-secondary-700: var(--brand-secondary-700);
   --color-brand-secondary-800: var(--brand-secondary-800);
   --color-brand-secondary-900: var(--brand-secondary-900);
   --color-brand-secondary-950: var(--brand-secondary-950);
@@ -235,6 +235,7 @@
 
 /* Fix self-ref error in theme section */
 @theme {
+  --color-brand-secondary-500: var(--brand-secondary-500);
   --color-brand-secondary-700: var(--brand-secondary-700);
 }
 
