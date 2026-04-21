@@ -19,7 +19,7 @@
       v-if="loading || dataLoading"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-20 text-center flex flex-col items-center gap-4"
     >
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-primary-600"></div>
       <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sincronizando información de reserva...</p>
     </div>
 
@@ -61,7 +61,7 @@
                   v-model="form.scheduled_start"
                   type="datetime-local"
                   required
-                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-sm font-medium outline-none transition-all"
+                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-sm font-medium outline-none transition-all"
                 />
               </FormField>
 
@@ -85,7 +85,7 @@
                 v-model="form.notes"
                 rows="4"
                 placeholder="Añade comentarios sobre esta reserva o cambios realizados..."
-                class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-sm font-medium outline-none transition-all"
+                class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-sm font-medium outline-none transition-all"
               ></textarea>
             </FormField>
           </div>
@@ -101,7 +101,7 @@
             <button
               type="submit"
               :disabled="saving"
-              class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50"
+              class="inline-flex items-center gap-2 rounded-xl bg-brand-primary-600 px-8 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-brand-primary-200 dark:shadow-none hover:bg-brand-primary-700 transition-all active:scale-95 disabled:opacity-50"
             >
               <span v-if="saving" class="material-icons text-sm animate-spin">autorenew</span>
               <span>{{ saving ? 'GUARDANDO...' : 'GUARDAR CAMBIOS' }}</span>
@@ -112,18 +112,18 @@
 
       <!-- Lado Derecho: Info Side -->
       <div class="space-y-8">
-        <div class="p-6 bg-indigo-600 rounded-3xl text-white shadow-xl shadow-indigo-200 dark:shadow-none relative overflow-hidden">
+        <div class="p-6 bg-brand-primary-600 rounded-3xl text-white shadow-xl shadow-brand-primary-200 dark:shadow-none relative overflow-hidden">
           <div class="relative z-10">
             <h4 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-4">Información de Seguridad</h4>
             <div class="space-y-4">
               <div class="flex items-start gap-3">
-                <span class="material-icons text-indigo-200 text-lg">info</span>
+                <span class="material-icons text-brand-primary-200 text-lg">info</span>
                 <p class="text-xs font-medium leading-relaxed">
                   Modificar una reserva activa puede afectar la telemetría del viaje en curso. Procede con precaución.
                 </p>
               </div>
               <div class="flex items-start gap-3">
-                <span class="material-icons text-indigo-200 text-lg">schedule</span>
+                <span class="material-icons text-brand-primary-200 text-lg">schedule</span>
                 <p class="text-xs font-medium leading-relaxed">
                   Si cambias el inicio programado, el límite de activación se recalculará automáticamente (+10 min).
                 </p>
@@ -142,7 +142,7 @@
             </div>
             <div class="flex justify-between items-center">
               <span class="text-xs font-bold text-slate-500 uppercase">Coste</span>
-              <span class="text-sm font-black text-indigo-600 dark:text-indigo-400">{{ formatCurrency(currentBooking.trip.total_amount) }}</span>
+              <span class="text-sm font-black text-brand-primary-600 dark:text-brand-primary-400">{{ formatCurrency(currentBooking.trip.total_amount) }}</span>
             </div>
           </div>
         </div>

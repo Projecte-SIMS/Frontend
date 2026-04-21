@@ -71,7 +71,7 @@
           <button
             type="submit"
             :disabled="loading"
-            class="flex items-center space-x-2 bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
+            class="flex items-center space-x-2 bg-brand-primary-600 text-white hover:bg-brand-primary-700 disabled:opacity-50 disabled:cursor-not-allowed text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
           >
             <svg
               v-if="loading"

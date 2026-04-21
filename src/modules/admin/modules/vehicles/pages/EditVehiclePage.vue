@@ -20,7 +20,7 @@
       v-if="loadingVehicle"
       class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-20 text-center flex flex-col items-center gap-4"
     >
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-primary-600"></div>
       <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sincronizando ficha de unidad...</p>
     </div>
 
@@ -55,7 +55,7 @@
                   type="text"
                   placeholder="1234ABC"
                   @input="validateField('license_plate')"
-                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-sm font-bold uppercase tracking-widest outline-none transition-all"
+                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-sm font-bold uppercase tracking-widest outline-none transition-all"
                 />
               </FormField>
 
@@ -65,7 +65,7 @@
                   type="text"
                   placeholder="Toyota"
                   @input="validateField('brand')"
-                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-sm font-medium outline-none transition-all"
+                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-sm font-medium outline-none transition-all"
                 />
               </FormField>
 
@@ -75,7 +75,7 @@
                   type="text"
                   placeholder="Yaris"
                   @input="validateField('model')"
-                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-sm font-medium outline-none transition-all"
+                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-sm font-medium outline-none transition-all"
                 />
               </FormField>
 
@@ -86,7 +86,7 @@
                   step="0.01"
                   placeholder="0.15"
                   @input="validateField('price_per_minute')"
-                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-sm font-bold outline-none transition-all"
+                  class="block w-full rounded-xl border-0 px-4 py-3 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-sm font-bold outline-none transition-all"
                 />
               </FormField>
 
@@ -115,7 +115,7 @@
               <button
                 type="submit"
                 :disabled="loading"
-                class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50"
+                class="inline-flex items-center gap-2 rounded-xl bg-brand-primary-600 px-8 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-brand-primary-200 dark:shadow-none hover:bg-brand-primary-700 transition-all active:scale-95 disabled:opacity-50"
               >
                 <span v-if="loading" class="material-icons text-sm animate-spin">autorenew</span>
                 <span>{{ loading ? 'Sincronizando...' : 'Actualizar Unidad' }}</span>
@@ -142,7 +142,7 @@
 
           <div v-if="iotDevice" class="space-y-6">
             <div class="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
-              <div class="size-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center">
+              <div class="size-10 rounded-xl bg-brand-primary-50 dark:bg-brand-primary-900/30 text-brand-primary-600 flex items-center justify-center">
                 <span class="material-icons">settings_remote</span>
               </div>
               <div class="text-left overflow-hidden">
@@ -165,7 +165,7 @@
             <div class="pt-4 flex flex-col gap-3">
               <router-link
                 :to="`/admin/map?select=${vehicleId}`"
-                class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-all"
+                class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 dark:text-brand-primary-400 text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-100 transition-all"
               >
                 <span class="material-icons text-base">gps_fixed</span>
                 Rastrear en Mapa
@@ -188,18 +188,18 @@
         </div>
 
         <!-- Security Info Card -->
-        <div class="p-6 bg-indigo-600 rounded-3xl text-white shadow-xl shadow-indigo-200 dark:shadow-none relative overflow-hidden text-left">
+        <div class="p-6 bg-brand-primary-600 rounded-3xl text-white shadow-xl shadow-brand-primary-200 dark:shadow-none relative overflow-hidden text-left">
           <div class="relative z-10">
             <h4 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-80 mb-4">Información de Sistema</h4>
             <div class="space-y-4 text-left">
               <div class="flex items-start gap-3">
-                <span class="material-icons text-indigo-200 text-lg">security</span>
+                <span class="material-icons text-brand-primary-200 text-lg">security</span>
                 <p class="text-xs font-medium leading-relaxed">
                   Los cambios en la matrícula se sincronizan automáticamente con el microservicio de geolocalización.
                 </p>
               </div>
               <div class="flex items-start gap-3">
-                <span class="material-icons text-indigo-200 text-lg">info</span>
+                <span class="material-icons text-brand-primary-200 text-lg">info</span>
                 <p class="text-xs font-medium leading-relaxed">
                   Poner un vehículo en 'Mantenimiento' lo ocultará inmediatamente de las búsquedas de los clientes.
                 </p>

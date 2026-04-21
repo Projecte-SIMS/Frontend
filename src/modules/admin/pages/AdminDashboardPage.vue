@@ -18,11 +18,11 @@
           <button 
             @click="refreshData" 
             :disabled="loadingStats"
-            class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-all disabled:opacity-50 shadow-sm"
+            class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-brand-primary-600 hover:border-brand-primary-200 transition-all disabled:opacity-50 shadow-sm"
           >
             <ArrowPathIcon class="size-5" :class="{'animate-spin': loadingStats}" />
           </button>
-          <span v-if="loadingStats" class="text-[10px] font-black uppercase tracking-widest text-indigo-500">Actualizando...</span>
+          <span v-if="loadingStats" class="text-[10px] font-black uppercase tracking-widest text-brand-primary-500">Actualizando...</span>
         </div>
       </template>
     </PageHeading>
@@ -35,7 +35,7 @@
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">{{ stat.name }}</p>
             <p class="mt-2 text-3xl font-black text-slate-900 dark:text-white tabular-nums">{{ stat.value }}</p>
           </div>
-          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 dark:group-hover:bg-indigo-900/20 transition-colors">
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 group-hover:bg-brand-primary-50 group-hover:text-brand-primary-600 dark:group-hover:bg-brand-primary-900/20 transition-colors">
             <component :is="stat.icon" class="size-6" />
           </div>
         </div>
@@ -63,7 +63,7 @@
               </div>
               <h3 class="font-bold text-slate-900 dark:text-white">Diagnóstico de Flota</h3>
             </div>
-            <RouterLink to="/admin/fleet-health" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
+            <RouterLink to="/admin/fleet-health" class="text-xs font-bold text-brand-primary-600 hover:text-brand-primary-700 uppercase tracking-widest">
               Detalles →
             </RouterLink>
           </div>
@@ -89,7 +89,7 @@
         <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
           <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <h3 class="font-bold text-slate-900 dark:text-white">Últimos Movimientos</h3>
-            <RouterLink to="/admin/bookings" class="text-xs font-bold text-indigo-600 hover:text-indigo-700 uppercase tracking-widest">
+            <RouterLink to="/admin/bookings" class="text-xs font-bold text-brand-primary-600 hover:text-brand-primary-700 uppercase tracking-widest">
               Ver Historial
             </RouterLink>
           </div>
@@ -108,7 +108,7 @@
                 <tr v-for="b in recentBookings" :key="b.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
-                      <div class="size-8 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center text-[10px] font-black">
+                      <div class="size-8 rounded-full bg-brand-primary-100 dark:bg-brand-primary-900/30 text-brand-primary-600 flex items-center justify-center text-[10px] font-black">
                         {{ b.user?.name?.charAt(0) || 'U' }}
                       </div>
                       <div>
@@ -138,11 +138,11 @@
       <!-- Barra Lateral -->
       <div class="space-y-6">
         <!-- Widget IoT -->
-        <div class="rounded-2xl bg-indigo-600 p-6 text-white shadow-lg shadow-indigo-200 dark:shadow-none relative overflow-hidden group fleetly-card-hover">
+        <div class="rounded-2xl bg-brand-primary-600 p-6 text-white shadow-lg shadow-brand-primary-200 dark:shadow-none relative overflow-hidden group fleetly-card-hover">
           <div class="relative z-10">
             <div class="flex items-center justify-between mb-6">
               <div class="flex items-center gap-2">
-                <CpuChipIcon class="size-5 text-indigo-200" />
+                <CpuChipIcon class="size-5 text-brand-primary-200" />
                 <h3 class="font-bold text-sm tracking-tight">Estado Red IoT</h3>
               </div>
               <span class="size-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"></span>
@@ -150,15 +150,15 @@
             
             <div class="space-y-4">
               <div class="flex items-center justify-between p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-                <span class="text-xs font-bold text-indigo-100 uppercase tracking-widest">Dispositivos</span>
+                <span class="text-xs font-bold text-brand-primary-100 uppercase tracking-widest">Dispositivos</span>
                 <span class="text-sm font-black">{{ iotDevices.online }} <span class="opacity-50">/ {{ iotDevices.total }}</span></span>
               </div>
-              <p class="text-[10px] leading-relaxed text-indigo-100 opacity-80">
+              <p class="text-[10px] leading-relaxed text-brand-primary-100 opacity-80">
                 Todos los sistemas de telemetría están operando dentro de los rangos normales.
               </p>
             </div>
             
-            <RouterLink to="/admin/iot-devices" class="mt-6 flex w-full items-center justify-center gap-2 text-xs font-black uppercase tracking-widest bg-white text-indigo-600 py-3 rounded-xl hover:bg-indigo-50 transition-all shadow-sm active:scale-95">
+            <RouterLink to="/admin/iot-devices" class="mt-6 flex w-full items-center justify-center gap-2 text-xs font-black uppercase tracking-widest bg-white text-brand-primary-600 py-3 rounded-xl hover:bg-brand-primary-50 transition-all shadow-sm active:scale-95">
               Configurar Red
             </RouterLink>
           </div>
@@ -173,16 +173,16 @@
               v-for="item in primaryActions"
               :key="item.name"
               :to="item.to"
-              class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-600 hover:shadow-sm transition-all group fleetly-card-hover"
+              class="flex items-center gap-3 p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-brand-primary-600 hover:shadow-sm transition-all group fleetly-card-hover"
             >
-              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/20 text-slate-400 group-hover:text-indigo-600 transition-colors">
+              <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-50 dark:bg-slate-800 group-hover:bg-brand-primary-50 dark:group-hover:bg-brand-primary-900/20 text-slate-400 group-hover:text-brand-primary-600 transition-colors">
                 <component :is="item.icon" class="h-5 w-5" />
               </div>
               <div class="flex-1">
                 <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ item.name }}</h3>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">{{ item.description }}</p>
               </div>
-              <ChevronRightIcon class="h-4 w-4 text-slate-300 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+              <ChevronRightIcon class="h-4 w-4 text-slate-300 group-hover:text-brand-primary-600 group-hover:translate-x-0.5 transition-all" />
             </RouterLink>
           </div>
         </div>

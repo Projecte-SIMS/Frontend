@@ -1,10 +1,10 @@
 <template>
   <div class="space-y-8 fleetly-fade-up">
     <!-- Header Section -->
-    <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-700 p-8 sm:p-12">
+    <div class="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-brand-primary-600 via-brand-accent-600 to-brand-highlight-700 p-8 sm:p-12">
       <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=%2260%22 height=%2260%22 viewBox=%220 0 60 60%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cg fill=%22none%22 fill-rule=%22evenodd%22%3E%3Cg fill=%22%23ffffff%22 fill-opacity=%220.05%22%3E%3Cpath d=%22M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
       <div class="absolute -right-16 -top-16 size-52 rounded-full bg-white/10 blur-2xl hero-float"></div>
-      <div class="absolute -left-10 -bottom-20 size-56 rounded-full bg-fuchsia-300/20 blur-3xl hero-float-delayed"></div>
+      <div class="absolute -left-10 -bottom-20 size-56 rounded-full bg-brand-highlight-200/20 blur-3xl hero-float-delayed"></div>
       <div class="relative">
         <div class="mb-4 flex flex-wrap items-center gap-2">
           <span class="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white/90">
@@ -16,15 +16,15 @@
           </span>
         </div>
         <h1 class="text-3xl sm:text-4xl font-black text-white mb-3">
-          Gestiona tu flota <span class="text-indigo-200">en tiempo real</span>
+          Gestiona tu flota <span class="text-brand-primary-200">en tiempo real</span>
         </h1>
-        <p class="text-indigo-100 text-lg max-w-2xl mb-6">
+        <p class="text-brand-primary-100 text-lg max-w-2xl mb-6">
           Visualiza, reserva y controla vehículos con una experiencia rápida, visual y adictiva. Empieza tu próximo viaje en un clic.
         </p>
         <div class="flex flex-wrap items-center gap-3">
           <button 
             @click="openMap" 
-            class="inline-flex items-center gap-2 bg-white hover:bg-indigo-50 text-indigo-700 px-6 py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-xl active:scale-95 hero-cta"
+            class="inline-flex items-center gap-2 bg-white hover:bg-brand-primary-50 text-brand-primary-700 px-6 py-3 rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-xl active:scale-95 hero-cta"
           >
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -50,7 +50,7 @@
             <h2 class="text-lg font-bold text-gray-900 dark:text-white">Mapa de vehículos</h2>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Haz clic para ver el mapa completo</p>
           </div>
-          <button @click="openMap" class="shrink-0 inline-flex items-center gap-1 rounded-xl bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-900/20 dark:hover:bg-indigo-900/35 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-300 transition-colors">
+          <button @click="openMap" class="shrink-0 inline-flex items-center gap-1 rounded-xl bg-brand-primary-50 hover:bg-brand-primary-100 dark:bg-brand-primary-900/20 dark:hover:bg-brand-primary-900/35 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-brand-primary-700 dark:text-brand-primary-300 transition-colors">
             Abrir
           </button>
         </div>
@@ -79,7 +79,7 @@
               class="flex items-center gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md cursor-pointer"
               @click="centerOnVehicleFromList(v)"
             >
-              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-brand-primary-500 to-brand-accent-600 flex items-center justify-center shadow-lg shadow-brand-primary-500/20">
                 <span class="text-white font-bold text-sm">{{ v.plate.slice(-3) }}</span>
               </div>
               <div class="flex-1 min-w-0">
@@ -107,8 +107,8 @@
     <div>
       <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">¿Por qué elegir Fleetly?</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 hover:border-indigo-500/50 transition-colors fleetly-card-hover">
-          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/20 mb-4">
+        <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 hover:border-brand-primary-500/50 transition-colors fleetly-card-hover">
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary-500 to-brand-accent-600 shadow-lg shadow-brand-primary-500/20 mb-4">
             <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -117,7 +117,7 @@
           <p class="text-sm text-gray-500 dark:text-gray-400">Visualiza y controla tu flota al instante desde cualquier dispositivo.</p>
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 hover:border-green-500/50 transition-colors fleetly-card-hover">
-          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/20 mb-4">
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-brand-secondary-600 shadow-lg shadow-green-500/20 mb-4">
             <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
@@ -143,7 +143,7 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 fleetly-card-hover">
           <div class="flex items-center gap-3 mb-4">
-            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full ring-2 ring-indigo-500/20" alt="Carlos M." />
+            <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full ring-2 ring-brand-primary-500/20" alt="Carlos M." />
             <div>
               <div class="font-bold text-gray-900 dark:text-white">Carlos M.</div>
               <div class="text-xs text-gray-500">Usuario verificado</div>
@@ -153,7 +153,7 @@
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 fleetly-card-hover">
           <div class="flex items-center gap-3 mb-4">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-12 h-12 rounded-full ring-2 ring-indigo-500/20" alt="Lucía G." />
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-12 h-12 rounded-full ring-2 ring-brand-primary-500/20" alt="Lucía G." />
             <div>
               <div class="font-bold text-gray-900 dark:text-white">Lucía G.</div>
               <div class="text-xs text-gray-500">Usuario verificado</div>
@@ -163,7 +163,7 @@
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 fleetly-card-hover">
           <div class="flex items-center gap-3 mb-4">
-            <img src="https://randomuser.me/api/portraits/men/65.jpg" class="w-12 h-12 rounded-full ring-2 ring-indigo-500/20" alt="Jordi P." />
+            <img src="https://randomuser.me/api/portraits/men/65.jpg" class="w-12 h-12 rounded-full ring-2 ring-brand-primary-500/20" alt="Jordi P." />
             <div>
               <div class="font-bold text-gray-900 dark:text-white">Jordi P.</div>
               <div class="text-xs text-gray-500">Usuario verificado</div>

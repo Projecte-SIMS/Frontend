@@ -8,14 +8,14 @@
           <!-- Logo y Navegación Desktop -->
           <div class="flex items-center gap-6">
             <router-link to="/" class="flex items-center gap-2.5 group transition-transform active:scale-95">
-              <div class="h-11 w-11 rounded-xl bg-white p-0.5 ring-1 ring-gray-100 shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-all duration-300">
+              <div class="h-11 w-11 rounded-xl bg-white p-0.5 ring-1 ring-gray-100 shadow-lg shadow-brand-primary-500/20 group-hover:scale-105 transition-all duration-300">
                 <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
               </div>
-              <span class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Fleetly</span>
+              <span class="text-lg sm:text-xl font-bold tracking-tight text-gray-900 dark:text-white group-hover:text-brand-primary-600 dark:group-hover:text-brand-primary-400 transition-colors">Fleetly</span>
             </router-link>
-            <div class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-900/25 border border-indigo-100 dark:border-indigo-800/50 max-w-56">
+            <div class="hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-primary-50 dark:bg-brand-primary-900/25 border border-brand-primary-100 dark:border-brand-primary-800/50 max-w-56">
               <BuildingOffice2Icon class="size-4 text-gray-500 dark:text-gray-400 shrink-0" />
-              <span class="text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-300 truncate">{{ currentTenantLabel }}</span>
+              <span class="text-[10px] font-black uppercase tracking-widest text-brand-primary-700 dark:text-brand-primary-300 truncate">{{ currentTenantLabel }}</span>
             </div>
 
             <!-- Nav Links Desktop -->
@@ -26,8 +26,8 @@
                 :to="item.to"
                 :class="[
                   isActive(item.to) 
-                    ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-300 border-indigo-200/70 dark:border-indigo-800/70 shadow-sm' 
-                    : 'text-gray-600 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white',
+                    ? 'bg-brand-primary-50 text-brand-primary-700 dark:bg-brand-primary-900/30 dark:text-brand-primary-300 border-brand-primary-200/70 dark:border-brand-primary-800/70 shadow-sm' 
+                    : 'text-gray-600 hover:bg-gray-50 hover:text-brand-primary-600 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white',
                   'px-3.5 py-2 rounded-xl text-sm font-bold transition-all duration-200 ease-out active:scale-95 border border-transparent'
                 ]"
               >
@@ -108,9 +108,9 @@
         leave-to-class="opacity-0 -translate-y-4"
       >
         <div v-if="mobileMenuOpen" class="md:hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-4 space-y-2 shadow-2xl">
-          <div class="mb-2 px-4 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-900/25 border border-indigo-100 dark:border-indigo-800/50">
+          <div class="mb-2 px-4 py-2 rounded-xl bg-brand-primary-50 dark:bg-brand-primary-900/25 border border-brand-primary-100 dark:border-brand-primary-800/50">
             <p class="text-[9px] font-black uppercase tracking-widest text-gray-400">Empresa actual</p>
-            <p class="text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300 truncate mt-1">{{ currentTenantLabel }}</p>
+            <p class="text-xs font-black uppercase tracking-wider text-brand-primary-700 dark:text-brand-primary-300 truncate mt-1">{{ currentTenantLabel }}</p>
           </div>
 
           <!-- Link destacado en móvil -->
@@ -135,13 +135,13 @@
             @click="mobileMenuOpen = false"
             :class="[
               isActive(item.to) 
-                ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/20 dark:text-indigo-400' 
+                ? 'bg-brand-primary-50 text-brand-primary-600 dark:bg-brand-primary-900/20 dark:text-brand-primary-400' 
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800',
               'block px-4 py-3.5 rounded-2xl text-base font-bold transition-all active:scale-[0.98]'
             ]"
           >
             <div class="flex items-center gap-4">
-              <div :class="[isActive(item.to) ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-800 text-gray-400']" class="p-2 rounded-xl transition-all">
+              <div :class="[isActive(item.to) ? 'bg-brand-primary-600 text-white shadow-lg shadow-brand-primary-500/20' : 'bg-gray-100 dark:bg-gray-800 text-gray-400']" class="p-2 rounded-xl transition-all">
                 <component :is="item.icon" class="size-5" />
               </div>
               {{ item.name }}
@@ -191,7 +191,7 @@ import { useTheme } from '@/modules/common/composables/useTheme'
 const route = useRoute()
 const { user } = useAuth()
 const { getBookings, hasActiveBooking } = useBookingsUser()
-const { isDark, toggleTheme, initTheme } = useTheme()
+const { isDark, toggleTheme, initTheme, fetchAndApplyTenantTheme } = useTheme()
 const mobileMenuOpen = ref(false)
 
 const isFullPage = computed(() => route.path === '/vehicles/map')
@@ -222,6 +222,7 @@ const navigation = [
 let pollInterval: any = null
 onMounted(() => {
   initTheme()
+  fetchAndApplyTenantTheme()
   getBookings()
   pollInterval = setInterval(getBookings, 10000) // Cada 10s verificamos estado de viaje
 })

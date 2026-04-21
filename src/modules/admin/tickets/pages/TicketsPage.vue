@@ -33,12 +33,12 @@
             v-model="searchQuery"
             type="text"
             placeholder="BUSCAR POR ASUNTO O USUARIO..."
-            class="block w-full rounded-xl border-0 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 text-[10px] font-bold uppercase tracking-widest dark:bg-slate-950 transition-all"
+            class="block w-full rounded-xl border-0 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 text-[10px] font-bold uppercase tracking-widest dark:bg-slate-950 transition-all"
           />
         </div>
         <select
           v-model="statusFilter"
-          class="rounded-xl border-0 px-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-[10px] font-bold uppercase tracking-widest dark:bg-slate-950 transition-all cursor-pointer"
+          class="rounded-xl border-0 px-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-[10px] font-bold uppercase tracking-widest dark:bg-slate-950 transition-all cursor-pointer"
         >
           <option value="all">TODOS LOS ESTADOS</option>
           <option value="active">SOLO ACTIVOS</option>
@@ -49,7 +49,7 @@
 
     <!-- Lista de Tickets -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-20 space-y-4">
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-primary-600"></div>
       <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sincronizando incidencias...</span>
     </div>
 
@@ -77,7 +77,7 @@
                   <div :class="[
                     'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-[10px] font-black shadow-sm',
                     ticket.active 
-                      ? 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400' 
+                      ? 'bg-brand-primary-50 text-brand-primary-600 dark:bg-brand-primary-900/30 dark:text-brand-primary-400' 
                       : 'bg-slate-50 text-slate-400 dark:bg-slate-800'
                   ]">
                     #{{ ticket.id }}
@@ -127,7 +127,7 @@
                 <div class="flex items-center justify-end gap-2" @click.stop>
                   <button
                     @click="openTicketDetail(ticket.id)"
-                    class="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all"
+                    class="p-2 rounded-lg text-slate-400 hover:text-brand-primary-600 hover:bg-brand-primary-50 dark:hover:bg-brand-primary-900/20 transition-all"
                   >
                     <span class="material-icons text-xl">visibility</span>
                   </button>
@@ -167,7 +167,7 @@
         <div class="flex items-center gap-4">
           <div :class="[
             'flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl text-[10px] font-black shadow-sm',
-            selectedTicket?.active ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-500'
+            selectedTicket?.active ? 'bg-brand-primary-600 text-white' : 'bg-slate-200 text-slate-500'
           ]">
             #{{ selectedTicket?.id }}
           </div>
@@ -185,7 +185,7 @@
       <div class="flex flex-col h-[60vh]">
         <!-- Cabecera de descripción original -->
         <div class="p-4 bg-slate-50 dark:bg-slate-800/50 border-b border-slate-100 dark:border-slate-800 shrink-0">
-          <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-1">Descripción Inicial</p>
+          <p class="text-[10px] font-black text-brand-primary-600 dark:text-brand-primary-400 uppercase tracking-widest mb-1">Descripción Inicial</p>
           <p class="text-sm text-slate-700 dark:text-slate-300 font-medium leading-relaxed italic">
             "{{ selectedTicket?.message || selectedTicket?.description || '-' }}"
           </p>
@@ -194,7 +194,7 @@
         <!-- Conversación estilo Chat -->
         <div class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/30 dark:bg-slate-950/20 custom-scrollbar">
           <div v-if="loadingMessages" class="flex justify-center py-10">
-            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary-600"></div>
           </div>
 
           <template v-else>
@@ -214,12 +214,12 @@
                   :class="[
                     'rounded-2xl px-4 py-3 shadow-sm border transition-all',
                     msg.user_id === currentUserId
-                      ? 'bg-indigo-600 border-indigo-500 text-white rounded-tr-none' 
+                      ? 'bg-brand-primary-600 border-brand-primary-500 text-white rounded-tr-none' 
                       : 'bg-white border-slate-100 dark:bg-slate-900 dark:border-slate-800 text-slate-700 dark:text-slate-200 rounded-tl-none shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)]'
                   ]"
                 >
                   <div class="flex items-center justify-between gap-4 mb-1">
-                    <span class="text-[10px] font-black uppercase tracking-widest" :class="msg.user_id === currentUserId ? 'text-indigo-100' : 'text-indigo-600 dark:text-indigo-400'">
+                    <span class="text-[10px] font-black uppercase tracking-widest" :class="msg.user_id === currentUserId ? 'text-brand-primary-100' : 'text-brand-primary-600 dark:text-brand-primary-400'">
                       {{ msg.user?.name || (msg.user_id === currentUserId ? 'Tú' : 'Soporte') }}
                     </span>
                     <span class="text-[9px] font-bold uppercase opacity-60" :class="msg.user_id === currentUserId ? 'text-white' : 'text-slate-400'">
@@ -230,7 +230,7 @@
                 </div>
 
                 <!-- Avatar (solo para mí) -->
-                <div v-if="msg.user_id === currentUserId" class="size-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-[10px] font-black text-indigo-600 shrink-0 border border-white dark:border-slate-700">
+                <div v-if="msg.user_id === currentUserId" class="size-8 rounded-full bg-brand-primary-100 dark:bg-brand-primary-900/50 flex items-center justify-center text-[10px] font-black text-brand-primary-600 shrink-0 border border-white dark:border-slate-700">
                   {{ getInitials(msg.user?.name || 'Tú') }}
                 </div>
               </div>
@@ -244,14 +244,14 @@
             <textarea
               v-model="replyMessage"
               rows="2"
-              class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-950 pl-4 pr-14 py-3 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 transition-all resize-none"
+              class="w-full rounded-2xl border-0 bg-slate-50 dark:bg-slate-950 pl-4 pr-14 py-3 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 transition-all resize-none"
               placeholder="Escribe un mensaje..."
               @keydown.enter.prevent="sendReplyFromModal"
             ></textarea>
             <button
               @click="sendReplyFromModal"
               :disabled="!replyMessage.trim() || sendingReply"
-              class="absolute right-2 bottom-2 size-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 active:scale-90 transition-all disabled:opacity-50 disabled:grayscale"
+              class="absolute right-2 bottom-2 size-10 rounded-xl bg-brand-primary-600 text-white flex items-center justify-center shadow-lg shadow-brand-primary-200 dark:shadow-none hover:bg-brand-primary-700 active:scale-90 transition-all disabled:opacity-50 disabled:grayscale"
             >
               <span class="material-icons text-xl">{{ sendingReply ? 'autorenew' : 'send' }}</span>
             </button>

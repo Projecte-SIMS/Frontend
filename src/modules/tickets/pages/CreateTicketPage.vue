@@ -10,7 +10,7 @@
         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Asunto</label>
         <input 
           v-model="form.title" 
-          class="w-full px-5 py-3 rounded-2xl bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 transition-all outline-none font-medium" 
+          class="w-full px-5 py-3 rounded-2xl bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none font-medium" 
           placeholder="Ej. Problema con la reserva ABC123" 
         />
       </div>
@@ -20,7 +20,7 @@
         <textarea 
           v-model="form.description" 
           rows="6" 
-          class="w-full px-5 py-3 rounded-2xl bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-indigo-500 transition-all outline-none font-medium resize-none" 
+          class="w-full px-5 py-3 rounded-2xl bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none font-medium resize-none" 
           placeholder="Explica detalladamente qué ha ocurrido..."
         ></textarea>
       </div>
@@ -29,7 +29,7 @@
         <button 
           @click="createTicket" 
           :disabled="creating || !form.title.trim()" 
-          class="w-full py-4 rounded-2xl bg-indigo-600 text-white font-black text-sm uppercase tracking-widest shadow-lg shadow-indigo-500/30 hover:bg-indigo-700 active:scale-95 transition-all disabled:opacity-50"
+          class="w-full py-4 rounded-2xl bg-brand-primary-600 text-white font-black text-sm uppercase tracking-widest shadow-lg shadow-brand-primary-500/30 hover:bg-brand-primary-700 active:scale-95 transition-all disabled:opacity-50"
         >
           <ArrowPathIcon v-if="creating" class="size-5 animate-spin mx-auto" />
           <span v-else>Enviar ticket de soporte</span>

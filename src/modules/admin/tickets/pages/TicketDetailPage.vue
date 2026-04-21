@@ -56,7 +56,7 @@
             :class="[
               'rounded-2xl p-6 border transition-all',
               msg.is_support 
-                ? 'bg-indigo-50/50 border-indigo-100 dark:bg-indigo-900/10 dark:border-indigo-800 ml-10' 
+                ? 'bg-brand-primary-50/50 border-brand-primary-100 dark:bg-brand-primary-900/10 dark:border-brand-primary-800 ml-10' 
                 : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 mr-10 shadow-sm'
             ]"
           >
@@ -64,7 +64,7 @@
               <div :class="[
                 'flex h-9 w-9 items-center justify-center rounded-full text-xs font-black uppercase',
                 msg.is_support 
-                  ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-800 dark:text-indigo-400' 
+                  ? 'bg-brand-primary-100 text-brand-primary-600 dark:bg-brand-primary-800 dark:text-brand-primary-400' 
                   : 'bg-slate-100 text-slate-500 dark:bg-slate-800'
               ]">
                 {{ msg.is_support ? 'ST' : getUserInitials(msg.user?.name) }}
@@ -72,7 +72,7 @@
               <div class="flex-1">
                 <p :class="[
                   'text-sm font-bold uppercase tracking-tight',
-                  msg.is_support ? 'text-indigo-700 dark:text-indigo-400' : 'text-slate-900 dark:text-white'
+                  msg.is_support ? 'text-brand-primary-700 dark:text-brand-primary-400' : 'text-slate-900 dark:text-white'
                 ]">
                   {{ msg.is_support ? 'Soporte Técnico' : (msg.user?.name || 'Usuario') }}
                 </p>
@@ -88,14 +88,14 @@
           <textarea
             v-model="reply"
             rows="5"
-            class="w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 p-4 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 transition-all font-medium"
+            class="w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 p-4 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 transition-all font-medium"
             placeholder="Escribe una respuesta profesional y clara..."
           ></textarea>
           <div class="mt-4 flex justify-end">
             <button
               @click="sendReply"
               :disabled="!reply.trim() || sending"
-              class="inline-flex items-center justify-center gap-2 px-8 py-2.5 rounded-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 shadow-lg shadow-indigo-200 transition-all active:scale-95"
+              class="inline-flex items-center justify-center gap-2 px-8 py-2.5 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 disabled:opacity-50 shadow-lg shadow-brand-primary-200 transition-all active:scale-95"
             >
               <span v-if="sending" class="material-icons text-sm animate-spin">autorenew</span>
               <span>{{ sending ? 'ENVIANDO...' : 'Enviar Respuesta' }}</span>

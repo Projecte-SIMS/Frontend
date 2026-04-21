@@ -102,18 +102,18 @@ onMounted(() => {
       :class="[
         isOpen 
           ? 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 rotate-90' 
-          : 'bg-gradient-to-br from-indigo-600 to-purple-700 text-white shadow-indigo-500/40 hover:scale-110'
+          : 'bg-gradient-to-br from-brand-primary-600 to-brand-highlight-700 text-white shadow-brand-primary-500/40 hover:scale-110'
       ]"
       class="group relative flex h-14 w-14 items-center justify-center rounded-2xl shadow-2xl transition-all duration-300 active:scale-95"
     >
-      <div v-if="!isOpen" class="absolute -inset-1 animate-pulse rounded-2xl bg-indigo-500/20 blur-lg group-hover:bg-indigo-500/40 transition-all"></div>
+      <div v-if="!isOpen" class="absolute -inset-1 animate-pulse rounded-2xl bg-brand-primary-500/20 blur-lg group-hover:bg-brand-primary-500/40 transition-all"></div>
       
       <XMarkIcon v-if="isOpen" class="size-6 transition-all" />
       <div v-else class="relative flex items-center justify-center">
         <ChatBubbleLeftEllipsisIcon class="size-7" />
         <span class="absolute -top-1 -right-1 flex h-3 w-3">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-3 w-3 bg-indigo-500"></span>
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-primary-500"></span>
         </span>
       </div>
     </button>
@@ -129,7 +129,7 @@ onMounted(() => {
     >
       <div v-if="isOpen" class="absolute bottom-20 right-0 w-[calc(100vw-2.5rem)] sm:w-[400px] max-w-none bg-white dark:bg-gray-900 rounded-[2rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.25)] border border-gray-100 dark:border-gray-800 flex flex-col overflow-hidden will-change-transform" style="height: 550px; max-height: calc(100vh - 8rem);">
         <!-- Header -->
-        <div class="px-6 py-5 bg-gradient-to-r from-indigo-600 to-purple-700 text-white relative shrink-0">
+        <div class="px-6 py-5 bg-gradient-to-r from-brand-primary-600 to-brand-highlight-700 text-white relative shrink-0">
           <div class="flex items-center gap-3">
             <div class="size-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-inner">
               <SparklesIcon class="size-6" />
@@ -154,7 +154,7 @@ onMounted(() => {
             <div 
               :class="[
                 msg.role === 'user' 
-                  ? 'bg-indigo-600 text-white rounded-2xl rounded-tr-none shadow-lg shadow-indigo-500/10' 
+                  ? 'bg-brand-primary-600 text-white rounded-2xl rounded-tr-none shadow-lg shadow-brand-primary-500/10' 
                   : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700'
               ]"
               class="max-w-[85%] p-4 text-sm font-medium leading-relaxed"
@@ -167,9 +167,9 @@ onMounted(() => {
           <div v-if="isLoading" class="flex justify-start animate-fade-in">
             <div class="bg-white dark:bg-gray-800 p-4 rounded-2xl rounded-tl-none shadow-sm border border-gray-100 dark:border-gray-700">
               <div class="flex gap-1">
-                <span class="size-1.5 rounded-full bg-indigo-400 animate-bounce"></span>
-                <span class="size-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.2s]"></span>
-                <span class="size-1.5 rounded-full bg-indigo-400 animate-bounce [animation-delay:0.4s]"></span>
+                <span class="size-1.5 rounded-full bg-brand-primary-400 animate-bounce"></span>
+                <span class="size-1.5 rounded-full bg-brand-primary-400 animate-bounce [animation-delay:0.2s]"></span>
+                <span class="size-1.5 rounded-full bg-brand-primary-400 animate-bounce [animation-delay:0.4s]"></span>
               </div>
             </div>
           </div>
@@ -177,7 +177,7 @@ onMounted(() => {
 
         <!-- Input Area -->
         <div class="p-4 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 shrink-0">
-          <form @submit.prevent="sendMessage" class="flex items-end gap-2 bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-1.5 border border-gray-100 dark:border-gray-700/50 focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
+          <form @submit.prevent="sendMessage" class="flex items-end gap-2 bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-1.5 border border-gray-100 dark:border-gray-700/50 focus-within:ring-2 focus-within:ring-brand-primary-500 transition-all">
             <textarea
               v-model="userInput"
               rows="1"
@@ -188,7 +188,7 @@ onMounted(() => {
             ></textarea>
             <button
               type="submit"
-              class="flex size-10 items-center justify-center rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:grayscale"
+              class="flex size-10 items-center justify-center rounded-xl bg-brand-primary-600 text-white shadow-lg shadow-brand-primary-500/20 hover:bg-brand-primary-700 transition-all disabled:opacity-50 disabled:grayscale"
               :disabled="isLoading || !userInput.trim()"
             >
               <PaperAirplaneIcon v-if="!isLoading" class="size-5 -rotate-45 -mr-0.5" />

@@ -325,7 +325,7 @@ const updateMarker = () => {
 
   if (!marker.value) {
     const icon = L.divIcon({
-      html: `<div class="size-10 bg-indigo-600 rounded-full border-4 border-white shadow-2xl flex items-center justify-center text-white ring-4 ring-indigo-500/20"><svg class="size-5" fill="white" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg></div>`,
+      html: `<div class="size-10 bg-brand-primary-600 rounded-full border-4 border-white shadow-2xl flex items-center justify-center text-white ring-4 ring-brand-primary-500/20"><svg class="size-5" fill="white" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg></div>`,
       className: '',
       iconSize: [40, 40],
       iconAnchor: [20, 20]

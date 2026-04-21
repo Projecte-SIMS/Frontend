@@ -3,12 +3,12 @@
     <!-- Sidebar -->
     <aside class="w-72 bg-slate-900 border-r border-slate-800 flex flex-col fixed inset-y-0 z-50">
       <div class="p-8 border-b border-slate-800 flex items-center gap-4">
-        <div class="h-12 w-12 rounded-2xl bg-white p-0.5 shadow-xl shadow-indigo-500/20">
+        <div class="h-12 w-12 rounded-2xl bg-white p-0.5 shadow-xl shadow-brand-primary-500/20">
           <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
         </div>
         <div>
           <h1 class="text-lg font-black text-white leading-none uppercase tracking-tighter">SuperAdmin</h1>
-          <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest mt-1">SIMS Hub</p>
+          <p class="text-[10px] font-black text-brand-primary-400 uppercase tracking-widest mt-1">SIMS Hub</p>
         </div>
       </div>
 
@@ -22,7 +22,7 @@
           class="flex items-center gap-3 px-4 py-3 rounded-xl transition-all group"
           :class="[
             route.path === item.to 
-              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/20' 
+              ? 'bg-brand-primary-600 text-white shadow-lg shadow-brand-primary-500/20' 
               : 'text-slate-400 hover:text-white hover:bg-slate-800'
           ]"
         >
@@ -32,8 +32,27 @@
       </nav>
 
       <div class="p-6 border-t border-slate-800 space-y-4">
+        <!-- Central Theme Selection -->
+        <div class="px-2">
+          <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-3">Marca del Panel</p>
+          <div class="flex items-center gap-3 pb-2 overflow-visible">
+            <button
+              v-for="t in themes"
+              :key="t.id"
+              type="button"
+              @click="updateCentralTheme(t.id)"
+              :class="[
+                brandTheme === t.id ? 'ring-2 ring-brand-primary-500 ring-offset-2 ring-offset-slate-900 scale-110' : 'hover:scale-110 opacity-60 hover:opacity-100',
+                t.color,
+                'shrink-0 size-5 rounded-full transition-all shadow-sm'
+              ]"
+              :title="t.name"
+            ></button>
+          </div>
+        </div>
+
         <div class="flex items-center gap-3 px-2">
-          <div class="size-10 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-black text-white shadow-lg border-2 border-slate-800">
+          <div class="size-10 rounded-full bg-gradient-to-br from-brand-primary-500 to-brand-accent-600 flex items-center justify-center text-xs font-black text-white shadow-lg border-2 border-slate-800">
             {{ userInitials }}
           </div>
           <div class="min-w-0">
@@ -66,13 +85,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useCentralAuth } from '../composables/useCentralAuth'
+import { useTheme } from '@/modules/common/composables/useTheme'
 
 const route = useRoute()
 const router = useRouter()
 const { logout, user } = useCentralAuth()
+const { initTheme, brandTheme, updateCentralTheme } = useTheme()
+
+const themes = [
+  { id: 'indigo', name: 'Indigo', color: 'bg-[#4f46e5]' },
+  { id: 'ocean', name: 'Ocean', color: 'bg-blue-600' },
+  { id: 'sunset', name: 'Sunset', color: 'bg-amber-500' },
+  { id: 'nature', name: 'Nature', color: 'bg-emerald-600' },
+  { id: 'royal', name: 'Royal', color: 'bg-purple-600' },
+]
+
+onMounted(() => {
+  initTheme()
+})
 
 const navItems = [
   { name: 'Resumen', to: '/superadmin/dashboard', icon: 'dashboard' },

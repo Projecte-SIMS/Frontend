@@ -6,7 +6,7 @@
       </div>
       <h2 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">No tienes ningún vehículo activo</h2>
       <p class="text-gray-500 max-w-sm mx-auto">Reserva un vehículo en el mapa y actívalo para ver los controles de mando aquí.</p>
-      <router-link to="/vehicles/map" class="inline-block px-8 py-4 rounded-2xl bg-indigo-600 text-white font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20">
+      <router-link to="/vehicles/map" class="inline-block px-8 py-4 rounded-2xl bg-brand-primary-600 text-white font-black text-xs uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-xl shadow-brand-primary-500/20">
         Ir al mapa
       </router-link>
     </div>
@@ -29,7 +29,7 @@
 
     <!-- Header Control -->
     <div class="relative overflow-hidden rounded-[3rem] bg-gray-900 p-8 sm:p-10 text-white shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-white/5">
-      <div class="absolute -right-20 -top-20 size-64 rounded-full bg-indigo-600/20 blur-3xl"></div>
+      <div class="absolute -right-20 -top-20 size-64 rounded-full bg-brand-primary-600/20 blur-3xl"></div>
       <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
         <div class="flex items-center gap-6">
           <div class="size-20 rounded-[1.5rem] bg-white/5 backdrop-blur-xl overflow-hidden border border-white/10 shadow-inner group shrink-0">
@@ -43,14 +43,14 @@
               </span>
             </div>
             <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-none mb-1 truncate">{{ activeBooking.vehicle?.brand }} {{ activeBooking.vehicle?.model }}</h1>
-            <p class="text-indigo-400 font-mono font-black text-sm tracking-widest uppercase">{{ activeBooking.vehicle?.license_plate }}</p>
+            <p class="text-brand-primary-400 font-mono font-black text-sm tracking-widest uppercase">{{ activeBooking.vehicle?.license_plate }}</p>
           </div>
         </div>
 
         <div class="flex items-center gap-8 px-8 py-4 bg-white/5 rounded-[2rem] border border-white/5 backdrop-blur-sm">
           <div class="text-center">
             <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Tiempo</p>
-            <div class="text-2xl font-black font-mono tracking-tighter text-indigo-100">{{ tripDuration }}</div>
+            <div class="text-2xl font-black font-mono tracking-tighter text-brand-primary-100">{{ tripDuration }}</div>
           </div>
           <div class="text-center border-l border-white/10 pl-8">
             <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Coste Estim.</p>
@@ -72,7 +72,7 @@
               <span class="text-[10px] font-black text-gray-400 uppercase">km/h</span>
             </div>
             <div class="mt-4 h-1 w-full bg-gray-50 dark:bg-gray-800 rounded-full overflow-hidden relative z-10">
-              <div class="h-full bg-indigo-500 transition-all duration-1000" :style="{ width: `${Math.min((activeBooking.telemetry?.speed || 0) / 1.2, 100)}%` }"></div>
+              <div class="h-full bg-brand-primary-500 transition-all duration-1000" :style="{ width: `${Math.min((activeBooking.telemetry?.speed || 0) / 1.2, 100)}%` }"></div>
             </div>
           </div>
 
@@ -157,22 +157,22 @@
             style="min-height: 400px;"
           ></div>
           
-          <button @click="recenterMap" class="absolute bottom-6 right-6 z-10 size-10 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-indigo-600 dark:text-indigo-400 active:scale-90 transition-all opacity-0 group-hover:opacity-100">
+          <button @click="recenterMap" class="absolute bottom-6 right-6 z-10 size-10 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-brand-primary-600 dark:text-brand-primary-400 active:scale-90 transition-all opacity-0 group-hover:opacity-100">
             <MapPinIcon class="size-5" />
           </button>
         </div>
 
         <!-- Finish Card -->
-        <div class="bg-indigo-600 rounded-[3rem] p-8 text-white flex flex-col justify-between shadow-2xl shadow-indigo-500/30 relative overflow-hidden min-h-[200px]">
+        <div class="bg-brand-primary-600 rounded-[3rem] p-8 text-white flex flex-col justify-between shadow-2xl shadow-brand-primary-500/30 relative overflow-hidden min-h-[200px]">
           <div class="absolute -right-10 -bottom-10 size-40 rounded-full bg-white/10 blur-3xl animate-pulse"></div>
           <div class="relative z-10">
-            <h3 class="text-[10px] font-black text-indigo-200 uppercase tracking-[0.3em] mb-4">Finalización</h3>
+            <h3 class="text-[10px] font-black text-brand-primary-200 uppercase tracking-[0.3em] mb-4">Finalización</h3>
             <p class="text-xl font-black leading-tight tracking-tight uppercase">¿Has llegado?</p>
-            <p class="text-indigo-100 text-xs mt-2 opacity-80 font-medium leading-relaxed">Termina el viaje para liberar el vehículo y procesar el pago.</p>
+            <p class="text-brand-primary-100 text-xs mt-2 opacity-80 font-medium leading-relaxed">Termina el viaje para liberar el vehículo y procesar el pago.</p>
           </div>
           <button 
             @click="isConfirmFinishOpen = true"
-            class="relative z-10 mt-8 w-full py-4 rounded-2xl bg-white text-indigo-600 font-black text-xs uppercase tracking-widest shadow-xl hover:bg-indigo-50 transition-all active:scale-95"
+            class="relative z-10 mt-8 w-full py-4 rounded-2xl bg-white text-brand-primary-600 font-black text-xs uppercase tracking-widest shadow-xl hover:bg-brand-primary-50 transition-all active:scale-95"
           >
             Terminar Viaje
           </button>
@@ -276,7 +276,7 @@ const initMiniMap = async () => {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(miniMap.value)
 
   const icon = L.divIcon({
-    html: `<div class="size-8 bg-indigo-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-white"><svg class="size-4" fill="white" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg></div>`,
+    html: `<div class="size-8 bg-brand-primary-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-white"><svg class="size-4" fill="white" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg></div>`,
     className: '', iconSize: [32, 32], iconAnchor: [16, 16]
   })
 

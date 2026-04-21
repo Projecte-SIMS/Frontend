@@ -4,7 +4,7 @@
       @click.stop="showMenu = !showMenu"
       class="flex items-center gap-x-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-800/40 px-3 py-1.5 border border-gray-100 dark:border-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-all cursor-pointer group w-full"
     >
-      <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-xs font-bold shadow-sm">
+      <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-primary-500 to-brand-accent-600 text-white text-xs font-bold shadow-sm">
         {{ userInitials }}
       </div>
       <div class="flex-1 text-left overflow-hidden">
@@ -42,10 +42,10 @@
           <div 
             v-for="account in savedAccounts" 
             :key="account.id"
-            class="group flex items-center gap-3 px-4 py-3 hover:bg-indigo-50/50 dark:hover:bg-indigo-900/10 transition-colors cursor-pointer"
+            class="group flex items-center gap-3 px-4 py-3 hover:bg-brand-primary-50/50 dark:hover:bg-brand-primary-900/10 transition-colors cursor-pointer"
             @click="handleSwitch(account.id)"
           >
-            <div :class="[user?.id === account.id ? 'ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-gray-800' : '']" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold">
+            <div :class="[user?.id === account.id ? 'ring-2 ring-brand-primary-500 ring-offset-2 dark:ring-offset-gray-800' : '']" class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-xs font-bold">
               {{ getInitials(account.name) }}
             </div>
             <div class="flex-1 min-w-0">
@@ -67,7 +67,7 @@
         <div class="p-2 border-t border-gray-100 dark:border-gray-700">
           <button
             @click="handleAddAccount"
-            class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-xl transition-colors"
+            class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-brand-primary-600 dark:text-brand-primary-400 hover:bg-brand-primary-50 dark:hover:bg-brand-primary-900/20 rounded-xl transition-colors"
           >
             <PlusIcon class="size-5" />
             Añadir otra cuenta

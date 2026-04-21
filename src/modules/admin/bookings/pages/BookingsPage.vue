@@ -9,7 +9,7 @@
         <button
           type="button"
           @click="openCreateModal"
-          class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
+          class="inline-flex items-center gap-2 rounded-xl bg-brand-primary-600 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-brand-primary-200 dark:shadow-none hover:bg-brand-primary-700 transition-all active:scale-95"
         >
           <PlusIcon class="size-4" />
           Nueva Reserva
@@ -29,13 +29,13 @@
             @input="handleSearch"
             type="text"
             placeholder="BUSCAR POR USUARIO O MATRÍCULA..."
-            class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 text-[10px] font-bold uppercase tracking-widest transition-all"
+            class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 text-[10px] font-bold uppercase tracking-widest transition-all"
           />
         </div>
         <select
           v-model="filters.status"
           @change="handleStatusChange"
-          class="w-full sm:w-auto rounded-xl border-0 px-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 text-[10px] font-bold uppercase tracking-widest dark:bg-slate-950 transition-all cursor-pointer"
+          class="w-full sm:w-auto rounded-xl border-0 px-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 text-[10px] font-bold uppercase tracking-widest dark:bg-slate-950 transition-all cursor-pointer"
         >
           <option value="">TODOS LOS ESTADOS</option>
           <option value="active">ACTIVO</option>
@@ -75,7 +75,7 @@
             <tr v-for="booking in bookings" :key="booking.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all group">
               <td class="px-6 py-4">
                 <div class="flex items-center gap-3">
-                  <div class="h-9 w-9 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center text-[10px] font-black shadow-inner border border-indigo-100/50 dark:border-indigo-800/50">
+                  <div class="h-9 w-9 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/30 text-brand-primary-600 flex items-center justify-center text-[10px] font-black shadow-inner border border-brand-primary-100/50 dark:border-brand-primary-800/50">
                     {{ getInitials(booking.user?.name || `U${booking.user_id ?? ''}`) }}
                   </div>
                   <div>
@@ -114,7 +114,7 @@
               <td class="px-6 py-4">
                 <div class="text-[10px] font-black uppercase tracking-tight">
                   <div class="text-slate-900 dark:text-white">
-                    <span class="text-indigo-600 dark:text-indigo-400">{{ formatDateDay(getStartDate(booking)) }}</span>
+                    <span class="text-brand-primary-600 dark:text-brand-primary-400">{{ formatDateDay(getStartDate(booking)) }}</span>
                     · {{ formatDateHour(getStartDate(booking)) }}
                   </div>
                   <div class="text-slate-400 mt-0.5 flex items-center gap-1">
@@ -144,7 +144,7 @@
               <td class="px-6 py-4 text-right">
                 <div class="flex justify-end items-center gap-1">
                   <button
-                    class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
+                    class="p-2 text-slate-400 hover:text-brand-primary-600 hover:bg-brand-primary-50 dark:hover:bg-brand-primary-900/20 rounded-lg transition-all"
                     @click="navigateToDetail(booking.id)"
                     title="Detalle de Operación"
                   >
@@ -178,7 +178,7 @@
         </div>
         
         <div v-if="loading" class="py-20 flex flex-col items-center gap-4">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600/30"></div>
+          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary-600/30"></div>
           <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sincronizando operaciones...</span>
         </div>
       </div>
@@ -199,7 +199,7 @@
     <Modal :show="showCreateModal" @close="closeCreateModal" size="md">
       <template #header>
         <div class="flex items-center gap-4">
-          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-200">
+          <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-primary-600 text-white shadow-lg shadow-brand-primary-200">
             <PlusIcon class="size-6" />
           </div>
           <div>
@@ -227,7 +227,7 @@
             <input
               v-model="createForm.scheduled_start"
               type="datetime-local"
-              class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 transition-all font-medium"
+              class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 px-4 py-3 text-sm text-slate-900 dark:text-white shadow-inner ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 transition-all font-medium"
             />
           </FormField>
         </div>
@@ -245,7 +245,7 @@
           <button
             type="button"
             :disabled="creating"
-            class="flex-1 sm:flex-none px-8 py-2.5 rounded-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 shadow-lg shadow-indigo-200 transition-all active:scale-95"
+            class="flex-1 sm:flex-none px-8 py-2.5 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 disabled:opacity-50 shadow-lg shadow-brand-primary-200 transition-all active:scale-95"
             @click="handleCreate"
           >
             {{ creating ? 'PROCESANDO...' : 'REGISTRAR RESERVA' }}

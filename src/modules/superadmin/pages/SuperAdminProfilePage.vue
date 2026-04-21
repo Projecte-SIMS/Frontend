@@ -27,7 +27,7 @@
             </div>
             <div class="space-y-2">
               <label class="block text-[10px] font-black text-slate-500 uppercase ml-1">Nivel de Acceso</label>
-              <div class="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800/50 text-sm font-black text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">
+              <div class="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-brand-primary-50 dark:bg-brand-primary-900/20 border border-brand-primary-100 dark:border-brand-primary-800/50 text-sm font-black text-brand-primary-600 dark:text-brand-primary-400 uppercase tracking-widest">
                 <span class="material-icons text-sm">verified_user</span>
                 Super Administrador
               </div>
@@ -47,19 +47,19 @@
       </div>
 
       <div class="space-y-8">
-        <div class="p-8 rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-700 text-center text-white shadow-xl shadow-indigo-500/20">
+        <div class="p-8 rounded-3xl bg-gradient-to-br from-brand-primary-600 to-brand-highlight-700 text-center text-white shadow-xl shadow-brand-primary-500/20">
           <div class="size-24 rounded-full bg-white/10 backdrop-blur-md border-4 border-white/20 flex items-center justify-center text-3xl font-black mx-auto mb-6 shadow-2xl">
             {{ initials }}
           </div>
           <h3 class="text-lg font-black uppercase tracking-tight">{{ displayName }}</h3>
-          <p class="text-[10px] font-black text-indigo-200 uppercase tracking-[0.2em] mt-1">SIMS Ecosystem Root</p>
+          <p class="text-[10px] font-black text-brand-primary-200 uppercase tracking-[0.2em] mt-1">SIMS Ecosystem Root</p>
           
           <div class="mt-8 pt-8 border-t border-white/10 space-y-4">
-            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-indigo-100">
+            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-brand-primary-100">
               <span>Sesión activa</span>
               <span class="text-white">Ahora</span>
             </div>
-            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-indigo-100">
+            <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-brand-primary-100">
               <span>IP Origen</span>
               <span class="text-white">Registrada</span>
             </div>

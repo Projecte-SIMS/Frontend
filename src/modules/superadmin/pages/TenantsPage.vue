@@ -8,7 +8,7 @@
       </div>
       <button 
         @click="showCreateForm = !showCreateForm"
-        class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95"
+        class="inline-flex items-center gap-2 rounded-xl bg-brand-primary-600 px-6 py-3 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-brand-primary-500/20 hover:bg-brand-primary-700 transition-all active:scale-95"
       >
         <span class="material-icons text-sm">{{ showCreateForm ? 'close' : 'add' }}</span>
         {{ showCreateForm ? 'Cancelar Alta' : 'Nueva Empresa' }}
@@ -26,7 +26,7 @@
               v-model="newTenant.id"
               type="text"
               placeholder="ej: miempresa"
-              class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-600 transition-all"
+              class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-bold text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-brand-primary-600 transition-all"
             />
           </div>
           <div class="space-y-2">
@@ -35,14 +35,14 @@
               v-model="newTenant.domain"
               type="text"
               placeholder="ej: miempresa.tenant.local"
-              class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-indigo-600 transition-all"
+              class="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-sm font-medium text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-brand-primary-600 transition-all"
             />
           </div>
           <div class="md:col-span-2 flex justify-end gap-4 mt-2">
             <button 
               type="submit"
               :disabled="creating || !newTenant.id"
-              class="px-8 py-3 rounded-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-indigo-700 disabled:opacity-50 transition-all"
+              class="px-8 py-3 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg hover:bg-brand-primary-700 disabled:opacity-50 transition-all"
             >
               {{ creating ? 'Procesando Creación...' : 'Confirmar y Crear Empresa' }}
             </button>
@@ -59,7 +59,7 @@
           v-model="searchQuery"
           type="text" 
           placeholder="Buscar por ID o Email..."
-          class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border-0 text-xs font-medium text-slate-900 dark:text-white ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-indigo-600 outline-none transition-all"
+          class="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-50 dark:bg-slate-950 border-0 text-xs font-medium text-slate-900 dark:text-white ring-1 ring-inset ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-brand-primary-600 outline-none transition-all"
         />
       </div>
       <div class="flex items-center gap-3">
@@ -84,7 +84,7 @@
                 type="checkbox" 
                 :checked="allSelected" 
                 @click.stop="toggleAll" 
-                class="size-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer" 
+                class="size-4 rounded border-slate-300 text-brand-primary-600 focus:ring-brand-primary-500 cursor-pointer" 
               />
             </th>
             <th class="px-6 py-5">Empresa / ID</th>
@@ -102,16 +102,16 @@
             class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all group cursor-pointer"
           >
             <td class="px-6 py-4 text-center" @click.stop>
-              <input type="checkbox" :checked="selectedTenants.has(t.id)" @change="toggleSelect(t.id)" class="size-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
+              <input type="checkbox" :checked="selectedTenants.has(t.id)" @change="toggleSelect(t.id)" class="size-4 rounded border-slate-300 text-brand-primary-600 focus:ring-brand-primary-500" />
             </td>
             <td class="px-6 py-4">
               <div class="flex items-center gap-4">
-                <div class="size-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 flex items-center justify-center text-xs font-black uppercase shadow-inner border border-indigo-100 dark:border-indigo-800/50">
+                <div class="size-10 rounded-xl bg-brand-primary-50 dark:bg-brand-primary-900/30 text-brand-primary-600 flex items-center justify-center text-xs font-black uppercase shadow-inner border border-brand-primary-100 dark:border-brand-primary-800/50">
                   {{ t.id.substring(0, 2) }}
                 </div>
                 <div>
                   <p class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ t.id }}</p>
-                  <p class="text-[10px] font-mono text-indigo-500 font-bold mt-0.5 truncate max-w-[150px]">{{ t.domains?.[0] || 'S/N' }}</p>
+                  <p class="text-[10px] font-mono text-brand-primary-500 font-bold mt-0.5 truncate max-w-[150px]">{{ t.domains?.[0] || 'S/N' }}</p>
                 </div>
               </div>
             </td>
@@ -164,7 +164,7 @@
           <!-- Header Slide-over -->
           <div class="p-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 flex items-center justify-between shrink-0">
             <div class="flex items-center gap-4 text-left">
-              <div class="size-14 rounded-2xl bg-indigo-600 text-white flex items-center justify-center text-xl font-black shadow-lg">
+              <div class="size-14 rounded-2xl bg-brand-primary-600 text-white flex items-center justify-center text-xl font-black shadow-lg">
                 {{ selectedDetail.id.substring(0, 2).toUpperCase() }}
               </div>
               <div>
@@ -191,13 +191,13 @@
             <!-- Section: General -->
             <section class="space-y-6">
               <div class="flex items-center gap-2 mb-4">
-                <span class="material-icons text-indigo-500 text-lg">info</span>
+                <span class="material-icons text-brand-primary-500 text-lg">info</span>
                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Información General</h4>
               </div>
               <div class="grid grid-cols-1 gap-6">
                 <div>
                   <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">URL de Acceso Directo</p>
-                  <a :href="getTenantLoginUrl(selectedDetail.id)" target="_blank" class="text-sm font-bold text-indigo-600 hover:underline flex items-center gap-1.5 break-all">
+                  <a :href="getTenantLoginUrl(selectedDetail.id)" target="_blank" class="text-sm font-bold text-brand-primary-600 hover:underline flex items-center gap-1.5 break-all">
                     {{ getTenantLoginUrl(selectedDetail.id) }}
                     <span class="material-icons text-xs">open_in_new</span>
                   </a>
@@ -218,7 +218,7 @@
             <!-- Section: Personal / Admin -->
             <section class="space-y-6">
               <div class="flex items-center gap-2 mb-4">
-                <span class="material-icons text-indigo-500 text-lg">person</span>
+                <span class="material-icons text-brand-primary-500 text-lg">person</span>
                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Administración de Cuenta</h4>
               </div>
               <div class="p-6 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 space-y-4">
@@ -227,7 +227,7 @@
                     <p class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1">Email del Administrador</p>
                     <p class="text-sm font-bold text-slate-900 dark:text-white">{{ selectedDetail.admin_email }}</p>
                   </div>
-                  <button @click="handleResetPassword(selectedDetail.id)" class="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 transition-all shadow-sm">
+                  <button @click="handleResetPassword(selectedDetail.id)" class="px-4 py-2 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-[9px] font-black uppercase tracking-widest text-slate-600 dark:text-slate-300 hover:bg-brand-primary-50 hover:text-brand-primary-600 transition-all shadow-sm">
                     Resetear Clave
                   </button>
                 </div>
@@ -238,10 +238,71 @@
               </div>
             </section>
 
+            <!-- Section: Información Legal / Fiscal -->
+            <section class="space-y-6">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-icons text-brand-primary-500 text-lg">business</span>
+                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Información Fiscal y Marca</h4>
+              </div>
+              <div class="grid grid-cols-2 gap-y-6 gap-x-8 p-6 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+                <div>
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Nombre Comercial</p>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white">{{ selectedDetail.owner_profile?.company_name || 'No especificado' }}</p>
+                </div>
+                <div>
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tipo de Entidad</p>
+                  <p class="text-xs font-black text-brand-primary-600 uppercase">{{ selectedDetail.owner_profile?.entity_type === 'individual' ? 'Particular' : 'Empresa' }}</p>
+                </div>
+                <div>
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Titular (Registro)</p>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white">{{ selectedDetail.owner_profile?.owner_name || 'No especificado' }}</p>
+                </div>
+                <div>
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Email del Propietario</p>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white">{{ selectedDetail.owner_profile?.owner_email || 'No especificado' }}</p>
+                </div>
+                <div>
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">NIF / CIF</p>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white font-mono">{{ selectedDetail.owner_profile?.tax_id || 'No especificado' }}</p>
+                </div>
+                <div>
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Teléfono</p>
+                  <p class="text-sm font-bold text-slate-900 dark:text-white">{{ selectedDetail.owner_profile?.phone || 'No especificado' }}</p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Dirección Fiscal</p>
+                  <p class="text-xs font-bold text-slate-900 dark:text-white leading-relaxed">
+                    {{ selectedDetail.owner_profile?.address || 'Sin dirección' }}<br>
+                    <span v-if="selectedDetail.owner_profile?.city">{{ selectedDetail.owner_profile.city }}, {{ selectedDetail.owner_profile.postal_code }}</span>
+                  </p>
+                </div>
+                <div class="col-span-2">
+                  <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-3">Cambiar Identidad Visual</p>
+                  <div class="grid grid-cols-5 gap-3">
+                    <button
+                      v-for="t in themes"
+                      :key="t.id"
+                      type="button"
+                      @click="handleUpdateTheme(t.id)"
+                      :disabled="updatingTheme"
+                      :class="[
+                        selectedDetail.company_theme === t.id ? 'ring-2 ring-brand-primary-500 ring-offset-2 scale-110' : 'hover:scale-105 opacity-70 hover:opacity-100'
+                      ]"
+                      class="group relative flex flex-col items-center transition-all disabled:opacity-50"
+                      :title="t.name"
+                    >
+                      <div :class="t.color" class="size-8 rounded-lg shadow-sm mb-1"></div>
+                      <span class="text-[7px] font-black uppercase tracking-tighter text-slate-400 group-hover:text-slate-600 transition-colors">{{ t.name }}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
             <!-- Section: Billing -->
             <section class="space-y-6">
               <div class="flex items-center gap-2 mb-4">
-                <span class="material-icons text-indigo-500 text-lg">payments</span>
+                <span class="material-icons text-brand-primary-500 text-lg">payments</span>
                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Facturación y Planes</h4>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -249,9 +310,9 @@
                   <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Ingreso Mensual (MRR)</p>
                   <p class="text-2xl font-black text-emerald-700 dark:text-emerald-400">{{ formatCents(selectedDetail.billing?.monthly_amount_cents || 4900) }}</p>
                 </div>
-                <div class="p-5 rounded-2xl bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30">
-                  <p class="text-[9px] font-black text-indigo-600 uppercase tracking-widest mb-1">Plan Contratado</p>
-                  <p class="text-lg font-black text-indigo-700 dark:text-indigo-400 uppercase">{{ selectedDetail.billing?.price_id?.includes('pro') ? 'PRO BUSINESS' : 'HUB BASIC' }}</p>
+                <div class="p-5 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/10 border border-brand-primary-100 dark:border-brand-primary-900/30">
+                  <p class="text-[9px] font-black text-brand-primary-600 uppercase tracking-widest mb-1">Plan Contratado</p>
+                  <p class="text-lg font-black text-brand-primary-700 dark:text-brand-primary-400 uppercase">{{ selectedDetail.billing?.price_id?.includes('pro') ? 'PRO BUSINESS' : 'HUB BASIC' }}</p>
                 </div>
               </div>
 
@@ -290,7 +351,7 @@
             <!-- Section: System Health -->
             <section class="space-y-6">
               <div class="flex items-center gap-2 mb-4">
-                <span class="material-icons text-indigo-500 text-lg">dns</span>
+                <span class="material-icons text-brand-primary-500 text-lg">dns</span>
                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Estado del Ecosistema</h4>
               </div>
               <div class="grid grid-cols-3 gap-4">
@@ -377,6 +438,38 @@ const searchQuery = ref('')
 const selectedTenants = ref(new Set<string>())
 const deleteIds = ref<string[]>([])
 const selectedDetail = ref<Tenant | null>(null)
+const updatingTheme = ref(false)
+
+const themes = [
+  { id: 'indigo', name: 'Indigo', color: 'bg-[#4f46e5]' },
+  { id: 'ocean', name: 'Ocean', color: 'bg-blue-600' },
+  { id: 'sunset', name: 'Sunset', color: 'bg-amber-500' },
+  { id: 'nature', name: 'Nature', color: 'bg-emerald-600' },
+  { id: 'royal', name: 'Royal', color: 'bg-purple-600' },
+]
+
+const handleUpdateTheme = async (themeId: string) => {
+  if (!selectedDetail.value) return
+  updatingTheme.value = true
+  try {
+    const tenantId = selectedDetail.value.id
+    await centralApi.updateTenantTheme(tenantId, themeId)
+    // Update local state
+    if (selectedDetail.value) {
+      selectedDetail.value.company_theme = themeId
+    }
+    // Update list
+    const idx = tenants.value.findIndex(t => t.id === tenantId)
+    if (idx !== -1) {
+      tenants.value[idx].company_theme = themeId
+    }
+    toast.success('Marca actualizada correctamente')
+  } catch (e: any) {
+    toast.error('No se pudo actualizar la marca')
+  } finally {
+    updatingTheme.value = false
+  }
+}
 
 const newTenant = reactive({
   id: '',

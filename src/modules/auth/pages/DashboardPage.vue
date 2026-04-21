@@ -1,14 +1,14 @@
 <template>
   <div class="max-w-4xl mx-auto space-y-8 fleetly-fade-up">
     <!-- Header Section -->
-    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-700 px-8 py-6 text-white shadow-xl shadow-indigo-500/10">
+    <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-primary-600 to-brand-highlight-700 px-8 py-6 text-white shadow-xl shadow-brand-primary-500/10">
       <div class="relative z-10 flex flex-col md:flex-row items-center gap-5">
         <div class="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white/20 text-3xl font-bold backdrop-blur-md">
           {{ userInitials }}
         </div>
         <div class="text-center md:text-left">
           <h1 class="text-2xl font-bold">{{ user?.name }}</h1>
-          <p class="text-indigo-100 text-sm flex items-center justify-center md:justify-start gap-1.5 opacity-90">
+          <p class="text-brand-primary-100 text-sm flex items-center justify-center md:justify-start gap-1.5 opacity-90">
             <UserIcon class="size-3.5" />
             @{{ user?.username }}
           </p>
@@ -21,7 +21,7 @@
         <div class="md:ml-auto">
           <button
             @click="router.push('/perfil/editar')"
-            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-indigo-600 font-bold text-xs hover:bg-indigo-50 transition-all shadow-md active:scale-95"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-brand-primary-600 font-bold text-xs hover:bg-brand-primary-50 transition-all shadow-md active:scale-95"
           >
             <PencilSquareIcon class="size-4" />
             Editar Perfil
@@ -31,7 +31,7 @@
       
       <!-- Abstract Background Shapes -->
       <div class="absolute -right-10 -top-10 size-48 rounded-full bg-white/10 blur-3xl"></div>
-      <div class="absolute -left-10 -bottom-10 size-48 rounded-full bg-purple-500/20 blur-3xl"></div>
+      <div class="absolute -left-10 -bottom-10 size-48 rounded-full bg-brand-accent-500/20 blur-3xl"></div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -40,7 +40,7 @@
         <!-- Account Details -->
         <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <IdentificationIcon class="size-6 text-indigo-500" />
+            <IdentificationIcon class="size-6 text-brand-primary-500" />
             Detalles de la cuenta
           </h2>
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
@@ -69,7 +69,7 @@
         <!-- Permissions Section -->
         <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-            <KeyIcon class="size-6 text-indigo-500" />
+            <KeyIcon class="size-6 text-brand-primary-500" />
             Permisos Activos
           </h2>
           <div v-if="userPermissions.length > 0" class="flex flex-wrap gap-2">
@@ -90,20 +90,20 @@
       <!-- Sidebar Col -->
       <div class="space-y-8">
         <!-- Stats/Actions -->
-        <section class="bg-indigo-50 dark:bg-indigo-900/10 rounded-3xl p-8 border border-indigo-100 dark:border-indigo-900/30 fleetly-card-hover">
-          <h3 class="text-lg font-bold text-indigo-900 dark:text-indigo-300 mb-4">Seguridad</h3>
-          <p class="text-sm text-indigo-700/70 dark:text-indigo-400/70 mb-6">
+        <section class="bg-brand-primary-50 dark:bg-brand-primary-900/10 rounded-3xl p-8 border border-brand-primary-100 dark:border-brand-primary-900/30 fleetly-card-hover">
+          <h3 class="text-lg font-bold text-brand-primary-900 dark:text-brand-primary-300 mb-4">Seguridad</h3>
+          <p class="text-sm text-brand-primary-700/70 dark:text-brand-primary-400/70 mb-6">
             Mantén tu cuenta protegida cambiando tu contraseña regularmente.
           </p>
           <button
             @click="router.push('/perfil/editar')"
-            class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 active:scale-95"
+            class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 active:scale-95"
           >
             <ShieldCheckIcon class="size-5" />
             Seguridad de la cuenta
           </button>
           
-          <div class="mt-8 pt-8 border-t border-indigo-200 dark:border-indigo-900/50">
+          <div class="mt-8 pt-8 border-t border-brand-primary-200 dark:border-brand-primary-900/50">
             <button
               @click="handleLogout"
               class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition-all active:scale-95 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20"

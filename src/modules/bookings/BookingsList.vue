@@ -8,7 +8,7 @@
       </div>
       <router-link
         to="/vehicles/map"
-        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-indigo-600 text-white font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-95"
+        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-primary-600 text-white font-black text-xs uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/25 active:scale-95"
       >
         <MapIcon class="size-4" />
         Nueva Reserva
@@ -17,20 +17,20 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-24 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm">
-      <ArrowPathIcon class="size-10 text-indigo-500 animate-spin mb-4 opacity-20" />
+      <ArrowPathIcon class="size-10 text-brand-primary-500 animate-spin mb-4 opacity-20" />
       <p class="text-gray-400 text-xs font-black uppercase tracking-widest">Sincronizando viajes...</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="bookings.length === 0" class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 shadow-sm text-center px-6">
-      <div class="size-20 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mb-6">
-        <CalendarDaysIcon class="size-10 text-indigo-500" />
+      <div class="size-20 rounded-full bg-brand-primary-50 dark:bg-brand-primary-900/20 flex items-center justify-center mb-6">
+        <CalendarDaysIcon class="size-10 text-brand-primary-500" />
       </div>
       <h3 class="text-xl font-black text-gray-900 dark:text-white mb-2 uppercase tracking-tight">Sin actividad reciente</h3>
       <p class="text-gray-500 text-sm max-w-xs mb-8 font-medium">¿Listo para tu primer viaje? Encuentra un vehículo disponible en el mapa y reserva ahora.</p>
       <router-link
         to="/vehicles/map"
-        class="px-8 py-3.5 rounded-2xl bg-indigo-600 text-white font-black text-xs uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20"
+        class="px-8 py-3.5 rounded-2xl bg-brand-primary-600 text-white font-black text-xs uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20"
       >
         Buscar Vehículo
       </router-link>
@@ -40,15 +40,15 @@
     <div v-else class="space-y-10">
       <!-- Active/Pending Bookings -->
       <section v-if="activeBookings.length > 0" class="space-y-6">
-        <h2 class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.3em] ml-4">En curso</h2>
+        <h2 class="text-[10px] font-black text-brand-primary-500 uppercase tracking-[0.3em] ml-4">En curso</h2>
         <div class="grid gap-6 grid-cols-1 lg:grid-cols-2">
           <div 
             v-for="booking in activeBookings" 
             :key="booking.id"
-            class="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 p-8 shadow-xl shadow-indigo-500/5 relative overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:shadow-indigo-500/10"
+            class="bg-white dark:bg-gray-900 rounded-[2.5rem] border border-gray-100 dark:border-gray-800 p-8 shadow-xl shadow-brand-primary-500/5 relative overflow-hidden group transition-all duration-500 hover:shadow-2xl hover:shadow-brand-primary-500/10"
           >
             <!-- Background Decoration -->
-            <div class="absolute -right-10 -top-10 size-40 rounded-full bg-indigo-500/5 blur-3xl group-hover:bg-indigo-500/10 transition-all"></div>
+            <div class="absolute -right-10 -top-10 size-40 rounded-full bg-brand-primary-500/5 blur-3xl group-hover:bg-brand-primary-500/10 transition-all"></div>
 
             <div class="absolute top-6 right-6">
               <span :class="getStatusClass(booking.status)" class="px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest shadow-sm">
@@ -62,7 +62,7 @@
               </div>
               <div class="text-left flex-1 min-w-0">
                 <h3 class="text-2xl font-black text-gray-900 dark:text-white tracking-tight truncate leading-none mb-2">{{ booking.vehicle?.brand }} {{ booking.vehicle?.model }}</h3>
-                <p class="text-indigo-600 dark:text-indigo-400 font-mono font-black text-sm uppercase tracking-tighter">{{ booking.vehicle?.license_plate }}</p>
+                <p class="text-brand-primary-600 dark:text-brand-primary-400 font-mono font-black text-sm uppercase tracking-tighter">{{ booking.vehicle?.license_plate }}</p>
                 
                 <!-- Countdown for Pending -->
                 <div v-if="booking.status === 'pending' && (booking.remaining_seconds ?? 0) > 0" class="mt-4 flex items-center gap-2 text-amber-600 dark:text-amber-400">
@@ -89,7 +89,7 @@
                 <div class="flex gap-3">
                   <button 
                     @click="handleActivate(booking.id)"
-                    class="flex-1 px-6 py-4 rounded-2xl bg-indigo-600 text-white font-black text-[10px] uppercase tracking-[0.2em] hover:bg-indigo-700 transition-all active:scale-95 shadow-xl shadow-indigo-500/30"
+                    class="flex-1 px-6 py-4 rounded-2xl bg-brand-primary-600 text-white font-black text-[10px] uppercase tracking-[0.2em] hover:bg-brand-primary-700 transition-all active:scale-95 shadow-xl shadow-brand-primary-500/30"
                   >
                     Activar Vehículo
                   </button>
@@ -140,7 +140,7 @@
                       </div>
                       <div class="min-w-0">
                         <p class="font-black text-gray-900 dark:text-white truncate">{{ booking.vehicle?.model }}</p>
-                        <p class="text-[10px] font-mono font-bold text-indigo-500 uppercase tracking-tighter">{{ booking.vehicle?.license_plate }}</p>
+                        <p class="text-[10px] font-mono font-bold text-brand-primary-500 uppercase tracking-tighter">{{ booking.vehicle?.license_plate }}</p>
                       </div>
                     </div>
                   </td>
@@ -150,7 +150,7 @@
                   </td>
                   <td class="px-8 py-5 text-right min-w-[140px]">
                     <div v-if="booking.trip" class="space-y-0.5">
-                      <p class="text-indigo-600 dark:text-indigo-400 font-black text-base">{{ booking.trip.total_amount }}€</p>
+                      <p class="text-brand-primary-600 dark:text-brand-primary-400 font-black text-base">{{ booking.trip.total_amount }}€</p>
                       <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest">{{ booking.trip.minutes_driven }} min</p>
                     </div>
                     <span v-else class="text-gray-300">-</span>

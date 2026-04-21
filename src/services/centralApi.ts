@@ -59,6 +59,22 @@ centralApiClient.interceptors.response.use(
   }
 )
 
+export interface TenantOwnerProfile {
+  id: number
+  tenant_id: string
+  owner_name: string
+  owner_email: string
+  entity_type: string
+  company_name?: string
+  tax_id?: string
+  phone?: string
+  address?: string
+  city?: string
+  postal_code?: string
+  created_at: string
+  updated_at: string
+}
+
 export interface Tenant {
   id: string
   domains: string[]
@@ -66,6 +82,9 @@ export interface Tenant {
   admin_username: string
   created_at: string
   updated_at: string
+  company_plan?: string
+  company_theme?: string
+  owner_profile?: TenantOwnerProfile
   billing?: BillingSnapshot
   stats?: {
     vehicles_count: number
@@ -127,6 +146,13 @@ export interface DemoTenantOnboardingRequest {
   admin_email: string
   admin_password: string
   plan: 'base' | 'pro'
+  theme?: string
+  entity_type: 'individual' | 'company'
+  tax_id: string
+  phone?: string
+  address?: string
+  city?: string
+  postal_code?: string
   payment_demo_confirmed: true
   billing_name?: string
   billing_email?: string
@@ -187,6 +213,11 @@ export const centralApi = {
     return response.data
   },
 
+  async updateTenantTheme(tenantId: string, theme: string) {
+    const response = await centralApiClient.patch(`/tenants/${tenantId}/theme`, { theme })
+    return response.data
+  },
+
   // Eliminar tenant
   async deleteTenant(id: string) {
     const response = await centralApiClient.delete(`/tenants/${id}`)
@@ -233,6 +264,21 @@ export const centralApi = {
 
   async completeDemoTenantOnboarding(payload: DemoTenantOnboardingRequest) {
     const response = await centralApiClient.post('/public/tenant-onboarding/demo-complete', payload)
+    return response.data
+  },
+
+  async getTenantSettings(tenantId: string) {
+    const response = await centralApiClient.get(`/public/tenants/${tenantId}/settings`)
+    return response.data
+  },
+
+  async getCentralSettings() {
+    const response = await centralApiClient.get('/public/settings')
+    return response.data
+  },
+
+  async updateCentralSetting(key: string, value: string) {
+    const response = await centralApiClient.post('/settings/update', { key, value })
     return response.data
   }
 }

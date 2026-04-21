@@ -47,7 +47,7 @@
             <button 
               type="button"
               @click="selectAllPermissions"
-              class="px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-900/20 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition-all"
+              class="px-3 py-1.5 rounded-lg bg-brand-primary-50 dark:bg-brand-primary-900/20 text-[10px] font-black uppercase tracking-widest text-brand-primary-600 dark:text-brand-primary-400 hover:bg-brand-primary-100 transition-all"
             >
               Seleccionar Todos
             </button>
@@ -126,7 +126,7 @@
         <button
           type="submit"
           :disabled="isSaving || isAdminRole"
-          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 disabled:opacity-50 shadow-lg shadow-indigo-200 transition-all active:scale-95"
+          class="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-8 py-3 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 disabled:opacity-50 shadow-lg shadow-brand-primary-200 transition-all active:scale-95"
         >
           <span v-if="isSaving" class="material-icons text-sm animate-spin">autorenew</span>
           <span>{{ isSaving ? 'GUARDANDO...' : (isEditMode ? 'Guardar Cambios' : 'Crear Rol') }}</span>

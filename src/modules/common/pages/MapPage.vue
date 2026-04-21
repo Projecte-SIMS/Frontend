@@ -10,14 +10,14 @@
       <!-- Top Area: Search & Tools -->
       <div class="flex flex-col sm:flex-row items-start justify-between gap-4 pointer-events-auto w-full max-w-7xl mx-auto">
         <div class="relative w-full sm:w-80 group">
-          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-indigo-500 transition-colors">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
             <MagnifyingGlassIcon class="size-4" />
           </div>
           <input 
             v-model="search" 
             type="text" 
             placeholder="Buscar vehículo..." 
-            class="block w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-0 shadow-2xl shadow-indigo-500/10 text-sm font-semibold text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 transition-all outline-none ring-1 ring-gray-900/5 dark:ring-white/10"
+            class="block w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-0 shadow-2xl shadow-brand-primary-500/10 text-sm font-semibold text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none ring-1 ring-gray-900/5 dark:ring-white/10"
           />
         </div>
 
@@ -28,7 +28,7 @@
           <button @click="refresh" class="p-2.5 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5 hover:bg-white active:scale-95 transition-all" title="Actualizar">
             <ArrowPathIcon class="size-5" :class="{'animate-spin': isRefreshing}" />
           </button>
-          <button @click="panelOpen = !panelOpen" :class="[panelOpen ? 'bg-indigo-600 text-white shadow-indigo-500/40' : 'bg-white/90 dark:bg-gray-900/90 text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5']" class="p-2.5 rounded-xl backdrop-blur-xl transition-all active:scale-95">
+          <button @click="panelOpen = !panelOpen" :class="[panelOpen ? 'bg-brand-primary-600 text-white shadow-brand-primary-500/40' : 'bg-white/90 dark:bg-gray-900/90 text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5']" class="p-2.5 rounded-xl backdrop-blur-xl transition-all active:scale-95">
             <AdjustmentsHorizontalIcon class="size-5" />
           </button>
         </div>
@@ -57,7 +57,7 @@
           <div v-if="panelOpen" class="absolute top-0 right-0 bottom-4 w-full max-w-sm pointer-events-auto">
             <div class="h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/20 dark:border-gray-800 flex flex-col">
               <div class="px-6 pt-6 pb-2 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
-                <h2 class="text-[10px] font-black text-indigo-500 uppercase tracking-widest leading-none">Opciones</h2>
+                <h2 class="text-[10px] font-black text-brand-primary-500 uppercase tracking-widest leading-none">Opciones</h2>
                 <button @click="panelOpen = false" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400"><XMarkIcon class="size-4" /></button>
               </div>
               <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6 custom-scrollbar">
@@ -67,15 +67,15 @@
                     <p class="text-[9px] text-gray-400 italic font-medium">No se encontraron vehículos</p>
                   </div>
                   <div v-else class="space-y-2">
-                    <button v-for="v in filteredNearby" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-indigo-500/30 hover:shadow-lg transition-all group">
+                    <button v-for="v in filteredNearby" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-brand-primary-500/30 hover:shadow-lg transition-all group">
                       <div class="flex items-center gap-2.5 min-w-0">
-                        <TruckIcon class="size-4 text-indigo-500 shrink-0" />
+                        <TruckIcon class="size-4 text-brand-primary-500 shrink-0" />
                         <div class="min-w-0">
                           <p class="text-[11px] font-bold text-gray-900 dark:text-white truncate">{{ v.plate }}</p>
                           <p class="text-[9px] text-gray-400 font-bold uppercase truncate">{{ v.brand }} {{ v.model }}</p>
                         </div>
                       </div>
-                      <p class="text-[10px] font-black text-indigo-600 dark:text-indigo-400">{{ formatDistance(v.distanceMeters) }}</p>
+                      <p class="text-[10px] font-black text-brand-primary-600 dark:text-brand-primary-400">{{ formatDistance(v.distanceMeters) }}</p>
                     </button>
                   </div>
                 </section>
@@ -86,7 +86,7 @@
                     <p class="text-[9px] text-gray-400 italic font-medium">No hay vehículos fuera de la zona</p>
                   </div>
                   <div v-else class="space-y-2">
-                    <button v-for="v in filteredFar" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-indigo-500/30 hover:shadow-lg transition-all group opacity-75 hover:opacity-100">
+                    <button v-for="v in filteredFar" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-brand-primary-500/30 hover:shadow-lg transition-all group opacity-75 hover:opacity-100">
                       <div class="flex items-center gap-2.5 min-w-0">
                         <TruckIcon class="size-4 text-gray-400 shrink-0" />
                         <div class="min-w-0">
@@ -129,14 +129,14 @@
               <div class="flex-1 p-4 flex flex-col justify-between min-w-0">
                 <div class="min-w-0 mb-3 text-left">
                   <h2 class="text-sm font-black truncate tracking-tight leading-none text-white">{{ selectedVehicle.brand }} {{ selectedVehicle.model }}</h2>
-                  <p class="text-indigo-400 font-mono font-black text-[9px] mt-1 uppercase leading-none">{{ selectedVehicle.plate }}</p>
+                  <p class="text-brand-primary-400 font-mono font-black text-[9px] mt-1 uppercase leading-none">{{ selectedVehicle.plate }}</p>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2 mb-4">
                   <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left">
                     <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">Distancia</p>
                     <div class="flex items-center gap-1 font-black text-white text-[10px] leading-none">
-                      <MapPinIcon class="size-2.5 text-indigo-400" /> {{ formatDistance(selectedVehicle.distanceMeters) }}
+                      <MapPinIcon class="size-2.5 text-brand-primary-400" /> {{ formatDistance(selectedVehicle.distanceMeters) }}
                     </div>
                   </div>
                   <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left">
@@ -150,7 +150,7 @@
                 <button 
                   @click="openConfirm" 
                   :disabled="selectedVehicle.is_mine || hasActiveBooking || selectedVehicle.online === false" 
-                  class="w-full py-2 rounded-xl bg-indigo-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale"
+                  class="w-full py-2 rounded-xl bg-brand-primary-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale"
                 >
                   {{ selectedVehicle.online === false ? 'No disponible' : (selectedVehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite alcanzado' : 'Reservar ahora')) }}
                 </button>

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
       <div>
-        <router-link to="/tickets" class="inline-flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest hover:text-indigo-600 transition-colors mb-3">
+        <router-link to="/tickets" class="inline-flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest hover:text-brand-primary-600 transition-colors mb-3">
           <ArrowLeftIcon class="size-3" /> Volver a mis tickets
         </router-link>
         <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight leading-none">{{ ticket.subject || ticket.title || `Ticket #${ticket.id}` }}</h1>
@@ -15,7 +15,7 @@
           <span class="text-xs font-bold text-gray-400">{{ formatDate(ticket.created_at) }}</span>
         </div>
       </div>
-      <button @click="load" class="p-3 rounded-2xl bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 text-gray-500 hover:text-indigo-600 transition-all active:scale-95">
+      <button @click="load" class="p-3 rounded-2xl bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 text-gray-500 hover:text-brand-primary-600 transition-all active:scale-95">
         <ArrowPathIcon class="size-5" :class="{'animate-spin': loading}" />
       </button>
     </div>
@@ -23,13 +23,13 @@
     <!-- Messages -->
     <div class="flex-1 space-y-8 mb-8">
       <!-- Original Message -->
-      <div class="bg-indigo-50/50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-900/30 rounded-[2rem] p-6 shadow-sm">
+      <div class="bg-brand-primary-50/50 dark:bg-brand-primary-900/10 border border-brand-primary-100 dark:border-brand-primary-900/30 rounded-[2rem] p-6 shadow-sm">
         <div class="flex items-center gap-3 mb-4">
-          <div class="size-8 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-[10px] font-black text-indigo-600">
+          <div class="size-8 rounded-full bg-brand-primary-100 dark:bg-brand-primary-900/50 flex items-center justify-center text-[10px] font-black text-brand-primary-600">
             {{ getInitials(ticket.user?.name) }}
           </div>
           <div>
-            <p class="text-[10px] font-black text-indigo-400 uppercase tracking-widest leading-none">Descripción inicial</p>
+            <p class="text-[10px] font-black text-brand-primary-400 uppercase tracking-widest leading-none">Descripción inicial</p>
             <p class="text-[9px] font-bold text-gray-400 uppercase mt-1">{{ formatDate(ticket.created_at) }}</p>
           </div>
         </div>
@@ -47,13 +47,13 @@
           <div 
             :class="[
               m.user_id === currentUserId
-                ? 'bg-indigo-600 text-white rounded-2xl rounded-tr-none shadow-lg shadow-indigo-500/10' 
+                ? 'bg-brand-primary-600 text-white rounded-2xl rounded-tr-none shadow-lg shadow-brand-primary-500/10' 
                 : 'bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-none border border-gray-100 dark:border-gray-700 shadow-sm'
             ]"
             class="p-4"
           >
             <div class="flex items-center justify-between gap-6 mb-1.5">
-              <span class="text-[10px] font-black uppercase tracking-widest" :class="m.user_id === currentUserId ? 'text-indigo-100' : 'text-indigo-600 dark:text-indigo-400'">
+              <span class="text-[10px] font-black uppercase tracking-widest" :class="m.user_id === currentUserId ? 'text-brand-primary-100' : 'text-brand-primary-600 dark:text-brand-primary-400'">
                 {{ m.user_id === currentUserId ? 'Tú' : (m.user?.name || 'Soporte') }}
               </span>
               <span class="text-[9px] font-bold uppercase opacity-50">{{ formatTime(m.created_at) }}</span>
@@ -62,7 +62,7 @@
           </div>
 
           <!-- Avatar (mí) -->
-          <div v-if="m.user_id === currentUserId" class="size-9 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center text-[10px] font-black text-indigo-600 shrink-0 border border-white dark:border-slate-700">
+          <div v-if="m.user_id === currentUserId" class="size-9 rounded-full bg-brand-primary-100 dark:bg-brand-primary-900/50 flex items-center justify-center text-[10px] font-black text-brand-primary-600 shrink-0 border border-white dark:border-slate-700">
             {{ getInitials(m.user?.name || 'Tú') }}
           </div>
         </div>
@@ -75,13 +75,13 @@
         <textarea 
           v-model="form.message" 
           rows="2" 
-          class="flex-1 bg-gray-50 dark:bg-gray-950 border-0 focus:ring-2 focus:ring-indigo-500 rounded-2xl py-3 px-4 text-sm font-medium text-gray-900 dark:text-white resize-none" 
+          class="flex-1 bg-gray-50 dark:bg-gray-950 border-0 focus:ring-2 focus:ring-brand-primary-500 rounded-2xl py-3 px-4 text-sm font-medium text-gray-900 dark:text-white resize-none" 
           placeholder="Escribe tu respuesta aquí..."
         ></textarea>
         <button 
           type="submit" 
           :disabled="sending || !form.message.trim()" 
-          class="size-12 flex items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-50"
+          class="size-12 flex items-center justify-center rounded-2xl bg-brand-primary-600 text-white shadow-lg shadow-brand-primary-500/20 hover:bg-brand-primary-700 transition-all active:scale-95 disabled:opacity-50"
         >
           <PaperAirplaneIcon v-if="!sending" class="size-6 -rotate-45 -mr-1" />
           <ArrowPathIcon v-else class="size-6 animate-spin" />
@@ -94,7 +94,7 @@
       </p>
       <button 
         @click="reopenTicket"
-        class="px-6 py-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 transition-all shadow-sm active:scale-95"
+        class="px-6 py-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[10px] font-black uppercase tracking-widest text-brand-primary-600 dark:text-brand-primary-400 hover:bg-brand-primary-50 transition-all shadow-sm active:scale-95"
       >
         Solicitar reapertura
       </button>

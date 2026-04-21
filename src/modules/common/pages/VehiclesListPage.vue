@@ -14,11 +14,11 @@
           :disabled="loading"
           class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 font-bold text-sm border border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all shadow-sm disabled:opacity-50"
         >
-          <ArrowPathIcon class="size-5" :class="loading ? 'animate-spin text-indigo-500' : 'text-gray-400'" />
+          <ArrowPathIcon class="size-5" :class="loading ? 'animate-spin text-brand-primary-500' : 'text-gray-400'" />
         </button>
         <router-link
           to="/vehicles/map"
-          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20"
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20"
         >
           <MapIcon class="size-5" />
           Ver en Mapa
@@ -36,14 +36,14 @@
             v-model="searchQuery"
             type="text"
             placeholder="Buscar por marca, modelo o matrícula..."
-            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border-0 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-indigo-500 transition-all"
+            class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border-0 text-sm font-medium text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all"
           />
         </div>
         
         <!-- Filter: Status -->
         <select
           v-model="filterStatus"
-          class="px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border-0 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          class="px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border-0 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-brand-primary-500 cursor-pointer"
         >
           <option value="all">Todos los estados</option>
           <option value="available">Solo disponibles</option>
@@ -53,7 +53,7 @@
         <!-- Sort -->
         <select
           v-model="sortBy"
-          class="px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border-0 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          class="px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-gray-800 border-0 text-sm font-bold text-gray-700 dark:text-gray-200 focus:ring-2 focus:ring-brand-primary-500 cursor-pointer"
         >
           <option value="distance">Más cercanos</option>
           <option value="brand">Marca (A-Z)</option>
@@ -84,13 +84,13 @@
 
     <!-- Loading State -->
     <div v-if="loading && vehicles.length === 0" class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
-      <ArrowPathIcon class="size-10 text-indigo-500 animate-spin mb-4" />
+      <ArrowPathIcon class="size-10 text-brand-primary-500 animate-spin mb-4" />
       <p class="text-gray-500 font-medium tracking-wide">Buscando vehículos disponibles...</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="filteredVehicles.length === 0" class="fleetly-empty-state flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm text-center px-6">
-      <div class="size-20 rounded-full bg-amber-50 dark:bg-indigo-900/20 flex items-center justify-center mb-6">
+      <div class="size-20 rounded-full bg-amber-50 dark:bg-brand-primary-900/20 flex items-center justify-center mb-6">
         <TruckIcon class="size-10 text-amber-500" />
       </div>
       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -103,7 +103,7 @@
         v-if="vehicles.length === 0"
         @click="fetchVehicles"
         :disabled="loading"
-        class="px-8 py-3 rounded-xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-60"
+        class="px-8 py-3 rounded-xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 disabled:opacity-60"
       >
         {{ loading ? 'Actualizando...' : 'Actualizar lista' }}
       </button>
@@ -121,7 +121,7 @@
       <div 
         v-for="vehicle in filteredVehicles" 
         :key="vehicle.id"
-        class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col fleetly-card-hover"
+        class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-brand-primary-500/10 hover:-translate-y-1 transition-all duration-300 flex flex-col fleetly-card-hover"
       >
         <!-- Vehicle Image & Badges -->
         <div class="relative aspect-[16/10] bg-gray-100 dark:bg-gray-800 overflow-hidden">
@@ -148,7 +148,7 @@
           </div>
           <div class="absolute bottom-3 left-3 right-3">
             <h3 class="text-lg font-black text-white leading-tight drop-shadow-lg">{{ vehicle.brand }} {{ vehicle.model }}</h3>
-            <p class="text-indigo-300 font-mono font-bold text-sm tracking-tight">{{ vehicle.license_plate }}</p>
+            <p class="text-brand-primary-300 font-mono font-bold text-sm tracking-tight">{{ vehicle.license_plate }}</p>
           </div>
           <div v-if="vehicle.distanceMeters != null" class="absolute top-3 right-3 bg-black/50 backdrop-blur-sm px-2.5 py-1 rounded-lg">
             <p class="text-xs font-black text-white flex items-center gap-1">
@@ -183,7 +183,7 @@
             <button 
               @click="openConfirm(vehicle)"
               :disabled="vehicle.is_mine || vehicle.mongo_active || hasActiveBooking || vehicle.online === false"
-              class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-primary-600 text-white font-bold text-xs hover:bg-brand-primary-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
             >
               {{ vehicle.online === false ? 'No disponible' : (vehicle.mongo_active ? 'En uso' : (vehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite' : 'Reservar'))) }}
             </button>
@@ -205,7 +205,7 @@
     <div v-if="isDetailOpen" class="fixed inset-0 z-[60] flex justify-end pointer-events-none">
       <div class="absolute inset-0 bg-gray-900/60 backdrop-blur-sm pointer-events-auto" @click="isDetailOpen = false"></div>
       <div class="relative w-full max-w-lg bg-white dark:bg-gray-900 shadow-2xl pointer-events-auto flex flex-col h-full animate-slide-in">
-        <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gradient-to-r from-indigo-600 to-purple-600">
+        <div class="p-5 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gradient-to-r from-brand-primary-600 to-brand-accent-600">
           <h2 class="text-lg font-black text-white uppercase tracking-widest">Detalles del Vehículo</h2>
           <button @click="isDetailOpen = false" class="p-2 rounded-full hover:bg-white/20 transition-all">
             <XMarkIcon class="size-5 text-white" />
@@ -218,7 +218,7 @@
             <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
             <div class="absolute bottom-4 left-4 right-4">
               <h3 class="text-2xl font-black text-white leading-none">{{ selectedVehicle?.brand }} {{ selectedVehicle?.model }}</h3>
-              <p class="text-indigo-400 font-mono font-bold text-sm mt-1 uppercase tracking-widest">{{ selectedVehicle?.license_plate }}</p>
+              <p class="text-brand-primary-400 font-mono font-bold text-sm mt-1 uppercase tracking-widest">{{ selectedVehicle?.license_plate }}</p>
             </div>
             <!-- Badge de estado -->
             <div class="absolute top-4 right-4">
@@ -233,9 +233,9 @@
             <!-- Mapa con ubicación del vehículo -->
             <div class="rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 shadow-lg">
               <div class="bg-gray-100 dark:bg-gray-800 px-4 py-2 flex items-center gap-2">
-                <MapPinIcon class="size-4 text-indigo-500" />
+                <MapPinIcon class="size-4 text-brand-primary-500" />
                 <span class="text-xs font-bold text-gray-600 dark:text-gray-300 uppercase tracking-wide">Ubicación del vehículo</span>
-                <span v-if="selectedVehicle?.distanceMeters" class="ml-auto text-xs font-bold text-indigo-600 dark:text-indigo-400">
+                <span v-if="selectedVehicle?.distanceMeters" class="ml-auto text-xs font-bold text-brand-primary-600 dark:text-brand-primary-400">
                   A {{ formatDistance(selectedVehicle.distanceMeters) }} de ti
                 </span>
               </div>
@@ -244,10 +244,10 @@
 
             <!-- Stats grid -->
             <div class="grid grid-cols-3 gap-3">
-              <div class="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-900/20 dark:to-emerald-800/20 rounded-2xl p-4 border border-emerald-200 dark:border-emerald-800/50 text-center">
-                <CurrencyEuroIcon class="size-5 text-emerald-600 dark:text-emerald-400 mx-auto mb-1" />
-                <p class="text-lg font-black text-emerald-700 dark:text-emerald-300">0.15€</p>
-                <p class="text-[10px] font-bold text-emerald-600/70 dark:text-emerald-400/70 uppercase">/minuto</p>
+              <div class="bg-gradient-to-br from-brand-secondary-50 to-brand-secondary-100 dark:from-brand-secondary-900/20 dark:to-brand-secondary-800/20 rounded-2xl p-4 border border-brand-secondary-200 dark:border-brand-secondary-800/50 text-center">
+                <CurrencyEuroIcon class="size-5 text-brand-secondary-600 dark:text-brand-secondary-400 mx-auto mb-1" />
+                <p class="text-lg font-black text-brand-secondary-700 dark:text-brand-secondary-300">0.15€</p>
+                <p class="text-[10px] font-bold text-brand-secondary-600/70 dark:text-brand-secondary-400/70 uppercase">/minuto</p>
               </div>
               <div class="bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 rounded-2xl p-4 border border-amber-200 dark:border-amber-800/50 text-center">
                 <BoltIcon class="size-5 text-amber-600 dark:text-amber-400 mx-auto mb-1" />
@@ -262,13 +262,13 @@
             </div>
 
             <!-- Información adicional -->
-            <div class="bg-indigo-50/50 dark:bg-indigo-900/10 rounded-2xl p-5 border border-indigo-100 dark:border-indigo-900/30">
-              <h4 class="text-xs font-black text-indigo-900 dark:text-indigo-300 uppercase tracking-widest mb-3">Incluido en tu reserva</h4>
-              <ul class="space-y-2 text-sm text-indigo-700/80 dark:text-indigo-400/80 font-medium">
-                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-indigo-500" /> Apertura remota por app</li>
-                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-indigo-500" /> Seguro a todo riesgo incluido</li>
-                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-indigo-500" /> Aparcamiento gratis en zona azul/verde</li>
-                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-indigo-500" /> Asistencia 24h en carretera</li>
+            <div class="bg-brand-primary-50/50 dark:bg-brand-primary-900/10 rounded-2xl p-5 border border-brand-primary-100 dark:border-brand-primary-900/30">
+              <h4 class="text-xs font-black text-brand-primary-900 dark:text-brand-primary-300 uppercase tracking-widest mb-3">Incluido en tu reserva</h4>
+              <ul class="space-y-2 text-sm text-brand-primary-700/80 dark:text-brand-primary-400/80 font-medium">
+                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-brand-primary-500" /> Apertura remota por app</li>
+                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-brand-primary-500" /> Seguro a todo riesgo incluido</li>
+                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-brand-primary-500" /> Aparcamiento gratis en zona azul/verde</li>
+                <li class="flex items-center gap-2"><CheckCircleIcon class="size-4 text-brand-primary-500" /> Asistencia 24h en carretera</li>
               </ul>
             </div>
           </div>
@@ -277,7 +277,7 @@
           <button 
             @click="openConfirm(selectedVehicle)"
             :disabled="selectedVehicle?.is_mine || selectedVehicle?.mongo_active || hasActiveBooking || selectedVehicle?.online === false"
-            class="w-full py-4 rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black text-sm uppercase tracking-widest hover:from-indigo-700 hover:to-purple-700 shadow-xl shadow-indigo-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
+            class="w-full py-4 rounded-2xl bg-gradient-to-r from-brand-primary-600 to-brand-accent-600 text-white font-black text-sm uppercase tracking-widest hover:from-brand-primary-700 hover:to-brand-highlight-700 shadow-xl shadow-brand-primary-500/30 active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed"
           >
             {{ selectedVehicle?.online === false ? 'No disponible' : (selectedVehicle?.mongo_active ? 'Vehículo en uso' : (selectedVehicle?.is_mine ? 'Ya tienes este vehículo' : (hasActiveBooking ? 'Finaliza tu reserva actual' : 'Reservar ahora'))) }}
           </button>

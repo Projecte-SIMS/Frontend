@@ -103,7 +103,7 @@
       >
         <router-link
           :to="`/admin/users/${user.id}/edit`"
-          class="flex items-center space-x-2 bg-indigo-600 text-white hover:bg-indigo-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
+          class="flex items-center space-x-2 bg-brand-primary-600 text-white hover:bg-brand-primary-700 text-[10px] font-black uppercase tracking-widest px-4 py-2.5 rounded-xl"
         >
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path

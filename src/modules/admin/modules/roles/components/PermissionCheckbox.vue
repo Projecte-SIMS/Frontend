@@ -5,7 +5,7 @@
       :checked="isChecked"
       @change="handleChange"
       :disabled="isAdminRole"
-      class="size-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50 cursor-pointer transition-all"
+      class="size-4 rounded border-slate-300 text-brand-primary-600 focus:ring-brand-primary-500 disabled:opacity-50 cursor-pointer transition-all"
     />
   </div>
 </template>

@@ -26,7 +26,7 @@
                   </div>
                   <div class="min-w-0">
                     <span class="text-xl font-bold text-gray-900 dark:text-white block">Fleetly Admin</span>
-                    <p class="text-[10px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-300 truncate">{{ currentTenantLabel }}</p>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-brand-primary-600 dark:text-brand-primary-300 truncate">{{ currentTenantLabel }}</p>
                   </div>
                 </div>
                 <nav class="flex flex-1 flex-col">
@@ -35,9 +35,9 @@
                       <p class="px-1 mb-1 text-[10px] font-black uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500">Navegación</p>
                       <ul role="list" class="-mx-2 space-y-1">
                         <li v-for="item in navigation" :key="item.name">
-                          <router-link :to="item.href" :class="[item.current ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/80' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white border-transparent', 'group relative flex items-center gap-x-2.5 rounded-xl p-2.5 text-sm font-semibold transition-all border']">
-                            <span :class="[item.current ? 'opacity-100' : 'opacity-0 group-hover:opacity-70', 'absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-indigo-500 transition-opacity']"></span>
-                            <span :class="[item.current ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300' : 'bg-gray-100 text-gray-400 group-hover:text-indigo-600 dark:bg-gray-800 dark:text-gray-500 dark:group-hover:text-white', 'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors']">
+                          <router-link :to="item.href" :class="[item.current ? 'bg-brand-primary-50 text-brand-primary-700 dark:bg-brand-primary-900/20 dark:text-brand-primary-300 border-brand-primary-200/80 dark:border-brand-primary-800/80' : 'text-gray-700 hover:bg-gray-50 hover:text-brand-primary-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white border-transparent', 'group relative flex items-center gap-x-2.5 rounded-xl p-2.5 text-sm font-semibold transition-all border']">
+                            <span :class="[item.current ? 'opacity-100' : 'opacity-0 group-hover:opacity-70', 'absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-brand-primary-500 transition-opacity']"></span>
+                            <span :class="[item.current ? 'bg-brand-primary-100 text-brand-primary-600 dark:bg-brand-primary-900/40 dark:text-brand-primary-300' : 'bg-gray-100 text-gray-400 group-hover:text-brand-primary-600 dark:bg-gray-800 dark:text-gray-500 dark:group-hover:text-white', 'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors']">
                               <component :is="item.icon" class="size-[18px]" aria-hidden="true" />
                             </span>
                             {{ item.name }}
@@ -46,9 +46,9 @@
                       </ul>
                     </li>
                     <li class="mt-auto space-y-2">
-                      <router-link to="/" class="group relative flex items-center gap-x-2 rounded-lg px-2.5 py-2 text-[13px] font-semibold text-indigo-600 dark:text-indigo-400 border border-indigo-200/70 dark:border-indigo-900/70 bg-indigo-50/70 dark:bg-indigo-900/15 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-all">
-                        <span class="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-indigo-500/80 opacity-70"></span>
-                        <span class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300">
+                      <router-link to="/" class="group relative flex items-center gap-x-2 rounded-lg px-2.5 py-2 text-[13px] font-semibold text-brand-primary-600 dark:text-brand-primary-400 border border-brand-primary-200/70 dark:border-brand-primary-900/70 bg-brand-primary-50/70 dark:bg-brand-primary-900/15 hover:bg-brand-primary-100 dark:hover:bg-brand-primary-900/30 transition-all">
+                        <span class="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r-full bg-brand-primary-500/80 opacity-70"></span>
+                        <span class="flex size-7 shrink-0 items-center justify-center rounded-lg bg-brand-primary-100 text-brand-primary-600 dark:bg-brand-primary-900/40 dark:text-brand-primary-300">
                           <HomeIcon class="size-[18px]" />
                         </span>
                         Volver a la App
@@ -73,7 +73,7 @@
           </div>
           <div class="min-w-0">
             <span class="text-xl font-bold text-gray-900 dark:text-white block leading-none">Fleetly Admin</span>
-            <p class="text-[10px] font-black uppercase tracking-[0.15em] text-indigo-600 dark:text-indigo-300 truncate mt-1">{{ currentTenantLabel }}</p>
+            <p class="text-[10px] font-black uppercase tracking-[0.15em] text-brand-primary-600 dark:text-brand-primary-300 truncate mt-1">{{ currentTenantLabel }}</p>
           </div>
         </div>
         <nav class="flex flex-1 flex-col min-h-0">
@@ -82,9 +82,9 @@
               <p class="px-1 mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500">Navegación</p>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
-                  <router-link :to="item.href" :class="[item.current ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-900/20 dark:text-indigo-300 border-indigo-200/80 dark:border-indigo-800/80' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white border-transparent', 'nav-link group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold transition-all border']">
-                    <span :class="[item.current ? 'opacity-100' : 'opacity-0 group-hover:opacity-70', 'absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-indigo-500 transition-opacity']"></span>
-                    <span :class="[item.current ? 'bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300' : 'bg-gray-100 text-gray-400 group-hover:text-indigo-600 dark:bg-gray-800 dark:text-gray-500 dark:group-hover:text-white', 'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors']">
+                  <router-link :to="item.href" :class="[item.current ? 'bg-brand-primary-50 text-brand-primary-700 dark:bg-brand-primary-900/20 dark:text-brand-primary-300 border-brand-primary-200/80 dark:border-brand-primary-800/80' : 'text-gray-700 hover:bg-gray-50 hover:text-brand-primary-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white border-transparent', 'nav-link group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold transition-all border']">
+                    <span :class="[item.current ? 'opacity-100' : 'opacity-0 group-hover:opacity-70', 'absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-brand-primary-500 transition-opacity']"></span>
+                    <span :class="[item.current ? 'bg-brand-primary-100 text-brand-primary-600 dark:bg-brand-primary-900/40 dark:text-brand-primary-300' : 'bg-gray-100 text-gray-400 group-hover:text-brand-primary-600 dark:bg-gray-800 dark:text-gray-500 dark:group-hover:text-white', 'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors']">
                       <component :is="item.icon" class="size-[18px]" aria-hidden="true" />
                     </span>
                     {{ item.name }}
@@ -95,9 +95,9 @@
 
             <li class="mt-auto space-y-3">
               <div class="flex items-center gap-2">
-                <router-link to="/" class="flex-1 group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold text-indigo-600 dark:text-indigo-400 border border-indigo-200/70 dark:border-indigo-900/70 bg-indigo-50/70 dark:bg-indigo-900/15 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-all">
-                  <span class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-indigo-500/80 opacity-70"></span>
-                  <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/40 dark:text-indigo-300">
+                <router-link to="/" class="flex-1 group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold text-brand-primary-600 dark:text-brand-primary-400 border border-brand-primary-200/70 dark:border-brand-primary-900/70 bg-brand-primary-50/70 dark:bg-brand-primary-900/15 hover:bg-brand-primary-100 dark:hover:bg-brand-primary-900/30 transition-all">
+                  <span class="absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-brand-primary-500/80 opacity-70"></span>
+                  <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-brand-primary-100 text-brand-primary-600 dark:bg-brand-primary-900/40 dark:text-brand-primary-300">
                     <HomeIcon class="size-[18px]" />
                   </span>
                   Volver a la App
@@ -130,7 +130,7 @@
         </div>
         <div class="min-w-0">
           <span class="text-sm font-semibold text-gray-900 dark:text-white text-left block">Fleetly Admin</span>
-          <p class="text-[9px] font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-300 truncate">{{ currentTenantLabel }}</p>
+          <p class="text-[9px] font-black uppercase tracking-widest text-brand-primary-600 dark:text-brand-primary-300 truncate">{{ currentTenantLabel }}</p>
         </div>
       </div>
       <button 
@@ -190,11 +190,12 @@ import UserMenu from '@/modules/common/components/UserMenu.vue'
 
 const route = useRoute()
 const { user, isLoading } = useAuth()
-const { isDark, toggleTheme, initTheme } = useTheme()
+const { isDark, toggleTheme, initTheme, fetchAndApplyTenantTheme } = useTheme()
 const sidebarOpen = ref(false)
 
 onMounted(() => {
   initTheme()
+  fetchAndApplyTenantTheme()
 })
 
 const isFullPage = computed(() => ['/admin/map', '/admin/iot-devices'].includes(route.path))

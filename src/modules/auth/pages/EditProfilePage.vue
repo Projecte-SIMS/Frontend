@@ -4,7 +4,7 @@
     <div class="mb-8">
       <router-link
         to="/perfil"
-        class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-indigo-600 dark:text-gray-400 dark:hover:text-indigo-400 transition-colors mb-4"
+        class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-primary-600 dark:text-gray-400 dark:hover:text-brand-primary-400 transition-colors mb-4"
       >
         <ArrowLeftIcon class="size-4" />
         Volver al perfil
@@ -28,7 +28,7 @@
                 v-model="form.name"
                 type="text"
                 required
-                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
                 placeholder="Tu nombre"
               />
             </div>
@@ -45,7 +45,7 @@
                 v-model="form.username"
                 type="text"
                 required
-                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
                 placeholder="username"
               />
             </div>
@@ -62,7 +62,7 @@
                 v-model="form.email"
                 type="email"
                 required
-                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
                 placeholder="tu@email.com"
               />
             </div>
@@ -78,7 +78,7 @@
               <input
                 v-model="form.password"
                 type="password"
-                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all outline-none"
+                class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
                 placeholder="Dejar en blanco para no cambiar"
               />
             </div>
@@ -109,7 +109,7 @@
           <button
             type="submit"
             :disabled="isLoading"
-            class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/25 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ArrowPathIcon v-if="isLoading" class="size-5 animate-spin" />
             <CloudArrowUpIcon v-else class="size-5" />

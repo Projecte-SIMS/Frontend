@@ -12,17 +12,17 @@
       <div class="flex flex-col lg:flex-row items-start justify-between gap-4 pointer-events-auto w-full">
         <div class="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
           <div class="relative w-full sm:w-80 group">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-indigo-500">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400 group-focus-within:text-brand-primary-500">
               <MagnifyingGlassIcon class="size-5" />
             </div>
             <input 
               v-model="search" 
               type="text" 
               placeholder="Buscar por matrícula o modelo..." 
-              class="block w-full pl-11 pr-4 py-3 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-lg text-sm font-bold focus:ring-2 focus:ring-indigo-500 transition-all outline-none uppercase tracking-wider"
+              class="block w-full pl-11 pr-4 py-3 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-lg text-sm font-bold focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none uppercase tracking-wider"
             />
           </div>
-          <button @click="refresh" class="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 shadow-lg hover:bg-white hover:text-indigo-600 active:scale-95 transition-all">
+          <button @click="refresh" class="p-3.5 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-800 shadow-lg hover:bg-white hover:text-brand-primary-600 active:scale-95 transition-all">
             <ArrowPathIcon class="size-5" :class="{'animate-spin': isRefreshing}" />
           </button>
         </div>
@@ -55,7 +55,7 @@
             <div @click="isFleetListCollapsed = !isFleetListCollapsed" class="px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 cursor-pointer group">
               <div class="flex justify-between items-center">
                 <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Control de Flota en Vivo</h2>
-                <ChevronUpIcon class="size-5 text-slate-400 group-hover:text-indigo-500 transition-transform duration-300" :class="{'rotate-180': isFleetListCollapsed}" />
+                <ChevronUpIcon class="size-5 text-slate-400 group-hover:text-brand-primary-500 transition-transform duration-300" :class="{'rotate-180': isFleetListCollapsed}" />
               </div>
             </div>
 
@@ -68,7 +68,7 @@
                 v-for="v in filteredVehicles" 
                 :key="v.id"
                 @click="onVehicleClick(v)"
-                :class="[selectedVehicle?.id === v.id ? 'ring-2 ring-indigo-500 bg-indigo-50 dark:bg-indigo-900/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50']"
+                :class="[selectedVehicle?.id === v.id ? 'ring-2 ring-brand-primary-500 bg-brand-primary-50 dark:bg-brand-primary-900/20' : 'hover:bg-slate-50 dark:hover:bg-slate-800/50']"
                 class="w-full flex flex-col p-3 rounded-xl border border-slate-100 dark:border-slate-800 transition-all cursor-pointer group"
               >
                 <div class="flex items-center justify-between gap-3">
@@ -104,7 +104,7 @@
                   </div>
 
                   <div class="grid grid-cols-2 gap-2 mt-2">
-                    <button @click.stop="sendCommand(v, 'on')" :disabled="v.online === false || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-emerald-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
+                    <button @click.stop="sendCommand(v, 'on')" :disabled="v.online === false || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brand-secondary-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-brand-secondary-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
                       <PlayIcon class="size-3" /> Encender
                     </button>
                     <button @click.stop="sendCommand(v, 'off')" :disabled="v.online === false || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-rose-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-rose-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">

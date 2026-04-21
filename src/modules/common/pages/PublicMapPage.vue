@@ -6,7 +6,7 @@
         <span class="text-2xl">🚗</span>
         <h1 class="text-xl font-bold text-white">Fleetly - Vehículos Disponibles</h1>
       </div>
-      <router-link to="/login" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+      <router-link to="/login" class="px-4 py-2 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition">
         Iniciar sesión para reservar
       </router-link>
     </header>

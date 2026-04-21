@@ -31,7 +31,7 @@
                 <!-- Info Card -->
                 <div v-if="vehicle" class="mt-8 p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl border border-gray-100 dark:border-gray-700/50 flex items-center justify-between shadow-inner">
                   <div class="flex items-center gap-4 text-left">
-                    <div class="p-3 rounded-2xl bg-white dark:bg-gray-900 shadow-sm text-indigo-500">
+                    <div class="p-3 rounded-2xl bg-white dark:bg-gray-900 shadow-sm text-brand-primary-500">
                       <TruckIcon class="size-6" />
                     </div>
                     <div>

@@ -8,7 +8,7 @@
       </div>
       <router-link
         to="/tickets/create"
-        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-indigo-600 text-white font-bold text-sm hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-500/25 active:scale-95"
+        class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/25 active:scale-95"
       >
         <PlusIcon class="size-5" />
         Nuevo Ticket
@@ -17,14 +17,14 @@
 
     <!-- Loading State -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
-      <ArrowPathIcon class="size-10 text-indigo-500 animate-spin mb-4" />
+      <ArrowPathIcon class="size-10 text-brand-primary-500 animate-spin mb-4" />
       <p class="text-gray-500 font-medium tracking-wide">Cargando tus tickets...</p>
     </div>
 
     <!-- Empty State -->
     <div v-else-if="tickets.length === 0" class="fleetly-empty-state flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm text-center px-6">
-      <div class="size-20 rounded-full bg-indigo-50 dark:bg-indigo-900/20 flex items-center justify-center mb-6">
-        <TicketIcon class="size-10 text-indigo-500" />
+      <div class="size-20 rounded-full bg-brand-primary-50 dark:bg-brand-primary-900/20 flex items-center justify-center mb-6">
+        <TicketIcon class="size-10 text-brand-primary-500" />
       </div>
       <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No tienes tickets todavía</h3>
       <p class="text-gray-500 max-w-sm mb-8">¿Necesitas ayuda con algo? Crea un ticket y nuestro equipo de soporte te atenderá lo antes posible.</p>
@@ -45,7 +45,7 @@
           <div 
             v-for="t in activeTickets" 
             :key="t.id"
-            class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 transition-all duration-300 flex flex-col fleetly-card-hover"
+            class="group bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm hover:shadow-xl hover:shadow-brand-primary-500/5 hover:-translate-y-1 transition-all duration-300 flex flex-col fleetly-card-hover"
           >
             <div class="flex items-start justify-between mb-4">
               <div class="flex items-center gap-3">
@@ -53,7 +53,7 @@
                   <ChatBubbleLeftRightIcon class="size-5" />
                 </div>
                 <div>
-                  <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                  <h3 class="font-bold text-gray-900 dark:text-white group-hover:text-brand-primary-600 dark:group-hover:text-brand-primary-400 transition-colors">
                     {{ t.subject || t.title || `Ticket #${t.id}` }}
                   </h3>
                   <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
@@ -78,7 +78,7 @@
               </div>
               <router-link 
                 :to="`/tickets/${t.id}`"
-                class="inline-flex items-center gap-1 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                class="inline-flex items-center gap-1 text-sm font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline"
               >
                 Ver conversación
                 <ChevronRightIcon class="size-4" />
@@ -118,7 +118,7 @@
                 <td class="px-6 py-4 text-right">
                   <router-link 
                     :to="`/tickets/${t.id}`"
-                    class="text-indigo-600 dark:text-indigo-400 font-bold text-sm"
+                    class="text-brand-primary-600 dark:text-brand-primary-400 font-bold text-sm"
                   >
                     Ver
                   </router-link>

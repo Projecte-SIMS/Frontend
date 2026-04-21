@@ -8,7 +8,7 @@
       <template #actions>
         <router-link
           to="/admin/roles/create"
-          class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
+          class="inline-flex items-center gap-2 rounded-xl bg-brand-primary-600 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-brand-primary-200 dark:shadow-none hover:bg-brand-primary-700 transition-all active:scale-95"
         >
           <PlusIcon class="size-4" />
           Añadir Rol
@@ -27,7 +27,7 @@
           @input="handleSearch"
           type="text"
           placeholder="BUSCAR POR NOMBRE DE ROL..."
-          class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 text-[10px] font-bold uppercase tracking-widest transition-all"
+          class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 text-[10px] font-bold uppercase tracking-widest transition-all"
         />
       </div>
       <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -37,7 +37,7 @@
 
     <!-- Estados -->
     <div v-if="loading" class="py-20 flex flex-col items-center gap-4">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600/30"></div>
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-primary-600/30"></div>
       <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Cargando roles...</span>
     </div>
     <div v-else-if="error" class="p-6 text-center rounded-2xl bg-rose-50 border border-rose-100 dark:bg-rose-900/10 dark:border-rose-900/20">
@@ -60,7 +60,7 @@
             <tr v-for="role in roles" :key="role.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-all group">
               <td class="px-6 py-4">
                 <div class="flex items-center gap-4">
-                  <div class="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-100 text-indigo-500 dark:from-indigo-900/30 dark:to-indigo-900/50 dark:text-indigo-400 shadow-inner border border-indigo-100/50 dark:border-indigo-800/50">
+                  <div class="flex size-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary-50 to-brand-primary-100 text-brand-primary-500 dark:from-brand-primary-900/30 dark:to-brand-primary-900/50 dark:text-brand-primary-400 shadow-inner border border-brand-primary-100/50 dark:border-brand-primary-800/50">
                     <span class="material-icons text-lg">shield</span>
                   </div>
                   <div>
@@ -80,7 +80,7 @@
               <td class="px-6 py-4 text-right">
                 <div class="flex justify-end items-center gap-1">
                   <button
-                    class="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-all"
+                    class="p-2 text-slate-400 hover:text-brand-primary-600 hover:bg-brand-primary-50 dark:hover:bg-brand-primary-900/20 rounded-lg transition-all"
                     @click="navigateToDetail(role)"
                     title="Ver Permisos"
                   >

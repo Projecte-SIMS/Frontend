@@ -13,7 +13,7 @@
         <button 
           @click="fetchTenants" 
           :disabled="loading"
-          class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-indigo-400 transition-all shadow-sm active:scale-90"
+          class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-brand-primary-400 transition-all shadow-sm active:scale-90"
         >
           <span class="material-icons text-xl" :class="{'animate-spin': loading}">sync</span>
         </button>
@@ -30,7 +30,7 @@
             <span class="material-icons text-sm">trending_up</span> +12% este mes
           </p>
         </div>
-        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-indigo-500/10 transition-colors">business</span>
+        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-brand-primary-500/10 transition-colors">business</span>
       </div>
 
       <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
@@ -39,7 +39,7 @@
           <p class="text-4xl font-black text-slate-900 dark:text-white tabular-nums">{{ totalUsers }}</p>
           <p class="text-[10px] font-bold text-slate-400 mt-4 uppercase">Estimación operativa</p>
         </div>
-        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-purple-500/10 transition-colors">groups</span>
+        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-brand-accent-500/10 transition-colors">groups</span>
       </div>
 
       <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
@@ -68,13 +68,13 @@
       <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
         <div class="flex items-center justify-between mb-8">
           <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Altas Recientes</h3>
-          <router-link to="/superadmin/tenants" class="text-[10px] font-black text-indigo-500 hover:text-indigo-400 uppercase tracking-widest transition-colors">Gestionar Todas</router-link>
+          <router-link to="/superadmin/tenants" class="text-[10px] font-black text-brand-primary-500 hover:text-brand-primary-400 uppercase tracking-widest transition-colors">Gestionar Todas</router-link>
         </div>
         
         <div class="space-y-4">
-          <div v-for="t in recentTenants" :key="t.id" class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 group hover:border-indigo-500/30 transition-all">
+          <div v-for="t in recentTenants" :key="t.id" class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 group hover:border-brand-primary-500/30 transition-all">
             <div class="flex items-center gap-4">
-              <div class="size-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xs font-black text-indigo-600">
+              <div class="size-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xs font-black text-brand-primary-600">
                 {{ t.id.substring(0, 2).toUpperCase() }}
               </div>
               <div>
@@ -87,23 +87,23 @@
         </div>
       </div>
 
-      <div class="p-8 rounded-3xl bg-indigo-600 shadow-xl shadow-indigo-500/20 relative overflow-hidden">
+      <div class="p-8 rounded-3xl bg-brand-primary-600 shadow-xl shadow-brand-primary-500/20 relative overflow-hidden">
         <div class="relative z-10">
-          <h3 class="text-xs font-black text-indigo-100 uppercase tracking-[0.2em] mb-6">Estado de Facturación</h3>
+          <h3 class="text-xs font-black text-brand-primary-100 uppercase tracking-[0.2em] mb-6">Estado de Facturación</h3>
           <div class="space-y-6">
             <div class="p-5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10">
               <div class="flex justify-between items-center mb-2">
-                <span class="text-[10px] font-black text-indigo-100 uppercase">Proyección Anual (ARR)</span>
+                <span class="text-[10px] font-black text-brand-primary-100 uppercase">Proyección Anual (ARR)</span>
                 <span class="text-xs font-black text-white tabular-nums">{{ formatCurrency(estimatedMRR * 12) }}</span>
               </div>
-              <div class="h-1.5 w-full bg-indigo-900/40 rounded-full overflow-hidden">
+              <div class="h-1.5 w-full bg-brand-primary-900/40 rounded-full overflow-hidden">
                 <div class="h-full bg-white rounded-full" style="width: 65%"></div>
               </div>
             </div>
-            <p class="text-xs text-indigo-100/80 font-medium leading-relaxed">
+            <p class="text-xs text-brand-primary-100/80 font-medium leading-relaxed">
               El 85% de las empresas utilizan el plan base. Se recomienda lanzar campaña para el plan Pro este trimestre.
             </p>
-            <button class="w-full py-3 rounded-xl bg-white text-indigo-600 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-50 transition-all shadow-lg active:scale-95">
+            <button class="w-full py-3 rounded-xl bg-white text-brand-primary-600 text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-50 transition-all shadow-lg active:scale-95">
               Generar Reporte Mensual
             </button>
           </div>

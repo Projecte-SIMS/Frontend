@@ -22,7 +22,7 @@
           </div>
           <button 
             @click="refresh" 
-            class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-all disabled:opacity-50 shadow-sm"
+            class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-brand-primary-600 hover:border-brand-primary-200 transition-all disabled:opacity-50 shadow-sm"
             title="Sincronizar Dispositivos"
           >
             <ArrowPathIcon class="size-5" :class="{'animate-spin': loading}" />
@@ -49,7 +49,7 @@
     <section>
       <div class="border-b border-slate-200 dark:border-slate-800 pb-5 mb-8">
         <div class="flex items-center gap-3">
-          <span class="material-icons text-indigo-500 text-2xl">add_moderator</span>
+          <span class="material-icons text-brand-primary-500 text-2xl">add_moderator</span>
           <div>
             <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Nodos Pendientes de Asignación</h2>
             <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Dispositivos detectados en la red que necesitan ser vinculados a un vehículo de la flota.</p>
@@ -70,7 +70,7 @@
       </div>
       
       <div v-else class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <div v-for="device in unlinkedDevices" :key="device.id" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:border-indigo-300 dark:hover:border-indigo-800 transition-all flex flex-col">
+        <div v-for="device in unlinkedDevices" :key="device.id" class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group hover:border-brand-primary-300 dark:hover:border-brand-primary-800 transition-all flex flex-col">
           <div class="p-6 border-b border-slate-100 dark:border-slate-800">
             <div class="flex items-start justify-between">
               <div class="flex items-center gap-4">
@@ -88,7 +88,7 @@
           
           <div class="p-6 space-y-4 flex-1 flex flex-col justify-between">
             <FormField label="ASIGNAR A VEHÍCULO">
-               <select v-model="selectedVehicle[device.id]" class="w-full bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-medium focus:ring-2 focus:ring-indigo-500 outline-none transition-all cursor-pointer">
+               <select v-model="selectedVehicle[device.id]" class="w-full bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-medium focus:ring-2 focus:ring-brand-primary-500 outline-none transition-all cursor-pointer">
                 <option :value="null">Seleccionar Matrícula...</option>
                 <option v-for="v in availableVehicles" :key="v.id" :value="v.id">{{ v.license_plate }} · {{ v.brand }} {{ v.model }}</option>
               </select>
@@ -98,7 +98,7 @@
               <button 
                 @click="linkDevice(device.id)" 
                 :disabled="!selectedVehicle[device.id] || linkingDevice === device.id" 
-                class="flex-1 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest shadow-lg shadow-indigo-200"
+                class="flex-1 py-3 bg-brand-primary-600 text-white rounded-xl hover:bg-brand-primary-700 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-primary-200"
               >
                 <span v-if="linkingDevice === device.id" class="flex items-center justify-center gap-2">VINCULANDO...</span>
                 <span v-else class="flex items-center justify-center gap-2"><LinkIcon class="size-4" /> Vincular</span>
@@ -141,8 +141,8 @@
               <tr v-for="device in allDevices" :key="device.id" :class="{'bg-amber-50/30 dark:bg-amber-900/10': device.is_orphan}" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors group">
                 <td class="px-6 py-4">
                   <div class="flex items-center gap-4">
-                    <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:bg-indigo-50 dark:group-hover:bg-indigo-900/30 transition-colors">
-                      <CpuChipIcon class="size-5 text-slate-500 group-hover:text-indigo-600 transition-colors" />
+                    <div class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:bg-brand-primary-50 dark:group-hover:bg-brand-primary-900/30 transition-colors">
+                      <CpuChipIcon class="size-5 text-slate-500 group-hover:text-brand-primary-600 transition-colors" />
                     </div>
                     <div>
                       <p class="font-black text-sm text-slate-900 dark:text-white uppercase tracking-tight">{{ device.name }}</p>
@@ -168,7 +168,7 @@
                       <TruckIcon class="size-4 text-slate-400" />
                       <span class="font-mono font-bold text-sm text-slate-700 dark:text-slate-300 tracking-wider">{{ device.license_plate }}</span>
                     </div>
-                    <p class="text-[9px] text-indigo-500 font-bold uppercase tracking-widest">{{ device.vehicle_name }}</p>
+                    <p class="text-[9px] text-brand-primary-500 font-bold uppercase tracking-widest">{{ device.vehicle_name }}</p>
                   </div>
                   <div v-else class="flex items-center gap-2">
                     <div class="size-1.5 rounded-full bg-slate-300"></div>
@@ -219,7 +219,7 @@
       <div v-if="showCreateModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800">
           <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tight">Nuevo Vehículo IoT</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 font-medium uppercase tracking-widest">Registrar unidad y vincular dispositivo <span class="text-indigo-600 font-black">#{{ selectedDeviceId?.substring(0,8) }}</span></p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 font-medium uppercase tracking-widest">Registrar unidad y vincular dispositivo <span class="text-brand-primary-600 font-black">#{{ selectedDeviceId?.substring(0,8) }}</span></p>
           
           <form @submit.prevent="handleCreateAndLink" class="space-y-4">
             <FormField label="Matrícula">
@@ -237,7 +237,7 @@
 
             <div class="pt-4 flex gap-3">
               <button type="button" @click="showCreateModal = false" class="flex-1 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">Cancelar</button>
-              <button type="submit" :disabled="creating" class="flex-1 px-4 py-3 rounded-xl bg-indigo-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-200 active:scale-95 disabled:opacity-50">
+              <button type="submit" :disabled="creating" class="flex-1 px-4 py-3 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-200 active:scale-95 disabled:opacity-50">
                 {{ creating ? 'PROCESANDO...' : 'CREAR Y VINCULAR' }}
               </button>
             </div>

@@ -46,7 +46,7 @@
           type="button"
           class="inline-flex items-center justify-center w-10 h-10 rounded-lg text-sm font-medium transition-colors"
           :class="p === page 
-            ? 'bg-indigo-600 text-white' 
+            ? 'bg-brand-primary-600 text-white' 
             : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'"
           @click="emit('update:page', p)"
         >

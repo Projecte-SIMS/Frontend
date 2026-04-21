@@ -11,10 +11,10 @@
             <DialogPanel class="relative transform overflow-hidden rounded-[2.5rem] bg-white dark:bg-gray-900 px-4 pt-5 pb-4 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-8 border border-gray-100 dark:border-gray-800">
               
               <!-- Decoration -->
-              <div class="absolute -top-24 -right-24 size-48 rounded-full bg-indigo-500/10 blur-3xl"></div>
+              <div class="absolute -top-24 -right-24 size-48 rounded-full bg-brand-primary-500/10 blur-3xl"></div>
               
               <div class="relative">
-                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 mb-6">
+                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 dark:text-brand-primary-400 mb-6">
                   <CalendarIcon class="h-8 w-8" aria-hidden="true" />
                 </div>
                 
@@ -30,7 +30,7 @@
                   </div>
                   <div class="min-w-0">
                     <h4 class="text-lg font-bold text-gray-900 dark:text-white truncate">{{ vehicle.brand }} {{ vehicle.model }}</h4>
-                    <p class="text-indigo-600 dark:text-indigo-400 font-mono font-bold text-sm">{{ vehicle.plate || vehicle.license_plate }}</p>
+                    <p class="text-brand-primary-600 dark:text-brand-primary-400 font-mono font-bold text-sm">{{ vehicle.plate || vehicle.license_plate }}</p>
                     <div class="flex items-center gap-3 mt-2">
                       <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-1">
                         <CurrencyEuroIcon class="size-3" /> 0.15€/min
@@ -66,7 +66,7 @@
                   <button
                     type="button"
                     :disabled="loading"
-                    class="flex-1 inline-flex justify-center items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white hover:bg-indigo-700 shadow-xl shadow-indigo-500/30 active:scale-95 transition-all disabled:opacity-50"
+                    class="flex-1 inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-primary-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white hover:bg-brand-primary-700 shadow-xl shadow-brand-primary-500/30 active:scale-95 transition-all disabled:opacity-50"
                     @click="confirm"
                   >
                     <ArrowPathIcon v-if="loading" class="size-5 animate-spin" />

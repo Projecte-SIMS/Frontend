@@ -11,7 +11,7 @@
             <div class="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-[10px] font-black uppercase tracking-widest text-slate-500">
               Última Sincronización: {{ lastCheck }}
             </div>
-            <button @click="loadData" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-indigo-600 hover:border-indigo-200 transition-all disabled:opacity-50 shadow-sm">
+            <button @click="loadData" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-brand-primary-600 hover:border-brand-primary-200 transition-all disabled:opacity-50 shadow-sm">
               <ArrowPathIcon class="size-5" :class="{'animate-spin': loading}" />
             </button>
           </div>
@@ -75,7 +75,7 @@
               </div>
             </div>
             <div class="flex gap-2 mt-6">
-              <router-link :to="`/admin/map?select=${v.id}`" class="flex-1 text-center px-4 py-2.5 rounded-lg text-indigo-600 bg-indigo-50 text-[10px] font-black uppercase tracking-widest hover:bg-indigo-100 transition-colors">Localizar</router-link>
+              <router-link :to="`/admin/map?select=${v.id}`" class="flex-1 text-center px-4 py-2.5 rounded-lg text-brand-primary-600 bg-brand-primary-50 text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-100 transition-colors">Localizar</router-link>
               <button class="flex-1 px-4 py-2.5 rounded-lg text-slate-600 bg-slate-100 text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-colors">Diagnosticar</button>
             </div>
           </div>
@@ -103,7 +103,7 @@
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
                 <tr v-for="v in vehicles" :key="v.id" class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
                   <td class="px-6 py-4"><div class="flex items-center gap-3"><TruckIcon class="size-5 text-slate-400" /><span class="text-sm font-bold text-slate-900 dark:text-white font-mono tracking-wider">{{ v.plate }}</span></div></td>
-                  <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="flex-1 h-2 w-16 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full transition-all duration-500 rounded-full" :class="(v.engine_temp || 0) > 100 ? 'bg-rose-500' : 'bg-indigo-500'" :style="{ width: Math.min((v.engine_temp || 0) / 1.5, 100) + '%' }"></div></div><span class="text-sm font-mono font-bold w-12 text-right" :class="(v.engine_temp || 0) > 100 ? 'text-rose-600' : 'text-slate-600 dark:text-slate-400'">{{ v.engine_temp?.toFixed(0) || 0 }}°</span></div></td>
+                  <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="flex-1 h-2 w-16 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full transition-all duration-500 rounded-full" :class="(v.engine_temp || 0) > 100 ? 'bg-rose-500' : 'bg-brand-primary-500'" :style="{ width: Math.min((v.engine_temp || 0) / 1.5, 100) + '%' }"></div></div><span class="text-sm font-mono font-bold w-12 text-right" :class="(v.engine_temp || 0) > 100 ? 'text-rose-600' : 'text-slate-600 dark:text-slate-400'">{{ v.engine_temp?.toFixed(0) || 0 }}°</span></div></td>
                   <td class="px-6 py-4"><div class="flex items-center gap-2 text-sm font-mono font-bold" :class="(v.battery_voltage || 12.6) < 11.8 ? 'text-amber-600' : 'text-slate-600 dark:text-slate-400'"><Battery50Icon class="size-5" />{{ v.battery_voltage?.toFixed(1) || '12.6' }}V</div></td>
                   <td class="px-6 py-4"><div class="text-sm font-medium text-slate-500"><span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.rpm || 0 }}</span> rpm <span class="mx-1 opacity-20">|</span> <span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.speed?.toFixed(0) || 0 }}</span> km/h</div></td>
                   <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="size-2 rounded-full" :class="v.online ? 'bg-emerald-500' : 'bg-slate-300'"></div><span class="text-[10px] font-black uppercase tracking-widest" :class="v.online ? 'text-emerald-600' : 'text-slate-400'">{{ v.online ? 'En línea' : 'Sin conexión' }}</span></div></td>
@@ -138,7 +138,7 @@ const alertVehicles = computed(() => vehicles.value.filter(v => !v.online || (v.
 const healthMetrics = computed(() => [
   { label: 'Unidades con Alerta', value: alertVehicles.value.length, icon: FireIcon, bg: 'bg-rose-50 dark:bg-rose-900/20', color: 'text-rose-600 dark:text-rose-400' },
   { label: 'Baterías Bajas', value: lowBatteryCount.value, icon: Battery0Icon, bg: 'bg-amber-50 dark:bg-amber-900/20', color: 'text-amber-600 dark:text-amber-400' },
-  { label: 'Conexión IoT', value: `${onlineCount.value}/${vehicles.value.length}`, icon: SignalIcon, bg: 'bg-indigo-50 dark:bg-indigo-900/20', color: 'text-indigo-600 dark:text-indigo-400' },
+  { label: 'Conexión IoT', value: `${onlineCount.value}/${vehicles.value.length}`, icon: SignalIcon, bg: 'bg-brand-primary-50 dark:bg-brand-primary-900/20', color: 'text-brand-primary-600 dark:text-brand-primary-400' },
   { label: 'Estado General', value: 'Nominal', icon: CheckBadgeIcon, bg: 'bg-emerald-50 dark:bg-emerald-900/20', color: 'text-emerald-600 dark:text-emerald-400' }
 ])
 

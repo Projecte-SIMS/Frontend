@@ -29,7 +29,7 @@
                   </div>
                   <div class="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-3xl border border-gray-100 dark:border-gray-700/50">
                     <p class="text-[8px] font-black text-gray-400 uppercase tracking-widest mb-1">Coste Total</p>
-                    <p class="text-xl font-black text-indigo-600 dark:text-indigo-400">{{ summaryData.cost }}</p>
+                    <p class="text-xl font-black text-brand-primary-600 dark:text-brand-primary-400">{{ summaryData.cost }}</p>
                   </div>
                 </div>
 
@@ -44,7 +44,7 @@
                 <div class="mt-10">
                   <button
                     type="button"
-                    class="w-full inline-flex justify-center rounded-[1.5rem] bg-indigo-600 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-white hover:bg-indigo-700 shadow-xl active:scale-95 transition-all"
+                    class="w-full inline-flex justify-center rounded-[1.5rem] bg-brand-primary-600 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-white hover:bg-brand-primary-700 shadow-xl active:scale-95 transition-all"
                     @click="close"
                   >
                     Entendido, gracias

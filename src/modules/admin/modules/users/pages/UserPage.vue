@@ -8,7 +8,7 @@
       <template #actions>
         <router-link
           to="/admin/users/create"
-          class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-indigo-200 dark:shadow-none hover:bg-indigo-700 transition-all active:scale-95"
+          class="inline-flex items-center gap-2 rounded-xl bg-brand-primary-600 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-brand-primary-200 dark:shadow-none hover:bg-brand-primary-700 transition-all active:scale-95"
         >
           <PlusIcon class="size-4" />
           Registrar Usuario
@@ -27,7 +27,7 @@
           @input="handleSearch"
           type="text"
           placeholder="BUSCAR POR NOMBRE, EMAIL O USERNAME..."
-          class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-600 text-[10px] font-bold uppercase tracking-widest transition-all"
+          class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 text-[10px] font-bold uppercase tracking-widest transition-all"
         />
       </div>
       <div class="flex items-center gap-3">
@@ -39,7 +39,7 @@
 
     <!-- Estado de Carga -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-20 space-y-4">
-      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+      <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-primary-600"></div>
       <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sincronizando directorio...</span>
     </div>
 
@@ -80,7 +80,7 @@
               <td class="px-6 py-4 text-center">
                 <span
                   v-if="user?.roles && user.roles.length > 0"
-                  class="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-widest bg-indigo-50 text-indigo-700 border border-indigo-100 dark:bg-indigo-900/30 dark:text-indigo-400 dark:border-indigo-800"
+                  class="inline-flex items-center rounded-lg px-2.5 py-1 text-[10px] font-black uppercase tracking-widest bg-brand-primary-50 text-brand-primary-700 border border-brand-primary-100 dark:bg-brand-primary-900/30 dark:text-brand-primary-400 dark:border-brand-primary-800"
                 >
                   {{ getPrimaryRole(user) }}
                 </span>
@@ -102,7 +102,7 @@
                 <div class="flex justify-end items-center gap-1">
                   <button
                     @click="navigateToDetail(user)"
-                    class="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all"
+                    class="p-2 rounded-lg text-slate-400 hover:text-brand-primary-600 hover:bg-brand-primary-50 dark:hover:bg-brand-primary-900/20 transition-all"
                     title="Detalles"
                   >
                     <span class="material-icons text-xl">visibility</span>
