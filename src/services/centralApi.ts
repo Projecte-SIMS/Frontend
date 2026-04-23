@@ -187,6 +187,12 @@ export const centralApi = {
     return response.data.data
   },
 
+  // Obtener estadísticas globales reales
+  async getGlobalStats() {
+    const response = await centralApiClient.get('/tenants/stats/global')
+    return response.data.data
+  },
+
   // Crear nuevo tenant
   async createTenant(data: CreateTenantRequest) {
     const response = await centralApiClient.post('/tenants', data)

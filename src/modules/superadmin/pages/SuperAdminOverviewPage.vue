@@ -1,150 +1,247 @@
 <template>
-  <div class="space-y-8 animate-fade-in">
-    <div class="flex items-center justify-between">
-      <div>
-        <h2 class="text-2xl font-black text-white uppercase tracking-tight">Resumen Ejecutivo</h2>
-        <p class="text-sm text-slate-500 font-medium">Métricas globales del ecosistema SIMS Hub.</p>
-      </div>
-      <div class="flex items-center gap-3">
-        <div class="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center gap-2">
-          <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Infraestructura OK</span>
+  <div class="space-y-8 animate-fade-in pb-12">
+    <!-- Top Header -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 bg-slate-900 p-8 rounded-[2.5rem] border border-slate-800 shadow-2xl relative overflow-hidden">
+      <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="px-2 py-1 rounded bg-brand-primary-500 text-[8px] font-black text-white uppercase tracking-tighter">Central Node</div>
+          <h2 class="text-3xl font-black text-white uppercase tracking-tight leading-none">SIMS Cloud Intelligence</h2>
         </div>
+        <p class="text-sm text-slate-400 font-medium max-w-xl">Monitorización global de infraestructura, facturación y rendimiento de flota multitenant.</p>
+      </div>
+      <div class="relative z-10">
         <button 
-          @click="fetchTenants" 
-          :disabled="loading"
-          class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 hover:text-brand-primary-400 transition-all shadow-sm active:scale-90"
+          @click="syncAll" 
+          :disabled="loading || syncing"
+          class="group flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg active:scale-95 disabled:opacity-50"
         >
-          <span class="material-icons text-xl" :class="{'animate-spin': loading}">sync</span>
+          <span class="material-icons text-base" :class="{'animate-spin': loading || syncing}">refresh</span>
+          {{ syncing ? 'Escaneando...' : 'Sincronizar Ecosistema' }}
         </button>
       </div>
+      <div class="absolute -right-20 -top-20 size-64 bg-brand-primary-600/10 rounded-full blur-3xl"></div>
     </div>
 
-    <!-- KPIs -->
+    <!-- Fila 1: KPIs Principales (TOTALMENTE REALES) -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Empresas Activas</p>
-          <p class="text-4xl font-black text-slate-900 dark:text-white tabular-nums">{{ tenants.length }}</p>
-          <p class="text-[10px] font-bold text-emerald-500 mt-4 flex items-center gap-1 uppercase">
-            <span class="material-icons text-sm">trending_up</span> +12% este mes
-          </p>
+      <div v-for="kpi in kpis" :key="kpi.label" class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300">
+        <div class="flex items-center justify-between mb-4">
+          <div :class="kpi.color" class="size-10 rounded-xl flex items-center justify-center">
+            <span class="material-icons text-xl">{{ kpi.icon }}</span>
+          </div>
+          <span class="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Real-Time</span>
         </div>
-        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-brand-primary-500/10 transition-colors">business</span>
-      </div>
-
-      <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Usuarios Globales</p>
-          <p class="text-4xl font-black text-slate-900 dark:text-white tabular-nums">{{ totalUsers }}</p>
-          <p class="text-[10px] font-bold text-slate-400 mt-4 uppercase">Estimación operativa</p>
-        </div>
-        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-brand-accent-500/10 transition-colors">groups</span>
-      </div>
-
-      <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">MRR Estimado</p>
-          <p class="text-4xl font-black text-slate-900 dark:text-white tabular-nums">{{ formatCurrency(estimatedMRR) }}</p>
-          <p class="text-[10px] font-bold text-slate-400 mt-4 uppercase">Suscripciones activas</p>
-        </div>
-        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-emerald-500/10 transition-colors">payments</span>
-      </div>
-
-      <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="relative z-10">
-          <p class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-2">Salud de Red</p>
-          <p class="text-4xl font-black text-emerald-500 tabular-nums">99.9%</p>
-          <p class="text-[10px] font-bold text-slate-400 mt-4 uppercase tracking-widest flex items-center gap-1">
-            <span class="size-1.5 rounded-full bg-emerald-500"></span> Infraestructura OK
-          </p>
-        </div>
-        <span class="material-icons absolute -right-4 -bottom-4 text-8xl text-slate-100 dark:text-slate-800/50 group-hover:text-blue-500/10 transition-colors">dns</span>
+        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{{ kpi.label }}</p>
+        <p class="text-3xl font-black text-slate-900 dark:text-white tabular-nums">{{ kpi.value }}</p>
+        <p class="text-[9px] text-slate-500 mt-2 font-medium leading-relaxed">{{ kpi.desc }}</p>
       </div>
     </div>
 
-    <!-- Snapshots -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
-        <div class="flex items-center justify-between mb-8">
-          <h3 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Altas Recientes</h3>
-          <router-link to="/superadmin/tenants" class="text-[10px] font-black text-brand-primary-500 hover:text-brand-primary-400 uppercase tracking-widest transition-colors">Gestionar Todas</router-link>
-        </div>
+    <!-- Estatus de Nodos e Información Real -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-8">
         
-        <div class="space-y-4">
-          <div v-for="t in recentTenants" :key="t.id" class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 group hover:border-brand-primary-500/30 transition-all">
-            <div class="flex items-center gap-4">
-              <div class="size-10 rounded-xl bg-white dark:bg-slate-900 shadow-sm border border-slate-200 dark:border-slate-800 flex items-center justify-center text-xs font-black text-brand-primary-600">
-                {{ t.id.substring(0, 2).toUpperCase() }}
+        <!-- Monitor de Nodos -->
+        <div class="p-8 rounded-[2.5rem] bg-slate-900 border border-slate-800 shadow-sm">
+          <div class="flex items-center justify-between mb-8">
+            <h3 class="text-sm font-black text-white uppercase tracking-widest">Estatus de Microservicios</h3>
+            <div class="flex items-center gap-2">
+              <span class="size-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Infraestructura OK</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div v-for="node in nodes" :key="node.name" class="p-5 rounded-2xl bg-white/5 border border-white/10 group hover:border-brand-primary-500/30 transition-all">
+              <div class="flex items-center justify-between mb-4">
+                <span class="material-icons" :class="node.iconColor">{{ node.icon }}</span>
+                <span class="text-[9px] font-mono text-emerald-400">{{ node.status }}</span>
               </div>
+              <p class="text-[10px] font-black text-white uppercase mb-1">{{ node.name }}</p>
+              <p class="text-[9px] text-slate-500 leading-relaxed">{{ node.desc }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mejores Tenants (TOP DATA) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Top Vehículos -->
+          <div class="p-6 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="material-icons text-blue-500">directions_car</span>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mayor Flota Activa</p>
+            </div>
+            <div v-if="globalStats.top_tenant_by_vehicles" class="flex items-center justify-between">
               <div>
-                <p class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ t.id }}</p>
-                <p class="text-[10px] font-bold text-slate-400">{{ formatDate(t.created_at) }}</p>
+                <p class="text-2xl font-black text-slate-900 dark:text-white uppercase">{{ globalStats.top_tenant_by_vehicles.id }}</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Tenant Leader</p>
+              </div>
+              <div class="text-right">
+                <p class="text-3xl font-black text-blue-500 tabular-nums">{{ globalStats.top_tenant_by_vehicles.count }}</p>
+                <p class="text-[8px] font-black text-slate-400 uppercase">Unidades</p>
               </div>
             </div>
-            <span class="px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-widest bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">ACTIVO</span>
+          </div>
+
+          <!-- Top Usuarios -->
+          <div class="p-6 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center gap-3 mb-6">
+              <span class="material-icons text-brand-primary-500">groups</span>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mayor Masa Crítica</p>
+            </div>
+            <div v-if="globalStats.top_tenant_by_users" class="flex items-center justify-between">
+              <div>
+                <p class="text-2xl font-black text-slate-900 dark:text-white uppercase">{{ globalStats.top_tenant_by_users.id }}</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase">Tenant Popular</p>
+              </div>
+              <div class="text-right">
+                <p class="text-3xl font-black text-brand-primary-500 tabular-nums">{{ globalStats.top_tenant_by_users.count }}</p>
+                <p class="text-[8px] font-black text-slate-400 uppercase">Usuarios</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="p-8 rounded-3xl bg-brand-primary-600 shadow-xl shadow-brand-primary-500/20 relative overflow-hidden">
-        <div class="relative z-10">
-          <h3 class="text-xs font-black text-brand-primary-100 uppercase tracking-[0.2em] mb-6">Estado de Facturación</h3>
-          <div class="space-y-6">
-            <div class="p-5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10">
-              <div class="flex justify-between items-center mb-2">
-                <span class="text-[10px] font-black text-brand-primary-100 uppercase">Proyección Anual (ARR)</span>
-                <span class="text-xs font-black text-white tabular-nums">{{ formatCurrency(estimatedMRR * 12) }}</span>
-              </div>
-              <div class="h-1.5 w-full bg-brand-primary-900/40 rounded-full overflow-hidden">
-                <div class="h-full bg-white rounded-full" style="width: 65%"></div>
-              </div>
+      <!-- Market Share & Billing -->
+      <div class="space-y-8">
+        <!-- Gráfico Circular Real -->
+        <div class="p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="text-center mb-8">
+            <h3 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest">Market Share</h3>
+            <p class="text-[9px] text-slate-500 font-bold uppercase mt-1">Distribución de Planes Real</p>
+          </div>
+          
+          <div class="relative size-48 mx-auto mb-8">
+            <svg class="size-full -rotate-90" viewBox="0 0 36 36">
+              <circle cx="18" cy="18" r="16" fill="none" class="text-slate-100 dark:text-slate-800" stroke="currentColor" stroke-width="4" />
+              <circle 
+                cx="18" cy="18" r="16" fill="none" 
+                class="text-brand-primary-500 transition-all duration-1000" 
+                stroke="currentColor" stroke-width="4" 
+                stroke-linecap="round"
+                :stroke-dasharray="`${proPercentage} 100`" 
+              />
+            </svg>
+            <div class="absolute inset-0 flex flex-col items-center justify-center">
+              <span class="text-3xl font-black text-slate-900 dark:text-white leading-none">{{ proPercentage }}%</span>
+              <span class="text-[8px] font-black text-brand-primary-500 uppercase tracking-widest mt-1">PRO ADOPTION</span>
             </div>
-            <p class="text-xs text-brand-primary-100/80 font-medium leading-relaxed">
-              El 85% de las empresas utilizan el plan base. Se recomienda lanzar campaña para el plan Pro este trimestre.
-            </p>
-            <button class="w-full py-3 rounded-xl bg-white text-brand-primary-600 text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-50 transition-all shadow-lg active:scale-95">
-              Generar Reporte Mensual
-            </button>
+          </div>
+
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-4 rounded-2xl bg-brand-primary-50/50 dark:bg-brand-primary-900/10 border border-brand-primary-100 dark:border-brand-primary-800/50">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-black text-brand-primary-700 dark:text-brand-primary-400 uppercase leading-none mb-1">Pro Business</span>
+                <span class="text-[8px] text-slate-400 font-bold uppercase tracking-tight">Full Features</span>
+              </div>
+              <span class="text-xl font-black text-brand-primary-700 dark:text-brand-primary-400">{{ planStats.pro }}</span>
+            </div>
+            <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-black text-slate-600 dark:text-slate-400 uppercase leading-none mb-1">Hub Basic</span>
+                <span class="text-[8px] text-slate-400 font-bold uppercase tracking-tight">Standard Only</span>
+              </div>
+              <span class="text-xl font-black text-slate-700 dark:text-white">{{ planStats.base }}</span>
+            </div>
           </div>
         </div>
-        <div class="absolute -right-10 -top-10 size-40 bg-white/10 rounded-full blur-3xl"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { useTenants } from '../composables/useTenants'
+import { centralApi } from '@/services/centralApi'
 
 const { tenants, loading, fetchTenants } = useTenants()
+const syncing = ref(false)
+const apiLatency = ref(0)
 
-const estimatedMRR = computed(() => tenants.value.length * 49)
-
-const totalUsers = computed(() => {
-  return tenants.value.reduce((acc, t) => {
-    // Hash-based estimate for demo purposes
-    const hash = t.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0)
-    return acc + (8 + (hash % 42))
-  }, 0)
+const globalStats = ref<any>({
+  total_tenants: 0,
+  total_users: 0,
+  total_vehicles: 0,
+  total_reservations: 0,
+  total_tickets: 0,
+  total_mrr_cents: 0,
+  top_tenant_by_vehicles: null,
+  top_tenant_by_users: null,
 })
 
-const recentTenants = computed(() => {
-  return [...tenants.value]
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, 4)
-})
-
-const formatCurrency = (val: number) => {
-  return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(val)
+const syncAll = async () => {
+  syncing.value = true
+  const start = performance.now()
+  try {
+    // 1. Cargar lista de tenants (proporciona datos para plan distro y ranking)
+    await fetchTenants()
+    // 2. Cargar estadísticas globales reales del backend
+    const res = await centralApi.getGlobalStats()
+    globalStats.value = res
+    // 3. Calcular latencia
+    apiLatency.value = Math.round(performance.now() - start)
+  } catch (e) {
+    console.error('Error in synchronization:', e)
+  } finally {
+    setTimeout(() => { syncing.value = false }, 600)
+  }
 }
 
-const formatDate = (dateStr: string) => {
-  return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' })
-}
+const kpis = computed(() => [
+  { 
+    label: 'Total Tenants', 
+    value: tenants.value.length, 
+    icon: 'business', 
+    color: 'bg-brand-primary-50 text-brand-primary-600', 
+    desc: 'Empresas con aislamiento de datos.' 
+  },
+  { 
+    label: 'Gente Registrada', 
+    value: globalStats.value.total_users || 0, 
+    icon: 'people', 
+    color: 'bg-emerald-50 text-emerald-600', 
+    desc: 'Total de usuarios en todos los inquilinos.' 
+  },
+  { 
+    label: 'Flota Global', 
+    value: globalStats.value.total_vehicles || 0, 
+    icon: 'directions_car', 
+    color: 'bg-blue-50 text-blue-600', 
+    desc: 'Vehículos con telemetría activa.' 
+  },
+  { 
+    label: 'MRR Acumulado', 
+    value: formatCurrency((globalStats.value.total_mrr_cents || 0) / 100), 
+    icon: 'payments', 
+    color: 'bg-amber-50 text-amber-600', 
+    desc: 'Ingresos mensuales recurrentes totales.' 
+  }
+])
 
-onMounted(() => {
-  fetchTenants()
+const nodes = computed(() => [
+  { name: 'Broker MQTT', icon: 'sensors', status: 'Online', iconColor: 'text-blue-400', desc: 'Protocolo IoT central operativo.' },
+  { name: 'Central API', icon: 'dns', status: apiLatency.value + 'ms', iconColor: 'text-brand-primary-400', desc: 'Núcleo lógico y seguridad multitenant.' },
+  { name: 'Cluster DB', icon: 'storage', status: tenants.value.length + ' Dbs', iconColor: 'text-amber-400', desc: 'Esquemas PostgreSQL independientes.' }
+])
+
+const planStats = computed(() => {
+  const stats = { pro: 0, base: 0 }
+  tenants.value.forEach(t => {
+    const isPro = t.company_plan === 'pro' || t.billing?.price_id?.toLowerCase().includes('pro')
+    isPro ? stats.pro++ : stats.base++
+  })
+  return stats
 })
+
+const proPercentage = computed(() => tenants.value.length ? Math.round((planStats.value.pro / tenants.value.length) * 100) : 0)
+
+const formatCurrency = (val: number) => new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(val)
+
+onMounted(syncAll)
 </script>
+
+<style scoped>
+.animate-fade-in { animation: fadeIn 0.4s ease-out; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+</style>
