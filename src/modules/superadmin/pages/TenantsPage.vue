@@ -88,6 +88,7 @@
               />
             </th>
             <th class="px-6 py-5">Empresa / ID</th>
+            <th class="px-6 py-5 text-center">Plan</th>
             <th class="px-6 py-5 text-center">Facturación</th>
             <th class="px-6 py-5">Alta</th>
             <th class="px-6 py-5 text-center">Estado</th>
@@ -114,6 +115,18 @@
                   <p class="text-[10px] font-mono text-brand-primary-500 font-bold mt-0.5 truncate max-w-[150px]">{{ t.domains?.[0] || 'S/N' }}</p>
                 </div>
               </div>
+            </td>
+            <td class="px-6 py-4 text-center">
+              <span 
+                :class="[
+                  'px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-all',
+                  t.billing?.price_id?.includes('pro') 
+                    ? 'bg-brand-primary-50 text-brand-primary-700 border-brand-primary-100 dark:bg-brand-primary-900/20 dark:text-brand-primary-400 dark:border-brand-primary-800' 
+                    : 'bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
+                ]"
+              >
+                {{ t.billing?.price_id?.includes('pro') ? 'PRO BUSINESS' : 'HUB BASIC' }}
+              </span>
             </td>
             <td class="px-6 py-4 text-center">
               <div class="text-xs font-black text-slate-700 dark:text-slate-300">{{ formatCents(t.billing?.monthly_amount_cents || 4900) }}</div>
