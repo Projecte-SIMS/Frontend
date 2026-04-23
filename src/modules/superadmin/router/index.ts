@@ -23,6 +23,11 @@ export const superAdminRoutes: RouteRecordRaw[] = [
         component: () => import('../pages/TenantsPage.vue'),
       },
       {
+        path: 'fleet',
+        name: 'SuperAdminFleet',
+        component: () => import('../pages/FleetManagementPage.vue'),
+      },
+      {
         path: 'profile',
         name: 'SuperAdminProfile',
         component: () => import('../pages/SuperAdminProfilePage.vue'),

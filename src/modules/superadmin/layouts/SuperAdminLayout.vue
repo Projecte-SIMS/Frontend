@@ -111,6 +111,7 @@ onMounted(() => {
 const navItems = [
   { name: 'Resumen', to: '/superadmin/dashboard', icon: 'dashboard' },
   { name: 'Empresas', to: '/superadmin/tenants', icon: 'business' },
+  { name: 'Gestión IoT', to: '/superadmin/fleet', icon: 'sensors' },
   { name: 'Mi Perfil', to: '/superadmin/profile', icon: 'person' },
 ]
 

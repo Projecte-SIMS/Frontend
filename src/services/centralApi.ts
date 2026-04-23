@@ -286,6 +286,32 @@ export const centralApi = {
   async updateCentralSetting(key: string, value: string) {
     const response = await centralApiClient.post('/settings/update', { key, value })
     return response.data
+  },
+
+  // IoT Fleet Management
+  async getFleetDevices() {
+    const response = await centralApiClient.get('/tenants/fleet/devices')
+    return response.data.data
+  },
+
+  async discoverDevices() {
+    const response = await centralApiClient.get('/tenants/fleet/discover')
+    return response.data.data
+  },
+
+  async addFleetDevice(data: any) {
+    const response = await centralApiClient.post('/tenants/fleet/devices', data)
+    return response.data.data
+  },
+
+  async executeFleetAction(deviceId: number, action: string) {
+    const response = await centralApiClient.post(`/tenants/fleet/devices/${deviceId}/action`, { action })
+    return response.data
+  },
+
+  async deleteFleetDevice(deviceId: number) {
+    const response = await centralApiClient.delete(`/tenants/fleet/devices/${deviceId}`)
+    return response.data
   }
 }
 
