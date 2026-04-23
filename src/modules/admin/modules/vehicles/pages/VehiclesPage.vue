@@ -44,9 +44,25 @@
         </select>
       </div>
       <div class="flex items-center justify-end gap-3">
-        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">
-          {{ pagination.total }} unidades activas
-        </span>
+        <!-- Contador de Límite por Plan -->
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 shadow-inner">
+          <div class="flex flex-col items-end">
+            <span class="text-[8px] font-black text-slate-400 uppercase tracking-[0.15em] leading-none mb-1">Capacidad de Flota</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-black text-slate-900 dark:text-white">{{ pagination.total }}</span>
+              <span class="text-[10px] font-bold text-slate-400">/</span>
+              <span v-if="vehicleLimit === Infinity" class="text-[9px] font-black text-brand-primary-600 uppercase tracking-widest">Ilimitado</span>
+              <span v-else class="text-xs font-black text-slate-500">{{ vehicleLimit }}</span>
+            </div>
+          </div>
+          <div 
+            class="size-8 rounded-lg flex items-center justify-center"
+            :class="isPro ? 'bg-brand-primary-50 text-brand-primary-600' : 'bg-slate-100 text-slate-400'"
+          >
+            <span class="material-icons text-lg">{{ isPro ? 'auto_awesome' : 'inventory_2' }}</span>
+          </div>
+        </div>
+
         <button 
           @click="loadVehicles" 
           class="p-2 text-slate-400 hover:text-brand-primary-600 transition-colors"
@@ -228,6 +244,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useVehicles } from '../composables/useVehicles'
+import { usePlan } from '@/modules/common/composables/usePlan'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import { useToast } from '@/modules/common/composables/useToast'
 import type { Vehicle, VehicleFilters } from '../interfaces/vehicle.interface'
@@ -244,6 +261,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const { vehicles, loading, error, pagination, getVehicles, deleteVehicle } = useVehicles()
+const { vehicleLimit, isPro, fetchCurrentPlan } = usePlan()
 const toast = useToast()
 
 const showDeleteDialog = ref(false)
@@ -276,6 +294,7 @@ let searchTimeout: any = null
 
 onMounted(() => {
   loadVehicles()
+  fetchCurrentPlan()
 })
 
 const loadVehicles = () => {

@@ -11,7 +11,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Lado Izquierdo: Formulario de Marca -->
       <div class="lg:col-span-2 space-y-8">
-        <section class="p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <section class="p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
           <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-3">
               <div class="size-10 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 flex items-center justify-center">
@@ -25,16 +25,19 @@
             </div>
           </div>
 
-          <div class="space-y-10 relative">
-            <!-- Overlay para bloquear -->
-            <div v-if="!canCustomBranding" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/10 dark:bg-slate-900/10 backdrop-blur-[2px] rounded-3xl group">
-               <div class="p-6 rounded-[2rem] bg-white dark:bg-slate-800 shadow-2xl border border-slate-100 dark:border-slate-700 text-center animate-fleetly-fade-up">
-                 <p class="text-sm font-black text-slate-900 dark:text-white mb-2">Función Bloqueada</p>
-                 <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Tu plan actual no permite personalizar los colores de marca.</p>
-                 <a href="mailto:soporte@fleetly.com" class="inline-flex px-6 py-2.5 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all">Contactar Soporte</a>
+          <!-- Overlay para bloquear (ahora cubre toda la sección) -->
+          <div v-if="!canCustomBranding" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/40 dark:bg-slate-900/40 backdrop-blur-md group">
+             <div class="p-8 rounded-[2.5rem] bg-white dark:bg-slate-800 shadow-2xl border border-slate-100 dark:border-slate-700 text-center animate-fleetly-fade-up max-w-sm mx-4">
+               <div class="size-16 rounded-3xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center mx-auto mb-6">
+                 <span class="material-icons text-3xl">workspace_premium</span>
                </div>
-            </div>
+               <p class="text-lg font-black text-slate-900 dark:text-white mb-2">Función Bloqueada</p>
+               <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">Tu plan actual no permite personalizar los colores de marca. Actualiza tu suscripción para desbloquear esta opción.</p>
+               <a href="mailto:soporte@fleetly.com" class="inline-flex w-full items-center justify-center px-8 py-4 rounded-2xl bg-brand-primary-600 text-white text-xs font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 active:scale-95">Mejorar Plan</a>
+             </div>
+          </div>
 
+          <div class="space-y-10">
             <!-- Theme Selection -->
             <div :class="{'grayscale opacity-50 pointer-events-none': !canCustomBranding}">
               <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-1">Color de Marca</p>
