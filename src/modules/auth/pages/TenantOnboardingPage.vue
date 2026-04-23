@@ -104,9 +104,16 @@
               </div>
 
               <!-- Theme Selection -->
-              <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Tema de marca</label>
-                <div class="grid grid-cols-5 gap-3">
+              <div class="relative">
+                <div class="flex items-center justify-between mb-3 ml-1">
+                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Tema de marca</label>
+                  <div v-if="form.plan === 'base'" class="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800">
+                    <span class="material-icons text-[10px] text-amber-500">lock</span>
+                    <span class="text-[8px] font-black text-amber-600 uppercase">PRO para elegir</span>
+                  </div>
+                </div>
+
+                <div class="grid grid-cols-6 gap-3" :class="{'opacity-50 grayscale pointer-events-none': form.plan === 'base'}">
                   <button
                     v-for="t in themes"
                     :key="t.id"
@@ -117,10 +124,15 @@
                     ]"
                     class="group relative flex flex-col items-center transition-all"
                   >
-                    <div :class="t.color" class="size-10 rounded-xl shadow-lg mb-1"></div>
-                    <span class="text-[8px] font-black uppercase tracking-tighter text-gray-400 group-hover:text-gray-600 transition-colors">{{ t.name }}</span>
+                    <div :class="t.color" class="size-8 rounded-xl shadow-lg mb-1"></div>
+                    <span class="text-[7px] font-black uppercase tracking-tighter text-gray-400 group-hover:text-gray-600 transition-colors">{{ t.name }}</span>
                   </button>
                 </div>
+                
+                <!-- Aviso explicativo plan base -->
+                <p v-if="form.plan === 'base'" class="text-[9px] text-gray-500 mt-2 ml-1 italic">
+                  El plan BASE incluye el tema corporativo <span class="font-bold">Baltic</span> por defecto.
+                </p>
               </div>
 
               <div class="pt-2">
@@ -418,6 +430,13 @@ const themes = [
 // Instant theme preview
 watch(() => form.theme, (newTheme) => {
   setBrandTheme(newTheme)
+})
+
+// Force Baltic theme for base plan
+watch(() => form.plan, (newPlan) => {
+  if (newPlan === 'base') {
+    form.theme = 'baltic'
+  }
 })
 
 const goToPersonalInfoStep = () => {

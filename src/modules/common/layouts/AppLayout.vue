@@ -160,7 +160,7 @@
           </div>
         </transition>
       </router-view>
-      <ChatbotPage />
+      <ChatbotPage v-if="canUseAI" />
     </main>
   </div>
 </template>
@@ -182,6 +182,7 @@ import {
   MoonIcon
 } from '@heroicons/vue/24/outline'
 import { useAuth } from '@/modules/auth/composables/useAuth'
+import { usePlan } from '@/modules/common/composables/usePlan'
 import UserMenu from '@/modules/common/components/UserMenu.vue'
 import ChatbotPage from '@/modules/common/pages/ChatbotPage.vue'
 import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
@@ -190,6 +191,7 @@ import { useTheme } from '@/modules/common/composables/useTheme'
 
 const route = useRoute()
 const { user } = useAuth()
+const { canUseAI, fetchCurrentPlan } = usePlan()
 const { getBookings, hasActiveBooking } = useBookingsUser()
 const { isDark, toggleTheme, initTheme, fetchAndApplyTenantTheme } = useTheme()
 const mobileMenuOpen = ref(false)
@@ -223,6 +225,7 @@ let pollInterval: any = null
 onMounted(() => {
   initTheme()
   fetchAndApplyTenantTheme()
+  fetchCurrentPlan()
   getBookings()
   pollInterval = setInterval(getBookings, 10000) // Cada 10s verificamos estado de viaje
 })

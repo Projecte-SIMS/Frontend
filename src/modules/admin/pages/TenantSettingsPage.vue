@@ -12,16 +12,31 @@
       <!-- Lado Izquierdo: Formulario de Marca -->
       <div class="lg:col-span-2 space-y-8">
         <section class="p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
-          <div class="flex items-center gap-3 mb-8">
-            <div class="size-10 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 flex items-center justify-center">
-              <span class="material-icons">palette</span>
+          <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-3">
+              <div class="size-10 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 flex items-center justify-center">
+                <span class="material-icons">palette</span>
+              </div>
+              <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Identidad Visual</h3>
             </div>
-            <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Identidad Visual</h3>
+            <div v-if="!canCustomBranding" class="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 flex items-center gap-2">
+              <span class="material-icons text-amber-500 text-xs">lock</span>
+              <span class="text-[9px] font-black text-amber-600 uppercase tracking-widest">Requiere PRO BUSINESS</span>
+            </div>
           </div>
 
-          <div class="space-y-10">
+          <div class="space-y-10 relative">
+            <!-- Overlay para bloquear -->
+            <div v-if="!canCustomBranding" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-white/10 dark:bg-slate-900/10 backdrop-blur-[2px] rounded-3xl group">
+               <div class="p-6 rounded-[2rem] bg-white dark:bg-slate-800 shadow-2xl border border-slate-100 dark:border-slate-700 text-center animate-fleetly-fade-up">
+                 <p class="text-sm font-black text-slate-900 dark:text-white mb-2">Función Bloqueada</p>
+                 <p class="text-xs text-slate-500 dark:text-slate-400 mb-6">Tu plan actual no permite personalizar los colores de marca.</p>
+                 <a href="mailto:soporte@fleetly.com" class="inline-flex px-6 py-2.5 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all">Contactar Soporte</a>
+               </div>
+            </div>
+
             <!-- Theme Selection -->
-            <div>
+            <div :class="{'grayscale opacity-50 pointer-events-none': !canCustomBranding}">
               <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-1">Color de Marca</p>
               <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
                 <button
@@ -116,9 +131,11 @@
 import { ref, onMounted } from 'vue'
 import { api } from '@/services/api'
 import { useTheme } from '@/modules/common/composables/useTheme'
+import { usePlan } from '@/modules/common/composables/usePlan'
 import { useToast } from '@/modules/common/composables/useToast'
 
-const { brandTheme, updateCentralTheme, setBrandTheme } = useTheme()
+const { brandTheme, setBrandTheme } = useTheme()
+const { canCustomBranding, fetchCurrentPlan } = usePlan()
 const toast = useToast()
 const updating = ref(false)
 const settings = ref<any>({
@@ -148,6 +165,9 @@ const loadSettings = async () => {
 }
 
 const handleUpdateTheme = async (themeId: string) => {
+  if (!canCustomBranding.value) {
+    return toast.error('Actualiza a PRO BUSINESS para personalizar tus colores')
+  }
   updating.value = true
   // 1. Guardamos el estado anterior por si falla la API
   const prevTheme = brandTheme.value
@@ -179,5 +199,8 @@ const formatDate = (dateStr: string) => {
   })
 }
 
-onMounted(loadSettings)
+onMounted(() => {
+  loadSettings()
+  fetchCurrentPlan()
+})
 </script>
