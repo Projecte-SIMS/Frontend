@@ -147,6 +147,9 @@ const api = {
     success_url: window.location.origin + '/wallet?success=true',
     cancel_url: window.location.origin + '/wallet?cancel=true'
   }).then(res => res.data),
+  openPortal: () => apiClient.post('/wallet/portal', {
+    return_url: window.location.origin + '/wallet'
+  }).then(res => res.data),
 }
 
 export { getCurrentTenant, isSuperAdminRoute, api }

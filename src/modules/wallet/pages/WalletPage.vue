@@ -14,13 +14,27 @@
           <p class="text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Saldo Disponible</p>
           <div class="mt-2 flex items-baseline">
             <span class="text-5xl font-black text-slate-900 dark:text-white">{{ formattedBalance }}</span>
-            <span v-if="walletData?.balance < 0" class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
-              Deuda Pendiente
-            </span>
+            <div class="ml-4 flex flex-col">
+              <span v-if="walletData?.balance < 0" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">
+                Deuda Pendiente
+              </span>
+              <span v-if="walletData?.has_payment_method" class="mt-1 text-xs text-slate-500 flex items-center gap-1">
+                <CreditCardIcon class="size-3" />
+                Tarjeta vinculada activa
+              </span>
+            </div>
           </div>
         </div>
         
         <div class="flex flex-col sm:flex-row gap-3">
+          <button 
+            v-if="walletData?.has_payment_method"
+            @click="openStripePortal"
+            :disabled="loading"
+            class="inline-flex items-center justify-center px-4 py-2.5 border border-slate-200 dark:border-slate-700 text-sm font-bold rounded-xl shadow-sm text-slate-700 dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all disabled:opacity-50"
+          >
+            Gestionar Tarjeta
+          </button>
           <button 
             @click="initTopUp(1000)" 
             :disabled="loading"
@@ -103,7 +117,8 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import { api } from '@/services/api'
-import { CheckCircleIcon, ArrowPathIcon } from '@heroicons/vue/24/outline'
+import { CheckCircleIcon, ArrowPathIcon, CreditCardIcon } from '@heroicons/vue/24/outline'
+import showToast from '@/modules/common/composables/useToast'
 
 const route = useRoute()
 const walletData = ref<any>(null)
@@ -122,6 +137,7 @@ const fetchWallet = async () => {
     walletData.value = res
   } catch (error) {
     console.error('Error fetching wallet:', error)
+    showToast('No se pudo cargar la información de la cartera.', 'error')
   } finally {
     loading.value = false
   }
@@ -135,7 +151,21 @@ const initTopUp = async (amountCents: number) => {
       window.location.href = res.checkout_url
     }
   } catch (error) {
-    alert('Error al iniciar la recarga. Inténtalo de nuevo.')
+    showToast('Error al iniciar la recarga. Inténtalo de nuevo.', 'error')
+  } finally {
+    loading.value = false
+  }
+}
+
+const openStripePortal = async () => {
+  loading.value = true
+  try {
+    const res = await api.openPortal()
+    if (res.url) {
+      window.location.href = res.url
+    }
+  } catch (error: any) {
+    showToast(error.response?.data?.message || 'Error al abrir el portal de pagos.', 'error')
   } finally {
     loading.value = false
   }
@@ -158,8 +188,12 @@ const formatDate = (dateStr: string) => {
 onMounted(() => {
   fetchWallet()
   if (route.query.success) {
-    successMsg.value = '¡Recarga completada con éxito! Tu saldo se actualizará en unos instantes.'
+    showToast('¡Recarga completada con éxito!', 'success')
     // Limpiar query params sin recargar
+    window.history.replaceState({}, '', window.location.pathname)
+  }
+  if (route.query.cancel) {
+    showToast('La recarga ha sido cancelada.', 'info')
     window.history.replaceState({}, '', window.location.pathname)
   }
 })
