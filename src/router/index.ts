@@ -35,6 +35,7 @@ const routes: RouteRecordRaw[] = [
       { path: 'favoritos', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil', component: () => import('@/modules/auth/pages/DashboardPage.vue') },
       { path: 'perfil/editar', component: () => import('@/modules/auth/pages/EditProfilePage.vue') },
+      { path: 'wallet', name: 'UserWallet', component: () => import('@/modules/wallet/pages/WalletPage.vue') },
       { path: 'chatbot', component: () => import('@/modules/common/pages/ChatbotPage.vue') },
     ]
   },

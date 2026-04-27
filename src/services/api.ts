@@ -139,6 +139,14 @@ const api = {
   // Configuración del servidor (Tenant)
   getSettings: () => apiClient.get('/admin/settings').then(res => res.data),
   updateSettings: (data: any) => apiClient.patch('/admin/settings', data).then(res => res.data),
+
+  // Cartera (Wallet)
+  getWallet: () => apiClient.get('/wallet').then(res => res.data),
+  initTopUp: (amountCents: number) => apiClient.post('/wallet/topup', {
+    amount_cents: amountCents,
+    success_url: window.location.origin + '/wallet?success=true',
+    cancel_url: window.location.origin + '/wallet?cancel=true'
+  }).then(res => res.data),
 }
 
 export { getCurrentTenant, isSuperAdminRoute, api }

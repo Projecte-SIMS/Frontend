@@ -76,6 +76,13 @@
 
         <div class="p-2 border-t border-gray-100 dark:border-gray-700 bg-gray-50/30 dark:bg-gray-900/30">
           <button
+            @click="openWallet"
+            class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
+          >
+            <WalletIcon class="size-5 text-gray-400" />
+            Mi cartera
+          </button>
+          <button
             @click="openTickets"
             class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
           >
@@ -113,7 +120,8 @@ import {
   ArrowRightOnRectangleIcon,
   PlusIcon,
   XMarkIcon,
-  TicketIcon
+  TicketIcon,
+  WalletIcon
 } from '@heroicons/vue/24/outline'
 
 const props = withDefaults(defineProps<{
@@ -164,6 +172,11 @@ const handleAddAccount = () => {
 const openTickets = () => {
   showMenu.value = false
   router.push('/tickets')
+}
+
+const openWallet = () => {
+  showMenu.value = false
+  router.push('/wallet')
 }
 
 const openProfile = () => {
