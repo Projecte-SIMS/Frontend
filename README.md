@@ -29,12 +29,13 @@ Para forzar un contexto en desarrollo: `http://localhost:5173/?tenant=demo`
 
 ## 🎨 Personalización y Accesibilidad
 - **Branding:** Los colores y logotipos se inyectan dinámicamente desde el backend tras resolver el tenant.
-- **Accesibilidad:** Integración nativa con **UserWay** y cumplimiento **WCAG 2.1 AA**. Consulta el [**Manual de Accesibilidad**](../docs/accesibilidad.md) para más detalles.
+- **Accesibilidad:** Integración nativa con **UserWay** y cumplimiento **WCAG 2.1 AA**. Consulta el [**Manual de Accesibilidad**](https://github.com/Projecte-SIMS/.github/blob/main/profile/docs/accesibilidad.md) para más detalles.
 
 ## 📄 Documentación Relacionada
+- [**Guía de Despliegue**](https://github.com/Projecte-SIMS/.github/blob/main/profile/docs/despliegue.md)
 - [**Flujo Multitenant Detallado**](./docs/MULTITENANT_FRONTEND_FLOW.md)
 - [**Guía de Componentes**](./docs/components.md)
-- [**Manual de Usuario Final**](../docs/manual_usuario.md)
+- [**Manual de Usuario Final**](https://github.com/Projecte-SIMS/.github/blob/main/profile/docs/manual_usuario.md)
 
 ---
-*Para más detalles, consulta el [README principal](../README.md).*
+*Para más detalles, consulta el [README principal](https://github.com/Projecte-SIMS/.github/blob/main/profile/readme.md).*
