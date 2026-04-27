@@ -33,7 +33,8 @@
             :disabled="loading"
             class="inline-flex items-center justify-center px-4 py-2.5 border border-slate-200 dark:border-slate-700 text-sm font-bold rounded-xl shadow-sm text-slate-700 dark:text-white bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all disabled:opacity-50"
           >
-            Gestionar Tarjeta
+            <CreditCardIcon class="size-4 mr-2" />
+            Gestionar Tarjetas
           </button>
           <button 
             @click="initTopUp(1000)" 
