@@ -128,7 +128,8 @@ router.beforeEach(async (to, from, next) => {
   }
 
   // Tenant auth fetch should not run on superadmin (central) routes
-  if (!requiresCentralAuth && getToken() && !isAuthenticated.value) {
+  const isSuperAdminPath = to.path.startsWith('/superadmin')
+  if (!requiresCentralAuth && !isSuperAdminPath && getToken() && !isAuthenticated.value) {
     await fetchUser()
   }
 
