@@ -215,62 +215,75 @@
     </section>
 
     <!-- Modal: Crear Vehículo y Vincular -->
-    <Transition name="modal">
-      <div v-if="showCreateModal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800">
-          <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tight">Nuevo Vehículo IoT</h3>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 font-medium uppercase tracking-widest">Registrar unidad y vincular dispositivo <span class="text-brand-primary-600 font-black">#{{ selectedDeviceId?.substring(0,8) }}</span></p>
-          
-          <form @submit.prevent="handleCreateAndLink" class="space-y-4">
-            <FormField label="Matrícula">
-              <input v-model="createForm.license_plate" type="text" placeholder="Ej: 1234ABC" class="w-full bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase" required />
-            </FormField>
-            
-            <div class="grid grid-cols-2 gap-4">
-              <FormField label="Marca">
-                <input v-model="createForm.brand" type="text" placeholder="Ej: Tesla" class="w-full bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase" required />
-              </FormField>
-              <FormField label="Modelo">
-                <input v-model="createForm.model" type="text" placeholder="Ej: Model 3" class="w-full bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase" required />
-              </FormField>
-            </div>
+    <TransitionRoot as="template" :show="showCreateModal">
+      <Dialog as="div" class="relative z-[60]" @close="showCreateModal = false">
+        <TransitionChild as="template" enter="transition-opacity ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="transition-opacity ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
+          <div class="fixed inset-0 bg-gray-950/90 backdrop-blur-xl transition-opacity" />
+        </TransitionChild>
 
-            <div class="pt-4 flex gap-3">
-              <button type="button" @click="showCreateModal = false" class="flex-1 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">Cancelar</button>
-              <button type="submit" :disabled="creating" class="flex-1 px-4 py-3 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-200 active:scale-95 disabled:opacity-50">
-                {{ creating ? 'PROCESANDO...' : 'CREAR Y VINCULAR' }}
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </Transition>
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <TransitionChild as="template" enter="transition ease-out duration-300 transform" enter-from="translate-y-8 opacity-0 scale-95" enter-to="translate-y-0 opacity-100 scale-100" leave="transition ease-in duration-200 transform" leave-from="translate-y-0 opacity-100 scale-100" leave-to="translate-y-8 opacity-0 scale-95">
+              <DialogPanel class="relative transform overflow-hidden rounded-[3rem] bg-white dark:bg-gray-900 px-6 pt-10 pb-8 text-left shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] transition-all sm:my-8 sm:w-full sm:max-w-md border border-gray-100 dark:border-gray-800">
+                <div class="absolute -top-32 -right-32 size-64 rounded-full bg-brand-primary-500/15 blur-3xl"></div>
+                
+                <div class="relative">
+                  <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 dark:text-brand-primary-400 mb-8 shadow-inner border border-brand-primary-100 dark:border-brand-primary-800/30">
+                    <TruckIcon class="h-12 w-12" />
+                  </div>
 
-    <!-- Modal: Confirmar Eliminación Hardware -->
-    <Transition name="modal">
-      <div v-if="showDeleteDialog" class="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800">
-          <div class="size-14 rounded-2xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 flex items-center justify-center mb-6">
-            <TrashIcon class="size-8" />
+                  <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none text-center">Nuevo Vehículo</DialogTitle>
+                  <p class="mt-4 text-center text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest">
+                    Vincular dispositivo <span class="text-brand-primary-600">#{{ selectedDeviceId?.substring(0,8) }}</span>
+                  </p>
+                  
+                  <form @submit.prevent="handleCreateAndLink" class="mt-8 space-y-4">
+                    <FormField label="Matrícula">
+                      <input v-model="createForm.license_plate" type="text" placeholder="Ej: 1234ABC" class="w-full bg-slate-50 dark:bg-slate-950 px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase focus:ring-2 focus:ring-brand-primary-500 outline-none" required />
+                    </FormField>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                      <FormField label="Marca">
+                        <input v-model="createForm.brand" type="text" placeholder="Ej: Tesla" class="w-full bg-slate-50 dark:bg-slate-950 px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase focus:ring-2 focus:ring-brand-primary-500 outline-none" required />
+                      </FormField>
+                      <FormField label="Modelo">
+                        <input v-model="createForm.model" type="text" placeholder="Ej: Model 3" class="w-full bg-slate-50 dark:bg-slate-950 px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase focus:ring-2 focus:ring-brand-primary-500 outline-none" required />
+                      </FormField>
+                    </div>
+
+                    <div class="pt-6 flex flex-col gap-3">
+                      <button type="submit" :disabled="creating" class="w-full flex justify-center items-center gap-3 rounded-[1.5rem] bg-brand-primary-600 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-white hover:bg-brand-primary-700 shadow-xl shadow-brand-primary-500/30 active:scale-95 transition-all disabled:opacity-50">
+                        <ArrowPathIcon v-if="creating" class="size-5 animate-spin" />
+                        {{ creating ? 'Procesando...' : 'Crear y Vincular' }}
+                      </button>
+                      <button type="button" @click="showCreateModal = false" class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700">Cancelar</button>
+                    </div>
+                  </form>
+                </div>
+              </DialogPanel>
+            </TransitionChild>
           </div>
-          <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tight">Eliminar Hardware</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 font-medium">¿Estás seguro de eliminar el dispositivo <span class="font-black text-slate-900 dark:text-white">{{ deviceToDelete?.name }}</span>? Se perderá toda la telemetría histórica asociada.</p>
-          <div class="flex gap-3">
-            <button @click="showDeleteDialog = false" class="flex-1 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">Cancelar</button>
-            <button @click="handleDelete" class="flex-1 px-4 py-3 rounded-xl bg-rose-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-rose-700 transition-all shadow-lg shadow-rose-200 active:scale-95">Eliminar</button>
-          </div>
         </div>
-      </div>
-    </Transition>
+      </Dialog>
+    </TransitionRoot>
 
-    <!-- Toasts (Usando el sistema global del frontend) -->
+    <!-- Modal de Confirmación Global -->
+    <ConfirmDialog 
+      :visible="confirmModal.show"
+      :title="confirmModal.title"
+      :message="confirmModal.message"
+      @confirm="executeConfirmedAction"
+      @cancel="confirmModal.show = false"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, reactive, computed } from 'vue'
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
 import FormField from '@/modules/admin/components/FormField.vue'
+import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 import iotService, { type IoTDevice, type Vehicle } from '@/services/iotService'
 import useToast from '@/modules/common/composables/useToast'
 import {
@@ -289,6 +302,14 @@ const creating = ref(false)
 
 const showToast = (msg: string, type: 'success' | 'error' = 'success') => useToast(msg, type)
 
+// Estado para el modal de confirmación
+const confirmModal = reactive({
+  show: false,
+  title: '',
+  message: '',
+  action: null as (() => Promise<void>) | null
+})
+
 // Filtros y cálculos
 const orphanDevices = computed(() => allDevices.value.filter(d => d.is_orphan))
 
@@ -298,9 +319,6 @@ const isUnlinked = (device: IoTDevice) => device.license_plate?.startsWith('AUTO
 const showCreateModal = ref(false)
 const selectedDeviceId = ref<string | null>(null)
 const createForm = reactive({ license_plate: '', brand: '', model: '' })
-
-const showDeleteDialog = ref(false)
-const deviceToDelete = ref<IoTDevice | null>(null)
 
 const refresh = async () => {
   loading.value = true
@@ -360,40 +378,48 @@ const linkDevice = async (deviceId: string) => {
 }
 
 const unlinkDevice = async (deviceId: string) => {
-  if (!confirm('¿Desvincular este dispositivo del vehículo? El vehículo quedará sin telemetría.')) return
-  
-  try {
-    const result = await iotService.unlinkDevice(deviceId)
-    if (result.success) {
-      showToast('Dispositivo desvinculado correctamente', 'success')
-      await refresh()
-    } else {
-      showToast(result.error || 'Error al desvincular', 'error')
+  confirmModal.title = '¿Desvincular Dispositivo?'
+  confirmModal.message = '¿Estás seguro de desvincular este dispositivo del vehículo? El vehículo quedará sin telemetría en vivo hasta que se asocie un nuevo nodo.'
+  confirmModal.action = async () => {
+    try {
+      const result = await iotService.unlinkDevice(deviceId)
+      if (result.success) {
+        showToast('Dispositivo desvinculado correctamente', 'success')
+        await refresh()
+      } else {
+        showToast(result.error || 'Error al desvincular', 'error')
+      }
+    } catch (error) {
+      showToast('Fallo en el servidor', 'error')
     }
-  } catch (error) {
-    showToast('Fallo en el servidor', 'error')
   }
+  confirmModal.show = true
 }
 
 const confirmDeleteDevice = (device: IoTDevice) => {
-  deviceToDelete.value = device
-  showDeleteDialog.value = true
+  confirmModal.title = '¿Eliminar Hardware?'
+  confirmModal.message = `¿Estás seguro de eliminar el dispositivo ${device.name}? Se perderá toda la telemetría histórica asociada y no podrá ser recuperada.`
+  confirmModal.action = async () => {
+    try {
+      const success = await iotService.deleteDevice(device.id)
+      if (success) {
+        showToast('Dispositivo eliminado', 'success')
+        await refresh()
+      } else {
+        showToast('No se pudo eliminar el dispositivo', 'error')
+      }
+    } catch {
+      showToast('Error de conexión', 'error')
+    }
+  }
+  confirmModal.show = true
 }
 
-const handleDelete = async () => {
-  if (!deviceToDelete.value) return
-  try {
-    const success = await iotService.deleteDevice(deviceToDelete.value.id)
-    if (success) {
-      showToast('Dispositivo eliminado', 'success')
-      showDeleteDialog.value = false
-      await refresh()
-    } else {
-      showToast('No se pudo eliminar el dispositivo', 'error')
-    }
-  } catch {
-    showToast('Error de conexión', 'error')
+const executeConfirmedAction = async () => {
+  if (confirmModal.action) {
+    await confirmModal.action()
   }
+  confirmModal.show = false
 }
 
 const openCreateVehicleModal = (device: IoTDevice) => {

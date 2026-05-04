@@ -20,6 +20,18 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: false }
   },
   {
+    path: '/terms',
+    name: 'Terms',
+    component: () => import('@/modules/common/pages/TermsPage.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/privacy',
+    name: 'Privacy',
+    component: () => import('@/modules/common/pages/PrivacyPage.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
     path: '/',
     component: AppLayout,
     meta: { requiresAuth: true },

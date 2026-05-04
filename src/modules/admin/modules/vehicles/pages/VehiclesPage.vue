@@ -223,21 +223,13 @@
     </div>
 
     <!-- Modal de Eliminación -->
-    <Transition enter-active-class="transition ease-out duration-200" enter-from-class="opacity-0 scale-95" enter-to-class="opacity-100 scale-100" leave-active-class="transition ease-in duration-100" leave-from-class="opacity-100 scale-100" leave-to-class="opacity-0 scale-95">
-      <div v-if="showDeleteDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
-        <div class="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800">
-          <div class="size-14 rounded-2xl bg-rose-50 dark:bg-rose-900/20 text-rose-600 flex items-center justify-center mb-6">
-            <ExclamationTriangleIcon class="size-8" />
-          </div>
-          <h3 class="text-xl font-black text-slate-900 dark:text-white mb-2 uppercase tracking-tight">Eliminar Unidad</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 font-medium">¿Estás seguro de eliminar el vehículo <span class="font-black text-slate-900 dark:text-white">{{ vehicleToDelete?.license_plate }}</span>? Esta acción es irreversible.</p>
-          <div class="flex gap-3">
-            <button @click="showDeleteDialog = false" class="flex-1 px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-600 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800 transition-all">Cancelar</button>
-            <button @click="handleDelete" class="flex-1 px-4 py-3 rounded-xl bg-rose-600 text-white text-[10px] font-black uppercase tracking-widest hover:bg-rose-700 transition-all shadow-lg shadow-rose-200 active:scale-95">Eliminar</button>
-          </div>
-        </div>
-      </div>
-    </Transition>
+    <ConfirmDialog 
+      :visible="showDeleteDialog"
+      title="Eliminar Unidad"
+      :message="`¿Estás seguro de eliminar el vehículo ${vehicleToDelete?.license_plate}? Esta acción es irreversible y se perderá su historial.`"
+      @confirm="handleDelete"
+      @cancel="showDeleteDialog = false"
+    />
   </div>
 </template>
 
@@ -250,6 +242,7 @@ import { useToast } from '@/modules/common/composables/useToast'
 import type { Vehicle, VehicleFilters } from '../interfaces/vehicle.interface'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
 import AdminPagination from '@/modules/admin/components/AdminPagination.vue'
+import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 import {
   PlusIcon,
   ArrowPathIcon,

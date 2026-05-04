@@ -135,6 +135,24 @@
                 </p>
               </div>
 
+              <!-- Términos y Condiciones -->
+              <div class="flex items-start gap-3 px-1">
+                <div class="flex h-5 items-center">
+                  <input
+                    id="terms"
+                    v-model="form.accept_terms"
+                    name="terms"
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-gray-300 dark:border-gray-700 text-brand-primary-600 focus:ring-brand-primary-500 bg-gray-50 dark:bg-gray-950 transition-all cursor-pointer"
+                  />
+                </div>
+                <div class="text-xs leading-5">
+                  <label for="terms" class="font-medium text-gray-500 dark:text-gray-400 cursor-pointer">
+                    Acepto los <RouterLink to="/terms" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">Términos de Servicio para Empresas</RouterLink> y el <RouterLink to="/privacy" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">Acuerdo de Privacidad</RouterLink> de Fleetly.
+                  </label>
+                </div>
+              </div>
+
               <div class="pt-2">
                 <button
                   type="submit"
@@ -416,6 +434,7 @@ const form = reactive({
   address: '',
   city: '',
   postal_code: '',
+  accept_terms: false,
 })
 
 const themes = [
@@ -453,6 +472,10 @@ const goToPersonalInfoStep = () => {
   
   if (!form.admin_password || form.admin_password.length < 8) {
     return toast.error('La contraseña debe tener al menos 8 caracteres')
+  }
+
+  if (!form.accept_terms) {
+    return toast.error('Debes aceptar los términos y condiciones para continuar')
   }
 
   step.value = 2

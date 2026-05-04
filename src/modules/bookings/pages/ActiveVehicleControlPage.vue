@@ -1,183 +1,201 @@
 <template>
-  <div class="max-w-4xl mx-auto space-y-8 font-sans h-full flex flex-col justify-center items-center py-12" v-if="!activeBooking && !loading">
-    <div class="text-center space-y-6">
-      <div class="size-24 rounded-[2.5rem] bg-gray-100 dark:bg-gray-800 flex items-center justify-center mx-auto text-gray-400">
-        <TruckIcon class="size-12" />
-      </div>
-      <h2 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight">No tienes ningún vehículo activo</h2>
-      <p class="text-gray-500 max-w-sm mx-auto">Reserva un vehículo en el mapa y actívalo para ver los controles de mando aquí.</p>
-      <router-link to="/vehicles/map" class="inline-block px-8 py-4 rounded-2xl bg-brand-primary-600 text-white font-black text-xs uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-xl shadow-brand-primary-500/20">
-        Ir al mapa
-      </router-link>
+  <!-- EMPTY STATE: No hay reserva activa -->
+  <div class="min-h-[70vh] flex flex-col items-center justify-center p-6 text-center" v-if="!activeBooking && !loading">
+    <div class="size-24 rounded-3xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-6 text-gray-400">
+      <TruckIcon class="size-12" />
     </div>
+    <h2 class="text-2xl font-black text-gray-900 dark:text-white uppercase tracking-tight mb-2">Sin vehículo vinculado</h2>
+    <p class="text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-8">Reserva un vehículo desde el mapa y actívalo para empezar a controlarlo desde aquí.</p>
+    <router-link to="/vehicles/map" class="px-8 py-4 bg-brand-primary-600 text-white font-black text-xs uppercase tracking-widest rounded-2xl hover:bg-brand-primary-700 transition-all shadow-xl shadow-brand-primary-500/20 active:scale-95">
+      Explorar mapa de vehículos
+    </router-link>
   </div>
 
-  <div v-else-if="activeBooking" class="max-w-6xl mx-auto space-y-8 animate-fade-in pb-12">
-    <!-- Critical Alerts -->
-    <div v-if="hasSafetyAlert" class="bg-red-600 text-white p-4 rounded-3xl shadow-2xl flex items-center gap-4 animate-pulse border-4 border-white/20">
-      <div class="size-12 rounded-2xl bg-white/20 flex items-center justify-center shrink-0">
-        <ExclamationTriangleIcon class="size-8" />
+  <!-- DASHBOARD: Vehículo Activo -->
+  <div v-else-if="activeBooking" class="max-w-6xl mx-auto space-y-6 animate-fade-in pb-12 px-4 sm:px-6">
+    
+    <!-- HEADER: Información General y Estado -->
+    <header class="bg-white dark:bg-gray-900 rounded-[2rem] p-6 sm:p-8 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-5 w-full md:w-auto">
+        <div class="size-16 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 flex items-center justify-center shrink-0 border border-brand-primary-100 dark:border-brand-primary-800/50">
+          <TruckIcon class="size-8 text-brand-primary-600 dark:text-brand-primary-400" />
+        </div>
+        <div>
+          <div class="flex items-center gap-2 mb-1">
+            <span class="px-2 py-0.5 rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-[9px] font-black uppercase tracking-widest flex items-center gap-1">
+              <span class="size-1 rounded-full bg-green-500 animate-pulse"></span> {{ activeBooking.telemetry?.online ? 'Conectado' : 'Sin señal' }}
+            </span>
+            <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ activeBooking.vehicle?.license_plate }}</span>
+          </div>
+          <h1 class="text-2xl font-black text-gray-900 dark:text-white leading-none">
+            {{ activeBooking.vehicle?.brand }} <span class="text-brand-primary-600 dark:text-brand-primary-400">{{ activeBooking.vehicle?.model }}</span>
+          </h1>
+        </div>
       </div>
-      <div class="flex-1">
-        <p class="font-black uppercase tracking-widest text-sm leading-none mb-1">Alerta Crítica de Seguridad</p>
-        <p class="text-xs font-bold text-red-100">{{ safetyAlertMessage }}</p>
+
+      <div class="flex items-center gap-8 w-full md:w-auto justify-around md:justify-end border-t md:border-t-0 md:border-l border-gray-100 dark:border-gray-800 pt-6 md:pt-0 md:pl-8">
+        <div class="text-center">
+          <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Tiempo de viaje</p>
+          <div class="text-2xl font-black text-gray-900 dark:text-white font-mono leading-none">{{ tripDuration }}</div>
+        </div>
+        <div class="text-center">
+          <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Coste estimado</p>
+          <div class="text-2xl font-black text-green-600 dark:text-green-400 font-mono leading-none">{{ estimatedCost }}€</div>
+        </div>
       </div>
-      <div class="text-right px-4 border-l border-white/20">
-        <p class="text-xs font-black uppercase tracking-widest">Estaciona de inmediato</p>
+    </header>
+
+    <!-- ALERTA DE SEGURIDAD -->
+    <div v-if="hasSafetyAlert" class="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800/50 p-4 rounded-3xl flex items-center gap-4 animate-pulse">
+      <ExclamationTriangleIcon class="size-8 text-red-600 dark:text-red-400" />
+      <div>
+        <p class="text-xs font-black text-red-600 dark:text-red-400 uppercase tracking-widest mb-0.5">Atención: Anomalía detectada</p>
+        <p class="text-sm font-bold text-gray-700 dark:text-red-200">{{ safetyAlertMessage }}</p>
       </div>
     </div>
 
-    <!-- Header Control -->
-    <div class="relative overflow-hidden rounded-[3rem] bg-gray-900 p-8 sm:p-10 text-white shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] border border-white/5">
-      <div class="absolute -right-20 -top-20 size-64 rounded-full bg-brand-primary-600/20 blur-3xl"></div>
-      <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-        <div class="flex items-center gap-6">
-          <div class="size-20 rounded-[1.5rem] bg-white/5 backdrop-blur-xl overflow-hidden border border-white/10 shadow-inner group shrink-0">
-                <img :src="getVehicleImage(activeBooking.vehicle?.brand, activeBooking.vehicle?.model)" class="size-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Vehículo" />
-              </div>
-          <div class="text-left min-w-0">
-            <div class="flex items-center gap-3 mb-1">
-              <span class="px-2 py-0.5 rounded-lg bg-green-500 text-white text-[8px] font-black uppercase tracking-widest">Activo</span>
-              <span v-if="activeBooking.telemetry?.online" class="flex items-center gap-1 text-[8px] font-black uppercase tracking-widest text-blue-400">
-                <span class="size-1 rounded-full bg-blue-400 animate-pulse"></span> En línea
-              </span>
+    <!-- MAIN GRID -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      
+      <!-- COLUMNA IZQUIERDA: Telemetría / Salud del vehículo -->
+      <aside class="lg:col-span-3 space-y-4 order-2 lg:order-1">
+        <h3 class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.3em] px-2 mb-2">Estado del Vehículo</h3>
+        
+        <!-- Tarjeta de Velocidad -->
+        <div class="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm group">
+          <div class="flex justify-between items-start mb-4">
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Velocidad</span>
+            <div class="size-8 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
+              <span class="material-icons text-lg">speed</span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-black tracking-tight leading-none mb-1 truncate">{{ activeBooking.vehicle?.brand }} {{ activeBooking.vehicle?.model }}</h1>
-            <p class="text-brand-primary-400 font-mono font-black text-sm tracking-widest uppercase">{{ activeBooking.vehicle?.license_plate }}</p>
+          </div>
+          <div class="flex items-baseline gap-1 mb-2">
+            <span class="text-3xl font-black text-gray-900 dark:text-white leading-none">{{ activeBooking.telemetry?.speed?.toFixed(0) || 0 }}</span>
+            <span class="text-xs font-bold text-gray-400 uppercase">km/h</span>
+          </div>
+          <p class="text-[9px] text-gray-400 font-medium uppercase tracking-tight">Velocidad actual de crucero</p>
+        </div>
+
+        <!-- Tarjeta de Batería -->
+        <div class="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm" :class="{'border-amber-200 dark:border-amber-800': isLowBattery}">
+          <div class="flex justify-between items-start mb-4">
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Batería</span>
+            <div class="size-8 rounded-xl flex items-center justify-center" :class="isLowBattery ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600' : 'bg-green-50 dark:bg-green-900/20 text-green-500'">
+              <span class="material-icons text-lg">{{ isLowBattery ? 'battery_alert' : 'battery_full' }}</span>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1 mb-2">
+            <span class="text-3xl font-black text-gray-900 dark:text-white leading-none" :class="{'text-amber-600 dark:text-amber-400': isLowBattery}">
+              {{ activeBooking.telemetry?.battery_voltage?.toFixed(1) || 12.6 }}
+            </span>
+            <span class="text-xs font-bold text-gray-400 uppercase">V</span>
+          </div>
+          <p class="text-[9px] text-gray-400 font-medium uppercase tracking-tight">Voltaje de la celda de energía</p>
+          <div class="mt-4 h-2 w-full bg-gray-100 dark:bg-gray-800 rounded-full overflow-hidden flex">
+            <div class="h-full transition-all duration-1000" :class="isLowBattery ? 'bg-amber-500' : 'bg-green-500'" style="width: 85%"></div>
           </div>
         </div>
 
-        <div class="flex items-center gap-8 px-8 py-4 bg-white/5 rounded-[2rem] border border-white/5 backdrop-blur-sm">
-          <div class="text-center">
-            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Tiempo</p>
-            <div class="text-2xl font-black font-mono tracking-tighter text-brand-primary-100">{{ tripDuration }}</div>
+        <!-- Tarjeta de Temperatura -->
+        <div class="bg-white dark:bg-gray-900 rounded-3xl p-5 border border-gray-100 dark:border-gray-800 shadow-sm" :class="{'border-red-200 dark:border-red-800': isOverheating}">
+          <div class="flex justify-between items-start mb-4">
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Temperatura</span>
+            <div class="size-8 rounded-xl flex items-center justify-center" :class="isOverheating ? 'bg-red-100 dark:bg-red-900/40 text-red-600' : 'bg-orange-50 dark:bg-orange-900/20 text-orange-500'">
+              <span class="material-icons text-lg">thermostat</span>
+            </div>
           </div>
-          <div class="text-center border-l border-white/10 pl-8">
-            <p class="text-[8px] font-black text-gray-500 uppercase tracking-widest mb-1">Coste Estim.</p>
-            <div class="text-2xl font-black font-mono tracking-tighter text-green-400">{{ estimatedCost }}€</div>
+          <div class="flex items-baseline gap-1 mb-2">
+            <span class="text-3xl font-black text-gray-900 dark:text-white leading-none" :class="{'text-red-600 dark:text-red-400': isOverheating}">
+              {{ activeBooking.telemetry?.engine_temp?.toFixed(1) || 0 }}
+            </span>
+            <span class="text-xs font-bold text-gray-400 uppercase">°C</span>
           </div>
+          <p class="text-[9px] text-gray-400 font-medium uppercase tracking-tight">Temp. interna del motor</p>
         </div>
-      </div>
-    </div>
+      </aside>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      <!-- Left: Telemetry & Controls -->
-      <div class="lg:col-span-2 space-y-8">
-        <!-- Telemetry Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="bg-white dark:bg-gray-900 rounded-[2rem] p-5 border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 relative z-10">Velocidad</p>
-            <div class="flex items-baseline gap-1 relative z-10">
-              <span class="text-3xl font-black text-gray-900 dark:text-white leading-none">{{ activeBooking.telemetry?.speed?.toFixed(0) || 0 }}</span>
-              <span class="text-[10px] font-black text-gray-400 uppercase">km/h</span>
-            </div>
-            <div class="mt-4 h-1 w-full bg-gray-50 dark:bg-gray-800 rounded-full overflow-hidden relative z-10">
-              <div class="h-full bg-brand-primary-500 transition-all duration-1000" :style="{ width: `${Math.min((activeBooking.telemetry?.speed || 0) / 1.2, 100)}%` }"></div>
-            </div>
-          </div>
-
-          <div class="bg-white dark:bg-gray-900 rounded-[2rem] p-5 border border-gray-100 dark:border-gray-800 shadow-sm relative overflow-hidden">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 relative z-10">Motor RPM</p>
-            <div class="flex items-baseline gap-1 relative z-10">
-              <span class="text-3xl font-black text-gray-900 dark:text-white leading-none">{{ activeBooking.telemetry?.rpm || 0 }}</span>
-              <span class="text-[10px] font-black text-gray-400 uppercase">RPM</span>
-            </div>
-            <div class="mt-4 h-1 w-full bg-gray-50 dark:bg-gray-800 rounded-full overflow-hidden relative z-10">
-              <div class="h-full bg-orange-500 transition-all duration-1000" :style="{ width: `${Math.min((activeBooking.telemetry?.rpm || 0) / 60, 100)}%` }"></div>
-            </div>
-          </div>
-
-          <div :class="[isOverheating ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800']" class="rounded-[2rem] p-5 border shadow-sm transition-colors duration-500">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3">Temp. Motor</p>
-            <div class="flex items-baseline gap-1">
-              <span :class="[isOverheating ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-white']" class="text-3xl font-black leading-none transition-colors">{{ activeBooking.telemetry?.engine_temp?.toFixed(1) || 0 }}</span>
-              <span class="text-[10px] font-black text-gray-400 uppercase">°C</span>
-            </div>
-            <div class="mt-4 h-1 w-full bg-gray-50 dark:bg-gray-800 rounded-full overflow-hidden">
-              <div :class="[isOverheating ? 'bg-red-600' : 'bg-red-500']" class="h-full transition-all duration-1000" :style="{ width: `${Math.min((activeBooking.telemetry?.engine_temp || 0), 100)}%` }"></div>
-            </div>
-          </div>
-
-          <div :class="[isLowBattery ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800' : 'bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800']" class="rounded-[2rem] p-5 border shadow-sm transition-colors duration-500">
-            <p class="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3">Batería</p>
-            <div class="flex items-baseline gap-1">
-              <span :class="[isLowBattery ? 'text-amber-600 dark:text-amber-400' : 'text-gray-900 dark:text-white']" class="text-3xl font-black leading-none transition-colors">{{ activeBooking.telemetry?.battery_voltage?.toFixed(1) || 12.6 }}</span>
-              <span class="text-[10px] font-black text-gray-400 uppercase">V</span>
-            </div>
-            <div class="mt-4 h-1 w-full bg-gray-50 dark:bg-gray-800 rounded-full overflow-hidden">
-              <div :class="[isLowBattery ? 'bg-amber-500' : 'bg-green-500']" class="h-full" style="width: 95%"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Controls Area -->
-        <div class="bg-white dark:bg-gray-900 rounded-[3rem] p-8 sm:p-12 border border-gray-100 dark:border-gray-800 shadow-sm text-center">
-          <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-[0.4em] mb-12">Mandos de Misión</h3>
+      <!-- COLUMNA CENTRAL: Visualización y Controles Principales -->
+      <main class="lg:col-span-6 space-y-6 order-1 lg:order-2">
+        <!-- Visualización del coche -->
+        <div class="bg-white dark:bg-gray-900 rounded-[3rem] p-8 sm:p-12 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col items-center justify-center relative overflow-hidden group">
+          <!-- Background decoration -->
+          <div class="absolute inset-0 bg-gradient-to-b from-brand-primary-500/5 to-transparent pointer-events-none"></div>
           
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-12 sm:gap-24">
-            <div class="text-center space-y-6 flex-1 w-full max-w-[200px]">
-              <button 
-                @click="handleEngineCommand('on')"
-                :disabled="commandLoading || !activeBooking.telemetry?.online"
-                class="group relative size-32 sm:size-40 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center border-8 border-white dark:border-gray-950 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] transition-all active:scale-90 hover:border-green-500/30 disabled:opacity-50"
-              >
-                <div class="absolute inset-0 rounded-full bg-green-500/0 group-hover:bg-green-500/10 transition-all duration-500"></div>
-                <PlayIcon v-if="!commandLoading" class="size-12 text-green-600 group-hover:scale-110 transition-transform" />
-                <ArrowPathIcon v-else class="size-12 text-green-600 animate-spin" />
-              </button>
-              <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Arrancar Contacto</p>
-            </div>
-
-            <div class="text-center space-y-6 flex-1 w-full max-w-[200px]">
-              <button 
-                @click="handleEngineCommand('off')"
-                :disabled="commandLoading || !activeBooking.telemetry?.online"
-                class="group relative size-32 sm:size-40 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center border-8 border-white dark:border-gray-950 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.15)] transition-all active:scale-90 hover:border-red-500/30 disabled:opacity-50"
-              >
-                <div class="absolute inset-0 rounded-full bg-red-500/0 group-hover:bg-red-500/10 transition-all duration-500"></div>
-                <PowerIcon v-if="!commandLoading" class="size-12 text-red-600 group-hover:scale-110 transition-transform" />
-                <ArrowPathIcon v-else class="size-12 text-red-600 animate-spin" />
-              </button>
-              <p class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Cortar Encendido</p>
-            </div>
-          </div>
+          <img 
+            :src="getVehicleImage(activeBooking.vehicle?.brand, activeBooking.vehicle?.model)" 
+            class="relative z-10 max-w-[85%] sm:max-w-[70%] drop-shadow-[0_25px_40px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_25px_40px_rgba(0,0,0,0.5)] transition-transform duration-700 group-hover:scale-105" 
+            alt="Vista del vehículo"
+          />
+          
+          <!-- Shadow reflection -->
+          <div class="absolute bottom-16 left-1/2 -translate-x-1/2 w-[60%] h-4 bg-gray-900/10 dark:bg-black/40 blur-xl rounded-full"></div>
         </div>
-      </div>
 
-      <!-- Right: Live Map & Finish Trip -->
-      <div class="space-y-8">
-        <!-- Live Mini Map -->
-        <div class="bg-white dark:bg-gray-900 rounded-[3rem] p-4 border border-gray-100 dark:border-gray-800 shadow-sm h-[400px] flex flex-col relative overflow-hidden group">
-          <div class="px-4 py-2 flex items-center justify-between relative z-10 pointer-events-none">
-            <span class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest bg-white/80 dark:bg-gray-900/80 backdrop-blur px-3 py-1.5 rounded-full border border-gray-100 dark:border-gray-800">Trayecto en vivo</span>
+        <!-- Botones de Encendido/Apagado -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <button 
+            @click="handleEngineCommand('on')"
+            :disabled="commandLoading || !activeBooking.telemetry?.online"
+            class="relative overflow-hidden group bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 transition-all hover:border-green-500/50 hover:shadow-xl hover:shadow-green-500/10 active:scale-95 disabled:opacity-50"
+          >
+            <div class="size-16 rounded-full bg-green-50 dark:bg-green-900/20 flex items-center justify-center text-green-600 dark:text-green-400 border border-green-100 dark:border-green-800">
+              <PlayIcon v-if="!commandLoading" class="size-8" />
+              <ArrowPathIcon v-else class="size-8 animate-spin" />
+            </div>
+            <div class="text-center">
+              <span class="block text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Arrancar motor</span>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tight">Toca para encender el vehículo</span>
+            </div>
+          </button>
+
+          <button 
+            @click="handleEngineCommand('off')"
+            :disabled="commandLoading || !activeBooking.telemetry?.online"
+            class="relative overflow-hidden group bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 p-6 rounded-[2.5rem] flex flex-col items-center gap-3 transition-all hover:border-red-500/50 hover:shadow-xl hover:shadow-red-500/10 active:scale-95 disabled:opacity-50"
+          >
+            <div class="size-16 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center text-red-600 dark:text-red-400 border border-red-100 dark:border-red-800">
+              <PowerIcon v-if="!commandLoading" class="size-8" />
+              <ArrowPathIcon v-else class="size-8 animate-spin" />
+            </div>
+            <div class="text-center">
+              <span class="block text-sm font-black text-gray-900 dark:text-white uppercase tracking-widest">Apagar motor</span>
+              <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tight">Cerrar contacto y detener</span>
+            </div>
+          </button>
+        </div>
+      </main>
+
+      <!-- COLUMNA DERECHA: GPS y Finalización -->
+      <aside class="lg:col-span-3 space-y-6 order-3">
+        <!-- Mapa de Seguimiento -->
+        <div class="bg-white dark:bg-gray-900 rounded-[2.5rem] p-3 border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col h-[350px]">
+          <div class="px-3 py-2 flex justify-between items-center mb-1">
+            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Localización GPS</span>
+            <button @click="recenterMap" class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+              <MapPinIcon class="size-4 text-brand-primary-600" />
+            </button>
           </div>
           <div 
             ref="miniMapContainer" 
-            class="absolute inset-0 z-0 bg-gray-100 dark:bg-gray-800"
-            style="min-height: 400px;"
+            class="flex-1 rounded-[1.5rem] overflow-hidden bg-gray-100 dark:bg-gray-800 z-0"
           ></div>
-          
-          <button @click="recenterMap" class="absolute bottom-6 right-6 z-10 size-10 rounded-2xl bg-white dark:bg-gray-800 shadow-xl border border-gray-100 dark:border-gray-800 flex items-center justify-center text-brand-primary-600 dark:text-brand-primary-400 active:scale-90 transition-all opacity-0 group-hover:opacity-100">
-            <MapPinIcon class="size-5" />
-          </button>
         </div>
 
-        <!-- Finish Card -->
-        <div class="bg-brand-primary-600 rounded-[3rem] p-8 text-white flex flex-col justify-between shadow-2xl shadow-brand-primary-500/30 relative overflow-hidden min-h-[200px]">
-          <div class="absolute -right-10 -bottom-10 size-40 rounded-full bg-white/10 blur-3xl animate-pulse"></div>
-          <div class="relative z-10">
-            <h3 class="text-[10px] font-black text-brand-primary-200 uppercase tracking-[0.3em] mb-4">Finalización</h3>
-            <p class="text-xl font-black leading-tight tracking-tight uppercase">¿Has llegado?</p>
-            <p class="text-brand-primary-100 text-xs mt-2 opacity-80 font-medium leading-relaxed">Termina el viaje para liberar el vehículo y procesar el pago.</p>
-          </div>
+        <!-- Acción Final: Terminar Viaje -->
+        <div class="bg-brand-primary-600 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl shadow-brand-primary-500/30 group">
+          <div class="absolute -right-10 -top-10 size-40 bg-white/10 rounded-full blur-3xl pointer-events-none group-hover:scale-125 transition-transform duration-1000"></div>
+          
+          <h4 class="text-xl font-black uppercase tracking-tight mb-2 relative z-10">¿Has llegado?</h4>
+          <p class="text-xs text-brand-primary-100 opacity-80 mb-8 leading-relaxed relative z-10">Al finalizar se procesará el pago y el vehículo quedará libre para otros usuarios.</p>
+          
           <button 
             @click="isConfirmFinishOpen = true"
-            class="relative z-10 mt-8 w-full py-4 rounded-2xl bg-white text-brand-primary-600 font-black text-xs uppercase tracking-widest shadow-xl hover:bg-brand-primary-50 transition-all active:scale-95"
+            class="w-full py-4 bg-white text-brand-primary-600 font-black text-xs uppercase tracking-widest rounded-2xl shadow-xl transition-all hover:bg-brand-primary-50 active:scale-95 relative z-10"
           >
-            Terminar Viaje
+            Finalizar el viaje
           </button>
         </div>
-      </div>
+      </aside>
     </div>
 
     <!-- Modals -->
@@ -211,7 +229,6 @@ import {
   PlayIcon,
   PowerIcon,
   ArrowPathIcon,
-  ClockIcon,
   MapPinIcon,
   ExclamationTriangleIcon
 } from '@heroicons/vue/24/outline'
@@ -243,8 +260,8 @@ const isOverheating = computed(() => (activeBooking.value?.telemetry?.engine_tem
 const isLowBattery = computed(() => (activeBooking.value?.telemetry?.battery_voltage || 12.6) < 11.5)
 const hasSafetyAlert = computed(() => isOverheating.value || isLowBattery.value)
 const safetyAlertMessage = computed(() => {
-  if (isOverheating.value) return 'TEMPERATURA DEL MOTOR CRÍTICA (>100°C).'
-  if (isLowBattery.value) return 'TENSIÓN DE BATERÍA BAJA (<11.5V).'
+  if (isOverheating.value) return 'Temperatura del motor crítica (>100°C). Estaciona de inmediato.'
+  if (isLowBattery.value) return 'Voltaje de batería peligrosamente bajo. Busca un cargador.'
   return ''
 })
 
@@ -276,33 +293,29 @@ const initMiniMap = async () => {
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(miniMap.value)
 
   const icon = L.divIcon({
-    html: `<div class="size-8 bg-brand-primary-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-white"><svg class="size-4" fill="white" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99z"/></svg></div>`,
-    className: '', iconSize: [32, 32], iconAnchor: [16, 16]
+    html: `<div class="size-6 bg-brand-primary-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-white"><span class="material-icons text-xs">navigation</span></div>`,
+    className: '', iconSize: [24, 24], iconAnchor: [12, 12]
   })
 
   const startPos = [activeBooking.value.latitude, activeBooking.value.longitude] as L.LatLngTuple
   routePoints.value = [startPos]
   
-  // Línea de trayectoria más visible
   routeLine.value = L.polyline(routePoints.value, { 
     color: '#6366f1', 
-    weight: 6, 
-    opacity: 0.9,
-    lineJoin: 'round',
-    dashArray: '1, 10' // Efecto estético de camino
+    weight: 4, 
+    opacity: 0.6,
+    lineJoin: 'round'
   }).addTo(miniMap.value)
 
-  // Marcador de inicio
   L.circleMarker(startPos, {
-    radius: 4,
+    radius: 3,
     color: '#10b981',
     fillColor: '#10b981',
     fillOpacity: 1
-  }).addTo(miniMap.value).bindPopup('Punto de partida')
+  }).addTo(miniMap.value)
 
   vehicleMarker.value = L.marker(startPos, { icon }).addTo(miniMap.value)
 
-  // Forzar actualización de tamaño para evitar problemas de renderizado en contenedores dinámicos
   setTimeout(() => {
     miniMap.value?.invalidateSize()
   }, 200)
@@ -322,11 +335,9 @@ const updateMapPosition = () => {
       routeLine.value.setLatLngs(routePoints.value)
       
       vehicleMarker.value.setLatLng(latlng)
-      // Usar flyTo para un movimiento más suave si la distancia es grande, o panTo si es pequeña
       miniMap.value.panTo(latlng, { animate: true })
     }
   } else if (!miniMap.value && activeBooking.value) {
-    // Si no hay mapa pero hay reserva activa, intentar inicializar
     initMiniMap()
   }
 }
@@ -343,9 +354,9 @@ const handleEngineCommand = async (action: 'on' | 'off') => {
   commandLoading.value = true
   try {
     await apiClient.post(`/reservations/${activeBooking.value.id}/${action}`)
-    showToast(`Comando de ${action === 'on' ? 'encendido' : 'apagado'} enviado`, 'success')
+    showToast(`Comando de ${action === 'on' ? 'arranque' : 'parada'} enviado con éxito`, 'success')
   } catch (e: any) {
-    showToast('Error al enviar el comando', 'error')
+    showToast('Error de comunicación con el vehículo', 'error')
   } finally {
     commandLoading.value = false
   }
@@ -360,7 +371,7 @@ const handleFinish = async () => {
     isConfirmFinishOpen.value = false
     isSummaryOpen.value = true
   } catch (e: any) {
-    showToast('Error al finalizar el viaje', 'error')
+    showToast('Error al procesar la finalización del viaje', 'error')
   } finally {
     isFinishing.value = false
   }
@@ -391,10 +402,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.animate-fade-in { animation: fadeIn 0.5s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
-.dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+.animate-fade-in { animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Estilos personalizados para Leaflet en modo oscuro si es necesario */
+.dark .leaflet-tile {
+  filter: brightness(0.7) contrast(1.2) saturate(0.8) hue-rotate(10deg) invert(0.9);
+}
 </style>

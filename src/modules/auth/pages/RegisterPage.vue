@@ -124,6 +124,24 @@
                 <input v-model="website" type="text" name="website" tabindex="-1" autocomplete="off" />
               </div>
 
+              <!-- Términos y Condiciones -->
+              <div class="flex items-start gap-3 px-1">
+                <div class="flex h-5 items-center">
+                  <input
+                    id="terms"
+                    v-model="acceptTerms"
+                    name="terms"
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-gray-300 dark:border-gray-700 text-brand-primary-600 focus:ring-brand-primary-500 bg-gray-50 dark:bg-gray-950 transition-all cursor-pointer"
+                  />
+                </div>
+                <div class="text-xs leading-5">
+                  <label for="terms" class="font-medium text-gray-500 dark:text-gray-400 cursor-pointer">
+                    Acepto los <RouterLink to="/terms" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">Términos de Servicio</RouterLink> y la <RouterLink to="/privacy" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">Política de Privacidad</RouterLink> de Fleetly.
+                  </label>
+                </div>
+              </div>
+
               <div class="pt-2">
                 <button
                   type="submit"
@@ -198,6 +216,7 @@ const name = ref('')
 const username = ref('')
 const email = ref('')
 const password = ref('')
+const acceptTerms = ref(false)
 
 onMounted(() => {
   const currentTenant = getCurrentTenant()
@@ -224,11 +243,15 @@ const handleSubmit = async () => {
   
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email.value)) {
-    return showToast('El formato del email no es válido', 'error')
+    return showToast('El format del email no es válido', 'error')
   }
 
   if (!password.value.trim()) return showToast('La contraseña es obligatoria', 'error')
   if (password.value.length < 6) return showToast('La contraseña debe tener al menos 6 caracteres', 'error')
+
+  if (!acceptTerms.value) {
+    return showToast('Debes aceptar los términos y condiciones', 'error')
+  }
 
   await register(
     name.value,

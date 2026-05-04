@@ -129,6 +129,15 @@
         </div>
       </div>
     </Transition>
+
+    <!-- Modal de Confirmación para Comandos Críticos -->
+    <ConfirmDialog 
+      :visible="confirmModal.show"
+      :title="confirmModal.title"
+      :message="confirmModal.message"
+      @confirm="executeConfirmedCommand"
+      @cancel="confirmModal.show = false"
+    />
   </div>
 </template>
 
@@ -138,6 +147,7 @@ import { useRoute } from 'vue-router'
 import { useMap } from '@/modules/map/composables/useMap'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import apiClient from '@/services/api'
+import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 import {
   MagnifyingGlassIcon, ArrowPathIcon, TruckIcon, PlayIcon, PowerIcon,
   XCircleIcon, CheckCircleIcon, ChevronUpIcon
@@ -150,6 +160,15 @@ const isFleetListCollapsed = ref(false)
 const search = ref('')
 const isRefreshing = ref(false)
 const commandLoading = ref<string | null>(null)
+
+// Estado para el modal de confirmación
+const confirmModal = reactive({
+  show: false,
+  title: '',
+  message: '',
+  vehicle: null as any,
+  action: ''
+})
 
 const toast = reactive({ show: false, message: '', type: 'success' as 'success' | 'error' })
 const showToast = (message: string, type: 'success' | 'error' = 'success') => {
@@ -190,6 +209,28 @@ const translateStatus = (v: any) => {
 }
 
 const sendCommand = async (vehicle: any, action: string) => {
+  const actionName = action === 'on' ? 'ENCENDER' : 'APAGAR'
+  const isDangerous = action === 'off' && vehicle.status === 'running'
+
+  confirmModal.title = `¿${actionName} VEHÍCULO?`
+  confirmModal.message = isDangerous 
+    ? `ATENCIÓN: El vehículo ${vehicle.plate} está EN RUTA. Apagar el motor remotamente puede causar un accidente si no está estacionado. ¿Proceder con precaución?`
+    : `Vas a enviar un comando de ${actionName} a la unidad ${vehicle.plate}. ¿Confirmas la operación?`
+  
+  confirmModal.vehicle = vehicle
+  confirmModal.action = action
+  confirmModal.show = true
+}
+
+const executeConfirmedCommand = async () => {
+  const { vehicle, action } = confirmModal
+  confirmModal.show = false
+  if (vehicle) {
+    await executeCommand(vehicle, action)
+  }
+}
+
+const executeCommand = async (vehicle: any, action: string) => {
   if (!vehicle.device_id) return
   commandLoading.value = vehicle.device_id
   try {

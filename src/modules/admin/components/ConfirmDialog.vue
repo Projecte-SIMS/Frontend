@@ -1,32 +1,51 @@
 <template>
   <TransitionRoot as="template" :show="visible">
     <Dialog class="relative z-[100]" @close="onCancel">
-      <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
-        <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" />
+      <TransitionChild as="template" enter="transition-opacity ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="transition-opacity ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
+        <div class="fixed inset-0 bg-gray-950/90 backdrop-blur-xl transition-opacity" />
       </TransitionChild>
 
-      <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <TransitionChild as="template" enter="ease-out duration-300" enter-from="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" enter-to="opacity-100 translate-y-0 sm:scale-100" leave="ease-in duration-200" leave-from="opacity-100 translate-y-0 sm:scale-100" leave-to="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-            <DialogPanel class="relative transform overflow-hidden rounded-[2rem] bg-white dark:bg-gray-900 px-4 pt-5 pb-4 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-8 border border-gray-100 dark:border-gray-800">
-              <div class="sm:flex sm:items-start">
-                <div class="mx-auto flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-100 dark:bg-red-900/30 sm:mx-0 sm:h-10 sm:w-10">
-                  <ExclamationTriangleIcon class="h-6 w-6 text-red-600" aria-hidden="true" />
+      <div class="fixed inset-0 z-10 overflow-y-auto font-sans">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+          <TransitionChild as="template" enter="transition ease-out duration-300 transform" enter-from="translate-y-8 opacity-0 scale-95" enter-to="translate-y-0 opacity-100 scale-100" leave="transition ease-in duration-200 transform" leave-from="translate-y-0 opacity-100 scale-100" leave-to="translate-y-8 opacity-0 scale-95">
+            <DialogPanel class="relative transform overflow-hidden rounded-[3rem] bg-white dark:bg-gray-900 px-6 pt-10 pb-8 text-left shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] transition-all sm:my-8 sm:w-full sm:max-w-md border border-gray-100 dark:border-gray-800">
+              
+              <!-- Decoration Glow Danger -->
+              <div class="absolute -top-32 -right-32 size-64 rounded-full bg-rose-500/15 blur-3xl"></div>
+
+              <div class="relative text-center">
+                <!-- Icono principal -->
+                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-rose-50 dark:bg-rose-900/20 text-rose-600 dark:text-rose-400 mb-8 shadow-inner border border-rose-100 dark:border-rose-800/30 group">
+                  <ExclamationTriangleIcon class="h-12 w-12 group-hover:scale-110 transition-transform duration-500" aria-hidden="true" />
                 </div>
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                  <DialogTitle as="h3" class="text-xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ title || '¿Estás seguro?' }}</DialogTitle>
-                  <div class="mt-2">
-                    <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">{{ message || 'Esta acción no se puede deshacer.' }}</p>
-                  </div>
+
+                <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none">
+                  {{ title || '¿Estás seguro?' }}
+                </DialogTitle>
+                
+                <div class="mt-6 px-4">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                    {{ message || 'Esta acción no se puede deshacer.' }}
+                  </p>
                 </div>
-              </div>
-              <div class="mt-8 flex flex-col sm:flex-row-reverse gap-3">
-                <button type="button" class="inline-flex w-full justify-center rounded-xl bg-red-600 px-6 py-3 text-xs font-black uppercase tracking-widest text-white shadow-lg shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95 sm:w-auto" @click="onConfirm">
-                  Confirmar
-                </button>
-                <button type="button" class="inline-flex w-full justify-center rounded-xl bg-gray-100 dark:bg-gray-800 px-6 py-3 text-xs font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-750 transition-all active:scale-95 sm:w-auto" @click="onCancel">
-                  Cancelar
-                </button>
+
+                <!-- Botones de Acción -->
+                <div class="mt-10 flex flex-col gap-3">
+                  <button
+                    type="button"
+                    class="w-full inline-flex justify-center items-center gap-3 rounded-[1.5rem] bg-rose-600 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-white hover:bg-rose-700 shadow-[0_20px_40px_-10px_rgba(225,29,72,0.4)] active:scale-95 transition-all"
+                    @click="onConfirm"
+                  >
+                    Confirmar Acción
+                  </button>
+                  <button
+                    type="button"
+                    class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700"
+                    @click="onCancel"
+                  >
+                    Cancelar
+                  </button>
+                </div>
               </div>
             </DialogPanel>
           </TransitionChild>

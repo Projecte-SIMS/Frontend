@@ -180,6 +180,7 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import useBookingsUser from './composables/useBookingsUser'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
@@ -196,6 +197,7 @@ import {
 } from '@heroicons/vue/24/outline'
 
 const { bookings, loading, getBookings } = useBookingsUser()
+const router = useRouter()
 
 const isCancelDialogOpen = ref(false)
 const bookingToCancel = ref<number | null>(null)
@@ -252,9 +254,8 @@ const handleActivate = async (id: number) => {
   try {
     await apiClient.post(`/reservations/${id}/activate`)
     showToast('¡Buen viaje! Vehículo activado.', 'success')
-    // Al activar, el layout detectará el cambio y mostrará el botón de "En viaje"
-    // Pero forzamos un reload de la lista para limpiar la vista actual
-    getBookings()
+    // Redirigir directamente al panel de control activo
+    router.push('/active-vehicle')
   } catch (e: any) {
     showToast(e.response?.data?.message || 'Error al activar', 'error')
   }

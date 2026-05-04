@@ -2,82 +2,74 @@
   <TransitionRoot as="template" :show="isOpen">
     <Dialog class="relative z-[100]" @close="close">
       <TransitionChild as="template" enter="transition-opacity ease-out duration-300" enter-from="opacity-0" enter-to="opacity-100" leave="transition-opacity ease-in duration-200" leave-from="opacity-100" leave-to="opacity-0">
-        <div class="fixed inset-0 bg-gray-900/80 backdrop-blur-sm transition-opacity" />
+        <div class="fixed inset-0 bg-gray-950/90 backdrop-blur-xl transition-opacity" />
       </TransitionChild>
 
-      <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-          <TransitionChild as="template" enter="transition ease-out duration-300 transform" enter-from="translate-y-4 opacity-0 scale-95" enter-to="translate-y-0 opacity-100 scale-100" leave="transition ease-in duration-200 transform" leave-from="translate-y-0 opacity-100 scale-100" leave-to="translate-y-4 opacity-0 scale-95">
-            <DialogPanel class="relative transform overflow-hidden rounded-[2.5rem] bg-white dark:bg-gray-900 px-4 pt-5 pb-4 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-8 border border-gray-100 dark:border-gray-800">
+      <div class="fixed inset-0 z-10 overflow-y-auto font-sans">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+          <TransitionChild as="template" enter="transition ease-out duration-300 transform" enter-from="translate-y-8 opacity-0 scale-95" enter-to="translate-y-0 opacity-100 scale-100" leave="transition ease-in duration-200 transform" leave-from="translate-y-0 opacity-100 scale-100" leave-to="translate-y-8 opacity-0 scale-95">
+            <DialogPanel class="relative transform overflow-hidden rounded-[3rem] bg-white dark:bg-gray-900 px-6 pt-10 pb-8 text-left shadow-[0_32px_64px_-12px_rgba(0,0,0,0.5)] transition-all sm:my-8 sm:w-full sm:max-w-md border border-gray-100 dark:border-gray-800">
               
-              <!-- Decoration -->
-              <div class="absolute -top-24 -right-24 size-48 rounded-full bg-brand-primary-500/10 blur-3xl"></div>
+              <!-- Decoration Glow -->
+              <div class="absolute -top-32 -right-32 size-64 rounded-full bg-brand-primary-500/15 blur-3xl"></div>
               
-              <div class="relative">
-                <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 dark:text-brand-primary-400 mb-6">
-                  <CalendarIcon class="h-8 w-8" aria-hidden="true" />
+              <div class="relative text-center">
+                <!-- Icono principal -->
+                <div class="mx-auto flex h-24 w-24 items-center justify-center rounded-[2.5rem] bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 dark:text-brand-primary-400 mb-8 shadow-inner border border-brand-primary-100 dark:border-brand-primary-800/30 group">
+                  <CalendarDaysIcon class="h-12 w-12 group-hover:scale-110 transition-transform duration-500" aria-hidden="true" />
                 </div>
                 
-                <div class="text-center sm:text-left mb-8">
-                  <DialogTitle as="h3" class="text-2xl font-black text-gray-900 dark:text-white tracking-tight">Confirmar Reserva</DialogTitle>
-                  <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Estás a punto de reservar el siguiente vehículo:</p>
+                <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none">Confirmar Reserva</DialogTitle>
+                
+                <div class="mt-6 px-4">
+                  <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
+                    Estás a punto de vincular este vehículo a tu cuenta. El sistema te otorgará acceso exclusivo durante los próximos <span class="font-bold text-brand-primary-600 dark:text-brand-primary-400">10 minutos</span>.
+                  </p>
                 </div>
 
-                <!-- Vehicle Brief -->
-                <div v-if="vehicle" class="bg-gray-50 dark:bg-gray-800/50 rounded-3xl p-5 border border-gray-100 dark:border-gray-700/50 mb-8 flex items-center gap-5">
-                  <div class="size-20 rounded-2xl overflow-hidden bg-gray-200 dark:bg-gray-700 shrink-0">
+                <!-- Info Card -->
+                <div v-if="vehicle" class="mt-8 p-5 bg-gray-50 dark:bg-gray-800/50 rounded-3xl border border-gray-100 dark:border-gray-700/50 flex items-center gap-5 shadow-inner text-left">
+                  <div class="size-20 rounded-2xl overflow-hidden bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-700 shrink-0">
                     <img :src="getVehicleImage(vehicle.brand, vehicle.model)" class="size-full object-cover" />
                   </div>
                   <div class="min-w-0">
-                    <h4 class="text-lg font-bold text-gray-900 dark:text-white truncate">{{ vehicle.brand }} {{ vehicle.model }}</h4>
-                    <p class="text-brand-primary-600 dark:text-brand-primary-400 font-mono font-bold text-sm">{{ vehicle.plate || vehicle.license_plate }}</p>
-                    <div class="flex items-center gap-3 mt-2">
-                      <span class="text-[10px] font-black uppercase text-gray-400 tracking-widest flex items-center gap-1">
-                        <CurrencyEuroIcon class="size-3" /> 0.15€/min
-                      </span>
+                    <h4 class="text-lg font-black text-gray-900 dark:text-white truncate tracking-tight">{{ vehicle.brand }} {{ vehicle.model }}</h4>
+                    <p class="text-brand-primary-600 dark:text-brand-primary-400 font-mono font-black text-xs uppercase tracking-tighter">{{ vehicle.license_plate || vehicle.plate }}</p>
+                    <div class="flex items-center gap-2 mt-2">
+                      <span class="px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-800/30">0.15€ / Min</span>
                     </div>
                   </div>
                 </div>
 
-                <!-- Rules Warning -->
-                <div class="space-y-4 mb-8">
-                  <div class="flex gap-4">
-                    <div class="shrink-0 size-10 rounded-xl bg-amber-50 dark:bg-amber-900/20 flex items-center justify-center text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-800/50">
-                      <ClockIcon class="size-5" />
-                    </div>
-                    <div>
-                      <p class="text-sm font-bold text-gray-900 dark:text-white">Ventana de 10 minutos</p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Tendrás 10 minutos para llegar al vehículo y activarlo. Si no lo haces, la reserva se cancelará automáticamente.</p>
-                    </div>
+                <!-- Warning Bullet Points -->
+                <div class="mt-8 space-y-3 text-left px-2">
+                  <div class="flex items-start gap-3">
+                    <div class="size-1.5 rounded-full bg-brand-primary-500 mt-1.5 shrink-0"></div>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Reserva garantizada por 10 minutos</p>
                   </div>
-                  <div class="flex gap-4">
-                    <div class="shrink-0 size-10 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50">
-                      <ShieldCheckIcon class="size-5" />
-                    </div>
-                    <div>
-                      <p class="text-sm font-bold text-gray-900 dark:text-white">Reserva exclusiva</p>
-                      <p class="text-xs text-gray-500 dark:text-gray-400 leading-relaxed">Solo tú podrás ver y utilizar este vehículo mientras la reserva esté activa.</p>
-                    </div>
+                  <div class="flex items-start gap-3">
+                    <div class="size-1.5 rounded-full bg-brand-primary-500 mt-1.5 shrink-0"></div>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Vínculo de telemetría directo con la App</p>
                   </div>
                 </div>
 
-                <!-- Actions -->
-                <div class="flex flex-col sm:flex-row gap-3">
+                <!-- Botones de Acción -->
+                <div class="mt-10 flex flex-col gap-3">
                   <button
                     type="button"
                     :disabled="loading"
-                    class="flex-1 inline-flex justify-center items-center gap-2 rounded-2xl bg-brand-primary-600 px-6 py-4 text-sm font-black uppercase tracking-widest text-white hover:bg-brand-primary-700 shadow-xl shadow-brand-primary-500/30 active:scale-95 transition-all disabled:opacity-50"
+                    class="w-full inline-flex justify-center items-center gap-3 rounded-[1.5rem] bg-brand-primary-600 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-white hover:bg-brand-primary-700 shadow-[0_20px_40px_-10px_rgba(79,70,229,0.4)] active:scale-95 transition-all disabled:opacity-50"
                     @click="confirm"
                   >
                     <ArrowPathIcon v-if="loading" class="size-5 animate-spin" />
-                    Confirmar ahora
+                    Solicitar Reserva
                   </button>
                   <button
                     type="button"
-                    class="flex-1 inline-flex justify-center rounded-2xl bg-gray-100 dark:bg-gray-800 px-6 py-4 text-sm font-black uppercase tracking-widest text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-all active:scale-95"
+                    class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700"
                     @click="close"
                   >
-                    Cancelar
+                    Volver al mapa
                   </button>
                 </div>
               </div>
@@ -94,10 +86,7 @@ import {
   Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot 
 } from '@headlessui/vue'
 import { 
-  CalendarIcon, 
-  ClockIcon, 
-  ShieldCheckIcon, 
-  CurrencyEuroIcon,
+  CalendarDaysIcon,
   ArrowPathIcon
 } from '@heroicons/vue/24/outline'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'

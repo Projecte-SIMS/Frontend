@@ -149,10 +149,11 @@
     </div>
 
     <!-- Modales -->
-    <UserDeleteModal
-      v-if="userToDelete"
-      :user="userToDelete"
-      @confirmed="handleDeleteConfirmed"
+    <ConfirmDialog
+      :visible="!!userToDelete"
+      title="Eliminar Usuario"
+      :message="`¿Estás seguro de eliminar a ${userToDelete?.name}? Se perderá su acceso al sistema y todo su historial de actividad de forma permanente.`"
+      @confirm="handleDeleteConfirmed"
       @cancel="userToDelete = null"
     />
   </div>
@@ -166,10 +167,10 @@ import { useUsers } from '../composables/useUsers'
 import type { User, UserFilters } from '../interfaces/user.interface'
 import AdminPagination from '@/modules/admin/components/AdminPagination.vue'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
-import UserDeleteModal from '../components/UserDeleteModal.vue'
+import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 
 const router = useRouter()
-const { users, loading, error, pagination, getUsers, isCurrentUserAdmin } = useUsers()
+const { users, loading, error, pagination, getUsers, isCurrentUserAdmin, deleteUser } = useUsers()
 
 const getInitials = (name?: string) =>
   name
@@ -208,9 +209,15 @@ const navigateToDetail = (user: User) => router.push(`/admin/users/${user.id}`)
 const navigateToEdit = (user: User) => router.push(`/admin/users/${user.id}/edit`)
 const openDeleteModal = (user: User) => { userToDelete.value = user }
 
-const handleDeleteConfirmed = () => {
-  userToDelete.value = null
-  loadUsers()
+const handleDeleteConfirmed = async () => {
+  if (!userToDelete.value) return
+  try {
+    await deleteUser(userToDelete.value.id)
+    userToDelete.value = null
+    loadUsers()
+  } catch (e) {
+    userToDelete.value = null
+  }
 }
 </script>
 

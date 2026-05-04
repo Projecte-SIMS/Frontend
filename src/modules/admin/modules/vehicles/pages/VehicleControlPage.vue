@@ -250,6 +250,16 @@
       </div>
     </div>
 
+    <!-- Modal de Confirmación -->
+    <ConfirmDialog 
+      :visible="confirmModal.show"
+      :title="confirmModal.title"
+      :message="confirmModal.message"
+      @confirm="executeConfirmedCommand"
+      @cancel="confirmModal.show = false"
+    />
+  </div>
+
   <div v-else class="text-center py-8">
     <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Vehículo no encontrado</h2>
     <p class="mt-2 text-sm text-gray-500">No se pudo cargar el vehículo solicitado.</p>
@@ -265,6 +275,7 @@ import iotService from '@/services/iotService'
 import { useToast } from '@/modules/common/composables/useToast'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
+import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -277,6 +288,14 @@ const loading = ref(true)
 const refreshing = ref(false)
 const commandLoading = ref(false)
 const deviceOnline = ref(false)
+
+// Estado para el modal de confirmación
+const confirmModal = reactive({
+  show: false,
+  title: '',
+  message: '',
+  action: '' as 'start' | 'stop' | 'reboot'
+})
 
 const telemetry = reactive({
   speed: 0,
@@ -338,7 +357,24 @@ const updateMarker = () => {
   }
 }
 
-const sendCommand = async (action: 'start' | 'stop' | 'reboot') => {
+const sendCommand = (action: 'start' | 'stop' | 'reboot') => {
+  const titles = { start: '¿Encender Motor?', stop: '¿Apagar Motor?', reboot: '¿Reiniciar Sistema?' }
+  const messages = {
+    start: 'Vas a enviar una señal de arranque al vehículo. Asegúrate de que el entorno sea seguro.',
+    stop: 'Vas a detener el motor de forma remota. Si el vehículo está en movimiento, esto podría ser peligroso.',
+    reboot: 'Se reiniciará el módulo IoT del vehículo. Perderás la conexión durante unos segundos.'
+  }
+
+  confirmModal.title = titles[action]
+  confirmModal.message = messages[action]
+  confirmModal.action = action
+  confirmModal.show = true
+}
+
+const executeConfirmedCommand = async () => {
+  const action = confirmModal.action
+  confirmModal.show = false
+  
   if (!vehicle.value?.iot_device_id) return
 
   commandLoading.value = true
