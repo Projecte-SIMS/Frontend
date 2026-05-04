@@ -248,22 +248,21 @@
           </p>
         </div>
       </div>
+
+      <!-- Modal de Confirmación -->
+      <ConfirmDialog 
+        :visible="confirmModal.show"
+        :title="confirmModal.title"
+        :message="confirmModal.message"
+        @confirm="executeConfirmedCommand"
+        @cancel="confirmModal.show = false"
+      />
     </div>
 
-    <!-- Modal de Confirmación -->
-    <ConfirmDialog 
-      :visible="confirmModal.show"
-      :title="confirmModal.title"
-      :message="confirmModal.message"
-      @confirm="executeConfirmedCommand"
-      @cancel="confirmModal.show = false"
-    />
-  </div>
-
-  <div v-else class="text-center py-8">
-    <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Vehículo no encontrado</h2>
-    <p class="mt-2 text-sm text-gray-500">No se pudo cargar el vehículo solicitado.</p>
-  </div>
+    <div v-else class="text-center py-8">
+      <h2 class="text-xl font-semibold text-gray-700 dark:text-gray-200">Vehículo no encontrado</h2>
+      <p class="mt-2 text-sm text-gray-500">No se pudo cargar el vehículo solicitado.</p>
+    </div>
   </div>
 </template>
 
