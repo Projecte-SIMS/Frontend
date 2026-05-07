@@ -9,17 +9,15 @@
         <div class="mb-4 flex flex-wrap items-center gap-2">
           <span class="inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white/90">
             <span class="size-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-            Flota conectada
+            {{ t('home.hero_tag_fleet') }}
           </span>
           <span class="inline-flex items-center rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white/85">
-            Reserva en segundos
+            {{ t('home.hero_tag_reserves') }}
           </span>
         </div>
-        <h1 class="text-3xl sm:text-4xl font-black text-white mb-3">
-          Gestiona tu flota <span class="text-brand-primary-200">en tiempo real</span>
-        </h1>
+        <h1 class="text-3xl sm:text-4xl font-black text-white mb-3" v-html="t('home.hero_title', { highlight: `<span class='text-brand-primary-200'>${t('home.hero_title_highlight')}</span>` })"></h1>
         <p class="text-brand-primary-100 text-lg max-w-2xl mb-6">
-          Visualiza, reserva y controla vehículos con una experiencia rápida, visual y adictiva. Empieza tu próximo viaje en un clic.
+          {{ t('home.hero_subtitle') }}
         </p>
         <div class="flex flex-wrap items-center gap-3">
           <button 
@@ -29,13 +27,13 @@
             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
             </svg>
-            Ver mapa interactivo
+            {{ t('home.cta_map') }}
           </button>
           <router-link
             to="/vehicles"
             class="inline-flex items-center gap-2 border border-white/25 bg-white/10 hover:bg-white/20 px-5 py-3 rounded-2xl text-sm font-black uppercase tracking-widest text-white transition-all active:scale-95"
           >
-            Explorar vehículos
+            {{ t('home.cta_explore') }}
           </router-link>
         </div>
       </div>
@@ -47,11 +45,11 @@
       <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm fleetly-card-hover">
         <div class="p-6 border-b border-gray-200 dark:border-gray-800 flex items-center justify-between gap-3">
           <div>
-            <h2 class="text-lg font-bold text-gray-900 dark:text-white">Mapa de vehículos</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Haz clic para ver el mapa completo</p>
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ t('home.map_title') }}</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ t('home.map_subtitle') }}</p>
           </div>
           <button @click="openMap" class="shrink-0 inline-flex items-center gap-1 rounded-xl bg-brand-primary-50 hover:bg-brand-primary-100 dark:bg-brand-primary-900/20 dark:hover:bg-brand-primary-900/35 px-3 py-2 text-[10px] font-black uppercase tracking-widest text-brand-primary-700 dark:text-brand-primary-300 transition-colors">
-            Abrir
+            {{ t('common.open') }}
           </button>
         </div>
         <div ref="miniMap" class="w-full h-80 cursor-pointer"></div>
@@ -60,8 +58,8 @@
       <!-- Nearby Vehicles -->
       <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm fleetly-card-hover">
         <div class="p-6 border-b border-gray-200 dark:border-gray-800">
-          <h2 class="text-lg font-bold text-gray-900 dark:text-white">Vehículos cercanos</h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Disponibles para reservar</p>
+          <h2 class="text-lg font-bold text-gray-900 dark:text-white">{{ t('home.nearby_title') }}</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ t('home.nearby_subtitle') }}</p>
         </div>
         <div class="p-4 max-h-80 overflow-y-auto custom-scrollbar">
           <div v-if="nearbyAvailable.length === 0" class="text-center py-8 fleetly-empty-state rounded-2xl">
@@ -70,7 +68,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
               </svg>
             </div>
-            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">No hay vehículos disponibles cerca</p>
+            <p class="text-gray-500 dark:text-gray-400 text-sm font-medium">{{ t('home.no_nearby_vehicles') }}</p>
           </div>
           <div v-else class="space-y-3">
             <div 
@@ -93,9 +91,9 @@
                     ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' 
                     : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400'"
                 >
-                  {{ v.mongo_active ? 'En uso' : 'Disponible' }}
+                  {{ v.mongo_active ? t('common.in_use') : t('common.available') }}
                 </span>
-                <span class="text-xs text-gray-400">{{ v.distanceMeters ? v.distanceMeters.toFixed(0) : '-' }} m</span>
+                <span class="text-xs text-gray-400">{{ v.distanceMeters ? v.distanceMeters.toFixed(0) : '-' }} {{ t('common.meters') }}</span>
               </div>
             </div>
           </div>
@@ -105,7 +103,7 @@
 
     <!-- Features Section -->
     <div>
-      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">¿Por qué elegir Fleetly?</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">{{ t('home.why_choose') }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 hover:border-brand-primary-500/50 transition-colors fleetly-card-hover">
           <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-primary-500 to-brand-accent-600 shadow-lg shadow-brand-primary-500/20 mb-4">
@@ -113,8 +111,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-900 dark:text-white mb-2">Gestión en tiempo real</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Visualiza y controla tu flota al instante desde cualquier dispositivo.</p>
+          <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ t('home.feature_realtime_title') }}</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">{{ t('home.feature_realtime_subtitle') }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 hover:border-green-500/50 transition-colors fleetly-card-hover">
           <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-brand-secondary-600 shadow-lg shadow-green-500/20 mb-4">
@@ -122,8 +120,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-900 dark:text-white mb-2">Reservas fáciles</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Reserva vehículos en segundos, sin papeleo ni complicaciones.</p>
+          <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ t('home.feature_easy_booking_title') }}</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">{{ t('home.feature_easy_booking_subtitle') }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 hover:border-amber-500/50 transition-colors fleetly-card-hover">
           <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg shadow-amber-500/20 mb-4">
@@ -131,45 +129,45 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           </div>
-          <h3 class="font-bold text-gray-900 dark:text-white mb-2">Soporte 24/7</h3>
-          <p class="text-sm text-gray-500 dark:text-gray-400">Nuestro equipo está siempre disponible para ayudarte.</p>
+          <h3 class="font-bold text-gray-900 dark:text-white mb-2">{{ t('home.feature_support_title') }}</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400">{{ t('home.feature_support_subtitle') }}</p>
         </div>
       </div>
     </div>
 
     <!-- Testimonials -->
     <div>
-      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">Opiniones de usuarios</h2>
+      <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6">{{ t('home.testimonials_title') }}</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 fleetly-card-hover">
           <div class="flex items-center gap-3 mb-4">
             <img src="https://randomuser.me/api/portraits/men/32.jpg" class="w-12 h-12 rounded-full ring-2 ring-brand-primary-500/20" alt="Carlos M." />
             <div>
               <div class="font-bold text-gray-900 dark:text-white">Carlos M.</div>
-              <div class="text-xs text-gray-500">Usuario verificado</div>
+               <div class="text-xs text-gray-500">{{ t('home.verified_user') }}</div>
             </div>
           </div>
-          <p class="text-sm text-gray-600 dark:text-gray-300 italic">"Reservar un coche nunca fue tan fácil. La app es rápida y el soporte excelente."</p>
+          <p class="text-sm text-gray-600 dark:text-gray-300 italic">{{ t('home.testimonial_1') }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 fleetly-card-hover">
           <div class="flex items-center gap-3 mb-4">
             <img src="https://randomuser.me/api/portraits/women/44.jpg" class="w-12 h-12 rounded-full ring-2 ring-brand-primary-500/20" alt="Lucía G." />
             <div>
               <div class="font-bold text-gray-900 dark:text-white">Lucía G.</div>
-              <div class="text-xs text-gray-500">Usuario verificado</div>
+               <div class="text-xs text-gray-500">{{ t('home.verified_user') }}</div>
             </div>
           </div>
-          <p class="text-sm text-gray-600 dark:text-gray-300 italic">"Puedo ver todos los vehículos disponibles en tiempo real. ¡Muy recomendable!"</p>
+          <p class="text-sm text-gray-600 dark:text-gray-300 italic">{{ t('home.testimonial_2') }}</p>
         </div>
         <div class="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-200 dark:border-gray-800 p-6 fleetly-card-hover">
           <div class="flex items-center gap-3 mb-4">
             <img src="https://randomuser.me/api/portraits/men/65.jpg" class="w-12 h-12 rounded-full ring-2 ring-brand-primary-500/20" alt="Jordi P." />
             <div>
               <div class="font-bold text-gray-900 dark:text-white">Jordi P.</div>
-              <div class="text-xs text-gray-500">Usuario verificado</div>
+               <div class="text-xs text-gray-500">{{ t('home.verified_user') }}</div>
             </div>
           </div>
-          <p class="text-sm text-gray-600 dark:text-gray-300 italic">"La gestión de flota para empresas es perfecta. Todo centralizado y seguro."</p>
+          <p class="text-sm text-gray-600 dark:text-gray-300 italic">{{ t('home.testimonial_3') }}</p>
         </div>
       </div>
     </div>
@@ -179,8 +177,10 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useMap } from '@/modules/map/composables/useMap'
 
+const { t } = useI18n()
 const router = useRouter()
 const openMap = () => router.push('/vehicles/map')
 

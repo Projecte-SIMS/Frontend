@@ -55,15 +55,18 @@
                 class="flex items-center gap-2 px-3.5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.15em] transition-all active:scale-95 shadow-xl animate-pulse-gentle"
               >
                 <div class="size-2 rounded-full bg-white animate-ping"></div>
-                En viaje
+                {{ t('layout.in_trip') }}
               </router-link>
             </Transition>
 
+            <!-- Selector de Idioma -->
+            <LanguageSwitcher />
+
             <!-- Selector de Tema -->
-            <button 
+              <button 
               @click="toggleTheme" 
               class="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all active:scale-75"
-              title="Cambiar tema"
+              :title="t('layout.change_theme')"
             >
               <SunIcon v-if="isDark" class="size-5" />
               <MoonIcon v-else class="size-5" />
@@ -80,7 +83,7 @@
                 <span class="relative inline-flex size-2 rounded-full bg-amber-500"></span>
               </span>
               <ShieldCheckIcon class="size-3.5 group-hover:scale-110 transition-transform" />
-              Panel Admin
+              {{ t('layout.admin_panel') }}
             </router-link>
 
             <div class="transition-all active:scale-95 duration-200">
@@ -109,7 +112,7 @@
       >
         <div v-if="mobileMenuOpen" class="md:hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-4 space-y-2 shadow-2xl">
           <div class="mb-2 px-4 py-2 rounded-xl bg-brand-primary-50 dark:bg-brand-primary-900/25 border border-brand-primary-100 dark:border-brand-primary-800/50">
-            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400">Empresa actual</p>
+            <p class="text-[9px] font-black uppercase tracking-widest text-gray-400">{{ t('layout.current_company') }}</p>
             <p class="text-xs font-black uppercase tracking-wider text-brand-primary-700 dark:text-brand-primary-300 truncate mt-1">{{ currentTenantLabel }}</p>
           </div>
 
@@ -124,7 +127,7 @@
               <div class="p-2 rounded-xl bg-white/20">
                 <TruckIcon class="size-6" />
               </div>
-              Controlar mi viaje
+              {{ t('layout.control_trip') }}
             </div>
           </router-link>
 
@@ -188,7 +191,10 @@ import ChatbotPage from '@/modules/common/pages/ChatbotPage.vue'
 import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
 import { getCurrentTenant } from '@/services/api'
 import { useTheme } from '@/modules/common/composables/useTheme'
+import LanguageSwitcher from '@/modules/common/components/LanguageSwitcher.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const route = useRoute()
 const { user } = useAuth()
 const { canUseAI, fetchCurrentPlan } = usePlan()
@@ -214,11 +220,11 @@ const currentTenantLabel = computed(() => {
   return tenant || 'sin-tenant'
 })
 
-const navigation = [
-  { name: 'Mapa', to: '/vehicles/map', icon: MapIcon },
-  { name: 'Vehículos', to: '/vehicles', icon: TruckIcon },
-  { name: 'Reservas', to: '/bookings', icon: CalendarDaysIcon },
-]
+const navigation = computed(() => [
+  { name: t('nav.map'), to: '/vehicles/map', icon: MapIcon },
+  { name: t('nav.vehicles'), to: '/vehicles', icon: TruckIcon },
+  { name: t('nav.bookings'), to: '/bookings', icon: CalendarDaysIcon },
+])
 
 // Polling global para detectar si el usuario inicia un viaje
 let pollInterval: any = null
