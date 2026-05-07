@@ -19,11 +19,11 @@
                   <FlagIcon class="h-12 w-12 group-hover:scale-110 transition-transform duration-500" aria-hidden="true" />
                 </div>
                 
-                <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none">¿Finalizar Viaje?</DialogTitle>
+                <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none">{{ t('finish_modal.title') }}</DialogTitle>
                 
                 <div class="mt-6 px-4">
                   <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                    Al confirmar, el sistema <span class="font-bold text-rose-600 dark:text-rose-400 uppercase">desconectará el motor</span> de forma segura y liberará el vehículo para la flota pública.
+                    {{ t('finish_modal.description_prefix') }} <span class="font-bold text-rose-600 dark:text-rose-400 uppercase">{{ t('finish_modal.description_emphasis') }}</span> {{ t('finish_modal.description_suffix') }}.
                   </p>
                 </div>
 
@@ -34,12 +34,12 @@
                       <TruckIcon class="size-6" />
                     </div>
                     <div>
-                      <p class="text-xs font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Vehículo</p>
+                      <p class="text-xs font-black text-gray-400 uppercase tracking-widest leading-none mb-1">{{ t('finish_modal.vehicle') }}</p>
                       <p class="text-sm font-black text-gray-900 dark:text-white font-mono tracking-tighter">{{ vehicle.license_plate }}</p>
                     </div>
                   </div>
                   <div class="text-right">
-                    <p class="text-[8px] font-black uppercase text-rose-500 tracking-widest bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded-lg">Cierre Remoto</p>
+                    <p class="text-[8px] font-black uppercase text-rose-500 tracking-widest bg-rose-50 dark:bg-rose-900/30 px-2 py-1 rounded-lg">{{ t('finish_modal.remote_close') }}</p>
                   </div>
                 </div>
 
@@ -47,11 +47,11 @@
                 <div class="mt-8 space-y-3 text-left px-2">
                   <div class="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                     <div class="size-1.5 rounded-full bg-rose-500"></div>
-                    Se detendrá el cobro por minuto
+                    {{ t('finish_modal.bullet_1') }}
                   </div>
                   <div class="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                     <div class="size-1.5 rounded-full bg-rose-500"></div>
-                    El vehículo se bloqueará automáticamente
+                    {{ t('finish_modal.bullet_2') }}
                   </div>
                 </div>
 
@@ -64,14 +64,14 @@
                     @click="confirm"
                   >
                     <ArrowPathIcon v-if="loading" class="size-5 animate-spin" />
-                    Confirmar Parada
+                    {{ t('finish_modal.confirm') }}
                   </button>
                   <button
                     type="button"
                     class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700"
                     @click="close"
                   >
-                    Seguir Conduciendo
+                    {{ t('finish_modal.cancel') }}
                   </button>
                 </div>
               </div>
@@ -92,6 +92,7 @@ import {
   TruckIcon,
   ArrowPathIcon
 } from '@heroicons/vue/24/outline'
+import { useI18n } from 'vue-i18n'
 
 defineProps<{
   isOpen: boolean
@@ -100,6 +101,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits(['close', 'confirm'])
+const { t } = useI18n()
 
 const close = () => emit('close')
 const confirm = () => emit('confirm')

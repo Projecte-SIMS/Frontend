@@ -19,11 +19,11 @@
                   <CalendarDaysIcon class="h-12 w-12 group-hover:scale-110 transition-transform duration-500" aria-hidden="true" />
                 </div>
                 
-                <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none">Confirmar Reserva</DialogTitle>
+                <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none">{{ t('reservation_modal.title') }}</DialogTitle>
                 
                 <div class="mt-6 px-4">
                   <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                    Estás a punto de vincular este vehículo a tu cuenta. El sistema te otorgará acceso exclusivo durante los próximos <span class="font-bold text-brand-primary-600 dark:text-brand-primary-400">10 minutos</span>.
+                    {{ t('reservation_modal.description_prefix') }} <span class="font-bold text-brand-primary-600 dark:text-brand-primary-400">{{ t('reservation_modal.minutes') }}</span>.
                   </p>
                 </div>
 
@@ -36,7 +36,7 @@
                     <h4 class="text-lg font-black text-gray-900 dark:text-white truncate tracking-tight">{{ vehicle.brand }} {{ vehicle.model }}</h4>
                     <p class="text-brand-primary-600 dark:text-brand-primary-400 font-mono font-black text-xs uppercase tracking-tighter">{{ vehicle.license_plate || vehicle.plate }}</p>
                     <div class="flex items-center gap-2 mt-2">
-                      <span class="px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-800/30">0.15€ / Min</span>
+                      <span class="px-2 py-0.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 text-[8px] font-black uppercase tracking-widest border border-emerald-100 dark:border-emerald-800/30">{{ t('reservation_modal.price_hint') }}</span>
                     </div>
                   </div>
                 </div>
@@ -45,11 +45,11 @@
                 <div class="mt-8 space-y-3 text-left px-2">
                   <div class="flex items-start gap-3">
                     <div class="size-1.5 rounded-full bg-brand-primary-500 mt-1.5 shrink-0"></div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Reserva garantizada por 10 minutos</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">{{ t('reservation_modal.bullet_1') }}</p>
                   </div>
                   <div class="flex items-start gap-3">
                     <div class="size-1.5 rounded-full bg-brand-primary-500 mt-1.5 shrink-0"></div>
-                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">Vínculo de telemetría directo con la App</p>
+                    <p class="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest">{{ t('reservation_modal.bullet_2') }}</p>
                   </div>
                 </div>
 
@@ -62,14 +62,14 @@
                     @click="confirm"
                   >
                     <ArrowPathIcon v-if="loading" class="size-5 animate-spin" />
-                    Solicitar Reserva
+                    {{ t('reservation_modal.confirm') }}
                   </button>
                   <button
                     type="button"
                     class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700"
                     @click="close"
                   >
-                    Volver al mapa
+                    {{ t('reservation_modal.cancel') }}
                   </button>
                 </div>
               </div>
@@ -90,6 +90,7 @@ import {
   ArrowPathIcon
 } from '@heroicons/vue/24/outline'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
+import { useI18n } from 'vue-i18n'
 
 defineProps<{
   isOpen: boolean
@@ -98,6 +99,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits(['close', 'confirm'])
+const { t } = useI18n()
 
 const close = () => emit('close')
 const confirm = () => emit('confirm')
