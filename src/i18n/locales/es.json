@@ -55,6 +55,26 @@
     "testimonial_2": "\"Puedo ver todos los vehículos disponibles en tiempo real. ¡Muy recomendable!\"",
     "testimonial_3": "\"La gestión de flota para empresas es perfecta. Todo centralizado y seguro.\""
   },
+  "map": {
+    "search_placeholder": "Buscar vehículo...",
+    "my_location": "Mi ubicación",
+    "refresh": "Actualizar",
+    "active_booking": "Ya tienes una reserva activa",
+    "view": "Ver",
+    "options": "Opciones",
+    "nearby": "Cercanos",
+    "no_nearby_vehicles": "No se encontraron vehículos",
+    "outside_area": "Fuera de la zona",
+    "no_vehicles_outside_area": "No hay vehículos fuera de la zona",
+    "distance": "Distancia",
+    "price": "Precio",
+    "limit_reached": "Límite alcanzado",
+    "status_free": "Libre",
+    "status_running": "En marcha",
+    "status_reserved": "Reservado",
+    "rate": "Tarifa",
+    "you_are_here": "Estás aquí"
+  },
   "vehicles": {
     "title": "Flota de Vehículos",
     "count_near": "{count} vehículos disponibles cerca de ti",

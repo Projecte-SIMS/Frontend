@@ -55,6 +55,26 @@
     "testimonial_2": "\"Puc veure tots els vehicles disponibles en temps real. Molt recomanable!\"",
     "testimonial_3": "\"La gestió de flota per a empreses és perfecta. Tot centralitzat i segur.\""
   },
+  "map": {
+    "search_placeholder": "Buscar vehicle...",
+    "my_location": "La meva ubicació",
+    "refresh": "Actualitzar",
+    "active_booking": "Ja tens una reserva activa",
+    "view": "Veure",
+    "options": "Opcions",
+    "nearby": "Propers",
+    "no_nearby_vehicles": "No s'han trobat vehicles",
+    "outside_area": "Fora de la zona",
+    "no_vehicles_outside_area": "No hi ha vehicles fora de la zona",
+    "distance": "Distància",
+    "price": "Preu",
+    "limit_reached": "Límit assolit",
+    "status_free": "Lliure",
+    "status_running": "En marxa",
+    "status_reserved": "Reservat",
+    "rate": "Tarifa",
+    "you_are_here": "Ets aquí"
+  },
   "vehicles": {
     "title": "Flota de Vehicles",
     "count_near": "{count} vehicles disponibles a prop teu",

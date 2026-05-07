@@ -16,16 +16,16 @@
           <input 
             v-model="search" 
             type="text" 
-            placeholder="Buscar vehículo..." 
+            :placeholder="t('map.search_placeholder')" 
             class="block w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border-0 shadow-2xl shadow-brand-primary-500/10 text-sm font-semibold text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none ring-1 ring-gray-900/5 dark:ring-white/10"
           />
         </div>
 
         <div class="flex items-center gap-2 self-end sm:self-auto">
-          <button @click="locateMe" class="p-2.5 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5 hover:bg-white active:scale-95 transition-all" title="Mi ubicación">
+          <button @click="locateMe" class="p-2.5 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5 hover:bg-white active:scale-95 transition-all" :title="t('map.my_location')">
             <MapPinIcon class="size-5" />
           </button>
-          <button @click="refresh" class="p-2.5 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5 hover:bg-white active:scale-95 transition-all" title="Actualizar">
+          <button @click="refresh" class="p-2.5 rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5 hover:bg-white active:scale-95 transition-all" :title="t('map.refresh')">
             <ArrowPathIcon class="size-5" :class="{'animate-spin': isRefreshing}" />
           </button>
           <button @click="panelOpen = !panelOpen" :class="[panelOpen ? 'bg-brand-primary-600 text-white shadow-brand-primary-500/40' : 'bg-white/90 dark:bg-gray-900/90 text-gray-600 dark:text-gray-300 shadow-lg ring-1 ring-gray-900/5']" class="p-2.5 rounded-xl backdrop-blur-xl transition-all active:scale-95">
@@ -40,8 +40,8 @@
         <div v-if="hasActiveBooking" class="absolute top-0 left-1/2 -translate-x-1/2 pointer-events-auto">
           <div class="bg-amber-600/90 backdrop-blur-md text-white px-4 py-2 rounded-full shadow-2xl flex items-center gap-3 border border-amber-400/30">
             <ExclamationTriangleIcon class="size-4" />
-            <span class="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">Ya tienes una reserva activa</span>
-            <router-link to="/bookings" class="bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg text-[9px] font-black transition-colors uppercase">Ver</router-link>
+            <span class="text-[10px] font-black uppercase tracking-widest whitespace-nowrap">{{ t('map.active_booking') }}</span>
+            <router-link to="/bookings" class="bg-white/20 hover:bg-white/30 px-2.5 py-1 rounded-lg text-[9px] font-black transition-colors uppercase">{{ t('map.view') }}</router-link>
           </div>
         </div>
 
@@ -57,14 +57,14 @@
           <div v-if="panelOpen" class="absolute top-0 right-0 bottom-4 w-full max-w-sm pointer-events-auto">
             <div class="h-full bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl rounded-[2rem] shadow-2xl border border-white/20 dark:border-gray-800 flex flex-col">
               <div class="px-6 pt-6 pb-2 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
-                <h2 class="text-[10px] font-black text-brand-primary-500 uppercase tracking-widest leading-none">Opciones</h2>
+                <h2 class="text-[10px] font-black text-brand-primary-500 uppercase tracking-widest leading-none">{{ t('map.options') }}</h2>
                 <button @click="panelOpen = false" class="p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400"><XMarkIcon class="size-4" /></button>
               </div>
               <div class="flex-1 overflow-y-auto px-6 py-4 space-y-6 custom-scrollbar">
                 <section>
-                  <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">Cercanos <span>{{ filteredNearby.length }}</span></h3>
+                  <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">{{ t('map.nearby') }} <span>{{ filteredNearby.length }}</span></h3>
                   <div v-if="filteredNearby.length === 0" class="py-6 text-center bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
-                    <p class="text-[9px] text-gray-400 italic font-medium">No se encontraron vehículos</p>
+                    <p class="text-[9px] text-gray-400 italic font-medium">{{ t('map.no_nearby_vehicles') }}</p>
                   </div>
                   <div v-else class="space-y-2">
                     <button v-for="v in filteredNearby" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-brand-primary-500/30 hover:shadow-lg transition-all group">
@@ -81,9 +81,9 @@
                 </section>
 
                 <section>
-                  <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">Fuera de la zona <span>{{ filteredFar.length }}</span></h3>
+                  <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3 flex items-center justify-between">{{ t('map.outside_area') }} <span>{{ filteredFar.length }}</span></h3>
                   <div v-if="filteredFar.length === 0" class="py-6 text-center bg-gray-50/50 dark:bg-gray-800/30 rounded-2xl border border-dashed border-gray-200 dark:border-gray-700">
-                    <p class="text-[9px] text-gray-400 italic font-medium">No hay vehículos fuera de la zona</p>
+                    <p class="text-[9px] text-gray-400 italic font-medium">{{ t('map.no_vehicles_outside_area') }}</p>
                   </div>
                   <div v-else class="space-y-2">
                     <button v-for="v in filteredFar" :key="v.id" @click="onNearbyClick(v)" class="w-full flex items-center justify-between gap-3 p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 hover:border-brand-primary-500/30 hover:shadow-lg transition-all group opacity-75 hover:opacity-100">
@@ -134,15 +134,15 @@
 
                 <div class="grid grid-cols-2 gap-2 mb-4">
                   <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left">
-                    <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">Distancia</p>
+                    <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">{{ t('map.distance') }}</p>
                     <div class="flex items-center gap-1 font-black text-white text-[10px] leading-none">
                       <MapPinIcon class="size-2.5 text-brand-primary-400" /> {{ formatDistance(selectedVehicle.distanceMeters) }}
                     </div>
                   </div>
                   <div class="bg-white/5 rounded-xl p-2 border border-white/5 flex flex-col justify-center text-left">
-                    <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">Precio</p>
+                    <p class="text-[7px] font-black text-gray-400 uppercase mb-0.5">{{ t('map.price') }}</p>
                     <div class="flex items-center gap-1 font-black text-white text-[10px] leading-none">
-                      <span class="text-green-400">0.15€</span><span class="text-[8px] text-gray-500">/min</span>
+                      <span class="text-green-400">0.15€</span><span class="text-[8px] text-gray-500">{{ t('vehicles.per_minute') }}</span>
                     </div>
                   </div>
                 </div>
@@ -152,7 +152,7 @@
                   :disabled="selectedVehicle.is_mine || hasActiveBooking || selectedVehicle.online === false" 
                   class="w-full py-2 rounded-xl bg-brand-primary-600 text-white font-black text-[10px] uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg active:scale-95 disabled:opacity-50 disabled:grayscale"
                 >
-                  {{ selectedVehicle.online === false ? 'No disponible' : (selectedVehicle.is_mine ? 'Ya reservado' : (hasActiveBooking ? 'Límite alcanzado' : 'Reservar ahora')) }}
+                  {{ selectedVehicle.online === false ? t('vehicles.not_available') : (selectedVehicle.is_mine ? t('vehicles.already_reserved') : (hasActiveBooking ? t('map.limit_reached') : t('vehicles.reserve_now'))) }}
                 </button>
               </div>
             </div>
@@ -175,6 +175,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref, watch, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { useMap } from '@/modules/map/composables/useMap'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
@@ -195,6 +196,7 @@ import {
 
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 const { mapContainer, map, initMap, fetchVehicles, setUserLocation, destroyMap, rawVehicles, centerOnVehicle, markers, setSearchQuery, selectedVehicle } = useMap()
 
 // Usar el composable de reservas para bloquear el botón
@@ -231,7 +233,7 @@ watch(selectedVehicle, (v) => {
 
 const formatDistance = (meters?: number) => {
   if (meters == null) return '-'
-  return meters < 1000 ? `${Math.round(meters)} m` : `${(meters/1000).toFixed(1)} km`
+  return meters < 1000 ? `${Math.round(meters)} ${t('common.meters')}` : `${(meters/1000).toFixed(1)} ${t('common.km')}`
 }
 
 const filteredNearby = computed(() => {
@@ -309,10 +311,10 @@ const handleReserve = async () => {
   try {
     const payload = { vehicle_id: selectedVehicle.value.id, scheduled_start: new Date().toISOString() }
     const response = await apiClient.post('/reservations', payload)
-    showToast(response.data.message || '¡Vehículo reservado!', 'success')
+    showToast(response.data.message || t('vehicles.reserve_success'), 'success')
     router.push('/bookings')
   } catch (e: any) {
-    showToast(e.response?.data?.message || 'Error al reservar', 'error')
+    showToast(e.response?.data?.message || t('vehicles.reserve_error'), 'error')
   } finally {
     isReserving.value = false
     isConfirmOpen.value = false

@@ -6,6 +6,7 @@ import 'leaflet.markercluster/dist/MarkerCluster.Default.css'
 import 'leaflet.markercluster'
 import apiClient from '@/services/api'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
+import i18n from '@/i18n'
 
 export interface Vehicle {
   id: number
@@ -41,6 +42,7 @@ const showOperativeOnly = ref(false)
 const userLocation = ref<{ lat: number; lng: number } | null>(null)
 const radiusMeters = ref<number | null>(null)
 const rawVehicles = ref<Vehicle[]>([])
+const t = (key: string, params?: Record<string, unknown>) => i18n.global.t(key, params as any) as string
 
 const setSearchQuery = (q: string) => {
   searchQuery.value = q
@@ -60,19 +62,19 @@ const setRadiusMeters = (m: number | null) => {
 const createVehicleIcon = (v: Vehicle) => {
   let color = '#22c55e'
   let extraClass = ''
-  let statusText = 'Libre'
+  let statusText = t('map.status_free')
 
   // If offline, show gray icon regardless of other states
   if (v.online === false) {
     color = '#94a3b8'
-    statusText = 'Desconectado'
+    statusText = t('common.offline')
   } else if (v.status === 'running') {
     color = '#ef4444'
     extraClass = 'marker-pulse-red'
-    statusText = 'En marcha'
+    statusText = t('map.status_running')
   } else if (v.status === 'reserved') {
     color = '#f59e0b'
-    statusText = v.is_mine ? 'Tu Reserva' : 'Reservado'
+    statusText = v.is_mine ? t('common.your_booking') : t('map.status_reserved')
   }
 
   return L.divIcon({
@@ -225,8 +227,8 @@ const addVehicleMarkers = () => {
           <div style="font-weight: 900; text-transform: uppercase; font-size: 14px; margin-bottom: 2px;">${v.brand} ${v.model}</div>
           <div style="color: #6366f1; font-family: monospace; font-weight: 700; font-size: 12px; margin-bottom: 8px;">${v.plate}</div>
           <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e5e7eb; pt: 8px; margin-top: 8px;">
-            <span style="font-size: 11px; font-weight: 700; color: #6b7280;">Tarifa</span>
-            <span style="font-size: 13px; font-weight: 900;">${v.price_per_minute || '0.15'}€<span style="font-size: 9px; color: #9ca3af;">/min</span></span>
+            <span style="font-size: 11px; font-weight: 700; color: #6b7280;">${t('map.rate')}</span>
+            <span style="font-size: 13px; font-weight: 900;">${v.price_per_minute || '0.15'}€<span style="font-size: 9px; color: #9ca3af;">${t('vehicles.per_minute')}</span></span>
           </div>
         </div>
       `
@@ -284,7 +286,7 @@ const setUserLocation = (lat: number, lng: number) => {
       try { userMarker.setLatLng([lat, lng]) } catch { }
     } else {
       userMarker = L.circleMarker([lat, lng], { radius: 8, color: '#2563eb', weight: 2, fillColor: '#60a5fa', fillOpacity: 0.9 }).addTo(map.value as any)
-      userMarker.bindPopup('<b>Estás aquí</b>')
+      userMarker.bindPopup(`<b>${t('map.you_are_here')}</b>`)
     }
   }
 }

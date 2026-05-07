@@ -55,6 +55,26 @@
     "testimonial_2": "\"I can see all available vehicles in real time. Highly recommended!\"",
     "testimonial_3": "\"Fleet management for companies is perfect. Everything centralized and secure.\""
   },
+  "map": {
+    "search_placeholder": "Search vehicle...",
+    "my_location": "My location",
+    "refresh": "Refresh",
+    "active_booking": "You already have an active booking",
+    "view": "View",
+    "options": "Options",
+    "nearby": "Nearby",
+    "no_nearby_vehicles": "No vehicles found",
+    "outside_area": "Outside area",
+    "no_vehicles_outside_area": "No vehicles outside the area",
+    "distance": "Distance",
+    "price": "Price",
+    "limit_reached": "Limit reached",
+    "status_free": "Free",
+    "status_running": "Running",
+    "status_reserved": "Reserved",
+    "rate": "Rate",
+    "you_are_here": "You are here"
+  },
   "vehicles": {
     "title": "Vehicle Fleet",
     "count_near": "{count} vehicles available near you",
