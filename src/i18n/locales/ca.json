@@ -27,7 +27,55 @@
     "your_booking": "La teva Reserva",
     "searching": "Buscant...",
     "updating": "Actualitzant...",
-    "km": "km"
+    "km": "km",
+    "back_home": "Tornar a l'inici"
+  },
+  "user_menu": {
+    "user_fallback": "Usuari",
+    "saved_accounts": "Comptes desats",
+    "remove_account": "Eliminar compte",
+    "add_account": "Afegir un altre compte",
+    "my_wallet": "La meva cartera",
+    "my_tickets": "Els meus tiquets",
+    "my_profile": "El meu perfil",
+    "logout": "Tancar sessió"
+  },
+  "not_found": {
+    "title": "Pàgina no trobada",
+    "subtitle": "Ho sentim, no hem pogut trobar la pàgina que busques.",
+    "back_home": "Tornar a l'inici"
+  },
+  "terms": {
+    "title": "Termes del Servei",
+    "updated_at": "Última actualització: Abril 2026",
+    "section1_title": "1. Acceptació del Servei",
+    "section1_body": "En utilitzar Fleetly, acceptes que el sistema accedeixi a la teva ubicació en temps real mentre el vehicle estigui reservat. Et compromets a usar la flota seguint les normes de trànsit vigents.",
+    "section2_title": "2. Exoneració de Responsabilitat",
+    "section2_body_highlight": "Fleetly no es fa responsable de danys, accidents o infraccions derivades del mal ús del vehicle, excés de velocitat o conducció temerària per part de l'usuari.",
+    "section2_body": "L'usuari és l'únic responsable de qualsevol sanció administrativa o dany a tercers durant el període de la seva reserva.",
+    "section3_title": "3. Telemetria i Control Remot",
+    "section3_body": "Acceptes que els administradors poden monitoritzar la velocitat, RPM i estat del motor. En casos d'emergència o ús indegut detectat per telemetria, Fleetly es reserva el dret d'aturar el motor de forma remota un cop el vehicle estigui immobilitzat.",
+    "section4_title": "4. Obligacions de l'Usuari",
+    "section4_item1": "Mantenir la seguretat de les credencials d'accés.",
+    "section4_item2": "No permetre l'ús del vehicle a tercers no registrats.",
+    "section4_item3": "Finalitzar el viatge correctament des de l'app per evitar càrrecs addicionals."
+  },
+  "privacy": {
+    "title": "Política de Privacitat",
+    "updated_at": "Última actualització: Abril 2026",
+    "intro": "A Fleetly ens prenem seriosament la privacitat de les teves dades. Aquesta política explica com recopilem i tractem la teva informació.",
+    "section1_title": "1. Dades Recollides",
+    "section1_body": "Recollim dades de registre (nom, email, usuari) i dades de telemetria del vehicle (ubicació GPS, velocitat, estat del motor) mentre fas ús del servei.",
+    "section2_title": "2. Ús de la Informació",
+    "section2_intro": "Les teves dades s'utilitzen per:",
+    "section2_item1": "Gestionar les teves reserves i facturació.",
+    "section2_item2": "Garantir la seguretat de la flota i de l'usuari.",
+    "section2_item3": "Millorar el rendiment del maquinari IoT.",
+    "section2_item4": "Complir amb requeriments legals de les autoritats en cas d'accident.",
+    "section3_title": "3. Compartició amb Tercers",
+    "section3_body": "No venem les teves dades. Només compartirem informació amb proveïdors de pagament, autoritats judicials (si hi ha requeriment) i l'administrador de la teva organització (tenant).",
+    "section4_title": "4. Els Teus Drets",
+    "section4_body": "Pots sol·licitar l'accés, rectificació o eliminació de les teves dades personals a través del portal de suport o enviant un correu a privacidad@fleetly.com."
   },
   "home": {
     "hero_tag_fleet": "Flota connectada",

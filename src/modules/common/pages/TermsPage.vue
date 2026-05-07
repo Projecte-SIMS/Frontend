@@ -5,40 +5,46 @@
         <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 mb-6">
           <span class="material-icons text-3xl">Gavel</span>
         </div>
-        <h1 class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">Términos de Servicio</h1>
-        <p class="text-sm text-gray-500 mt-2 italic">Última actualización: Abril 2026</p>
+        <h1 class="text-3xl font-black text-gray-900 dark:text-white uppercase tracking-tight">{{ t('terms.title') }}</h1>
+        <p class="text-sm text-gray-500 mt-2 italic">{{ t('terms.updated_at') }}</p>
       </div>
 
       <div class="prose dark:prose-invert max-w-none space-y-8 text-gray-600 dark:text-gray-400 leading-relaxed">
         <section>
-          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">1. Aceptación del Servicio</h2>
-          <p>Al utilizar Fleetly, aceptas que el sistema acceda a tu ubicación en tiempo real mientras el vehículo esté reservado. Te comprometes a usar la flota siguiendo las normas de tráfico vigentes.</p>
+          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">{{ t('terms.section1_title') }}</h2>
+          <p>{{ t('terms.section1_body') }}</p>
         </section>
 
         <section>
-          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">2. Exoneración de Responsabilidad</h2>
-          <p class="font-bold text-rose-600 dark:text-rose-400">Fleetly no se hace responsable de daños, accidentes o infracciones derivadas del mal uso del vehículo, exceso de velocidad o conducción temeraria por parte del usuario.</p>
-          <p>El usuario es el único responsable de cualquier sanción administrativa o daño a terceros durante el periodo de su reserva.</p>
+          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">{{ t('terms.section2_title') }}</h2>
+          <p class="font-bold text-rose-600 dark:text-rose-400">{{ t('terms.section2_body_highlight') }}</p>
+          <p>{{ t('terms.section2_body') }}</p>
         </section>
 
         <section>
-          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">3. Telemetría y Control Remoto</h2>
-          <p>Aceptas que los administradores pueden monitorizar la velocidad, RPM y estado del motor. En casos de emergencia o uso indebido detectado por telemetría, Fleetly se reserva el derecho de detener el motor de forma remota una vez el vehículo esté inmovilizado.</p>
+          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">{{ t('terms.section3_title') }}</h2>
+          <p>{{ t('terms.section3_body') }}</p>
         </section>
 
         <section>
-          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">4. Obligaciones del Usuario</h2>
+          <h2 class="text-lg font-black text-gray-900 dark:text-white uppercase tracking-wider">{{ t('terms.section4_title') }}</h2>
           <ul class="list-disc pl-5 space-y-2">
-            <li>Mantener la seguridad de las credenciales de acceso.</li>
-            <li>No permitir el uso del vehículo a terceros no registrados.</li>
-            <li>Finalizar el viaje correctamente desde la App para evitar cargos adicionales.</li>
+            <li>{{ t('terms.section4_item1') }}</li>
+            <li>{{ t('terms.section4_item2') }}</li>
+            <li>{{ t('terms.section4_item3') }}</li>
           </ul>
         </section>
       </div>
 
       <div class="mt-12 pt-8 border-t border-gray-100 dark:border-gray-800 text-center">
-        <router-link to="/login" class="text-brand-primary-600 font-black text-xs uppercase tracking-widest hover:underline">Volver al inicio</router-link>
+        <router-link to="/login" class="text-brand-primary-600 font-black text-xs uppercase tracking-widest hover:underline">{{ t('common.back_home') }}</router-link>
       </div>
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+</script>

@@ -27,7 +27,55 @@
     "your_booking": "Your Booking",
     "searching": "Searching...",
     "updating": "Updating...",
-    "km": "km"
+    "km": "km",
+    "back_home": "Back to home"
+  },
+  "user_menu": {
+    "user_fallback": "User",
+    "saved_accounts": "Saved accounts",
+    "remove_account": "Remove account",
+    "add_account": "Add another account",
+    "my_wallet": "My wallet",
+    "my_tickets": "My tickets",
+    "my_profile": "My profile",
+    "logout": "Log out"
+  },
+  "not_found": {
+    "title": "Page not found",
+    "subtitle": "Sorry, we couldn’t find the page you’re looking for.",
+    "back_home": "Go back home"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "updated_at": "Last updated: April 2026",
+    "section1_title": "1. Service Acceptance",
+    "section1_body": "By using Fleetly, you accept that the system accesses your real-time location while the vehicle is reserved. You agree to use the fleet following current traffic regulations.",
+    "section2_title": "2. Liability Disclaimer",
+    "section2_body_highlight": "Fleetly is not responsible for damages, accidents, or infractions resulting from misuse of the vehicle, speeding, or reckless driving by the user.",
+    "section2_body": "The user is solely responsible for any administrative penalty or damage to third parties during their booking period.",
+    "section3_title": "3. Telemetry and Remote Control",
+    "section3_body": "You accept that administrators may monitor speed, RPM, and engine status. In emergency cases or misuse detected by telemetry, Fleetly reserves the right to stop the engine remotely once the vehicle is immobilized.",
+    "section4_title": "4. User Obligations",
+    "section4_item1": "Keep access credentials secure.",
+    "section4_item2": "Do not allow unregistered third parties to use the vehicle.",
+    "section4_item3": "Finish the trip correctly in the app to avoid additional charges."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "updated_at": "Last updated: April 2026",
+    "intro": "At Fleetly, we take data privacy seriously. This policy explains how we collect and process your information.",
+    "section1_title": "1. Collected Data",
+    "section1_body": "We collect registration data (name, email, user) and vehicle telemetry data (GPS location, speed, engine status) while you use the service.",
+    "section2_title": "2. Use of Information",
+    "section2_intro": "Your data is used to:",
+    "section2_item1": "Manage your bookings and billing.",
+    "section2_item2": "Ensure fleet and user safety.",
+    "section2_item3": "Improve IoT hardware performance.",
+    "section2_item4": "Comply with legal requirements from authorities in case of accident.",
+    "section3_title": "3. Sharing with Third Parties",
+    "section3_body": "We do not sell your data. We only share information with payment providers, judicial authorities (when required), and your organization administrator (tenant).",
+    "section4_title": "4. Your Rights",
+    "section4_body": "You may request access, rectification, or deletion of your personal data through the support portal or by emailing privacidad@fleetly.com."
   },
   "home": {
     "hero_tag_fleet": "Connected Fleet",

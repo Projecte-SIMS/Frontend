@@ -7,10 +7,10 @@
       <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-primary-500 to-brand-accent-600 text-white text-xs font-bold shadow-sm">
         {{ userInitials }}
       </div>
-      <div class="flex-1 text-left overflow-hidden">
-        <p class="text-xs font-bold text-gray-900 dark:text-white truncate leading-tight">{{ user?.name || 'Usuario' }}</p>
-        <p class="text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate leading-tight">{{ user?.email || '' }}</p>
-      </div>
+        <div class="flex-1 text-left overflow-hidden">
+          <p class="text-xs font-bold text-gray-900 dark:text-white truncate leading-tight">{{ user?.name || t('user_menu.user_fallback') }}</p>
+          <p class="text-[10px] font-medium text-gray-500 dark:text-gray-400 truncate leading-tight">{{ user?.email || '' }}</p>
+        </div>
       <component 
         :is="placement === 'right' ? ChevronRightIcon : ChevronDownIcon" 
         :class="['size-3.5 text-gray-400 transition-transform duration-200 group-hover:text-gray-600 dark:group-hover:text-gray-300', showMenu ? 'rotate-180' : '']" 
@@ -35,7 +35,7 @@
       >
         <!-- Accounts Section -->
         <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-900/50">
-          <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">Cuentas guardadas</p>
+          <p class="text-[10px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{{ t('user_menu.saved_accounts') }}</p>
         </div>
         
         <div class="max-h-60 overflow-y-auto custom-scrollbar">
@@ -57,7 +57,7 @@
               v-else
               @click.stop="removeAccount(account.id)"
               class="opacity-0 group-hover:opacity-100 p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
-              title="Eliminar cuenta"
+              :title="t('user_menu.remove_account')"
             >
               <XMarkIcon class="size-4" />
             </button>
@@ -70,7 +70,7 @@
             class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-brand-primary-600 dark:text-brand-primary-400 hover:bg-brand-primary-50 dark:hover:bg-brand-primary-900/20 rounded-xl transition-colors"
           >
             <PlusIcon class="size-5" />
-            Añadir otra cuenta
+            {{ t('user_menu.add_account') }}
           </button>
         </div>
 
@@ -80,28 +80,28 @@
             class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
           >
             <WalletIcon class="size-5 text-gray-400" />
-            Mi cartera
+            {{ t('user_menu.my_wallet') }}
           </button>
           <button
             @click="openTickets"
             class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
           >
             <TicketIcon class="size-5 text-gray-400" />
-            Mis tickets
+            {{ t('user_menu.my_tickets') }}
           </button>
           <button
             @click="openProfile"
             class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-xl transition-colors"
           >
             <UserCircleIcon class="size-5 text-gray-400" />
-            Mi perfil
+            {{ t('user_menu.my_profile') }}
           </button>
           <button
             @click="handleLogout"
             class="flex items-center gap-3 w-full px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
           >
             <ArrowRightOnRectangleIcon class="size-5" />
-            Cerrar sesión
+            {{ t('user_menu.logout') }}
           </button>
         </div>
       </div>
@@ -113,6 +113,7 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '@/modules/auth/composables/useAuth'
+import { useI18n } from 'vue-i18n'
 import {
   ChevronDownIcon,
   ChevronRightIcon,
@@ -131,10 +132,11 @@ const props = withDefaults(defineProps<{
 })
 
 const router = useRouter()
+const { t } = useI18n()
 const { user, logout, savedAccounts, switchAccount, removeAccount } = useAuth()
 const showMenu = ref(false)
 
-const userInitials = computed(() => getInitials(user.value?.name || 'Usuario'))
+const userInitials = computed(() => getInitials(user.value?.name || t('user_menu.user_fallback')))
 
 const getInitials = (name: string) => {
   return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()
