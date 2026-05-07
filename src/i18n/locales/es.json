@@ -123,6 +123,19 @@
     "rate": "Tarifa",
     "you_are_here": "Estás aquí"
   },
+  "public_map": {
+    "title": "Fleetly - Vehículos Disponibles",
+    "login_cta": "Iniciar sesión para reservar",
+    "available_vehicles": "Vehículos disponibles",
+    "no_vehicles": "No hay vehículos disponibles en este momento.",
+    "footer_hint": "Para reservar un vehículo, inicia sesión o regístrate.",
+    "offline": "Sin conexión"
+  },
+  "confirm_dialog": {
+    "default_title": "¿Estás seguro?",
+    "default_message": "Esta acción no se puede deshacer.",
+    "confirm": "Confirmar Acción"
+  },
   "vehicles": {
     "title": "Flota de Vehículos",
     "count_near": "{count} vehículos disponibles cerca de ti",

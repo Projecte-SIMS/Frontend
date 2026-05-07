@@ -4,10 +4,10 @@
     <header class="bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center justify-between">
       <div class="flex items-center gap-3">
         <span class="text-2xl">🚗</span>
-        <h1 class="text-xl font-bold text-white">Fleetly - Vehículos Disponibles</h1>
+        <h1 class="text-xl font-bold text-white">{{ t('public_map.title') }}</h1>
       </div>
       <router-link to="/login" class="px-4 py-2 bg-brand-primary-600 text-white rounded-lg hover:bg-brand-primary-700 transition">
-        Iniciar sesión para reservar
+        {{ t('public_map.login_cta') }}
       </router-link>
     </header>
 
@@ -17,12 +17,12 @@
       
       <!-- Panel de información -->
       <aside class="absolute top-4 right-4 bg-white/95 dark:bg-gray-800/95 p-4 rounded-xl shadow-xl w-72 backdrop-blur">
-        <h2 class="font-bold text-lg mb-3 text-gray-900 dark:text-white">Vehículos disponibles</h2>
+        <h2 class="font-bold text-lg mb-3 text-gray-900 dark:text-white">{{ t('public_map.available_vehicles') }}</h2>
         
-        <div v-if="loading" class="text-gray-500">Cargando...</div>
+        <div v-if="loading" class="text-gray-500">{{ t('common.searching') }}</div>
         
         <div v-else-if="vehicles.length === 0" class="text-gray-500">
-          No hay vehículos disponibles en este momento.
+          {{ t('public_map.no_vehicles') }}
         </div>
         
         <ul v-else class="space-y-2 max-h-96 overflow-y-auto">
@@ -42,7 +42,7 @@
         
         <div class="mt-4 pt-3 border-t border-gray-200 dark:border-gray-600">
           <p class="text-xs text-gray-500">
-            Para reservar un vehículo, inicia sesión o regístrate.
+            {{ t('public_map.footer_hint') }}
           </p>
         </div>
       </aside>
@@ -52,6 +52,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import L from 'leaflet'
 import 'leaflet/dist/leaflet.css'
 
@@ -72,6 +73,7 @@ const map = ref<L.Map | null>(null)
 const vehicles = ref<Vehicle[]>([])
 const loading = ref(true)
 const markers = new Map<number, L.Marker>()
+const { t } = useI18n()
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 
@@ -135,9 +137,9 @@ function addMarkers() {
             <strong>${v.plate}</strong><br>
             <span style="color: #666;">${v.brand} ${v.model}</span><br>
             ${isOnline 
-              ? '<span style="color: #22c55e; font-weight: bold;">✓ Disponible</span><br>' 
-              : '<span style="color: #94a3b8; font-weight: bold;">✕ Sin conexión</span><br>'}
-            <a href="/login" style="color: #6366f1; text-decoration: underline;">Inicia sesión para reservar</a>
+              ? `<span style="color: #22c55e; font-weight: bold;">✓ ${t('common.available')}</span><br>` 
+              : `<span style="color: #94a3b8; font-weight: bold;">✕ ${t('public_map.offline')}</span><br>`}
+            <a href="/login" style="color: #6366f1; text-decoration: underline;">${t('public_map.login_cta')}</a>
           </div>
         `)
 

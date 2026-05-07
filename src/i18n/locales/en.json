@@ -123,6 +123,19 @@
     "rate": "Rate",
     "you_are_here": "You are here"
   },
+  "public_map": {
+    "title": "Fleetly - Available Vehicles",
+    "login_cta": "Log in to book",
+    "available_vehicles": "Available vehicles",
+    "no_vehicles": "No vehicles are available right now.",
+    "footer_hint": "To book a vehicle, log in or sign up.",
+    "offline": "Offline"
+  },
+  "confirm_dialog": {
+    "default_title": "Are you sure?",
+    "default_message": "This action cannot be undone.",
+    "confirm": "Confirm Action"
+  },
   "vehicles": {
     "title": "Vehicle Fleet",
     "count_near": "{count} vehicles available near you",

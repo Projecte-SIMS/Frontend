@@ -20,12 +20,12 @@
                 </div>
 
                 <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none">
-                  {{ title || '¿Estás seguro?' }}
+                  {{ title || t('confirm_dialog.default_title') }}
                 </DialogTitle>
                 
                 <div class="mt-6 px-4">
                   <p class="text-sm text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                    {{ message || 'Esta acción no se puede deshacer.' }}
+                    {{ message || t('confirm_dialog.default_message') }}
                   </p>
                 </div>
 
@@ -36,14 +36,14 @@
                     class="w-full inline-flex justify-center items-center gap-3 rounded-[1.5rem] bg-rose-600 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-white hover:bg-rose-700 shadow-[0_20px_40px_-10px_rgba(225,29,72,0.4)] active:scale-95 transition-all"
                     @click="onConfirm"
                   >
-                    Confirmar Acción
+                    {{ t('confirm_dialog.confirm') }}
                   </button>
                   <button
                     type="button"
                     class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700"
                     @click="onCancel"
                   >
-                    Cancelar
+                    {{ t('common.cancel') }}
                   </button>
                 </div>
               </div>
@@ -58,6 +58,9 @@
 <script setup lang="ts">
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 defineProps<{
   visible: boolean

@@ -123,6 +123,19 @@
     "rate": "Tarifa",
     "you_are_here": "Ets aquí"
   },
+  "public_map": {
+    "title": "Fleetly - Vehicles Disponibles",
+    "login_cta": "Inicia sessió per reservar",
+    "available_vehicles": "Vehicles disponibles",
+    "no_vehicles": "No hi ha vehicles disponibles en aquest moment.",
+    "footer_hint": "Per reservar un vehicle, inicia sessió o registra't.",
+    "offline": "Sense connexió"
+  },
+  "confirm_dialog": {
+    "default_title": "N'estàs segur?",
+    "default_message": "Aquesta acció no es pot desfer.",
+    "confirm": "Confirmar Acció"
+  },
   "vehicles": {
     "title": "Flota de Vehicles",
     "count_near": "{count} vehicles disponibles a prop teu",
