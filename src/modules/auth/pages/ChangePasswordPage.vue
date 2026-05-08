@@ -10,10 +10,10 @@
         {{ $t('profile.back_to_profile') }}
       </router-link>
       <h1 class="text-3xl font-semibold text-gray-900 dark:text-white tracking-tight">
-        {{ $t('profile.edit_title') }}
+        {{ $t('profile.change_password') }}
       </h1>
       <p class="text-gray-500 dark:text-gray-400 mt-1 font-medium">
-        {{ $t('profile.edit_subtitle') }}
+        {{ $t('profile.security_subtitle') }}
       </p>
     </div>
 
@@ -21,53 +21,39 @@
     <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm overflow-hidden">
       <form @submit.prevent="submit" class="p-8 space-y-6">
         <div class="space-y-6">
-          <!-- Nombre -->
+          <!-- Password -->
           <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">{{ $t('profile.full_name') }}</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">{{ $t('profile.new_password') }}</label>
             <div class="relative group">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
-                <UserIcon class="size-5" />
+                <LockClosedIcon class="size-5" />
               </div>
               <input
-                v-model="form.name"
-                type="text"
+                v-model="form.password"
+                type="password"
                 required
                 class="block w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
-                :placeholder="$t('profile.full_name')"
+                :placeholder="$t('profile.password_placeholder')"
               />
             </div>
+            <p class="mt-2 text-[11px] text-gray-400 ml-1 italic">
+              {{ $t('profile.password_length_hint') }}
+            </p>
           </div>
 
-          <!-- Usuario -->
+          <!-- Confirm Password -->
           <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">{{ $t('profile.username') }}</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">{{ $t('profile.confirm_new_password') }}</label>
             <div class="relative group">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
-                <AtSymbolIcon class="size-5" />
+                <ShieldCheckIcon class="size-5" />
               </div>
               <input
-                v-model="form.username"
-                type="text"
+                v-model="form.confirmPassword"
+                type="password"
                 required
                 class="block w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
-                :placeholder="$t('profile.username')"
-              />
-            </div>
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">{{ $t('profile.email') }}</label>
-            <div class="relative group">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
-                <EnvelopeIcon class="size-5" />
-              </div>
-              <input
-                v-model="form.email"
-                type="email"
-                required
-                class="block w-full pl-11 pr-4 py-3.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
-                :placeholder="$t('profile.email')"
+                :placeholder="$t('profile.confirm_new_password')"
               />
             </div>
           </div>
@@ -97,7 +83,7 @@
             class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ArrowPathIcon v-if="isLoading" class="size-5 animate-spin" />
-            <CloudArrowUpIcon v-else class="size-5" />
+            <KeyIcon v-else class="size-5" />
             {{ isLoading ? $t('profile.saving') : $t('profile.save_changes') }}
           </button>
           <button
@@ -121,23 +107,21 @@ import apiClient from '@/services/api'
 import { useI18n } from 'vue-i18n'
 import {
   ArrowLeftIcon,
-  UserIcon,
-  AtSymbolIcon,
-  EnvelopeIcon,
-  CloudArrowUpIcon,
+  LockClosedIcon,
+  ShieldCheckIcon,
+  KeyIcon,
   ArrowPathIcon,
   CheckCircleIcon,
   ExclamationCircleIcon
 } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
-const { user, fetchUser } = useAuth()
+const { fetchUser } = useAuth()
 const { t } = useI18n()
 
 const form = ref({
-  name: user.value?.name || '',
-  username: user.value?.username || '',
-  email: user.value?.email || ''
+  password: '',
+  confirmPassword: ''
 })
 
 const isLoading = ref(false)
@@ -145,18 +129,27 @@ const error = ref('')
 const success = ref(false)
 
 const submit = async () => {
+  if (form.value.password !== form.value.confirmPassword) {
+    error.value = t('profile.errors.passwords_dont_match')
+    return
+  }
+
+  if (form.value.password.length < 8) {
+    error.value = t('profile.errors.password_too_short')
+    return
+  }
+
   isLoading.value = true
   error.value = ''
   success.value = false
   try {
-    const payload = {
-      name: form.value.name,
-      username: form.value.username,
-      email: form.value.email
-    }
-    await apiClient.put('/users/me', payload)
+    await apiClient.put('/users/me', {
+      password: form.value.password
+    })
     await fetchUser()
     success.value = true
+    form.value.password = ''
+    form.value.confirmPassword = ''
     
     setTimeout(() => {
       success.value = false
