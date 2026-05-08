@@ -14,8 +14,8 @@ function getApiUrl(): string {
     return 'http://localhost:8000/api'
   }
   
-  // Production - use Render backend
-  return 'https://sims-backend-api-0b2w.onrender.com/api'
+  // Production - use new server backend
+  return 'https://landing.fleetly.deltahost.asix2.iesmontsia.cat/api'
 }
 
 // API client para la central (gestión de tenants)

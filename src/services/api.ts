@@ -15,8 +15,8 @@ function getApiUrl(): string {
     return 'http://localhost:8000/api'
   }
   
-  // Production - use Render backend
-  return 'https://sims-backend-api-0b2w.onrender.com/api'
+  // Production - use new server backend
+  return 'https://landing.fleetly.deltahost.asix2.iesmontsia.cat/api'
 }
 
 // Get tenant from URL query param or localStorage
@@ -30,32 +30,31 @@ function getCurrentTenant(): string | null {
     return tenantFromUrl
   }
 
-  // Fallback to subdomain (e.g. ibm.fleetly.com -> ibm)
+  // Fallback to subdomain (e.g. ibm.fleetly... -> ibm)
   const hostname = window.location.hostname
   const isLocalhost = hostname === 'localhost' || hostname === '127.0.0.1'
 
-  // Do NOT extract subdomain from Vercel or Render domains
-  const isCloudProvider = hostname.includes('vercel.app') || hostname.includes('onrender.com')
-
-  if (!isLocalhost && !isCloudProvider) {
-    // Basic subdomain extraction for production custom domains
-    // e.g. "tenant.sims.com" -> "tenant"
+  // Extract subdomain for production custom domains
+  // e.g. "tenant.fleetly.deltahost..." -> "tenant"
+  if (!isLocalhost) {
     const parts = hostname.split('.')
+    // We expect at least tenant.fleetly.deltahost... (parts >= 4)
     if (parts.length > 2) {
       const subdomain = parts[0]
-      if (subdomain && subdomain !== 'www' && subdomain !== 'app' && subdomain !== 'admin') {
-        localStorage.setItem('current_tenant', subdomain)
-        return subdomain
+      const centralParts = 'fleetly.deltahost.asix2.iesmontsia.cat'.split('.')
+      
+      // If the hostname ends with our central domain and has a prefix
+      if (hostname.endsWith('fleetly.deltahost.asix2.iesmontsia.cat') && parts.length > centralParts.length) {
+        if (subdomain && subdomain !== 'www' && subdomain !== 'app' && subdomain !== 'admin' && subdomain !== 'landing' && subdomain !== 'iot') {
+          localStorage.setItem('current_tenant', subdomain)
+          return subdomain
+        }
       }
     }
   }
 
   // Fallback to localStorage
   const storedTenant = localStorage.getItem('current_tenant')
-  if (storedTenant && (storedTenant.includes('vercel') || storedTenant.includes('onrender'))) {
-    localStorage.removeItem('current_tenant')
-    return null
-  }
   return storedTenant
 }
 // Check if we're in superadmin routes (don't need tenant)

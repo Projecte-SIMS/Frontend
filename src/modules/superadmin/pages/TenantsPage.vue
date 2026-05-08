@@ -520,8 +520,8 @@ const newTenant = reactive({
 import { watch } from 'vue'
 watch(() => newTenant.id, (newId) => {
   if (newId) {
-    // Para la base de datos usamos el dominio de Render (backend)
-    const suffix = 'sims-backend-api-0b2w.onrender.com'
+    // Para la base de datos usamos el dominio de producción
+    const suffix = 'fleetly.deltahost.asix2.iesmontsia.cat'
     newTenant.domain = `${newId.toLowerCase()}.${suffix}`
   } else {
     newTenant.domain = ''
@@ -529,15 +529,19 @@ watch(() => newTenant.id, (newId) => {
 })
 
 const frontendBaseUrl = computed(() => {
-  // URL de Vercel en producción o localhost en desarrollo
+  // URL de producción o localhost en desarrollo
   if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return `http://${window.location.hostname}:5173`
   }
-  return 'https://frontend-phi-seven-21.vercel.app'
+  return 'https://fleetly.deltahost.asix2.iesmontsia.cat'
 })
 
 const getTenantLoginUrl = (tenantId: string) => {
-  return `${frontendBaseUrl.value}/login?tenant=${tenantId}`
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    return `${frontendBaseUrl.value}/login?tenant=${tenantId}`
+  }
+  // En producción usamos subdominios: https://tenantid.fleetly...
+  return `https://${tenantId}.fleetly.deltahost.asix2.iesmontsia.cat`
 }
 
 const filteredTenants = computed(() => {
