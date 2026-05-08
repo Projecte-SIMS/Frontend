@@ -3,8 +3,8 @@
     <!-- Header -->
     <div class="flex items-center justify-between">
       <div>
-        <h2 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">Opciones del Servidor</h2>
-        <p class="text-sm text-slate-500 font-medium">Personaliza la identidad visual y configuración técnica de tu entorno.</p>
+        <h2 class="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ $t('admin.settings.title') }}</h2>
+        <p class="text-sm text-slate-500 font-medium">{{ $t('admin.settings.subtitle') }}</p>
       </div>
     </div>
 
@@ -17,11 +17,11 @@
               <div class="size-10 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 flex items-center justify-center">
                 <span class="material-icons">palette</span>
               </div>
-              <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Identidad Visual</h3>
+              <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">{{ $t('admin.settings.visual_identity') }}</h3>
             </div>
             <div v-if="!canCustomBranding" class="px-3 py-1.5 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 flex items-center gap-2">
               <span class="material-icons text-amber-500 text-xs">lock</span>
-              <span class="text-[9px] font-black text-amber-600 uppercase tracking-widest">Requiere PRO BUSINESS</span>
+              <span class="text-[9px] font-black text-amber-600 uppercase tracking-widest">{{ $t('admin.settings.requires_pro') }}</span>
             </div>
           </div>
 
@@ -31,16 +31,16 @@
                <div class="size-16 rounded-3xl bg-amber-100 dark:bg-amber-900/30 text-amber-600 flex items-center justify-center mx-auto mb-6">
                  <span class="material-icons text-3xl">workspace_premium</span>
                </div>
-               <p class="text-lg font-black text-slate-900 dark:text-white mb-2">Función Bloqueada</p>
-               <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">Tu plan actual no permite personalizar los colores de marca. Actualiza tu suscripción para desbloquear esta opción.</p>
-               <a href="mailto:soporte@fleetly.com" class="inline-flex w-full items-center justify-center px-8 py-4 rounded-2xl bg-brand-primary-600 text-white text-xs font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 active:scale-95">Mejorar Plan</a>
+               <p class="text-lg font-black text-slate-900 dark:text-white mb-2">{{ $t('admin.settings.locked_feature') }}</p>
+               <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">{{ $t('admin.settings.locked_description') }}</p>
+               <a href="mailto:soporte@fleetly.com" class="inline-flex w-full items-center justify-center px-8 py-4 rounded-2xl bg-brand-primary-600 text-white text-xs font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 active:scale-95">{{ $t('admin.settings.upgrade_plan') }}</a>
              </div>
           </div>
 
           <div class="space-y-10">
             <!-- Theme Selection -->
             <div :class="{'grayscale opacity-50 pointer-events-none': !canCustomBranding}">
-              <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-1">Color de Marca</p>
+              <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 ml-1">{{ $t('admin.settings.brand_color') }}</p>
               <div class="grid grid-cols-2 sm:grid-cols-5 gap-4">
                 <button
                   v-for="t in themes"
@@ -61,13 +61,13 @@
 
             <!-- Preview Card -->
             <div class="p-6 rounded-3xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800">
-              <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">Vista Previa de Componentes</p>
+              <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-4">{{ $t('admin.settings.component_preview') }}</p>
               <div class="flex flex-wrap gap-4">
-                <button class="px-6 py-2.5 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-primary-500/20">Botón Primario</button>
-                <button class="px-6 py-2.5 rounded-xl border border-brand-primary-200 dark:border-brand-primary-800 text-brand-primary-600 dark:text-brand-primary-400 text-[10px] font-black uppercase tracking-widest">Botón Outline</button>
+                <button class="px-6 py-2.5 rounded-xl bg-brand-primary-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-primary-500/20">{{ $t('admin.settings.primary_button') }}</button>
+                <button class="px-6 py-2.5 rounded-xl border border-brand-primary-200 dark:border-brand-primary-800 text-brand-primary-600 dark:text-brand-primary-400 text-[10px] font-black uppercase tracking-widest">{{ $t('admin.settings.outline_button') }}</button>
                 <div class="flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary-50 dark:bg-brand-primary-900/30 text-brand-primary-600 dark:text-brand-primary-400 text-[10px] font-black border border-brand-primary-100 dark:border-brand-primary-800/50">
                   <span class="size-1.5 rounded-full bg-brand-primary-500 animate-pulse"></span>
-                  Badge Activo
+                  {{ $t('admin.settings.active_badge') }}
                 </div>
               </div>
             </div>
@@ -81,11 +81,11 @@
                 <div class="size-10 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center">
                   <span class="material-icons">notifications_active</span>
                 </div>
-                <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Notificaciones del Sistema</h3>
+                <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">{{ $t('admin.settings.system_notifications') }}</h3>
              </div>
-             <span class="px-3 py-1 rounded-lg bg-amber-50 text-amber-600 text-[8px] font-black uppercase tracking-widest border border-amber-100">Próximamente</span>
+             <span class="px-3 py-1 rounded-lg bg-amber-50 text-amber-600 text-[8px] font-black uppercase tracking-widest border border-amber-100">{{ $t('admin.settings.coming_soon') }}</span>
            </div>
-           <p class="text-xs text-slate-500">Configura avisos automáticos por email para mantenimiento y alertas de flota.</p>
+           <p class="text-xs text-slate-500">{{ $t('admin.settings.notifications_desc') }}</p>
         </section>
       </div>
 
@@ -94,32 +94,32 @@
         <section class="p-8 rounded-[2.5rem] bg-slate-900 dark:bg-slate-950 text-white shadow-xl shadow-slate-900/10 border border-slate-800">
           <div class="flex items-center gap-3 mb-8">
             <span class="material-icons text-brand-primary-400">dns</span>
-            <h3 class="text-xs font-black uppercase tracking-[0.2em]">Detalles del Entorno</h3>
+            <h3 class="text-xs font-black uppercase tracking-[0.2em]">{{ $t('admin.settings.env_details') }}</h3>
           </div>
 
           <div class="space-y-6">
             <div>
-              <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Identificador del Tenant</p>
+              <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ $t('admin.settings.tenant_id') }}</p>
               <p class="text-sm font-bold font-mono text-brand-primary-400">{{ settings.id }}</p>
-              <p class="text-[9px] text-slate-500 mt-1 italic">Este ID es la base de tu URL y no se puede cambiar por seguridad.</p>
+              <p class="text-[9px] text-slate-500 mt-1 italic">{{ $t('admin.settings.tenant_id_desc') }}</p>
             </div>
 
             <div class="pt-4 border-t border-slate-800">
-              <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Plan de Servicio</p>
+              <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ $t('admin.settings.service_plan') }}</p>
               <div class="flex items-center gap-2">
-                <span class="text-sm font-black text-white uppercase">{{ settings.company_plan === 'pro' ? 'Profesional (Enterprise)' : 'Básico (Hub)' }}</span>
+                <span class="text-sm font-black text-white uppercase">{{ settings.company_plan === 'pro' ? $t('admin.settings.plan_pro') : $t('admin.settings.plan_base') }}</span>
               </div>
             </div>
 
             <div class="pt-4 border-t border-slate-800">
-              <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Activo desde</p>
+              <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{{ $t('admin.settings.active_since') }}</p>
               <p class="text-sm font-bold text-slate-300">{{ formatDate(settings.created_at) }}</p>
             </div>
             
             <div class="pt-6">
                <div class="p-4 rounded-2xl bg-brand-primary-500/10 border border-brand-primary-500/20">
                  <p class="text-[10px] font-bold text-brand-primary-300 leading-relaxed">
-                   Si necesitas cambiar el nombre legal o migrar tu ID, contacta con soporte@fleetly.com
+                   {{ $t('admin.settings.support_msg') }}
                  </p>
                </div>
             </div>
@@ -136,13 +136,15 @@ import { api } from '@/services/api'
 import { useTheme } from '@/modules/common/composables/useTheme'
 import { usePlan } from '@/modules/common/composables/usePlan'
 import { useToast } from '@/modules/common/composables/useToast'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const { brandTheme, setBrandTheme } = useTheme()
 const { canCustomBranding, fetchCurrentPlan } = usePlan()
 const toast = useToast()
 const updating = ref(false)
 const settings = ref<any>({
-  id: 'Cargando...',
+  id: '...',
   company_plan: 'base',
   created_at: new Date().toISOString()
 })
@@ -169,7 +171,7 @@ const loadSettings = async () => {
 
 const handleUpdateTheme = async (themeId: string) => {
   if (!canCustomBranding.value) {
-    return toast.error('Actualiza a PRO BUSINESS para personalizar tus colores')
+    return toast.error(t('admin.settings.errors.pro_required'))
   }
   updating.value = true
   // 1. Guardamos el estado anterior por si falla la API
@@ -182,12 +184,12 @@ const handleUpdateTheme = async (themeId: string) => {
     // 3. Guardado permanente en base de datos
     const res = await api.updateSettings({ company_theme: themeId })
     if (res.success) {
-      toast.success('Marca actualizada correctamente')
+      toast.success(t('admin.settings.success.brand_updated'))
     }
   } catch (e) {
     // Revertir en local si el servidor da error
     setBrandTheme(prevTheme)
-    toast.error('No se pudo guardar la configuración')
+    toast.error(t('admin.settings.errors.save_failed'))
   } finally {
     updating.value = false
   }

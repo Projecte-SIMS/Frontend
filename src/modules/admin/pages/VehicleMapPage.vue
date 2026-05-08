@@ -18,7 +18,7 @@
             <input 
               v-model="search" 
               type="text" 
-              placeholder="Buscar por matrícula o modelo..." 
+              :placeholder="$t('admin.map.search_placeholder')" 
               class="block w-full pl-11 pr-4 py-3 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-lg text-sm font-bold focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none uppercase tracking-wider"
             />
           </div>
@@ -31,18 +31,18 @@
         <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 no-scrollbar max-w-full">
           <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-lg shrink-0">
             <div class="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-            <span class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">{{ stats.available }} Libres</span>
+            <span class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">{{ stats.available }} {{ $t('admin.map.free') }}</span>
           </div>
           <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-lg shrink-0">
             <div class="size-2 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]"></div>
-            <span class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">{{ stats.reserved }} Reservados</span>
+            <span class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">{{ stats.reserved }} {{ $t('admin.map.reserved') }}</span>
           </div>
           <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-lg shrink-0">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
             </span>
-            <span class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">{{ stats.running }} En Ruta</span>
+            <span class="text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-300">{{ stats.running }} {{ $t('admin.map.running') }}</span>
           </div>
         </div>
       </div>
@@ -54,7 +54,7 @@
           <div class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 flex flex-col overflow-hidden">
             <div @click="isFleetListCollapsed = !isFleetListCollapsed" class="px-6 pt-5 pb-4 border-b border-slate-100 dark:border-slate-800 cursor-pointer group">
               <div class="flex justify-between items-center">
-                <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Control de Flota en Vivo</h2>
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">{{ $t('admin.map.fleet_control') }}</h2>
                 <ChevronUpIcon class="size-5 text-slate-400 group-hover:text-brand-primary-500 transition-transform duration-300" :class="{'rotate-180': isFleetListCollapsed}" />
               </div>
             </div>
@@ -87,7 +87,7 @@
                         </span>
                         <span class="flex items-center gap-1.5 text-[9px] font-bold uppercase" :class="v.online !== false ? 'text-emerald-600' : 'text-slate-400'">
                           <span class="size-1.5 rounded-full" :class="v.online !== false ? 'bg-emerald-500' : 'bg-slate-400'"></span>
-                          {{ v.online !== false ? 'CONECTADO' : 'OFFLINE' }}
+                          {{ v.online !== false ? $t('admin.map.connected') : $t('admin.map.offline') }}
                         </span>
                       </div>
                     </div>
@@ -96,7 +96,7 @@
                 
                 <div v-if="selectedVehicle?.id === v.id" class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-800 space-y-4 animate-fade-in">
                   <div class="bg-slate-50 dark:bg-slate-950 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800 col-span-2">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Telemetría en Vivo</p>
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">{{ $t('admin.map.live_telemetry') }}</p>
                     <div class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
                       <span>{{ v.speed?.toFixed(0) }} km/h · {{ v.rpm }} rpm</span>
                       <span :class="(v.battery_voltage || 12.6) < 11.8 ? 'text-rose-500' : ''">{{ v.battery_voltage?.toFixed(1) || 'N/A' }}V</span>
@@ -105,10 +105,10 @@
 
                   <div class="grid grid-cols-2 gap-2 mt-2">
                     <button @click.stop="sendCommand(v, 'on')" :disabled="v.online === false || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brand-secondary-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-brand-secondary-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
-                      <PlayIcon class="size-3" /> Encender
+                      <PlayIcon class="size-3" /> {{ $t('admin.map.turn_on') }}
                     </button>
                     <button @click.stop="sendCommand(v, 'off')" :disabled="v.online === false || commandLoading === v.device_id" class="flex items-center justify-center gap-2 py-2.5 rounded-lg bg-rose-600 text-white text-[10px] font-bold uppercase tracking-wider hover:bg-rose-700 active:scale-95 disabled:opacity-50 transition-all shadow-sm">
-                      <PowerIcon class="size-3" /> Apagar
+                      <PowerIcon class="size-3" /> {{ $t('admin.map.turn_off') }}
                     </button>
                   </div>
                 </div>
@@ -148,11 +148,13 @@ import { useMap } from '@/modules/map/composables/useMap'
 import { getVehicleImage } from '@/modules/common/utils/vehicleImages'
 import apiClient from '@/services/api'
 import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
+import { useI18n } from 'vue-i18n'
 import {
   MagnifyingGlassIcon, ArrowPathIcon, TruckIcon, PlayIcon, PowerIcon,
   XCircleIcon, CheckCircleIcon, ChevronUpIcon
 } from '@heroicons/vue/24/outline'
 
+const { t } = useI18n()
 const { mapContainer, initMap, fetchVehicles, centerOnVehicle, destroyMap, setSearchQuery, selectedVehicle, rawVehicles } = useMap()
 const route = useRoute()
 
@@ -203,8 +205,8 @@ const getStatusClasses = (v: any) => {
 }
 
 const translateStatus = (v: any) => {
-  if (v.online === false) return 'Desconectado';
-  const map: any = { running: 'En ruta', reserved: 'Reservado', available: 'Libre' }
+  if (v.online === false) return t('admin.map.status_disconnected');
+  const map: any = { running: t('admin.map.status_running'), reserved: t('admin.map.status_reserved'), available: t('admin.map.status_available') }
   return map[v.status] || v.status
 }
 
@@ -212,10 +214,10 @@ const sendCommand = async (vehicle: any, action: string) => {
   const actionName = action === 'on' ? 'ENCENDER' : 'APAGAR'
   const isDangerous = action === 'off' && vehicle.status === 'running'
 
-  confirmModal.title = `¿${actionName} VEHÍCULO?`
+  confirmModal.title = action === 'on' ? t('admin.map.confirm_turn_on') : t('admin.map.confirm_turn_off')
   confirmModal.message = isDangerous 
-    ? `ATENCIÓN: El vehículo ${vehicle.plate} está EN RUTA. Apagar el motor remotamente puede causar un accidente si no está estacionado. ¿Proceder con precaución?`
-    : `Vas a enviar un comando de ${actionName} a la unidad ${vehicle.plate}. ¿Confirmas la operación?`
+    ? t('admin.map.warning_running', { plate: vehicle.plate })
+    : t('admin.map.confirm_command', { action: actionName, plate: vehicle.plate })
   
   confirmModal.vehicle = vehicle
   confirmModal.action = action
@@ -235,10 +237,11 @@ const executeCommand = async (vehicle: any, action: string) => {
   commandLoading.value = vehicle.device_id
   try {
     await apiClient.post(`/admin/iot/devices/${vehicle.device_id}/command`, { action, relay: 0 })
-    showToast(`Comando ${action.toUpperCase()} enviado`, 'success')
+    const actionName = action === 'on' ? 'ENCENDER' : 'APAGAR'
+    showToast(t('admin.map.success_command', { action: actionName }), 'success')
     setTimeout(() => fetchVehicles('/admin/vehicles/map'), 1000)
   } catch (e: any) {
-    showToast(e.response?.data?.message || 'Error al enviar comando', 'error')
+    showToast(e.response?.data?.message || t('admin.map.error_command'), 'error')
   } finally {
     commandLoading.value = null
   }

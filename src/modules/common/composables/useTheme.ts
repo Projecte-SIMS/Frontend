@@ -65,7 +65,13 @@ export function useTheme() {
             applyTheme()
         }
       }
-    } catch (e) {
+    } catch (e: any) {
+      // 404 is common for non-existent tenants during typing or stale localStorage
+      if (e.response?.status === 404) {
+        console.debug(`Tenant "${tenantId}" not found. Clearing from localStorage and falling back to central theme.`)
+        localStorage.removeItem('current_tenant')
+        return fetchAndApplyCentralTheme()
+      }
       console.warn('Could not fetch tenant theme:', e)
     }
   }

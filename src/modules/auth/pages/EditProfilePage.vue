@@ -7,10 +7,10 @@
         class="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-brand-primary-600 dark:text-gray-400 dark:hover:text-brand-primary-400 transition-colors mb-4"
       >
         <ArrowLeftIcon class="size-4" />
-        Volver al perfil
+        {{ $t('profile.back_to_profile') }}
       </router-link>
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Editar Perfil</h1>
-      <p class="text-gray-500 dark:text-gray-400 mt-1">Actualiza tu información personal y configuración de cuenta.</p>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $t('profile.edit_title') }}</h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-1">{{ $t('profile.edit_subtitle') }}</p>
     </div>
 
     <!-- Form Card -->
@@ -19,7 +19,7 @@
         <div class="grid grid-cols-1 gap-6">
           <!-- Nombre -->
           <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nombre Completo</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('profile.full_name') }}</label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                 <UserIcon class="size-5" />
@@ -29,14 +29,14 @@
                 type="text"
                 required
                 class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
-                placeholder="Tu nombre"
+                :placeholder="$t('profile.full_name')"
               />
             </div>
           </div>
 
           <!-- Usuario -->
           <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nombre de Usuario</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('profile.username') }}</label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                 <AtSymbolIcon class="size-5" />
@@ -46,14 +46,14 @@
                 type="text"
                 required
                 class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
-                placeholder="username"
+                :placeholder="$t('profile.username')"
               />
             </div>
           </div>
 
           <!-- Email -->
           <div>
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Email</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('profile.email') }}</label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                 <EnvelopeIcon class="size-5" />
@@ -63,14 +63,14 @@
                 type="email"
                 required
                 class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
-                placeholder="tu@email.com"
+                :placeholder="$t('profile.email')"
               />
             </div>
           </div>
 
           <!-- Contraseña -->
           <div class="pt-4 border-t border-gray-100 dark:border-gray-800">
-            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">Nueva Contraseña</label>
+            <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('profile.new_password') }}</label>
             <div class="relative">
               <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                 <LockClosedIcon class="size-5" />
@@ -79,11 +79,11 @@
                 v-model="form.password"
                 type="password"
                 class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white focus:ring-2 focus:ring-brand-primary-500 focus:border-transparent transition-all outline-none"
-                placeholder="Dejar en blanco para no cambiar"
+                :placeholder="$t('profile.password_hint')"
               />
             </div>
             <p class="mt-2 text-[10px] text-gray-400 ml-1 italic">
-              La contraseña debe tener al menos 8 caracteres si decides cambiarla.
+              {{ $t('profile.password_length_hint') }}
             </p>
           </div>
         </div>
@@ -100,7 +100,7 @@
           </div>
           <div v-else-if="success" class="p-4 rounded-2xl bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-sm font-medium flex items-center gap-3">
             <CheckCircleIcon class="size-5 shrink-0" />
-            Perfil actualizado correctamente.
+            {{ $t('profile.update_success') }}
           </div>
         </Transition>
 
@@ -113,14 +113,14 @@
           >
             <ArrowPathIcon v-if="isLoading" class="size-5 animate-spin" />
             <CloudArrowUpIcon v-else class="size-5" />
-            {{ isLoading ? 'Guardando...' : 'Guardar Cambios' }}
+            {{ isLoading ? $t('profile.saving') : $t('profile.save_changes') }}
           </button>
           <button
             type="button"
             @click="cancel"
             class="px-6 py-3.5 rounded-2xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm hover:bg-gray-200 dark:hover:bg-gray-700/50 transition-all active:scale-95"
           >
-            Cancelar
+            {{ $t('common.cancel') }}
           </button>
         </div>
       </form>
@@ -133,6 +133,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import apiClient from '@/services/api'
+import { useI18n } from 'vue-i18n'
 import {
   ArrowLeftIcon,
   UserIcon,
@@ -147,6 +148,7 @@ import {
 
 const router = useRouter()
 const { user, fetchUser } = useAuth()
+const { t } = useI18n()
 
 const form = ref({
   name: user.value?.name || '',
@@ -180,7 +182,7 @@ const submit = async () => {
       success.value = false
     }, 3000)
   } catch (e: any) {
-    error.value = e.response?.data?.message || 'Error al actualizar el perfil'
+    error.value = e.response?.data?.message || t('profile.errors.update_failed')
   } finally {
     isLoading.value = false
   }

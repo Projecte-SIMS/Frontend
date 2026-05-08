@@ -3,6 +3,7 @@ import apiClient from '@/services/api'
 import type { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User, UserResponse } from '../interfaces/auth.interface'
 import router from '@/router'
 import showToast from '@/modules/common/composables/useToast'
+import i18n from '@/i18n'
 
 const TOKEN_COOKIE_NAME = 'token'
 const ACCOUNTS_STORAGE_KEY = 'sims_saved_accounts'
@@ -46,6 +47,7 @@ const savedAccounts = ref<SavedAccount[]>(JSON.parse(localStorage.getItem(ACCOUN
 const isAuthenticated = computed(() => !!user.value)
 
 export function useAuth() {
+  const t = i18n.global.t
 
   const getToken = (): string | null => {
     return getCookie(TOKEN_COOKIE_NAME)
@@ -149,11 +151,11 @@ export function useAuth() {
         const userFetched = await fetchUser()
         return userFetched
       } else {
-        error.value = 'No token received from server'
+        error.value = t('auth.errors.no_token') || 'No se recibió el token del servidor'
         return false
       }
     } catch (err: any) {
-      const msg = err.response?.data?.message || 'Error logging in'
+      const msg = err.response?.data?.message || t('auth.errors.login_failed') || 'Error al iniciar sesión'
       error.value = msg
       return false
     } finally {
@@ -179,8 +181,8 @@ export function useAuth() {
       // Even if logout fails on backend, we clear local session
       deleteCookie(TOKEN_COOKIE_NAME)
       user.value = null
-      const errorMsg = err.response?.data?.message || 'Error during logout'
-      showToast(errorMsg)
+      const errorMsg = err.response?.data?.message || t('auth.errors.logout_failed') || 'Error al cerrar sesión'
+      showToast(errorMsg, 'error')
     }
   }
 
@@ -204,12 +206,12 @@ export function useAuth() {
       if (token) {
         setCookie(TOKEN_COOKIE_NAME, token)
         await fetchUser()
-        showToast('¡Registro completado con éxito!', 'success')
+        showToast(t('auth.success.register') || '¡Registro completado con éxito!', 'success')
         // Force full reload to home to ensure fresh state
         window.location.href = '/'
       }
     } catch (err: any) {
-      const msg = err.response?.data?.message || 'Error al registrarse'
+      const msg = err.response?.data?.message || t('auth.errors.register_failed') || 'Error al registrarse'
       showToast(msg, 'error')
     } finally {
       isLoading.value = false

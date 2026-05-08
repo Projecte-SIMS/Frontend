@@ -2,8 +2,8 @@
   <div class="space-y-8 animate-fade-in">
     <!-- Header Profesional -->
     <PageHeading
-      title="Directorio de Usuarios"
-      description="Administración de accesos, roles y perfiles del ecosistema"
+      :title="$t('admin.users.directory_title')"
+      :description="$t('admin.users.directory_subtitle')"
     >
       <template #actions>
         <router-link
@@ -11,7 +11,7 @@
           class="inline-flex items-center gap-2 rounded-xl bg-brand-primary-600 px-6 py-2.5 text-[10px] font-black uppercase tracking-widest text-white shadow-lg shadow-brand-primary-200 dark:shadow-none hover:bg-brand-primary-700 transition-all active:scale-95"
         >
           <PlusIcon class="size-4" />
-          Registrar Usuario
+          {{ $t('admin.users.register_user') }}
         </router-link>
       </template>
     </PageHeading>
@@ -26,13 +26,13 @@
           v-model="filters.search"
           @input="handleSearch"
           type="text"
-          placeholder="BUSCAR POR NOMBRE, EMAIL O USERNAME..."
+          :placeholder="$t('admin.users.search_placeholder')"
           class="block w-full rounded-xl border-0 bg-slate-50 dark:bg-slate-950 pl-11 pr-4 py-3 text-slate-900 dark:text-white shadow-sm ring-1 ring-inset ring-slate-200 dark:ring-slate-800 placeholder:text-slate-400 focus:ring-2 focus:ring-brand-primary-600 text-[10px] font-bold uppercase tracking-widest transition-all"
         />
       </div>
       <div class="flex items-center gap-3">
         <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">
-          {{ pagination.total }} registros encontrados
+          {{ $t('admin.users.records_found', { total: pagination.total }) }}
         </span>
       </div>
     </div>
@@ -40,7 +40,7 @@
     <!-- Estado de Carga -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-20 space-y-4">
       <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-brand-primary-600"></div>
-      <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Sincronizando directorio...</span>
+      <span class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $t('admin.users.syncing_directory') }}</span>
     </div>
 
     <!-- Error -->
@@ -54,11 +54,11 @@
         <table class="w-full text-left border-collapse">
           <thead class="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
             <tr>
-              <th class="px-6 py-5">Identidad</th>
-              <th class="px-6 py-5">Contacto</th>
-              <th class="px-6 py-5 text-center">Rol Asignado</th>
-              <th class="px-6 py-5 text-center">Estado</th>
-              <th class="px-6 py-5 text-right">Acciones</th>
+              <th class="px-6 py-5">{{ $t('admin.users.table_identity') }}</th>
+              <th class="px-6 py-5">{{ $t('admin.users.table_contact') }}</th>
+              <th class="px-6 py-5 text-center">{{ $t('admin.users.table_role') }}</th>
+              <th class="px-6 py-5 text-center">{{ $t('admin.users.table_status') }}</th>
+              <th class="px-6 py-5 text-right">{{ $t('admin.users.table_actions') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -70,7 +70,7 @@
                   </div>
                   <div>
                     <div class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ user.name }}</div>
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">@{{ user.username || 'sin-username' }}</div>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">@{{ user.username || $t('admin.users.no_username') }}</div>
                   </div>
                 </div>
               </td>
@@ -84,7 +84,7 @@
                 >
                   {{ getPrimaryRole(user) }}
                 </span>
-                <span v-else class="text-[10px] font-black text-slate-300 uppercase">Sin Rol</span>
+                <span v-else class="text-[10px] font-black text-slate-300 uppercase">{{ $t('admin.users.no_role') }}</span>
               </td>
               <td class="px-6 py-4 text-center">
                 <span
@@ -95,7 +95,7 @@
                       : 'bg-slate-50 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700'
                   ]"
                 >
-                  {{ user.active ? 'Activo' : 'Inactivo' }}
+                  {{ user.active ? $t('admin.users.status_active') : $t('admin.users.status_inactive') }}
                 </span>
               </td>
               <td class="px-6 py-4 text-right">
@@ -103,7 +103,7 @@
                   <button
                     @click="navigateToDetail(user)"
                     class="p-2 rounded-lg text-slate-400 hover:text-brand-primary-600 hover:bg-brand-primary-50 dark:hover:bg-brand-primary-900/20 transition-all"
-                    title="Detalles"
+                    :title="$t('admin.users.action_details')"
                   >
                     <span class="material-icons text-xl">visibility</span>
                   </button>
@@ -111,7 +111,7 @@
                     v-if="isCurrentUserAdmin"
                     @click="navigateToEdit(user)"
                     class="p-2 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all"
-                    title="Editar"
+                    :title="$t('admin.users.action_edit')"
                   >
                     <span class="material-icons text-xl">edit</span>
                   </button>
@@ -119,7 +119,7 @@
                     v-if="isCurrentUserAdmin"
                     @click="openDeleteModal(user)"
                     class="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all"
-                    title="Eliminar"
+                    :title="$t('admin.users.action_delete')"
                   >
                     <span class="material-icons text-xl">delete</span>
                   </button>
@@ -132,7 +132,7 @@
           <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-slate-50 dark:bg-slate-800 mb-4">
             <span class="material-icons text-3xl text-slate-200">person_off</span>
           </div>
-          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">No se encontraron usuarios</p>
+          <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $t('admin.users.no_users_found') }}</p>
         </div>
       </div>
     </div>
@@ -151,8 +151,8 @@
     <!-- Modales -->
     <ConfirmDialog
       :visible="!!userToDelete"
-      title="Eliminar Usuario"
-      :message="`¿Estás seguro de eliminar a ${userToDelete?.name}? Se perderá su acceso al sistema y todo su historial de actividad de forma permanente.`"
+      :title="$t('admin.users.delete_title')"
+      :message="$t('admin.users.delete_message', { name: userToDelete?.name })"
       @confirm="handleDeleteConfirmed"
       @cancel="userToDelete = null"
     />
@@ -168,7 +168,9 @@ import type { User, UserFilters } from '../interfaces/user.interface'
 import AdminPagination from '@/modules/admin/components/AdminPagination.vue'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
 import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
+import { useI18n } from 'vue-i18n'
 
+const { t } = useI18n()
 const router = useRouter()
 const { users, loading, error, pagination, getUsers, isCurrentUserAdmin, deleteUser } = useUsers()
 
@@ -178,10 +180,10 @@ const getInitials = (name?: string) =>
     : '??'
 
 const getPrimaryRole = (user: User) => {
-  if (!user?.roles || user.roles.length === 0) return 'Sin Rol'
+  if (!user?.roles || user.roles.length === 0) return t('admin.users.no_role')
   if (user.roles.some(r => r.name === 'Admin')) return 'Admin'
   if (user.roles.some(r => r.name === 'Maintenance')) return 'Maintenance'
-  return user.roles[0]?.name || 'Sin Rol'
+  return user.roles[0]?.name || t('admin.users.no_role')
 }
 
 const filters = ref<UserFilters>({ search: '' })

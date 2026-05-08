@@ -59,9 +59,6 @@
               </router-link>
             </Transition>
 
-            <!-- Selector de Idioma -->
-            <LanguageSwitcher />
-
             <!-- Selector de Tema -->
               <button 
               @click="toggleTheme" 
@@ -191,7 +188,6 @@ import ChatbotPage from '@/modules/common/pages/ChatbotPage.vue'
 import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
 import { getCurrentTenant } from '@/services/api'
 import { useTheme } from '@/modules/common/composables/useTheme'
-import LanguageSwitcher from '@/modules/common/components/LanguageSwitcher.vue'
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()

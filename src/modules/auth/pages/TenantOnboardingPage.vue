@@ -3,7 +3,12 @@
     <div class="mx-auto grid min-h-screen max-w-7xl grid-cols-1 overflow-hidden lg:min-h-0 lg:grid-cols-2 lg:rounded-[2.5rem] lg:border lg:border-gray-200 lg:bg-white lg:shadow-2xl lg:shadow-brand-primary-500/10 dark:lg:border-gray-800 dark:lg:bg-gray-900">
       
       <!-- Lado Izquierdo: Contenido -->
-      <section class="flex items-center justify-center px-4 py-10 sm:px-8 lg:px-12 overflow-y-auto">
+      <section class="relative flex items-center justify-center px-4 py-10 sm:px-8 lg:px-12 overflow-y-auto">
+        <!-- Language Switcher Outermost in this section -->
+        <div class="absolute top-8 right-8 z-10">
+          <LanguageSwitcher />
+        </div>
+
         <div class="w-full max-w-md">
           <!-- Header -->
           <div class="mb-8">
@@ -12,8 +17,8 @@
                 <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
               </div>
               <div>
-                <p class="text-xs font-black uppercase tracking-[0.16em] text-brand-primary-500">Business Solutions</p>
-                <h1 class="text-2xl font-black tracking-tight text-gray-900 dark:text-white">Alquila tu tenant</h1>
+                <p class="text-xs font-black uppercase tracking-[0.16em] text-brand-primary-500">{{ $t('onboarding.subtitle') }}</p>
+                <h1 class="text-2xl font-black tracking-tight text-gray-900 dark:text-white">{{ $t('onboarding.title') }}</h1>
               </div>
             </div>
             
@@ -24,10 +29,10 @@
           </div>
 
           <!-- Step 1: Empresa y Plan -->
-          <div v-if="step === 1" class="bg-white dark:bg-gray-900 py-8 px-7 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-none border border-gray-100 dark:border-gray-800 rounded-[2rem] fleetly-fade-up">
+          <div v-if="step === 1" class="relative bg-white dark:bg-gray-900 py-8 px-7 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-none border border-gray-100 dark:border-gray-800 rounded-[2rem] fleetly-fade-up">
             <form class="space-y-5" @submit.prevent="goToPersonalInfoStep" novalidate>
               <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Nombre empresa</label>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step1.company_name') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <BuildingOfficeIcon class="size-5" />
@@ -36,13 +41,13 @@
                     v-model="form.company_name"
                     type="text"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="Fleetly Solutions S.L."
+                    :placeholder="$t('onboarding.step1.company_placeholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Administrador (Nombre)</label>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step1.admin_name') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <UserIcon class="size-5" />
@@ -51,13 +56,13 @@
                     v-model="form.admin_name"
                     type="text"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="Juan Pérez"
+                    :placeholder="$t('onboarding.step1.admin_placeholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Email corporativo</label>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step1.admin_email') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <EnvelopeIcon class="size-5" />
@@ -66,13 +71,13 @@
                     v-model="form.admin_email"
                     type="text"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="admin@tuempresa.com"
+                    :placeholder="$t('onboarding.step1.admin_email_placeholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Contraseña de acceso</label>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step1.admin_password') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <LockClosedIcon class="size-5" />
@@ -88,17 +93,17 @@
 
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Plan</label>
+                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step1.plan') }}</label>
                   <select v-model="form.plan" class="block w-full px-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none">
-                    <option value="base">Base · 49€</option>
-                    <option value="pro">Pro · 79€</option>
+                    <option value="base">{{ $t('onboarding.step1.plan_base') }}</option>
+                    <option value="pro">{{ $t('onboarding.step1.plan_pro') }}</option>
                   </select>
                 </div>
                 <div>
-                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Pago (Demo)</label>
+                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step1.payment_method') }}</label>
                   <select v-model="form.payment_method" class="block w-full px-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none">
-                    <option value="card">Tarjeta</option>
-                    <option value="wallet">Wallet</option>
+                    <option value="card">{{ $t('onboarding.step1.payment_card') }}</option>
+                    <option value="wallet">{{ $t('onboarding.step1.payment_wallet') }}</option>
                   </select>
                 </div>
               </div>
@@ -106,10 +111,10 @@
               <!-- Theme Selection -->
               <div class="relative">
                 <div class="flex items-center justify-between mb-3 ml-1">
-                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">Tema de marca</label>
+                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest">{{ $t('onboarding.step1.brand_theme') }}</label>
                   <div v-if="form.plan === 'base'" class="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800">
                     <span class="material-icons text-[10px] text-amber-500">lock</span>
-                    <span class="text-[8px] font-black text-amber-600 uppercase">PRO para elegir</span>
+                    <span class="text-[8px] font-black text-amber-600 uppercase">{{ $t('onboarding.step1.pro_required') }}</span>
                   </div>
                 </div>
 
@@ -131,7 +136,7 @@
                 
                 <!-- Aviso explicativo plan base -->
                 <p v-if="form.plan === 'base'" class="text-[9px] text-gray-500 mt-2 ml-1 italic">
-                  El plan BASE incluye el tema corporativo <span class="font-bold">Baltic</span> por defecto.
+                  {{ $t('onboarding.step1.base_theme_notice') }}
                 </p>
               </div>
 
@@ -148,7 +153,7 @@
                 </div>
                 <div class="text-xs leading-5">
                   <label for="terms" class="font-medium text-gray-500 dark:text-gray-400 cursor-pointer">
-                    Acepto los <RouterLink to="/terms" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">Términos de Servicio para Empresas</RouterLink> y el <RouterLink to="/privacy" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">Acuerdo de Privacidad</RouterLink> de Fleetly.
+                    {{ $t('onboarding.step1.accept_terms') }}
                   </label>
                 </div>
               </div>
@@ -158,7 +163,7 @@
                   type="submit"
                   class="flex w-full justify-center items-center gap-2 rounded-2xl bg-brand-primary-600 px-4 py-3.5 text-sm font-black uppercase tracking-widest text-white hover:bg-brand-primary-700 shadow-xl shadow-brand-primary-500/30 active:scale-95 transition-all"
                 >
-                  Siguiente paso
+                  {{ $t('onboarding.step1.next_step') }}
                 </button>
               </div>
             </form>
@@ -166,11 +171,11 @@
 
           <!-- Step 2: Información Personal/Fiscal -->
           <div v-else-if="step === 2" class="bg-white dark:bg-gray-900 py-8 px-7 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-none border border-gray-100 dark:border-gray-800 rounded-[2rem] fleetly-fade-up">
-            <h2 class="text-xl font-black text-gray-900 dark:text-white mb-4">Datos del titular</h2>
+            <h2 class="text-xl font-black text-gray-900 dark:text-white mb-4">{{ $t('onboarding.step2.title') }}</h2>
             
             <form class="space-y-4" @submit.prevent="goToPaymentStep" novalidate>
               <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Tipo de entidad</label>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">{{ $t('onboarding.step2.entity_type') }}</label>
                 <div class="grid grid-cols-2 gap-3">
                   <button 
                     type="button"
@@ -178,7 +183,7 @@
                     :class="[form.entity_type === 'individual' ? 'bg-brand-primary-500 text-white shadow-lg' : 'bg-gray-50 dark:bg-gray-950 text-gray-500 border border-gray-100 dark:border-gray-800']"
                     class="py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                   >
-                    Particular
+                    {{ $t('onboarding.step2.entity_individual') }}
                   </button>
                   <button 
                     type="button"
@@ -186,14 +191,14 @@
                     :class="[form.entity_type === 'company' ? 'bg-brand-primary-500 text-white shadow-lg' : 'bg-gray-50 dark:bg-gray-950 text-gray-500 border border-gray-100 dark:border-gray-800']"
                     class="py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                   >
-                    Empresa
+                    {{ $t('onboarding.step2.entity_company') }}
                   </button>
                 </div>
               </div>
 
               <div>
                 <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">
-                  {{ form.entity_type === 'individual' ? 'NIF / DNI' : 'CIF Empresa' }}
+                  {{ form.entity_type === 'individual' ? $t('onboarding.step2.tax_id_individual') : $t('onboarding.step2.tax_id_company') }}
                 </label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
@@ -203,13 +208,13 @@
                     v-model="form.tax_id"
                     type="text"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="B12345678"
+                    :placeholder="$t('onboarding.step2.tax_id_placeholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Teléfono de contacto</label>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step2.phone') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <PhoneIcon class="size-5" />
@@ -218,13 +223,13 @@
                     v-model="form.phone"
                     type="tel"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="+34 600 000 000"
+                    :placeholder="$t('onboarding.step2.phone_placeholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Dirección fiscal</label>
+                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step2.address') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <MapPinIcon class="size-5" />
@@ -233,28 +238,28 @@
                     v-model="form.address"
                     type="text"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="Calle Principal 123"
+                    :placeholder="$t('onboarding.step2.address_placeholder')"
                   />
                 </div>
               </div>
 
               <div class="grid grid-cols-2 gap-4">
                 <div>
-                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Ciudad</label>
+                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step2.city') }}</label>
                   <input
                     v-model="form.city"
                     type="text"
                     class="block w-full px-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="Madrid"
+                    :placeholder="$t('onboarding.step2.city_placeholder')"
                   />
                 </div>
                 <div>
-                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Código Postal</label>
+                  <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('onboarding.step2.postal_code') }}</label>
                   <input
                     v-model="form.postal_code"
                     type="text"
                     class="block w-full px-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white text-sm focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="28001"
+                    :placeholder="$t('onboarding.step2.postal_code_placeholder')"
                   />
                 </div>
               </div>
@@ -265,13 +270,13 @@
                   @click="step = 1"
                   class="flex-1 py-3.5 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors"
                 >
-                  Volver
+                  {{ $t('onboarding.step2.back') }}
                 </button>
                 <button
                   type="submit"
                   class="flex-[2] justify-center items-center gap-2 rounded-2xl bg-brand-primary-600 px-4 py-3.5 text-sm font-black uppercase tracking-widest text-white hover:bg-brand-primary-700 shadow-xl shadow-brand-primary-500/30 active:scale-95 transition-all"
                 >
-                  Continuar al pago
+                  {{ $t('onboarding.step2.continue_to_payment') }}
                 </button>
               </div>
             </form>
@@ -396,6 +401,7 @@ import { useRouter, RouterLink } from 'vue-router'
 import { centralApi } from '@/services/centralApi'
 import { useToast } from '@/modules/common/composables/useToast'
 import { useTheme } from '@/modules/common/composables/useTheme'
+import LanguageSwitcher from '@/modules/common/components/LanguageSwitcher.vue'
 import {
   BuildingOfficeIcon,
   UserIcon,

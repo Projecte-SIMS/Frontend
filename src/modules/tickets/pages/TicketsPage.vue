@@ -3,22 +3,22 @@
     <!-- Header -->
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
       <div>
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Mis Tickets</h1>
-        <p class="text-gray-500 dark:text-gray-400 mt-1">Gestiona tus consultas y reportes de soporte.</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $t('tickets.title') }}</h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-1">{{ $t('tickets.subtitle') }}</p>
       </div>
       <router-link
         to="/tickets/create"
         class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/25 active:scale-95"
       >
         <PlusIcon class="size-5" />
-        Nuevo Ticket
+        {{ $t('tickets.new_ticket') }}
       </router-link>
     </div>
 
     <!-- Loading State -->
     <div v-if="loading" class="flex flex-col items-center justify-center py-20 bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm">
       <ArrowPathIcon class="size-10 text-brand-primary-500 animate-spin mb-4" />
-      <p class="text-gray-500 font-medium tracking-wide">Cargando tus tickets...</p>
+      <p class="text-gray-500 font-medium tracking-wide">{{ $t('tickets.loading') }}</p>
     </div>
 
     <!-- Empty State -->
@@ -26,13 +26,13 @@
       <div class="size-20 rounded-full bg-brand-primary-50 dark:bg-brand-primary-900/20 flex items-center justify-center mb-6">
         <TicketIcon class="size-10 text-brand-primary-500" />
       </div>
-      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">No tienes tickets todavía</h3>
-      <p class="text-gray-500 max-w-sm mb-8">¿Necesitas ayuda con algo? Crea un ticket y nuestro equipo de soporte te atenderá lo antes posible.</p>
+      <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('tickets.empty_title') }}</h3>
+      <p class="text-gray-500 max-w-sm mb-8">{{ $t('tickets.empty_subtitle') }}</p>
       <router-link
         to="/tickets/create"
         class="px-8 py-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm hover:bg-gray-200 dark:hover:bg-gray-700 transition-all"
       >
-        Crear mi primer ticket
+        {{ $t('tickets.create_first') }}
       </router-link>
     </div>
 
@@ -40,7 +40,7 @@
     <div v-else class="space-y-8">
       <!-- Active Tickets Section -->
       <section v-if="activeTickets.length > 0">
-        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 ml-2">Tickets Activos</h2>
+        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 ml-2">{{ $t('tickets.active_tickets') }}</h2>
         <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
           <div 
             v-for="t in activeTickets" 
@@ -63,24 +63,24 @@
               </div>
               <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-black uppercase tracking-widest">
                 <span class="size-1 rounded-full bg-green-500 animate-pulse"></span>
-                Abierto
+                {{ $t('tickets.status_open') }}
               </span>
             </div>
 
             <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2 mb-6 flex-grow">
-              {{ t.description || t.last_message?.content || 'Sin descripción adicional' }}
+              {{ t.description || t.last_message?.content || $t('tickets.no_description') }}
             </p>
 
             <div class="flex items-center justify-between pt-4 border-t border-gray-50 dark:border-gray-800 mt-auto">
               <div class="flex items-center gap-2 text-xs font-bold text-gray-400">
                 <EnvelopeOpenIcon class="size-4" />
-                {{ t.messages_count || t.messages?.length || 0 }} mensajes
+                {{ $t('tickets.messages_count', { count: t.messages_count || t.messages?.length || 0 }) }}
               </div>
               <router-link 
                 :to="`/tickets/${t.id}`"
                 class="inline-flex items-center gap-1 text-sm font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline"
               >
-                Ver conversación
+                {{ $t('tickets.view_conversation') }}
                 <ChevronRightIcon class="size-4" />
               </router-link>
             </div>
@@ -90,15 +90,15 @@
 
       <!-- Completed Tickets Section -->
       <section v-if="completedTickets.length > 0">
-        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 ml-2">Historial / Completados</h2>
+        <h2 class="text-xs font-bold text-gray-400 uppercase tracking-[0.2em] mb-4 ml-2">{{ $t('tickets.history_completed') }}</h2>
         <div class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 overflow-hidden shadow-sm fleetly-card-hover">
           <table class="w-full text-left">
             <thead class="bg-gray-50/50 dark:bg-gray-950/50 border-b border-gray-100 dark:border-gray-800 text-xs font-bold text-gray-400 uppercase tracking-widest">
               <tr>
-                <th class="px-6 py-4">Ticket</th>
-                <th class="px-6 py-4 hidden sm:table-cell">Fecha</th>
-                <th class="px-6 py-4">Estado</th>
-                <th class="px-6 py-4 text-right">Acción</th>
+                <th class="px-6 py-4">{{ $t('tickets.table_ticket') }}</th>
+                <th class="px-6 py-4 hidden sm:table-cell">{{ $t('tickets.table_date') }}</th>
+                <th class="px-6 py-4">{{ $t('tickets.table_status') }}</th>
+                <th class="px-6 py-4 text-right">{{ $t('tickets.table_action') }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-50 dark:divide-gray-800">
@@ -112,7 +112,7 @@
                 </td>
                 <td class="px-6 py-4">
                   <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider">
-                    Cerrado
+                    {{ $t('tickets.status_closed') }}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-right">
@@ -120,7 +120,7 @@
                     :to="`/tickets/${t.id}`"
                     class="text-brand-primary-600 dark:text-brand-primary-400 font-bold text-sm"
                   >
-                    Ver
+                    {{ $t('tickets.view') }}
                   </router-link>
                 </td>
               </tr>
@@ -136,6 +136,7 @@
 import { ref, onMounted, computed } from 'vue'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
+import { useI18n } from 'vue-i18n'
 import {
   PlusIcon,
   ArrowPathIcon,
@@ -148,6 +149,7 @@ import {
 
 const tickets = ref<any[]>([])
 const loading = ref(false)
+const { t } = useI18n()
 
 const activeTickets = computed(() => tickets.value.filter((t: any) => t.active))
 const completedTickets = computed(() => tickets.value.filter((t: any) => !t.active))
@@ -168,7 +170,7 @@ const load = async () => {
     tickets.value = res.data.data ?? res.data ?? []
   } catch (e) {
     console.error(e)
-    showToast('Error al cargar tus tickets', 'error')
+    showToast(t('tickets.errors.load_failed'), 'error')
   } finally {
     loading.value = false
   }

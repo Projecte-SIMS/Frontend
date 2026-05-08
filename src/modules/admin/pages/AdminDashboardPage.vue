@@ -2,8 +2,8 @@
   <div class="space-y-8 fleetly-fade-up">
     <!-- Header Unificado -->
     <PageHeading
-      title="Panel de Control"
-      description="Resumen operativo del sistema inteligente de movilidad"
+      :title="$t('admin.dashboard.title')"
+      :description="$t('admin.dashboard.subtitle')"
     >
       <template #actions>
         <div class="flex items-center gap-3">
@@ -12,7 +12,7 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">Sistema En línea</span>
+            <span class="text-xs font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">{{ $t('admin.dashboard.system_online') }}</span>
           </div>
           
           <button 
@@ -22,7 +22,7 @@
           >
             <ArrowPathIcon class="size-5" :class="{'animate-spin': loadingStats}" />
           </button>
-          <span v-if="loadingStats" class="text-[10px] font-black uppercase tracking-widest text-brand-primary-500">Actualizando...</span>
+          <span v-if="loadingStats" class="text-[10px] font-black uppercase tracking-widest text-brand-primary-500">{{ $t('admin.dashboard.updating') }}</span>
         </div>
       </template>
     </PageHeading>
@@ -46,7 +46,7 @@
           >
             {{ stat.trend > 0 ? '↑' : '' }}{{ stat.trend }}%
           </span>
-          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">vs mes anterior</span>
+          <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ $t('admin.dashboard.stats.vs_previous_month') }}</span>
         </div>
       </div>
     </div>
@@ -61,10 +61,10 @@
               <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-600">
                 <HeartIcon class="size-5" />
               </div>
-              <h3 class="font-bold text-slate-900 dark:text-white">Diagnóstico de Flota</h3>
+              <h3 class="font-bold text-slate-900 dark:text-white">{{ $t('admin.dashboard.fleet_diagnosis.title') }}</h3>
             </div>
             <RouterLink to="/admin/fleet-health" class="text-xs font-bold text-brand-primary-600 hover:text-brand-primary-700 uppercase tracking-widest">
-              Detalles →
+              {{ $t('admin.dashboard.fleet_diagnosis.details') }} →
             </RouterLink>
           </div>
 
@@ -88,9 +88,9 @@
         <!-- Últimos Movimientos -->
         <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
           <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-            <h3 class="font-bold text-slate-900 dark:text-white">Últimos Movimientos</h3>
+            <h3 class="font-bold text-slate-900 dark:text-white">{{ $t('admin.dashboard.recent_movements.title') }}</h3>
             <RouterLink to="/admin/bookings" class="text-xs font-bold text-brand-primary-600 hover:text-brand-primary-700 uppercase tracking-widest">
-              Ver Historial
+              {{ $t('admin.dashboard.recent_movements.view_history') }}
             </RouterLink>
           </div>
           
@@ -98,10 +98,10 @@
             <table class="w-full text-left border-collapse">
               <thead class="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 <tr>
-                  <th class="px-6 py-4">Usuario / Unidad</th>
-                  <th class="px-6 py-4 text-center">Estado</th>
-                  <th class="px-6 py-4">Fecha</th>
-                  <th class="px-6 py-4 text-right">Importe</th>
+                  <th class="px-6 py-4">{{ $t('admin.dashboard.recent_movements.table_user_unit') }}</th>
+                  <th class="px-6 py-4 text-center">{{ $t('admin.dashboard.recent_movements.table_status') }}</th>
+                  <th class="px-6 py-4">{{ $t('admin.dashboard.recent_movements.table_date') }}</th>
+                  <th class="px-6 py-4 text-right">{{ $t('admin.dashboard.recent_movements.table_amount') }}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -143,23 +143,23 @@
             <div class="flex items-center justify-between mb-6">
               <div class="flex items-center gap-2">
                 <CpuChipIcon class="size-5 text-brand-primary-200" />
-                <h3 class="font-bold text-sm tracking-tight">Estado Red IoT</h3>
+                <h3 class="font-bold text-sm tracking-tight">{{ $t('admin.dashboard.iot_widget.title') }}</h3>
               </div>
               <span class="size-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]"></span>
             </div>
             
             <div class="space-y-4">
               <div class="flex items-center justify-between p-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
-                <span class="text-xs font-bold text-brand-primary-100 uppercase tracking-widest">Dispositivos</span>
+                <span class="text-xs font-bold text-brand-primary-100 uppercase tracking-widest">{{ $t('admin.dashboard.iot_widget.devices') }}</span>
                 <span class="text-sm font-black">{{ iotDevices.online }} <span class="opacity-50">/ {{ iotDevices.total }}</span></span>
               </div>
               <p class="text-[10px] leading-relaxed text-brand-primary-100 opacity-80">
-                Todos los sistemas de telemetría están operando dentro de los rangos normales.
+                {{ $t('admin.dashboard.iot_widget.status_ok') }}
               </p>
             </div>
             
             <RouterLink to="/admin/iot-devices" class="mt-6 flex w-full items-center justify-center gap-2 text-xs font-black uppercase tracking-widest bg-white text-brand-primary-600 py-3 rounded-xl hover:bg-brand-primary-50 transition-all shadow-sm active:scale-95">
-              Configurar Red
+              {{ $t('admin.dashboard.iot_widget.configure_network') }}
             </RouterLink>
           </div>
           <div class="absolute -right-10 -bottom-10 size-40 rounded-full bg-white/5 blur-3xl group-hover:bg-white/10 transition-all"></div>
@@ -167,7 +167,7 @@
 
         <!-- Acciones Directas -->
         <div class="space-y-3">
-          <h3 class="px-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Accesos Rápidos</h3>
+          <h3 class="px-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $t('admin.dashboard.quick_access.title') }}</h3>
           <div class="grid gap-2">
             <RouterLink
               v-for="item in primaryActions"
@@ -212,6 +212,9 @@ import { useUsers } from '@/modules/admin/modules/users/composables/useUsers'
 import { useVehicles } from '@/modules/admin/modules/vehicles/composables/useVehicles'
 import { useBookings } from '@/modules/admin/bookings/composables/useBookings'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 const { users, pagination: usersPagination, getUsers } = useUsers()
 const { vehicles, pagination: vehiclesPagination, getVehicles } = useVehicles()
@@ -285,24 +288,26 @@ const loadFleetHealth = async () => {
 onMounted(refreshData)
 
 const stats = computed(() => [
-  { name: 'Usuarios', value: usersPagination.value.total || users.value.length, icon: UsersIcon, trend: 12 },
-  { name: 'Flota', value: vehiclesPagination.value.total || vehicles.value.length, icon: TruckIcon, trend: 0 },
-  { name: 'Activas', value: bookings.value.filter(b => b.status === 'active').length, icon: CalendarDaysIcon, trend: 5 },
-  { name: 'Tickets', value: ticketsCount.value, icon: TicketIcon, trend: -2 },
+  { name: t('admin.dashboard.stats.users'), value: usersPagination.value.total || users.value.length, icon: UsersIcon, trend: 12 },
+  { name: t('admin.dashboard.stats.fleet'), value: vehiclesPagination.value.total || vehicles.value.length, icon: TruckIcon, trend: 0 },
+  { name: t('admin.dashboard.stats.active_bookings'), value: bookings.value.filter(b => b.status === 'active').length, icon: CalendarDaysIcon, trend: 5 },
+  { name: t('admin.dashboard.stats.tickets'), value: ticketsCount.value, icon: TicketIcon, trend: -2 },
 ])
 
-const healthMetrics = computed(() => ({
-  'Disponibles': { count: fleetStats.value.available, color: 'bg-emerald-500' },
-  'Temp. Crítica': { count: fleetHealth.value.criticalTemp, color: 'bg-rose-500' },
-  'Batería Baja': { count: fleetHealth.value.lowBattery, color: 'bg-amber-500' },
-  'Unidades Sin conexión': { count: fleetHealth.value.offline, color: 'bg-slate-400' },
-}))
+const healthMetrics = computed(() => {
+  const result: Record<string, { count: number, color: string }> = {}
+  result[t('admin.dashboard.fleet_diagnosis.metrics.available')] = { count: fleetStats.value.available, color: 'bg-emerald-500' }
+  result[t('admin.dashboard.fleet_diagnosis.metrics.critical_temp')] = { count: fleetHealth.value.criticalTemp, color: 'bg-rose-500' }
+  result[t('admin.dashboard.fleet_diagnosis.metrics.low_battery')] = { count: fleetHealth.value.lowBattery, color: 'bg-amber-500' }
+  result[t('admin.dashboard.fleet_diagnosis.metrics.offline_units')] = { count: fleetHealth.value.offline, color: 'bg-slate-400' }
+  return result
+})
 
-const primaryActions = [
-  { name: 'Nueva Unidad', description: 'Registrar vehículo', to: '/admin/vehicles/create', icon: PlusIcon },
-  { name: 'Mapa en Vivo', description: 'Seguimiento GPS', to: '/admin/map', icon: MapIcon },
-  { name: 'Gestión Usuarios', description: 'Admin cuentas', to: '/admin/users', icon: UsersIcon },
-]
+const primaryActions = computed(() => [
+  { name: t('admin.dashboard.quick_access.new_unit.name'), description: t('admin.dashboard.quick_access.new_unit.description'), to: '/admin/vehicles/create', icon: PlusIcon },
+  { name: t('admin.dashboard.quick_access.live_map.name'), description: t('admin.dashboard.quick_access.live_map.description'), to: '/admin/map', icon: MapIcon },
+  { name: t('admin.dashboard.quick_access.user_management.name'), description: t('admin.dashboard.quick_access.user_management.description'), to: '/admin/users', icon: UsersIcon },
+])
 
 const fleetStats = computed(() => {
   const total = vehiclesPagination.value.total || vehicles.value.length
@@ -336,7 +341,6 @@ const getStatusClasses = (s: string) => {
 }
 
 const translateStatus = (s: string) => {
-  const map: Record<string, string> = { active: 'Activa', completed: 'Finalizada', cancelled: 'Cancelada', pending: 'Pendiente' }
-  return map[s] || s
+  return t(`admin.dashboard.status.${s}`, s)
 }
 </script>

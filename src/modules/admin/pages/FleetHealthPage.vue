@@ -3,13 +3,13 @@
     <!-- Header Profesional y Refinado -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <PageHeading
-        title="Centro de Diagnóstico de Flota"
-        description="Monitoreo de telemetría en tiempo real y salud mecánica del sistema"
+        :title="$t('admin.fleet_health.title')"
+        :description="$t('admin.fleet_health.subtitle')"
       >
         <template #actions>
           <div class="flex items-center gap-3">
             <div class="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-[10px] font-black uppercase tracking-widest text-slate-500">
-              Última Sincronización: {{ lastCheck }}
+              {{ $t('admin.fleet_health.last_sync', { time: lastCheck }) }}
             </div>
             <button @click="loadData" class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-brand-primary-600 hover:border-brand-primary-200 transition-all disabled:opacity-50 shadow-sm">
               <ArrowPathIcon class="size-5" :class="{'animate-spin': loading}" />
@@ -25,11 +25,11 @@
         <div class="border-b border-slate-200 dark:border-slate-800 pb-5 mb-8">
           <div class="flex items-end justify-between">
             <div>
-              <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Atención Inmediata Requerida</h2>
-              <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Listado de unidades que presentan anomalías críticas en su telemetría.</p>
+              <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ $t('admin.fleet_health.immediate_attention') }}</h2>
+              <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{{ $t('admin.fleet_health.alert_description') }}</p>
             </div>
             <span v-if="alertVehicles.length > 0" class="px-3 py-1.5 rounded-xl bg-rose-500 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-rose-200">
-              {{ alertVehicles.length }} Alertas Activas
+              {{ $t('admin.fleet_health.active_alerts', { count: alertVehicles.length }) }}
             </span>
           </div>
         </div>
@@ -41,8 +41,8 @@
           <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 mb-4">
             <CheckBadgeIcon class="size-8" />
           </div>
-          <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Sistemas Nominales</h3>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">No se detectan anomalías en la flota activa.</p>
+          <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ $t('admin.fleet_health.nominal_systems') }}</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">{{ $t('admin.fleet_health.no_anomalies') }}</p>
         </div>
 
         <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -61,22 +61,22 @@
               </div>
               <div class="space-y-2">
                 <div v-if="(v.engine_temp || 0) > 100" class="flex items-center justify-between p-3 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800">
-                  <div class="flex items-center gap-3"><FireIcon class="size-5 text-rose-500" /><span class="text-[10px] font-black text-rose-700 dark:text-rose-400 uppercase tracking-widest">Motor Crítico</span></div>
+                  <div class="flex items-center gap-3"><FireIcon class="size-5 text-rose-500" /><span class="text-[10px] font-black text-rose-700 dark:text-rose-400 uppercase tracking-widest">{{ $t('admin.fleet_health.critical_engine') }}</span></div>
                   <span class="text-sm font-black text-rose-700 dark:text-rose-400 tabular-nums">{{ v.engine_temp.toFixed(1) }}°C</span>
                 </div>
                 <div v-if="(v.battery_voltage || 12.6) < 11.8" class="flex items-center justify-between p-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800">
-                  <div class="flex items-center gap-3"><Battery0Icon class="size-5 text-amber-600" /><span class="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest">Voltaje Bajo</span></div>
+                  <div class="flex items-center gap-3"><Battery0Icon class="size-5 text-amber-600" /><span class="text-[10px] font-black text-amber-700 dark:text-amber-400 uppercase tracking-widest">{{ $t('admin.fleet_health.low_voltage') }}</span></div>
                   <span class="text-sm font-black text-amber-700 dark:text-amber-400 tabular-nums">{{ v.battery_voltage.toFixed(1) }}V</span>
                 </div>
                 <div v-if="!v.online" class="flex items-center justify-between p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-                  <div class="flex items-center gap-3"><NoSymbolIcon class="size-5 text-slate-400" /><span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sin Conexión</span></div>
-                  <span class="text-[10px] font-black text-slate-400 uppercase">Sin conexión</span>
+                  <div class="flex items-center gap-3"><NoSymbolIcon class="size-5 text-slate-400" /><span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ $t('admin.fleet_health.no_connection') }}</span></div>
+                  <span class="text-[10px] font-black text-slate-400 uppercase">{{ $t('admin.fleet_health.no_connection') }}</span>
                 </div>
               </div>
             </div>
             <div class="flex gap-2 mt-6">
-              <router-link :to="`/admin/map?select=${v.id}`" class="flex-1 text-center px-4 py-2.5 rounded-lg text-brand-primary-600 bg-brand-primary-50 text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-100 transition-colors">Localizar</router-link>
-              <button class="flex-1 px-4 py-2.5 rounded-lg text-slate-600 bg-slate-100 text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-colors">Diagnosticar</button>
+              <router-link :to="`/admin/map?select=${v.id}`" class="flex-1 text-center px-4 py-2.5 rounded-lg text-brand-primary-600 bg-brand-primary-50 text-[10px] font-black uppercase tracking-widest hover:bg-brand-primary-100 transition-colors">{{ $t('admin.fleet_health.locate') }}</router-link>
+              <button class="flex-1 px-4 py-2.5 rounded-lg text-slate-600 bg-slate-100 text-[10px] font-black uppercase tracking-widest hover:bg-slate-200 transition-colors">{{ $t('admin.fleet_health.diagnose') }}</button>
             </div>
           </div>
         </div>
@@ -85,19 +85,19 @@
       <!-- Telemetría Completa -->
       <section>
         <div class="border-b border-slate-200 dark:border-slate-800 pb-5 mb-8">
-          <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Telemetría Completa de la Flota</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Listado con los datos en tiempo real de todas las unidades activas.</p>
+          <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ $t('admin.fleet_health.full_telemetry') }}</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{{ $t('admin.fleet_health.telemetry_description') }}</p>
         </div>
         <div class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
               <thead class="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
                 <tr>
-                  <th class="px-6 py-5">Unidad</th>
-                  <th class="px-6 py-5">Temperatura Motor</th>
-                  <th class="px-6 py-5">Voltaje Batería</th>
-                  <th class="px-6 py-5">RPM / Velocidad</th>
-                  <th class="px-6 py-5 text-center">Conexión</th>
+                  <th class="px-6 py-5">{{ $t('admin.fleet_health.table_unit') }}</th>
+                  <th class="px-6 py-5">{{ $t('admin.fleet_health.table_engine_temp') }}</th>
+                  <th class="px-6 py-5">{{ $t('admin.fleet_health.table_battery_voltage') }}</th>
+                  <th class="px-6 py-5">{{ $t('admin.fleet_health.table_rpm_speed') }}</th>
+                  <th class="px-6 py-5 text-center">{{ $t('admin.fleet_health.table_connection') }}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -106,7 +106,7 @@
                   <td class="px-6 py-4"><div class="flex items-center gap-3"><div class="flex-1 h-2 w-16 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden"><div class="h-full transition-all duration-500 rounded-full" :class="(v.engine_temp || 0) > 100 ? 'bg-rose-500' : 'bg-brand-primary-500'" :style="{ width: Math.min((v.engine_temp || 0) / 1.5, 100) + '%' }"></div></div><span class="text-sm font-mono font-bold w-12 text-right" :class="(v.engine_temp || 0) > 100 ? 'text-rose-600' : 'text-slate-600 dark:text-slate-400'">{{ v.engine_temp?.toFixed(0) || 0 }}°</span></div></td>
                   <td class="px-6 py-4"><div class="flex items-center gap-2 text-sm font-mono font-bold" :class="(v.battery_voltage || 12.6) < 11.8 ? 'text-amber-600' : 'text-slate-600 dark:text-slate-400'"><Battery50Icon class="size-5" />{{ v.battery_voltage?.toFixed(1) || '12.6' }}V</div></td>
                   <td class="px-6 py-4"><div class="text-sm font-medium text-slate-500"><span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.rpm || 0 }}</span> rpm <span class="mx-1 opacity-20">|</span> <span class="font-bold text-slate-900 dark:text-white tabular-nums">{{ v.speed?.toFixed(0) || 0 }}</span> km/h</div></td>
-                  <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="size-2 rounded-full" :class="v.online ? 'bg-emerald-500' : 'bg-slate-300'"></div><span class="text-[10px] font-black uppercase tracking-widest" :class="v.online ? 'text-emerald-600' : 'text-slate-400'">{{ v.online ? 'En línea' : 'Sin conexión' }}</span></div></td>
+                  <td class="px-6 py-4 text-center"><div class="inline-flex items-center gap-2"><div class="size-2 rounded-full" :class="v.online ? 'bg-emerald-500' : 'bg-slate-300'"></div><span class="text-[10px] font-black uppercase tracking-widest" :class="v.online ? 'text-emerald-600' : 'text-slate-400'">{{ v.online ? $t('admin.fleet_health.online') : $t('admin.fleet_health.offline') }}</span></div></td>
                 </tr>
               </tbody>
             </table>
@@ -121,11 +121,13 @@
 import { ref, computed, onMounted } from 'vue'
 import apiClient from '@/services/api'
 import PageHeading from '@/modules/admin/components/PageHeading.vue'
+import { useI18n } from 'vue-i18n'
 import {
   FireIcon, Battery0Icon, Battery50Icon, SignalIcon, CheckBadgeIcon, ArrowPathIcon, TruckIcon,
   MapIcon, NoSymbolIcon, BoltIcon, CircleStackIcon
 } from '@heroicons/vue/24/outline'
 
+const { t } = useI18n()
 const vehicles = ref<any[]>([])
 const loading = ref(false)
 const lastCheck = ref(new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }))
@@ -136,10 +138,10 @@ const lowBatteryCount = computed(() => vehicles.value.filter(v => (v.battery_vol
 const alertVehicles = computed(() => vehicles.value.filter(v => !v.online || (v.engine_temp || 0) > 100 || (v.battery_voltage || 12.6) < 11.8))
 
 const healthMetrics = computed(() => [
-  { label: 'Unidades con Alerta', value: alertVehicles.value.length, icon: FireIcon, bg: 'bg-rose-50 dark:bg-rose-900/20', color: 'text-rose-600 dark:text-rose-400' },
-  { label: 'Baterías Bajas', value: lowBatteryCount.value, icon: Battery0Icon, bg: 'bg-amber-50 dark:bg-amber-900/20', color: 'text-amber-600 dark:text-amber-400' },
-  { label: 'Conexión IoT', value: `${onlineCount.value}/${vehicles.value.length}`, icon: SignalIcon, bg: 'bg-brand-primary-50 dark:bg-brand-primary-900/20', color: 'text-brand-primary-600 dark:text-brand-primary-400' },
-  { label: 'Estado General', value: 'Nominal', icon: CheckBadgeIcon, bg: 'bg-emerald-50 dark:bg-emerald-900/20', color: 'text-emerald-600 dark:text-emerald-400' }
+  { label: t('admin.fleet_health.metrics.alert_units'), value: alertVehicles.value.length, icon: FireIcon, bg: 'bg-rose-50 dark:bg-rose-900/20', color: 'text-rose-600 dark:text-rose-400' },
+  { label: t('admin.fleet_health.metrics.low_batteries'), value: lowBatteryCount.value, icon: Battery0Icon, bg: 'bg-amber-50 dark:bg-amber-900/20', color: 'text-amber-600 dark:text-amber-400' },
+  { label: t('admin.fleet_health.metrics.iot_connection'), value: `${onlineCount.value}/${vehicles.value.length}`, icon: SignalIcon, bg: 'bg-brand-primary-50 dark:bg-brand-primary-900/20', color: 'text-brand-primary-600 dark:text-brand-primary-400' },
+  { label: t('admin.fleet_health.metrics.general_status'), value: t('admin.fleet_health.metrics.nominal'), icon: CheckBadgeIcon, bg: 'bg-emerald-50 dark:bg-emerald-900/20', color: 'text-emerald-600 dark:text-emerald-400' }
 ])
 
 const loadData = async () => {

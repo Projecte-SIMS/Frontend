@@ -1,7 +1,13 @@
 <template>
   <div class="min-h-screen bg-gray-100 dark:bg-gray-950 font-sans lg:p-6">
     <div class="mx-auto grid min-h-screen max-w-7xl grid-cols-1 overflow-hidden lg:min-h-0 lg:grid-cols-2 lg:rounded-[2.5rem] lg:border lg:border-gray-200 lg:bg-white lg:shadow-2xl lg:shadow-brand-primary-500/10 dark:lg:border-gray-800 dark:lg:bg-gray-900">
-      <section class="flex items-center justify-center px-4 py-10 sm:px-8 lg:px-12">
+      <!-- Lado Izquierdo: Contenido -->
+      <section class="relative flex items-center justify-center px-4 py-10 sm:px-8 lg:px-12">
+        <!-- Language Switcher Outermost in this section -->
+        <div class="absolute top-8 right-8 z-10">
+          <LanguageSwitcher />
+        </div>
+
         <div class="w-full max-w-md">
           <div class="mb-8">
             <div class="mb-5 flex items-center gap-3">
@@ -9,9 +15,9 @@
                 <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
               </div>
               <div>
-                <p class="text-xs font-black uppercase tracking-[0.16em] text-brand-primary-500">Welcome back</p>
+                <p class="text-xs font-black uppercase tracking-[0.16em] text-brand-primary-500">{{ $t('auth.welcome_back') }}</p>
                 <h1 class="text-2xl font-black tracking-tight text-gray-900 dark:text-white flex items-center gap-2">
-                  Inicia sesión
+                  {{ $t('auth.login_title') }}
                   <span v-if="isAutoTenant" class="inline-flex items-center rounded-lg bg-brand-primary-50 px-2 py-1 text-[10px] font-black uppercase tracking-widest text-brand-primary-600 ring-1 ring-inset ring-brand-primary-500/20 dark:bg-brand-primary-500/10 dark:text-brand-primary-400">
                     {{ tenant }}
                   </span>
@@ -19,14 +25,14 @@
               </div>
             </div>
             <p class="text-sm text-gray-500 dark:text-gray-400">
-              Gestiona tu movilidad, reservas y flota desde un único panel.
+              {{ $t('auth.login_subtitle') }}
             </p>
           </div>
 
-          <div class="bg-white dark:bg-gray-900 py-8 px-7 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-none border border-gray-100 dark:border-gray-800 rounded-[2rem]">
+          <div class="relative bg-white dark:bg-gray-900 py-8 px-7 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.1)] dark:shadow-none border border-gray-100 dark:border-gray-800 rounded-[2rem]">
             <form class="space-y-5" @submit.prevent="handleSubmit" novalidate>
               <div v-if="!isAutoTenant">
-                <label for="tenant" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Empresa</label>
+                <label for="tenant" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('auth.company') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <BuildingOfficeIcon class="size-5" />
@@ -37,13 +43,13 @@
                     type="text"
                     :disabled="isLoading"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="nombre-empresa"
+                    :placeholder="$t('auth.company_placeholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <label for="email" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Correo Electrónico</label>
+                <label for="email" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('auth.email') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <EnvelopeIcon class="size-5" />
@@ -55,13 +61,13 @@
                     autocomplete="email"
                     :disabled="isLoading"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="tu@email.com"
+                    :placeholder="$t('auth.email_placeholder')"
                   />
                 </div>
               </div>
 
               <div>
-                <label for="password" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Contraseña</label>
+                <label for="password" class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">{{ $t('auth.password') }}</label>
                 <div class="relative group">
                   <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-brand-primary-500 transition-colors">
                     <LockClosedIcon class="size-5" />
@@ -73,7 +79,7 @@
                     autocomplete="current-password"
                     :disabled="isLoading"
                     class="block w-full pl-11 pr-4 py-3 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-white placeholder:text-gray-400 focus:ring-2 focus:ring-brand-primary-500 transition-all outline-none"
-                    placeholder="••••••••"
+                    :placeholder="$t('auth.password_placeholder')"
                   />
                 </div>
               </div>
@@ -89,18 +95,18 @@
                 class="flex w-full justify-center items-center gap-2 rounded-2xl bg-brand-primary-600 px-4 py-3.5 text-sm font-black uppercase tracking-widest text-white hover:bg-brand-primary-700 shadow-xl shadow-brand-primary-500/30 active:scale-95 transition-all disabled:opacity-50 disabled:grayscale"
               >
                 <ArrowPathIcon v-if="isLoading" class="size-5 animate-spin" />
-                {{ isLoading ? 'Entrando...' : 'Entrar' }}
+                {{ isLoading ? $t('auth.logging_in') : $t('auth.login_button') }}
               </button>
             </form>
 
             <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-800">
                 <p class="text-center text-sm font-medium text-gray-500 dark:text-gray-400">
-                  ¿No tienes una cuenta?
-                  <RouterLink to="/register" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">Regístrate gratis</RouterLink>
+                  {{ $t('auth.no_account') }}
+                  <RouterLink to="/register" class="font-bold text-brand-primary-600 dark:text-brand-primary-400 hover:underline">{{ $t('auth.register_link') }}</RouterLink>
                 </p>
                 <p class="mt-2 text-center text-xs font-medium text-gray-500 dark:text-gray-400">
-                  ¿Aún no tienes empresa?
-                  <RouterLink to="/empresa/alta" class="font-bold text-brand-secondary-600 dark:text-brand-secondary-400 hover:underline">Crear tenant con pago demo</RouterLink>
+                  {{ $t('auth.no_company') }}
+                  <RouterLink to="/empresa/alta" class="font-bold text-brand-secondary-600 dark:text-brand-secondary-400 hover:underline">{{ $t('auth.create_tenant') }}</RouterLink>
                 </p>
               </div>
           </div>
@@ -119,13 +125,13 @@
             <img src="/logo.png" alt="Fleetly Logo" class="h-full w-full object-contain" />
           </div>
           <div>
-            <p class="text-[10px] font-black uppercase tracking-[0.16em] text-brand-primary-100/90">Smart Mobility</p>
+            <p class="text-[10px] font-black uppercase tracking-[0.16em] text-brand-primary-100/90">{{ $t('auth.smart_mobility') }}</p>
             <p class="text-xl font-black text-white leading-none">Fleetly</p>
           </div>
         </div>
         <div class="absolute left-8 right-8 bottom-8 rounded-2xl border border-white/15 bg-black/25 p-6 backdrop-blur-sm">
-          <h2 class="text-2xl font-black text-white leading-tight">Muévete mejor, decide más rápido.</h2>
-          <p class="mt-2 text-sm text-brand-primary-100/90">Visualiza disponibilidad, estado y ubicación de tu flota en tiempo real.</p>
+          <h2 class="text-2xl font-black text-white leading-tight">{{ $t('auth.login_hero_title') }}</h2>
+          <p class="mt-2 text-sm text-brand-primary-100/90">{{ $t('auth.login_hero_subtitle') }}</p>
         </div>
       </section>
     </div>
@@ -138,6 +144,8 @@ import { useRoute, useRouter, RouterLink } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { getCurrentTenant } from '@/services/api'
 import { useTheme } from '@/modules/common/composables/useTheme'
+import { useI18n } from 'vue-i18n'
+import LanguageSwitcher from '@/modules/common/components/LanguageSwitcher.vue'
 import {
   EnvelopeIcon,
   LockClosedIcon,
@@ -150,6 +158,7 @@ const router = useRouter()
 const route = useRoute()
 const { login, isLoading, error, user } = useAuth()
 const { initTheme, fetchAndApplyTenantTheme } = useTheme()
+const { t } = useI18n()
 
 const tenant = ref('')
 const isAutoTenant = ref(false)
@@ -157,13 +166,12 @@ const email = ref('')
 const password = ref('')
 
 onMounted(() => {
-  initTheme()
   // Pre-fill tenant from URL or localStorage
   const currentTenant = getCurrentTenant()
   if (currentTenant) {
     tenant.value = currentTenant
     isAutoTenant.value = true
-    fetchAndApplyTenantTheme()
+    // initTheme() already called in main.ts, which triggers fetchAndApplyTenantTheme()
   }
 
   if (typeof route.query.email === 'string' && route.query.email) {
@@ -175,23 +183,23 @@ const handleSubmit = async () => {
   error.value = ''
   
   if (!tenant.value.trim()) {
-    error.value = 'Especifica tu empresa'
+    error.value = t('auth.errors.company_required')
     return
   }
   
   if (!email.value.trim()) {
-    error.value = 'El email es obligatorio'
+    error.value = t('auth.errors.email_required')
     return
   }
   
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
   if (!emailRegex.test(email.value)) {
-    error.value = 'El formato del email no es válido'
+    error.value = t('auth.errors.email_invalid')
     return
   }
   
   if (!password.value) {
-    error.value = 'La contraseña es obligatoria'
+    error.value = t('auth.errors.password_required')
     return
   }
 

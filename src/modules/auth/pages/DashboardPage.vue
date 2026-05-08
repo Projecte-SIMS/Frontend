@@ -24,7 +24,7 @@
             class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-brand-primary-600 font-bold text-xs hover:bg-brand-primary-50 transition-all shadow-md active:scale-95"
           >
             <PencilSquareIcon class="size-4" />
-            Editar Perfil
+            {{ $t('profile.edit_profile_button') }}
           </button>
         </div>
       </div>
@@ -41,26 +41,26 @@
         <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <IdentificationIcon class="size-6 text-brand-primary-500" />
-            Detalles de la cuenta
+            {{ $t('profile.account_details') }}
           </h2>
           <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
             <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
-              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Nombre Completo</dt>
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $t('profile.full_name') }}</dt>
               <dd class="text-gray-900 dark:text-white font-medium">{{ user?.name }}</dd>
             </div>
             <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
-              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Correo Electrónico</dt>
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $t('profile.email') }}</dt>
               <dd class="text-gray-900 dark:text-white font-medium">{{ user?.email }}</dd>
             </div>
             <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
-              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Nombre de Usuario</dt>
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $t('profile.username') }}</dt>
               <dd class="text-gray-900 dark:text-white font-medium">@{{ user?.username }}</dd>
             </div>
             <div class="space-y-1 border-b border-gray-50 dark:border-gray-800 pb-4">
-              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">Estado</dt>
+              <dt class="text-xs font-bold text-gray-400 uppercase tracking-widest">{{ $t('profile.status') }}</dt>
               <dd class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold uppercase tracking-wider">
                 <span class="size-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                Activo
+                {{ $t('profile.status_active') }}
               </dd>
             </div>
           </dl>
@@ -70,7 +70,7 @@
         <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
           <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
             <KeyIcon class="size-6 text-brand-primary-500" />
-            Permisos Activos
+            {{ $t('profile.active_permissions') }}
           </h2>
           <div v-if="userPermissions.length > 0" class="flex flex-wrap gap-2">
             <span
@@ -82,25 +82,34 @@
             </span>
           </div>
           <div v-else class="text-center py-6 text-gray-500 italic">
-            No tienes permisos específicos asignados.
+            {{ $t('profile.no_permissions') }}
           </div>
         </section>
       </div>
 
       <!-- Sidebar Col -->
       <div class="space-y-8">
+        <!-- Language Preferences -->
+        <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
+          <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">{{ $t('common.language') }}</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t('profile.language_preference') }}</span>
+            <LanguageSwitcher />
+          </div>
+        </section>
+
         <!-- Stats/Actions -->
         <section class="bg-brand-primary-50 dark:bg-brand-primary-900/10 rounded-3xl p-8 border border-brand-primary-100 dark:border-brand-primary-900/30 fleetly-card-hover">
-          <h3 class="text-lg font-bold text-brand-primary-900 dark:text-brand-primary-300 mb-4">Seguridad</h3>
+          <h3 class="text-lg font-bold text-brand-primary-900 dark:text-brand-primary-300 mb-4">{{ $t('profile.security') }}</h3>
           <p class="text-sm text-brand-primary-700/70 dark:text-brand-primary-400/70 mb-6">
-            Mantén tu cuenta protegida cambiando tu contraseña regularmente.
+            {{ $t('profile.security_subtitle') }}
           </p>
           <button
             @click="router.push('/perfil/editar')"
             class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-brand-primary-600 text-white font-bold text-sm hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 active:scale-95"
           >
             <ShieldCheckIcon class="size-5" />
-            Seguridad de la cuenta
+            {{ $t('profile.account_security') }}
           </button>
           
           <div class="mt-8 pt-8 border-t border-brand-primary-200 dark:border-brand-primary-900/50">
@@ -109,19 +118,19 @@
               class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-bold text-sm hover:bg-red-100 transition-all active:scale-95 dark:bg-red-900/10 dark:text-red-400 dark:hover:bg-red-900/20"
             >
               <ArrowRightOnRectangleIcon class="size-5" />
-              Cerrar Sesión
+              {{ $t('profile.logout') }}
             </button>
           </div>
         </section>
 
         <!-- Quick Info -->
         <section class="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 p-8 shadow-sm fleetly-card-hover">
-          <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">Token de Acceso</h3>
+          <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-4">{{ $t('profile.access_token') }}</h3>
           <div class="bg-gray-50 dark:bg-gray-950 rounded-xl p-4 font-mono text-[10px] break-all text-gray-500 dark:text-gray-400 max-h-32 overflow-y-auto border border-gray-100 dark:border-gray-800 custom-scrollbar">
             {{ token }}
           </div>
           <p class="mt-3 text-[10px] text-gray-400 text-center">
-            Este token es sensible. No lo compartas con nadie.
+            {{ $t('profile.token_hint') }}
           </p>
         </section>
       </div>
@@ -133,6 +142,7 @@
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { useAuth } from '../composables/useAuth'
+import LanguageSwitcher from '@/modules/common/components/LanguageSwitcher.vue'
 import {
   UserIcon,
   PencilSquareIcon,

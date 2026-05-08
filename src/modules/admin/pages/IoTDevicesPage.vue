@@ -2,14 +2,14 @@
   <div class="space-y-8 animate-fade-in px-4 sm:px-6 lg:px-8 pb-20">
     <!-- Header Refinado -->
     <PageHeading
-      title="Gestión de Hardware IoT"
-      description="Aprovisionamiento de nodos, vinculación de unidades y monitoreo de telemetría"
+      :title="$t('admin.iot.title')"
+      :description="$t('admin.iot.subtitle')"
     >
       <template #actions>
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-3 px-4 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
             <div class="flex items-center gap-2">
-              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">GATEWAY:</span>
+              <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $t('admin.iot.gateway') }}</span>
               <span v-if="microserviceOnline" class="flex items-center gap-1.5 text-[10px] font-black text-emerald-600 dark:text-emerald-400 uppercase">
                 <span class="size-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
                 ONLINE
@@ -23,7 +23,7 @@
           <button 
             @click="refresh" 
             class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-500 hover:text-brand-primary-600 hover:border-brand-primary-200 transition-all disabled:opacity-50 shadow-sm"
-            title="Sincronizar Dispositivos"
+            :title="$t('admin.iot.sync_devices')"
           >
             <ArrowPathIcon class="size-5" :class="{'animate-spin': loading}" />
           </button>
@@ -37,11 +37,11 @@
         <ExclamationTriangleIcon class="size-6" />
       </div>
       <div class="flex-1">
-        <p class="text-xs font-black text-amber-900 dark:text-amber-200 uppercase tracking-widest">Inconsistencia de Datos Detectada</p>
-        <p class="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase tracking-tight">Hay {{ orphanDevices.length }} dispositivos vinculados a vehículos que ya no existen en el sistema.</p>
+        <p class="text-xs font-black text-amber-900 dark:text-amber-200 uppercase tracking-widest">{{ $t('admin.iot.data_inconsistency') }}</p>
+        <p class="text-[10px] text-amber-700 dark:text-amber-400 font-bold uppercase tracking-tight">{{ $t('admin.iot.orphan_message', { count: orphanDevices.length }) }}</p>
       </div>
       <button @click="scrollToOrphans" class="px-4 py-2 bg-amber-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-amber-700 transition-all shadow-lg shadow-amber-600/20">
-        Ver Críticos
+        {{ $t('admin.iot.view_critical') }}
       </button>
     </div>
 
@@ -51,8 +51,8 @@
         <div class="flex items-center gap-3">
           <span class="material-icons text-brand-primary-500 text-2xl">add_moderator</span>
           <div>
-            <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Nodos Pendientes de Asignación</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Dispositivos detectados en la red que necesitan ser vinculados a un vehículo de la flota.</p>
+            <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ $t('admin.iot.pending_nodes') }}</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{{ $t('admin.iot.pending_subtitle') }}</p>
           </div>
         </div>
       </div>
@@ -65,8 +65,8 @@
         <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 mb-4">
           <CheckBadgeIcon class="size-8" />
         </div>
-        <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">Infraestructura Sincronizada</h3>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">No hay nodos pendientes de aprovisionamiento.</p>
+        <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ $t('admin.iot.infrastructure_synced') }}</h3>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-sm mx-auto">{{ $t('admin.iot.no_pending_nodes') }}</p>
       </div>
       
       <div v-else class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -87,9 +87,9 @@
           </div>
           
           <div class="p-6 space-y-4 flex-1 flex flex-col justify-between">
-            <FormField label="ASIGNAR A VEHÍCULO">
+            <FormField :label="$t('admin.iot.assign_to_vehicle')">
                <select v-model="selectedVehicle[device.id]" class="w-full bg-slate-50 dark:bg-slate-950 px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-800 text-sm font-medium focus:ring-2 focus:ring-brand-primary-500 outline-none transition-all cursor-pointer">
-                <option :value="null">Seleccionar Matrícula...</option>
+                <option :value="null">{{ $t('admin.iot.select_plate') }}</option>
                 <option v-for="v in availableVehicles" :key="v.id" :value="v.id">{{ v.license_plate }} · {{ v.brand }} {{ v.model }}</option>
               </select>
             </FormField>
@@ -100,13 +100,13 @@
                 :disabled="!selectedVehicle[device.id] || linkingDevice === device.id" 
                 class="flex-1 py-3 bg-brand-primary-600 text-white rounded-xl hover:bg-brand-primary-700 active:scale-[0.98] disabled:opacity-30 disabled:cursor-not-allowed transition-all text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-primary-200"
               >
-                <span v-if="linkingDevice === device.id" class="flex items-center justify-center gap-2">VINCULANDO...</span>
-                <span v-else class="flex items-center justify-center gap-2"><LinkIcon class="size-4" /> Vincular</span>
+                <span v-if="linkingDevice === device.id" class="flex items-center justify-center gap-2">{{ $t('admin.iot.linking') }}</span>
+                <span v-else class="flex items-center justify-center gap-2"><LinkIcon class="size-4" /> {{ $t('admin.iot.link') }}</span>
               </button>
               <button 
                 @click="openCreateVehicleModal(device)"
                 class="px-4 py-3 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-all text-[10px] font-black uppercase tracking-widest"
-                title="Crear Nuevo Vehículo"
+                :title="$t('admin.iot.create_vehicle')"
               >
                 <PlusIcon class="size-5" />
               </button>
@@ -120,8 +120,8 @@
     <section id="orphans-section">
       <div class="border-b border-slate-200 dark:border-slate-800 pb-5 mb-8 flex items-center justify-between">
         <div>
-          <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">Directorio de Dispositivos</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Listado completo de todos los nodos de hardware registrados en el sistema.</p>
+          <h2 class="text-base font-black text-slate-900 dark:text-white uppercase tracking-tight">{{ $t('admin.iot.device_directory') }}</h2>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{{ $t('admin.iot.directory_subtitle') }}</p>
         </div>
       </div>
 
@@ -130,11 +130,11 @@
           <table class="w-full text-left border-collapse">
             <thead class="bg-slate-50/50 dark:bg-slate-800/50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
               <tr>
-                <th class="px-6 py-5">Nodo Hardware</th>
-                <th class="px-6 py-5 text-center">Estado</th>
-                <th class="px-6 py-5">Unidad Vinculada</th>
-                <th class="px-6 py-5">Telemetría</th>
-                <th class="px-6 py-5 text-right">Acciones</th>
+                <th class="px-6 py-5">{{ $t('admin.iot.table_hardware_node') }}</th>
+                <th class="px-6 py-5 text-center">{{ $t('admin.iot.table_status') }}</th>
+                <th class="px-6 py-5">{{ $t('admin.iot.table_linked_unit') }}</th>
+                <th class="px-6 py-5">{{ $t('admin.iot.table_telemetry') }}</th>
+                <th class="px-6 py-5 text-right">{{ $t('admin.iot.table_actions') }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -152,16 +152,16 @@
                 </td>
                 <td class="px-6 py-4 text-center">
                   <span :class="device.online ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-slate-50 text-slate-500 border-slate-200'" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border">
-                    {{ device.online ? 'En línea' : 'Sin conexión' }}
+                    {{ device.online ? $t('admin.fleet_health.online') : $t('admin.fleet_health.offline') }}
                   </span>
                 </td>
                 <td class="px-6 py-4">
                   <div v-if="device.is_orphan" class="flex flex-col gap-1">
                     <div class="flex items-center gap-2 text-rose-600 dark:text-rose-400">
                       <ExclamationTriangleIcon class="size-4" />
-                      <span class="text-xs font-black uppercase tracking-tight">HUÉRFANO ({{ device.license_plate }})</span>
+                      <span class="text-xs font-black uppercase tracking-tight">{{ $t('admin.iot.orphan') }} ({{ device.license_plate }})</span>
                     </div>
-                    <p class="text-[9px] text-slate-400 font-bold uppercase">Vehículo eliminado de SQL</p>
+                    <p class="text-[9px] text-slate-400 font-bold uppercase">{{ $t('admin.iot.deleted_from_sql') }}</p>
                   </div>
                   <div v-else-if="!isUnlinked(device)" class="flex flex-col gap-1">
                     <div class="flex items-center gap-2">
@@ -172,7 +172,7 @@
                   </div>
                   <div v-else class="flex items-center gap-2">
                     <div class="size-1.5 rounded-full bg-slate-300"></div>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">No Asignado</span>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ $t('admin.iot.not_assigned') }}</span>
                   </div>
                 </td>
                 <td class="px-6 py-4">
@@ -186,7 +186,7 @@
                       <span>{{ device.telemetry.battery_voltage?.toFixed(1) || 'N/A' }}V</span>
                     </div>
                   </div>
-                  <span v-else class="text-[10px] font-bold text-slate-300 dark:text-slate-600 uppercase">Sin Datos</span>
+                  <span v-else class="text-[10px] font-bold text-slate-300 dark:text-slate-600 uppercase">{{ $t('admin.iot.no_data') }}</span>
                 </td>
                 <td class="px-6 py-4 text-right">
                   <div class="flex justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -194,14 +194,14 @@
                       v-if="!isUnlinked(device) || device.is_orphan" 
                       @click="unlinkDevice(device.id)"
                       class="p-2 text-slate-400 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-900/20 rounded-lg transition-all"
-                      title="Desvincular"
+                      :title="$t('admin.iot.unlink')"
                     >
                       <LinkIcon class="size-4" />
                     </button>
                     <button 
                       @click="confirmDeleteDevice(device)"
                       class="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-lg transition-all"
-                      title="Eliminar Dispositivo"
+                      :title="$t('admin.iot.delete_device')"
                     >
                       <TrashIcon class="size-4" />
                     </button>
@@ -232,21 +232,21 @@
                     <TruckIcon class="h-12 w-12" />
                   </div>
 
-                  <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none text-center">Nuevo Vehículo</DialogTitle>
+                  <DialogTitle as="h3" class="text-3xl font-black text-gray-900 dark:text-white tracking-tight uppercase leading-none text-center">{{ $t('admin.iot.modal_new_vehicle') }}</DialogTitle>
                   <p class="mt-4 text-center text-[10px] text-slate-500 dark:text-slate-400 font-black uppercase tracking-widest">
-                    Vincular dispositivo <span class="text-brand-primary-600">#{{ selectedDeviceId?.substring(0,8) }}</span>
+                    {{ $t('admin.iot.modal_link_device') }} <span class="text-brand-primary-600">#{{ selectedDeviceId?.substring(0,8) }}</span>
                   </p>
                   
                   <form @submit.prevent="handleCreateAndLink" class="mt-8 space-y-4">
-                    <FormField label="Matrícula">
+                    <FormField :label="$t('admin.iot.license_plate')">
                       <input v-model="createForm.license_plate" type="text" placeholder="Ej: 1234ABC" class="w-full bg-slate-50 dark:bg-slate-950 px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase focus:ring-2 focus:ring-brand-primary-500 outline-none" required />
                     </FormField>
                     
                     <div class="grid grid-cols-2 gap-4">
-                      <FormField label="Marca">
+                      <FormField :label="$t('admin.iot.brand')">
                         <input v-model="createForm.brand" type="text" placeholder="Ej: Tesla" class="w-full bg-slate-50 dark:bg-slate-950 px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase focus:ring-2 focus:ring-brand-primary-500 outline-none" required />
                       </FormField>
-                      <FormField label="Modelo">
+                      <FormField :label="$t('admin.iot.model')">
                         <input v-model="createForm.model" type="text" placeholder="Ej: Model 3" class="w-full bg-slate-50 dark:bg-slate-950 px-5 py-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-sm font-bold uppercase focus:ring-2 focus:ring-brand-primary-500 outline-none" required />
                       </FormField>
                     </div>
@@ -254,9 +254,9 @@
                     <div class="pt-6 flex flex-col gap-3">
                       <button type="submit" :disabled="creating" class="w-full flex justify-center items-center gap-3 rounded-[1.5rem] bg-brand-primary-600 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-white hover:bg-brand-primary-700 shadow-xl shadow-brand-primary-500/30 active:scale-95 transition-all disabled:opacity-50">
                         <ArrowPathIcon v-if="creating" class="size-5 animate-spin" />
-                        {{ creating ? 'Procesando...' : 'Crear y Vincular' }}
+                        {{ creating ? $t('admin.iot.processing') : $t('admin.iot.create_link') }}
                       </button>
-                      <button type="button" @click="showCreateModal = false" class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700">Cancelar</button>
+                      <button type="button" @click="showCreateModal = false" class="w-full inline-flex justify-center rounded-[1.5rem] bg-gray-50 dark:bg-gray-800 px-6 py-5 text-xs font-black uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-750 transition-all active:scale-95 border border-gray-100 dark:border-gray-700">{{ $t('common.cancel') }}</button>
                     </div>
                   </form>
                 </div>
@@ -286,11 +286,13 @@ import FormField from '@/modules/admin/components/FormField.vue'
 import ConfirmDialog from '@/modules/admin/components/ConfirmDialog.vue'
 import iotService, { type IoTDevice, type Vehicle } from '@/services/iotService'
 import useToast from '@/modules/common/composables/useToast'
+import { useI18n } from 'vue-i18n'
 import {
   ArrowPathIcon, ExclamationTriangleIcon, CheckBadgeIcon, LinkIcon,
   CpuChipIcon, BoltIcon, Battery50Icon, MapPinIcon, TruckIcon, PlusIcon, TrashIcon
 } from '@heroicons/vue/24/outline'
 
+const { t } = useI18n()
 const loading = ref(true)
 const microserviceOnline = ref(false)
 const unlinkedDevices = ref<IoTDevice[]>([])
@@ -350,7 +352,7 @@ const refresh = async () => {
       }
     })
   } catch (error) {
-    showToast('Error de conexión con el gateway IoT', 'error')
+    showToast(t('admin.iot.errors.gateway_conn_error'), 'error')
     microserviceOnline.value = false
   } finally {
     loading.value = false
@@ -365,51 +367,51 @@ const linkDevice = async (deviceId: string) => {
   try {
     const result = await iotService.linkDeviceToVehicle(deviceId, vehicleId)
     if (result.success) {
-      showToast('Dispositivo vinculado con éxito', 'success')
+      showToast(t('admin.iot.success.linked'), 'success')
       await refresh()
     } else {
-      showToast(result.error || 'Error desconocido', 'error')
+      showToast(result.error || t('admin.iot.errors.link_failed'), 'error')
     }
   } catch (error) {
-    showToast('Fallo en la comunicación con el nodo', 'error')
+    showToast(t('admin.iot.errors.comm_failed'), 'error')
   } finally {
     linkingDevice.value = null
   }
 }
 
 const unlinkDevice = async (deviceId: string) => {
-  confirmModal.title = '¿Desvincular Dispositivo?'
-  confirmModal.message = '¿Estás seguro de desvincular este dispositivo del vehículo? El vehículo quedará sin telemetría en vivo hasta que se asocie un nuevo nodo.'
+  confirmModal.title = t('admin.iot.confirm_unlink_title')
+  confirmModal.message = t('admin.iot.confirm_unlink_message')
   confirmModal.action = async () => {
     try {
       const result = await iotService.unlinkDevice(deviceId)
       if (result.success) {
-        showToast('Dispositivo desvinculado correctamente', 'success')
+        showToast(t('admin.iot.success.unlinked'), 'success')
         await refresh()
       } else {
-        showToast(result.error || 'Error al desvincular', 'error')
+        showToast(result.error || t('admin.iot.errors.unlink_failed'), 'error')
       }
     } catch (error) {
-      showToast('Fallo en el servidor', 'error')
+      showToast(t('admin.iot.errors.server_failed'), 'error')
     }
   }
   confirmModal.show = true
 }
 
 const confirmDeleteDevice = (device: IoTDevice) => {
-  confirmModal.title = '¿Eliminar Hardware?'
-  confirmModal.message = `¿Estás seguro de eliminar el dispositivo ${device.name}? Se perderá toda la telemetría histórica asociada y no podrá ser recuperada.`
+  confirmModal.title = t('admin.iot.confirm_delete_title')
+  confirmModal.message = t('admin.iot.confirm_delete_message', { name: device.name })
   confirmModal.action = async () => {
     try {
       const success = await iotService.deleteDevice(device.id)
       if (success) {
-        showToast('Dispositivo eliminado', 'success')
+        showToast(t('admin.iot.success.deleted'), 'success')
         await refresh()
       } else {
-        showToast('No se pudo eliminar el dispositivo', 'error')
+        showToast(t('admin.iot.errors.delete_failed'), 'error')
       }
     } catch {
-      showToast('Error de conexión', 'error')
+      showToast(t('admin.iot.errors.conn_error'), 'error')
     }
   }
   confirmModal.show = true
@@ -436,14 +438,14 @@ const handleCreateAndLink = async () => {
   try {
     const result = await iotService.createVehicleAndLink(selectedDeviceId.value, createForm)
     if (result.success) {
-      showToast('Vehículo creado y vinculado con éxito', 'success')
+      showToast(t('admin.iot.success.created_linked'), 'success')
       showCreateModal.value = false
       await refresh()
     } else {
-      showToast(result.error || 'Error al procesar', 'error')
+      showToast(result.error || t('admin.iot.errors.create_link_failed'), 'error')
     }
   } catch {
-    showToast('Error crítico en la operación', 'error')
+    showToast(t('admin.iot.errors.critical_error'), 'error')
   } finally {
     creating.value = false
   }

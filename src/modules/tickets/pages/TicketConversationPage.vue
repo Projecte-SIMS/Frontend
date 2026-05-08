@@ -4,12 +4,12 @@
     <div class="flex items-center justify-between mb-8">
       <div>
         <router-link to="/tickets" class="inline-flex items-center gap-2 text-xs font-black text-gray-400 uppercase tracking-widest hover:text-brand-primary-600 transition-colors mb-3">
-          <ArrowLeftIcon class="size-3" /> Volver a mis tickets
+          <ArrowLeftIcon class="size-3" /> {{ $t('tickets.back_to_tickets') }}
         </router-link>
         <h1 class="text-3xl font-black text-gray-900 dark:text-white tracking-tight leading-none">{{ ticket.subject || ticket.title || `Ticket #${ticket.id}` }}</h1>
         <div class="flex items-center gap-3 mt-3">
           <span :class="ticket.active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'" class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest">
-            {{ ticket.active ? 'Abierto' : 'Cerrado' }}
+            {{ ticket.active ? $t('tickets.status_open') : $t('tickets.status_closed') }}
           </span>
           <span class="text-xs font-bold text-gray-400">·</span>
           <span class="text-xs font-bold text-gray-400">{{ formatDate(ticket.created_at) }}</span>
@@ -29,7 +29,7 @@
             {{ getInitials(ticket.user?.name) }}
           </div>
           <div>
-            <p class="text-[10px] font-black text-brand-primary-400 uppercase tracking-widest leading-none">Descripción inicial</p>
+            <p class="text-[10px] font-black text-brand-primary-400 uppercase tracking-widest leading-none">{{ $t('tickets.initial_description') }}</p>
             <p class="text-[9px] font-bold text-gray-400 uppercase mt-1">{{ formatDate(ticket.created_at) }}</p>
           </div>
         </div>
@@ -54,7 +54,7 @@
           >
             <div class="flex items-center justify-between gap-6 mb-1.5">
               <span class="text-[10px] font-black uppercase tracking-widest" :class="m.user_id === currentUserId ? 'text-brand-primary-100' : 'text-brand-primary-600 dark:text-brand-primary-400'">
-                {{ m.user_id === currentUserId ? 'Tú' : (m.user?.name || 'Soporte') }}
+                {{ m.user_id === currentUserId ? $t('tickets.you') : (m.user?.name || $t('tickets.support')) }}
               </span>
               <span class="text-[9px] font-bold uppercase opacity-50">{{ formatTime(m.created_at) }}</span>
             </div>
@@ -63,7 +63,7 @@
 
           <!-- Avatar (mí) -->
           <div v-if="m.user_id === currentUserId" class="size-9 rounded-full bg-brand-primary-100 dark:bg-brand-primary-900/50 flex items-center justify-center text-[10px] font-black text-brand-primary-600 shrink-0 border border-white dark:border-slate-700">
-            {{ getInitials(m.user?.name || 'Tú') }}
+            {{ getInitials(m.user?.name || $t('tickets.you')) }}
           </div>
         </div>
       </div>
@@ -76,7 +76,7 @@
           v-model="form.message" 
           rows="2" 
           class="flex-1 bg-gray-50 dark:bg-gray-950 border-0 focus:ring-2 focus:ring-brand-primary-500 rounded-2xl py-3 px-4 text-sm font-medium text-gray-900 dark:text-white resize-none" 
-          placeholder="Escribe tu respuesta aquí..."
+          :placeholder="$t('tickets.reply_placeholder')"
         ></textarea>
         <button 
           type="submit" 
@@ -90,13 +90,13 @@
     </div>
     <div v-else class="bg-gray-100 dark:bg-gray-800 p-6 rounded-3xl text-center space-y-4 shadow-inner">
       <p class="text-sm font-bold text-gray-500 dark:text-gray-400 uppercase tracking-widest flex items-center justify-center gap-2">
-        <LockClosedIcon class="size-4" /> Este ticket está cerrado
+        <LockClosedIcon class="size-4" /> {{ $t('tickets.ticket_closed') }}
       </p>
       <button 
         @click="reopenTicket"
         class="px-6 py-2 rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-[10px] font-black uppercase tracking-widest text-brand-primary-600 dark:text-brand-primary-400 hover:bg-brand-primary-50 transition-all shadow-sm active:scale-95"
       >
-        Solicitar reapertura
+        {{ $t('tickets.request_reopen') }}
       </button>
     </div>
   </div>
@@ -107,6 +107,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import apiClient from '@/services/api'
 import showToast from '@/modules/common/composables/useToast'
+import { useI18n } from 'vue-i18n'
 import { 
   ArrowLeftIcon, 
   ArrowPathIcon, 
@@ -116,6 +117,7 @@ import {
 
 const route = useRoute()
 const id = route.params.id as string
+const { t } = useI18n()
 
 const ticket = ref<any>({})
 const messages = ref<any[]>([])
@@ -147,7 +149,7 @@ const load = async () => {
     messages.value = data.messages ?? data.data?.messages ?? []
   } catch (e) {
     console.error(e)
-    showToast('Error al cargar la conversación', 'error')
+    showToast(t('tickets.errors.load_conv_failed'), 'error')
   } finally {
     loading.value = false
   }
@@ -162,9 +164,9 @@ const sendMessage = async () => {
     const newMsg = res.data.data ?? res.data
     if (newMsg) messages.value.push(newMsg)
     form.value.message = ''
-    showToast('Mensaje enviado', 'success')
+    showToast(t('tickets.success.message_sent'), 'success')
   } catch (e: any) {
-    showToast('Error al enviar mensaje', 'error')
+    showToast(t('tickets.errors.send_failed'), 'error')
   } finally {
     sending.value = false
   }
@@ -174,9 +176,9 @@ const reopenTicket = async () => {
   try {
     await apiClient.put(`/tickets/${id}`, { active: true })
     ticket.value.active = true
-    showToast('Ticket reabierto', 'success')
+    showToast(t('tickets.success.ticket_reopened'), 'success')
   } catch (e) {
-    showToast('Error al reabrir ticket', 'error')
+    showToast(t('tickets.errors.reopen_failed'), 'error')
   }
 }
 
