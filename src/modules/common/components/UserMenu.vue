@@ -2,7 +2,7 @@
   <div class="relative user-menu-container">
     <button 
       @click.stop="showMenu = !showMenu"
-      class="flex items-center gap-x-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-800/40 px-3 py-1.5 border border-gray-100 dark:border-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-all cursor-pointer group w-full"
+      class="user-menu-trigger flex items-center gap-x-2.5 rounded-xl bg-gray-50/50 dark:bg-gray-800/40 px-3 py-1.5 border border-gray-100 dark:border-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700/60 transition-all cursor-pointer group w-full"
     >
       <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand-primary-500 to-brand-accent-600 text-white text-xs font-bold shadow-sm">
         {{ userInitials }}

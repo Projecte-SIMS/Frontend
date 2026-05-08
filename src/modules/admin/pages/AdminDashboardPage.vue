@@ -28,7 +28,7 @@
     </PageHeading>
 
     <!-- Grid de KPIs -->
-    <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div id="dashboard-kpis" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
       <div v-for="stat in stats" :key="stat.name" class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group fleetly-card-hover">
         <div class="flex items-start justify-between">
           <div>
@@ -55,7 +55,7 @@
       <!-- Columna Principal -->
       <div class="lg:col-span-2 space-y-8">
         <!-- Diagnóstico de Flota -->
-        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
+        <section id="dashboard-fleet-health" class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
           <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <div class="flex items-center gap-3">
               <div class="p-2 rounded-lg bg-rose-50 dark:bg-rose-900/20 text-rose-600">
@@ -86,7 +86,7 @@
         </section>
 
         <!-- Últimos Movimientos -->
-        <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
+        <section id="dashboard-recent-movements" class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden fleetly-card-hover">
           <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
             <h3 class="font-bold text-slate-900 dark:text-white">{{ $t('admin.dashboard.recent_movements.title') }}</h3>
             <RouterLink to="/admin/bookings" class="text-xs font-bold text-brand-primary-600 hover:text-brand-primary-700 uppercase tracking-widest">
@@ -138,7 +138,7 @@
       <!-- Barra Lateral -->
       <div class="space-y-6">
         <!-- Widget IoT -->
-        <div class="rounded-2xl bg-brand-primary-600 p-6 text-white shadow-lg shadow-brand-primary-200 dark:shadow-none relative overflow-hidden group fleetly-card-hover">
+        <div id="dashboard-iot-widget" class="rounded-2xl bg-brand-primary-600 p-6 text-white shadow-lg shadow-brand-primary-200 dark:shadow-none relative overflow-hidden group fleetly-card-hover">
           <div class="relative z-10">
             <div class="flex items-center justify-between mb-6">
               <div class="flex items-center gap-2">
@@ -166,7 +166,7 @@
         </div>
 
         <!-- Acciones Directas -->
-        <div class="space-y-3">
+        <div id="dashboard-quick-access" class="space-y-3">
           <h3 class="px-2 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">{{ $t('admin.dashboard.quick_access.title') }}</h3>
           <div class="grid gap-2">
             <RouterLink

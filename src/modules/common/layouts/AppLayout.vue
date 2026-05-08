@@ -24,6 +24,7 @@
                 v-for="item in navigation" 
                 :key="item.name" 
                 :to="item.to"
+                :id="'nav-' + item.to.replace('/', '').replace('/', '-')"
                 :class="[
                   isActive(item.to) 
                     ? 'bg-brand-primary-50 text-brand-primary-700 dark:bg-brand-primary-900/30 dark:text-brand-primary-300 border-brand-primary-200/70 dark:border-brand-primary-800/70 shadow-sm' 
@@ -46,6 +47,7 @@
             >
               <router-link 
                 v-if="hasActiveBooking"
+                id="active-trip-btn"
                 to="/active-vehicle"
                 :class="[
                   route.path === '/active-vehicle' 
@@ -61,6 +63,7 @@
 
             <!-- Selector de Tema -->
               <button 
+              id="theme-toggle"
               @click="toggleTheme" 
               class="p-2 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all active:scale-75"
               :title="t('layout.change_theme')"
@@ -189,6 +192,7 @@ import useBookingsUser from '@/modules/bookings/composables/useBookingsUser'
 import { getCurrentTenant } from '@/services/api'
 import { useTheme } from '@/modules/common/composables/useTheme'
 import { useI18n } from 'vue-i18n'
+import { useTour } from '@/modules/common/composables/useTour'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -196,6 +200,7 @@ const { user } = useAuth()
 const { canUseAI, fetchCurrentPlan } = usePlan()
 const { getBookings, hasActiveBooking } = useBookingsUser()
 const { isDark, toggleTheme, initTheme, fetchAndApplyTenantTheme } = useTheme()
+const { runTour } = useTour()
 const mobileMenuOpen = ref(false)
 
 const isFullPage = computed(() => route.path === '/vehicles/map')
@@ -230,7 +235,59 @@ onMounted(() => {
   fetchCurrentPlan()
   getBookings()
   pollInterval = setInterval(getBookings, 10000) // Cada 10s verificamos estado de viaje
-})
+
+    // Guided Tour
+    runTour('client_tour_seen', [
+      {
+        element: '#nav-vehicles-map',
+        popover: { 
+          title: 'Localizador de Flota', 
+          description: 'Visualiza todos los vehículos disponibles en tu zona. Haz clic en cualquier marcador para ver detalles de carga y realizar una reserva inmediata.', 
+          side: 'bottom' 
+        }
+      },
+      {
+        element: '#nav-vehicles',
+        popover: { 
+          title: 'Catálogo de Vehículos', 
+          description: 'Accede al listado completo de nuestra flota eléctrica. Consulta especificaciones técnicas, autonomía y precios antes de decidirte.', 
+          side: 'bottom' 
+        }
+      },
+      {
+        element: '#nav-bookings',
+        popover: { 
+          title: 'Gestión de Viajes', 
+          description: 'Revisa tus reservas activas, el historial de trayectos realizados y descarga tus facturas de forma sencilla.', 
+          side: 'bottom' 
+        }
+      },
+      {
+        element: '#theme-toggle',
+        popover: { 
+          title: 'Preferencia Visual', 
+          description: 'Personaliza tu experiencia cambiando entre el modo claro y oscuro según prefieras para tu comodidad visual.', 
+          side: 'bottom' 
+        }
+      },
+      {
+        element: '.user-menu-trigger',
+        popover: { 
+          title: 'Menú de Usuario', 
+          description: 'Desde aquí puedes acceder a tu billetera para recargar saldo, abrir tickets de soporte o gestionar tu perfil personal.', 
+          side: 'bottom' 
+        }
+      },
+      {
+        element: '#active-trip-btn',
+        popover: { 
+          title: 'Control de Viaje', 
+          description: 'Cuando tengas un viaje activo, este botón te permitirá abrir las puertas, encender el vehículo y finalizar tu trayecto.', 
+          side: 'bottom' 
+        }
+      }
+    ])
+  })
 
 onUnmounted(() => {
   if (pollInterval) clearInterval(pollInterval)

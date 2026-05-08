@@ -82,7 +82,11 @@
               <p class="px-1 mb-2 text-[10px] font-black uppercase tracking-[0.16em] text-gray-400 dark:text-gray-500">Navegación</p>
               <ul role="list" class="-mx-2 space-y-1">
                 <li v-for="item in navigation" :key="item.name">
-                  <router-link :to="item.href" :class="[item.current ? 'bg-brand-primary-50 text-brand-primary-700 dark:bg-brand-primary-900/20 dark:text-brand-primary-300 border-brand-primary-200/80 dark:border-brand-primary-800/80' : 'text-gray-700 hover:bg-gray-50 hover:text-brand-primary-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white border-transparent', 'nav-link group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold transition-all border']">
+                  <router-link 
+                    :to="item.href" 
+                    :id="'admin-nav-' + item.name.toLowerCase().replace(' ', '-')"
+                    :class="[item.current ? 'bg-brand-primary-50 text-brand-primary-700 dark:bg-brand-primary-900/20 dark:text-brand-primary-300 border-brand-primary-200/80 dark:border-brand-primary-800/80' : 'text-gray-700 hover:bg-gray-50 hover:text-brand-primary-600 dark:text-gray-300 dark:hover:bg-gray-800 dark:hover:text-white border-transparent', 'nav-link group relative flex items-center gap-x-2.5 rounded-lg px-2.5 py-2.5 text-sm font-semibold transition-all border']"
+                  >
                     <span :class="[item.current ? 'opacity-100' : 'opacity-0 group-hover:opacity-70', 'absolute left-0 top-2 bottom-2 w-1 rounded-r-full bg-brand-primary-500 transition-opacity']"></span>
                     <span :class="[item.current ? 'bg-brand-primary-100 text-brand-primary-600 dark:bg-brand-primary-900/40 dark:text-brand-primary-300' : 'bg-gray-100 text-gray-400 group-hover:text-brand-primary-600 dark:bg-gray-800 dark:text-gray-500 dark:group-hover:text-white', 'flex size-8 shrink-0 items-center justify-center rounded-lg transition-colors']">
                       <component :is="item.icon" class="size-[18px]" aria-hidden="true" />
@@ -103,6 +107,7 @@
                   Volver a la App
                 </router-link>
                 <button 
+                  id="admin-theme-toggle"
                   @click="toggleTheme" 
                   class="p-2.5 rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-all active:scale-75 border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900"
                   title="Cambiar tema"
@@ -171,6 +176,7 @@ import { useAuth } from '@/modules/auth/composables/useAuth'
 import { getCurrentTenant } from '@/services/api'
 import { useTheme } from '@/modules/common/composables/useTheme'
 import { Dialog, DialogPanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
+import { useTour } from '@/modules/common/composables/useTour'
 import {
   Bars3Icon,
   HomeIcon,
@@ -191,11 +197,136 @@ import UserMenu from '@/modules/common/components/UserMenu.vue'
 const route = useRoute()
 const { user, isLoading } = useAuth()
 const { isDark, toggleTheme, initTheme, fetchAndApplyTenantTheme } = useTheme()
+const { runTour } = useTour()
 const sidebarOpen = ref(false)
 
 onMounted(() => {
   initTheme()
   fetchAndApplyTenantTheme()
+
+  // Guided Tour for Admin (Full Walkthrough)
+  runTour('admin_tour_seen', [
+    {
+      element: '#admin-sidebar',
+      popover: { 
+        title: 'Panel de Navegación Lateral', 
+        description: 'Desde este menú puedes acceder a todas las herramientas críticas de administración. La barra se mantiene siempre visible para un acceso rápido.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-nav-dashboard',
+      popover: { 
+        title: 'Dashboard General', 
+        description: 'Tu centro de mando. Aquí verás el resumen global de ingresos, vehículos activos y tickets pendientes.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#dashboard-kpis',
+      popover: { 
+        title: 'Indicadores de Rendimiento', 
+        description: 'Métricas clave actualizadas en tiempo real: total de usuarios, tamaño de la flota y reservas actuales.', 
+        side: 'bottom' 
+      }
+    },
+    {
+      element: '#dashboard-fleet-health',
+      popover: { 
+        title: 'Estado de Salud de la Flota', 
+        description: 'Detecta rápidamente unidades con batería baja, temperaturas de motor elevadas o vehículos fuera de línea.', 
+        side: 'top' 
+      }
+    },
+    {
+      element: '#dashboard-recent-movements',
+      popover: { 
+        title: 'Movimientos Recientes', 
+        description: 'Controla quién está usando tus vehículos en este momento y revisa el historial de pagos y trayectos.', 
+        side: 'top' 
+      }
+    },
+    {
+      element: '#dashboard-iot-widget',
+      popover: { 
+        title: 'Monitorización IoT', 
+        description: 'Estado de conexión de tus dispositivos. Asegúrate de que todos tus trackers GPS estén enviando telemetría correctamente.', 
+        side: 'left' 
+      }
+    },
+    {
+      element: '#dashboard-quick-access',
+      popover: { 
+        title: 'Atajos de Gestión', 
+        description: 'Crea nuevos vehículos, abre el mapa en vivo o gestiona usuarios con un solo clic.', 
+        side: 'left' 
+      }
+    },
+    {
+      element: '#admin-nav-mapa-de-flota',
+      popover: { 
+        title: 'Mapa Operativo', 
+        description: 'Visualización geográfica de toda tu flota. Ideal para seguimiento en tiempo real y optimización de rutas.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-nav-dispositivos-iot',
+      popover: { 
+        title: 'Hardware y Sensores', 
+        description: 'Configuración detallada de cada dispositivo IoT instalado en los vehículos eléctricos.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-nav-usuarios',
+      popover: { 
+        title: 'Base de Datos de Usuarios', 
+        description: 'Administra cuentas de clientes, revisa documentos de identidad y gestiona saldos de billetera.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-nav-roles',
+      popover: { 
+        title: 'Permisos y Seguridad', 
+        description: 'Controla quién puede hacer qué dentro de tu plataforma administrativa definiendo roles personalizados.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-nav-vehículos',
+      popover: { 
+        title: 'Inventario de Vehículos', 
+        description: 'Catálogo completo de tus unidades. Gestiona fichas técnicas y estados de mantenimiento.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-nav-tickets',
+      popover: { 
+        title: 'Soporte al Cliente', 
+        description: 'Resuelve dudas e incidencias de tus usuarios de forma centralizada.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-nav-configuración',
+      popover: { 
+        title: 'Ajustes de Inquilino', 
+        description: 'Define tu identidad corporativa: sube logos, cambia colores y ajusta parámetros del sistema.', 
+        side: 'right' 
+      }
+    },
+    {
+      element: '#admin-theme-toggle',
+      popover: { 
+        title: 'Tema Visual', 
+        description: 'Ajusta la luminosidad de la interfaz para tu comodidad visual en cualquier momento.', 
+        side: 'top' 
+      }
+    }
+  ])
 })
 
 const isFullPage = computed(() => ['/admin/map', '/admin/iot-devices'].includes(route.path))
