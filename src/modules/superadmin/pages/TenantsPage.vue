@@ -537,11 +537,7 @@ const frontendBaseUrl = computed(() => {
 })
 
 const getTenantLoginUrl = (tenantId: string) => {
-  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    return `${frontendBaseUrl.value}/login?tenant=${tenantId}`
-  }
-  // En producción usamos subdominios: https://tenantid.fleetly...
-  return `https://${tenantId}.fleetly.deltahost.asix2.iesmontsia.cat`
+  return `${frontendBaseUrl.value}/login?tenant=${tenantId}`
 }
 
 const filteredTenants = computed(() => {
