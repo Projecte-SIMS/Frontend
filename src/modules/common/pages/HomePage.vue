@@ -205,9 +205,9 @@ function computeDistancesAndFilter() {
       const d = R * c
       return { ...v, distanceMeters: d }
     })
-    .filter(Boolean)
+    .filter((v): v is any => v !== null)
     .filter(v => !v.mongo_active)
-    .sort((a, b) => a?.distanceMeters - b?.distanceMeters)
+    .sort((a, b) => (a.distanceMeters || 0) - (b.distanceMeters || 0))
     .slice(0, 10)
 }
 

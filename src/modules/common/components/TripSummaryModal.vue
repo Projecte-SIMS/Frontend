@@ -90,16 +90,16 @@ const initSummaryMap = async () => {
   
   summaryMap.value = L.map(summaryMapContainer.value, { zoomControl: false, attributionControl: false })
   
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(summaryMap.value)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(summaryMap.value as any)
   
   const points = props.summaryData.summary.points.map((p: any) => [p.lat, p.lon] as L.LatLngExpression)
   
   // Draw path
-  const polyline = L.polyline(points, { color: '#4f46e5', weight: 5, opacity: 0.8 }).addTo(summaryMap.value)
+  const polyline = L.polyline(points, { color: '#4f46e5', weight: 5, opacity: 0.8 }).addTo(summaryMap.value as any)
   
   // Add markers for start and end
-  L.circleMarker(points[0], { radius: 6, color: '#22c55e', fillOpacity: 1 }).addTo(summaryMap.value)
-  L.circleMarker(points[points.length-1], { radius: 6, color: '#ef4444', fillOpacity: 1 }).addTo(summaryMap.value)
+  L.circleMarker(points[0], { radius: 6, color: '#22c55e', fillOpacity: 1 }).addTo(summaryMap.value as any)
+  L.circleMarker(points[points.length-1], { radius: 6, color: '#ef4444', fillOpacity: 1 }).addTo(summaryMap.value as any)
   
   summaryMap.value.fitBounds(polyline.getBounds(), { padding: [30, 30] })
 }

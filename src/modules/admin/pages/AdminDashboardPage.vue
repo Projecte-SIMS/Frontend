@@ -317,11 +317,11 @@ const fleetStats = computed(() => {
 
 const recentBookings = computed(() => {
   return [...bookings.value]
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .sort((a, b) => new Date(b.created_at ?? 0).getTime() - new Date(a.created_at ?? 0).getTime())
     .slice(0, 5)
 })
 
-const formatDate = (dateStr: string) => {
+const formatDate = (dateStr?: string) => {
   if (!dateStr) return '-'
   return new Date(dateStr).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
 }

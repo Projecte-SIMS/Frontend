@@ -104,9 +104,9 @@
             </div>
 
             <div class="flex items-center gap-2 border-l border-slate-200 dark:border-slate-800 pl-4">
-              <button @click="runAction(device, 'status')" :disabled="syncing[device.id]" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-brand-primary-500 transition-all"><span class="material-icons text-xl" :class="{'animate-spin': syncing[device.id] === 'status'}">refresh</span></button>
-              <button @click="runAction(device, 'deploy')" :disabled="syncing[device.id]" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all font-black text-[9px] uppercase tracking-widest">Deploy</button>
-              <button @click="runAction(device, 'update-keys')" :disabled="syncing[device.id]" class="px-4 py-2 rounded-xl bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500 hover:text-white transition-all font-black text-[9px] uppercase tracking-widest">Keys</button>
+              <button @click="runAction(device, 'status')" :disabled="!!syncing[device.id]" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-brand-primary-500 transition-all"><span class="material-icons text-xl" :class="{'animate-spin': syncing[device.id] === 'status'}">refresh</span></button>
+              <button @click="runAction(device, 'deploy')" :disabled="!!syncing[device.id]" class="px-4 py-2 rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500 hover:text-white transition-all font-black text-[9px] uppercase tracking-widest">Deploy</button>
+              <button @click="runAction(device, 'update-keys')" :disabled="!!syncing[device.id]" class="px-4 py-2 rounded-xl bg-amber-500/10 text-amber-600 border border-amber-500/20 hover:bg-amber-500 hover:text-white transition-all font-black text-[9px] uppercase tracking-widest">Keys</button>
               <button @click="deleteDevice(device.id)" class="p-2.5 rounded-xl text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all"><span class="material-icons text-xl">delete</span></button>
             </div>
           </div>

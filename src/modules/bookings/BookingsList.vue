@@ -244,7 +244,8 @@ const formatTime = (date?: string) => {
   return new Date(date).toLocaleTimeString(locale.value, { hour: '2-digit', minute: '2-digit' })
 }
 
-const formatRemainingTime = (seconds: number) => {
+const formatRemainingTime = (seconds?: number) => {
+  if (seconds === undefined) return '0:00'
   const mins = Math.floor(seconds / 60)
   const secs = Math.floor(seconds % 60)
   return `${mins}:${secs.toString().padStart(2, '0')}`

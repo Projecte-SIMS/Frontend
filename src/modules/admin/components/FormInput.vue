@@ -18,7 +18,7 @@
 import FormField from './FormField.vue'
 
 defineProps<{
-  modelValue: string
+  modelValue: string | number | null | undefined
   label?: string
   placeholder?: string
   type?: string

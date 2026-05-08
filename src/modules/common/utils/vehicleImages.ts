@@ -85,7 +85,7 @@ function normalize(str: string): string {
 /**
  * Obtiene la URL de imagen para un vehículo según su marca y modelo
  */
-export function getVehicleImage(brand?: string, model?: string): string {
+export function getVehicleImage(brand?: string | null, model?: string | null): string {
   if (!brand) return finalDefaultImage
   
   const b = normalize(brand)

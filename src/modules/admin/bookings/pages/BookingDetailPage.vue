@@ -128,10 +128,10 @@ const route = useRoute()
 const { currentBooking, getBooking, loading, error } = useBookings()
 
 const booking = computed<Booking | null>(() => currentBooking.value)
-const bookingId = ref<number>(Number(route.params.id))
+const bookingId = ref<number | null>(route.params.id ? Number(route.params.id) : null)
 
 onMounted(async () => {
-  if (bookingId.value) {
+  if (bookingId.value != null && !Number.isNaN(bookingId.value)) {
     try {
       await getBooking(bookingId.value)
     } catch (e) {
@@ -140,7 +140,8 @@ onMounted(async () => {
   }
 })
 
-const formatDateTime = (value: string) => {
+const formatDateTime = (value?: string | null) => {
+  if (!value) return '-'
   return new Date(value).toLocaleString('es-ES', {
     day: '2-digit',
     month: 'short',

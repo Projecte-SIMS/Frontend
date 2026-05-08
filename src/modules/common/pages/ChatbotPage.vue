@@ -18,8 +18,9 @@ interface Message {
 const { user } = useAuth()
 
 const userRole = computed(() => {
-  if (user.value?.roles && user.value.roles.length > 0) {
-    return user.value.roles[0].name || 'Client'
+  const roles = user.value?.roles
+  if (roles && roles.length > 0) {
+    return roles[0]?.name || 'Client'
   }
   return 'Client'
 })

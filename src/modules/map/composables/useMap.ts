@@ -26,6 +26,7 @@ export interface Vehicle {
   battery_voltage?: number
   device_id?: string
   price_per_minute?: number
+  distanceMeters?: number
 }
 
 const vehicles = ref<Vehicle[]>([])

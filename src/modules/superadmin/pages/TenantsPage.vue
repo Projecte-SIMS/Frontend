@@ -477,6 +477,8 @@ const deleteIds = ref<string[]>([])
 const selectedDetail = ref<Tenant | null>(null)
 const updatingTheme = ref(false)
 
+import { centralApi } from '@/services/centralApi'
+
 const themes = [
   { id: 'indigo', name: 'Crimson', color: 'bg-[#ef4444]' },
   { id: 'ocean', name: 'Ocean', color: 'bg-blue-600' },
@@ -499,7 +501,7 @@ const handleUpdateTheme = async (themeId: string) => {
     // Update list
     const idx = tenants.value.findIndex(t => t.id === tenantId)
     if (idx !== -1) {
-      tenants.value[idx].company_theme = themeId
+      tenants.value[idx]!.company_theme = themeId
     }
     toast.success('Marca actualizada correctamente')
   } catch (e: any) {

@@ -103,7 +103,7 @@
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Comandos Remotos</h3>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <button
-            @click="sendCommand('start')"
+            @click="sendCommand('on')"
             :disabled="!deviceOnline || commandLoading"
             class="flex flex-col items-center justify-center p-6 rounded-xl bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-300 border border-green-100 dark:border-green-800/50 hover:bg-green-100 dark:hover:bg-green-800/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
@@ -140,7 +140,7 @@
           </button>
 
           <button
-            @click="sendCommand('stop')"
+            @click="sendCommand('off')"
             :disabled="!deviceOnline || commandLoading"
             class="flex flex-col items-center justify-center p-6 rounded-xl bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300 border border-red-100 dark:border-red-800/50 hover:bg-red-100 dark:hover:bg-red-800/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
@@ -293,7 +293,7 @@ const confirmModal = reactive({
   show: false,
   title: '',
   message: '',
-  action: '' as 'start' | 'stop' | 'reboot'
+  action: '' as 'on' | 'off' | 'reboot'
 })
 
 const telemetry = reactive({
@@ -348,7 +348,7 @@ const updateMarker = () => {
       iconSize: [40, 40],
       iconAnchor: [20, 20]
     })
-    marker.value = L.marker(pos, { icon }).addTo(map.value)
+    marker.value = L.marker(pos, { icon }).addTo(map.value as any)
     map.value.setView(pos, 16)
   } else {
     marker.value.setLatLng(pos)
@@ -356,11 +356,11 @@ const updateMarker = () => {
   }
 }
 
-const sendCommand = (action: 'start' | 'stop' | 'reboot') => {
-  const titles = { start: '¿Encender Motor?', stop: '¿Apagar Motor?', reboot: '¿Reiniciar Sistema?' }
+const sendCommand = (action: 'on' | 'off' | 'reboot') => {
+  const titles = { on: '¿Encender Motor?', off: '¿Apagar Motor?', reboot: '¿Reiniciar Sistema?' }
   const messages = {
-    start: 'Vas a enviar una señal de arranque al vehículo. Asegúrate de que el entorno sea seguro.',
-    stop: 'Vas a detener el motor de forma remota. Si el vehículo está en movimiento, esto podría ser peligroso.',
+    on: 'Vas a enviar una señal de arranque al vehículo. Asegúrate de que el entorno sea seguro.',
+    off: 'Vas a detener el motor de forma remota. Si el vehículo está en movimiento, esto podría ser peligroso.',
     reboot: 'Se reiniciará el módulo IoT del vehículo. Perderás la conexión durante unos segundos.'
   }
 
@@ -402,7 +402,7 @@ const initMap = async () => {
   }).setView([0, 0], 2)
 
   L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png').addTo(
-    map.value
+    map.value as any
   )
 
   updateMarker()

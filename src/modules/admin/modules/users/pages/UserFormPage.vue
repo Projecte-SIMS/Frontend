@@ -127,7 +127,7 @@ const userId = computed(() => (route.params.id ? Number(route.params.id) : null)
 const isEditMode = computed(() => !!userId.value)
 const loading = computed(() => userLoading.value || rolesLoading.value)
 
-const formData = reactive<Partial<UserForm>>({
+const formData = reactive<UserForm>({
   name: '',
   username: '',
   email: '',
@@ -138,8 +138,8 @@ const formData = reactive<Partial<UserForm>>({
 
 const isSaving = ref(false)
 
-const roleOptions = computed(() => 
-  roles.value.map(r => ({ label: r.name, value: r.id.toString() }))
+const roleOptions = computed(() =>
+  roles.value.map(r => ({ label: r.name, value: r.id }))
 )
 
 onMounted(async () => {
@@ -158,7 +158,7 @@ onMounted(async () => {
           const adminRole = user.roles.find((r: any) => r.name === 'Admin')
           const maintenanceRole = user.roles.find((r: any) => r.name === 'Maintenance')
           const primaryRole = adminRole || maintenanceRole || user.roles[0]
-          if (primaryRole) formData.role_id = primaryRole.id.toString()
+          if (primaryRole) formData.role_id = primaryRole.id
         }
       }
     } catch (err) {
@@ -179,12 +179,12 @@ const handleSubmit = async () => {
   try {
     isSaving.value = true
 
-    const submitData: any = {
+    const submitData: UserForm = {
       name: formData.name,
       username: formData.username,
       email: formData.email,
       active: formData.active,
-      role_id: formData.role_id ? Number(formData.role_id) : null
+      role_id: formData.role_id ?? null
     }
 
     if (formData.password) {

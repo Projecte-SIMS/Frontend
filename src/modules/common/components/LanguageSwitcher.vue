@@ -16,7 +16,7 @@ type Language = typeof languages[number];
 
 const currentLanguage = ref<Language>(languages.find(l => l.code === locale.value) || languages[0]);
 
-const changeLanguage = (lang: typeof languages[0]) => {
+const changeLanguage = (lang: Language) => {
   locale.value = lang.code;
   currentLanguage.value = lang;
   localStorage.setItem('user-locale', lang.code);

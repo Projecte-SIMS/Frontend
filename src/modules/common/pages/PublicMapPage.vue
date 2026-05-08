@@ -99,7 +99,7 @@ function initMap() {
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
-  }).addTo(map.value)
+  }).addTo(map.value as any)
 }
 
 function addMarkers() {
@@ -131,7 +131,7 @@ function addMarkers() {
       })
 
       const marker = L.marker([v.latitude, v.longitude], { icon })
-        .addTo(map.value!)
+        .addTo(map.value as any)
         .bindPopup(`
           <div style="text-align: center; padding: 8px;">
             <strong>${v.plate}</strong><br>

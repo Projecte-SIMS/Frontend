@@ -32,7 +32,7 @@ export function useUsers() {
         filteredUsers = filteredUsers.filter(
           (user) =>
             user.name.toLowerCase().includes(search) ||
-            user.username.toLowerCase().includes(search) ||
+            user.username?.toLowerCase().includes(search) ||
             user.email.toLowerCase().includes(search)
         )
       }

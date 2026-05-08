@@ -30,12 +30,15 @@ export const usePermissions = () => {
       group.permissions.forEach((perm) => {
         const name = perm.name || ''
 
+        const moduleEntry = modules[group.module]
+        if (!moduleEntry) return
+
         if (name.endsWith('.view')) {
-          modules[group.module].view = perm
+          moduleEntry.view = perm
         } else if (name.endsWith('.manage') || name.endsWith('.create') || name.endsWith('.edit')) {
-          modules[group.module].manage = perm
+          moduleEntry.manage = perm
         } else if (name.endsWith('.delete')) {
-          modules[group.module].delete = perm
+          moduleEntry.delete = perm
         }
       })
     })
@@ -93,16 +96,17 @@ export const usePermissions = () => {
     const result: Record<string, number[]> = {}
 
     permissionModules.value.forEach((module) => {
-      result[module.module] = []
+      const perms: number[] = []
       if (module.view && rolePermissionIds.includes(module.view.id)) {
-        result[module.module].push(module.view.id)
+        perms.push(module.view.id)
       }
       if (module.manage && rolePermissionIds.includes(module.manage.id)) {
-        result[module.module].push(module.manage.id)
+        perms.push(module.manage.id)
       }
       if (module.delete && rolePermissionIds.includes(module.delete.id)) {
-        result[module.module].push(module.delete.id)
+        perms.push(module.delete.id)
       }
+      result[module.module] = perms
     })
 
     return result

@@ -164,7 +164,10 @@ async function handleSubmit() {
   if (!validate()) return
 
   try {
-    await createVehicle({ ...form })
+    await createVehicle({
+      ...form,
+      price_per_minute: Number(form.price_per_minute)
+    })
     router.push('/admin/vehicles')
   } catch (err: any) {
     if (err.response?.status === 422 && err.response.data.errors) {

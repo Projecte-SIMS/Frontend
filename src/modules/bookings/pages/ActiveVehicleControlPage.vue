@@ -290,9 +290,9 @@ const initMiniMap = async () => {
   if (miniMap.value) return
 
   miniMap.value = L.map(miniMapContainer.value, { zoomControl: false, attributionControl: false })
-    .setView([activeBooking.value.latitude, activeBooking.value.longitude], 16)
+    .setView([activeBooking.value.latitude as number, activeBooking.value.longitude as number], 16)
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(miniMap.value)
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(miniMap.value as any)
 
   const icon = L.divIcon({
     html: `<div class="size-6 bg-brand-primary-600 rounded-full border-4 border-white shadow-xl flex items-center justify-center text-white"><span class="material-icons text-xs">navigation</span></div>`,
@@ -307,16 +307,16 @@ const initMiniMap = async () => {
     weight: 4, 
     opacity: 0.6,
     lineJoin: 'round'
-  }).addTo(miniMap.value)
+  }).addTo(miniMap.value as any)
 
   L.circleMarker(startPos, {
     radius: 3,
     color: '#10b981',
     fillColor: '#10b981',
     fillOpacity: 1
-  }).addTo(miniMap.value)
+  }).addTo(miniMap.value as any)
 
-  vehicleMarker.value = L.marker(startPos, { icon }).addTo(miniMap.value)
+  vehicleMarker.value = L.marker(startPos, { icon }).addTo(miniMap.value as any)
 
   setTimeout(() => {
     miniMap.value?.invalidateSize()
@@ -346,7 +346,7 @@ const updateMapPosition = () => {
 
 const recenterMap = () => {
   if (miniMap.value && activeBooking.value) {
-    miniMap.value.setView([activeBooking.value.latitude, activeBooking.value.longitude], 17)
+    miniMap.value.setView([activeBooking.value.latitude as number, activeBooking.value.longitude as number], 17)
   }
 }
 

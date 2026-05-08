@@ -9,6 +9,7 @@ export interface BookingVehicle {
   brand: string
   model: string
   license_plate: string
+  price_per_minute?: number
 }
 
 export interface BookingTrip {
@@ -30,9 +31,12 @@ export interface Booking {
   end_time?: string
   total_price?: number
   created_at?: string
+  latitude?: number | null
+  longitude?: number | null
 
   // Campos del nuevo formato de respuesta
   scheduled_start?: string
+  scheduled_end?: string | null
   activation_deadline?: string | null
   cancelled_at?: string | null
   cancellation_fee?: number | null
@@ -40,6 +44,16 @@ export interface Booking {
   user?: BookingUser
   vehicle?: BookingVehicle
   trip?: BookingTrip
+  remaining_seconds?: number
+  telemetry?: {
+    latitude?: number
+    longitude?: number
+    speed?: number
+    rpm?: number
+    engine_temp?: number
+    battery_voltage?: number
+    online?: boolean
+  }
 }
 
 export interface BookingFilters {
