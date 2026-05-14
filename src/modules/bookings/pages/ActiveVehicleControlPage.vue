@@ -197,22 +197,23 @@
         </div>
       </aside>
     </div>
-
-    <!-- Modals -->
-    <FinishTripConfirmModal 
-      :is-open="isConfirmFinishOpen"
-      :vehicle="activeBooking.vehicle"
-      :loading="isFinishing"
-      @close="isConfirmFinishOpen = false"
-      @confirm="handleFinish"
-    />
-
-    <TripSummaryModal 
-      :is-open="isSummaryOpen"
-      :summary-data="tripSummary"
-      @close="closeSummary"
-    />
   </div>
+
+  <!-- Modals moved outside the main conditional blocks to prevent premature unmounting -->
+  <FinishTripConfirmModal 
+    v-if="activeBooking"
+    :is-open="isConfirmFinishOpen"
+    :vehicle="activeBooking.vehicle"
+    :loading="isFinishing"
+    @close="isConfirmFinishOpen = false"
+    @confirm="handleFinish"
+  />
+
+  <TripSummaryModal 
+    :is-open="isSummaryOpen"
+    :summary-data="tripSummary"
+    @close="closeSummary"
+  />
 </template>
 
 <script setup lang="ts">
@@ -372,6 +373,12 @@ const handleFinish = async () => {
     tripSummary.value = res.data
     isConfirmFinishOpen.value = false
     isSummaryOpen.value = true
+    
+    // Detener el polling una vez finalizado el viaje para evitar cambios de estado en segundo plano
+    if (pollInterval) {
+      clearInterval(pollInterval)
+      pollInterval = null
+    }
   } catch (e: any) {
     showToast(t('active_trip.finish_error'), 'error')
   } finally {

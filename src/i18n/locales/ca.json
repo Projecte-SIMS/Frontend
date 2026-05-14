@@ -692,7 +692,10 @@
       "plan_pro": "Professional (Enterprise)",
       "plan_base": "Bàsic (Hub)",
       "active_since": "Actiu des de",
-      "support_msg": "Si necessites canviar el nom legal o migrar el teu ID, contacta amb soporte{'@'}fleetly.com",
+      "support_msg": "Si necesites canviar el nom legal o migrar la teva ID, contacta amb suport{'@'}fleetly.com",
+      "support_title": "Suport i Ajuda",
+      "support_description": "Necessites ajuda tècnica o vols escalar el teu pla? Contacta directament amb el nostre equip de Superadministradors.",
+      "support_button": "Contactar ara",
       "errors": {
         "pro_required": "Actualitza a PRO BUSINESS per personalitzar els teus colors",
         "save_failed": "No s'ha pogut desar la configuració"

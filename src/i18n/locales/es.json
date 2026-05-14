@@ -697,6 +697,9 @@
       "plan_base": "Básico (Hub)",
       "active_since": "Activo desde",
       "support_msg": "Si necesitas cambiar el nombre legal o migrar tu ID, contacta con soporte{'@'}fleetly.com",
+      "support_title": "Soporte y Ayuda",
+      "support_description": "¿Necesitas ayuda técnica o quieres escalar tu plan? Contacta directamente con nuestro equipo de Superadministradores.",
+      "support_button": "Contactar ahora",
       "errors": {
         "pro_required": "Actualiza a PRO BUSINESS para personalizar tus colores",
         "save_failed": "No se pudo guardar la configuración"

@@ -125,6 +125,28 @@
             </div>
           </div>
         </section>
+
+        <!-- Nueva Sección de Soporte Directo -->
+        <section class="p-8 rounded-[2.5rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div class="flex items-center gap-3 mb-6">
+            <div class="size-10 rounded-2xl bg-brand-primary-50 dark:bg-brand-primary-900/20 text-brand-primary-600 flex items-center justify-center">
+              <span class="material-icons">support_agent</span>
+            </div>
+            <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">{{ $t('admin.settings.support_title') }}</h3>
+          </div>
+          
+          <p class="text-xs text-slate-500 mb-6 leading-relaxed">
+            {{ $t('admin.settings.support_description') }}
+          </p>
+
+          <a 
+            href="mailto:soporte@fleetly.com" 
+            class="flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-brand-primary-600 text-white text-xs font-black uppercase tracking-widest hover:bg-brand-primary-700 transition-all shadow-lg shadow-brand-primary-500/20 active:scale-95"
+          >
+            <span class="material-icons text-sm">mail</span>
+            {{ $t('admin.settings.support_button') }}
+          </a>
+        </section>
       </div>
     </div>
   </div>
